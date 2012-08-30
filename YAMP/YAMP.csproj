@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0F183B45-E213-4DB0-9734-3CE7E26EB318}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>YAMP</RootNamespace>
+    <AssemblyName>YAMP</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="AbstractExpression.cs" />
+    <Compile Include="Value.cs" />
+    <Compile Include="Values\ScalarValue.cs" />
+    <Compile Include="Exceptions\DimensionException.cs" />
+    <Compile Include="Exceptions\ParseException.cs" />
+    <Compile Include="Expressions\Others\BracketExpression.cs" />
+    <Compile Include="Expressions\Others\SymbolExpression.cs" />
+    <Compile Include="Expressions\Others\NumberExpression.cs" />
+    <Compile Include="Expressions\Others\FunctionExpression.cs" />
+    <Compile Include="Operator.cs" />
+    <Compile Include="Expressions\Operators\PlusOperator.cs" />
+    <Compile Include="Tokens.cs" />
+    <Compile Include="Exceptions\BracketException.cs" />
+    <Compile Include="Exceptions\SymbolException.cs" />
+    <Compile Include="Expressions\Operators\MultiplyOperator.cs" />
+    <Compile Include="Expressions\Operators\PowerOperator.cs" />
+    <Compile Include="Exceptions\OperationNotSupportedException.cs" />
+    <Compile Include="Interfaces\IRegisterToken.cs" />
+    <Compile Include="Expressions\Others\ZeroExpression.cs" />
+    <Compile Include="Expressions\Operators\MinusOperator.cs" />
+    <Compile Include="Expressions\Operators\DivideOperator.cs" />
+    <Compile Include="ParseTree.cs" />
+    <Compile Include="Interfaces\IFunction.cs" />
+    <Compile Include="Functions\CeilFunction.cs" />
+    <Compile Include="Exceptions\FunctionNotFoundException.cs" />
+    <Compile Include="Functions\FloorFunction.cs" />
+    <Compile Include="Functions\ExpFunction.cs" />
+    <Compile Include="Functions\SinFunction.cs" />
+    <Compile Include="Functions\CosFunction.cs" />
+    <Compile Include="Functions\AbsFunction.cs" />
+    <Compile Include="Expressions\Others\AbsExpression.cs" />
+    <Compile Include="Functions\SqrtFunction.cs" />
+    <Compile Include="Values\Constants.cs" />
+    <Compile Include="Expressions\Operators\FacultyOperator.cs" />
+    <Compile Include="Expressions\Operators\CommaOperator.cs" />
+    <Compile Include="Values\VectorValue.cs" />
+    <Compile Include="Interfaces\FunctionDelegate.cs" />
+    <Compile Include="Functions\LnFunction.cs" />
+    <Compile Include="Functions\LogFunction.cs" />
+    <Compile Include="Values\MatrixValue.cs" />
+    <Compile Include="Expressions\Operators\ColonOperator.cs" />
+    <Compile Include="Expressions\Operators\TransposeOperator.cs" />
+    <Compile Include="Expressions\Operators\AssignmentOperator.cs" />
+    <Compile Include="Values\SymbolValue.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+    <Folder Include="Expressions\" />
+    <Folder Include="Values\" />
+    <Folder Include="Expressions\Others\" />
+    <Folder Include="Expressions\Operators\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Functions\" />
+  </ItemGroup>
+</Project>
