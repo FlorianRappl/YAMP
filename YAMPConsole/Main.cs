@@ -30,16 +30,23 @@ namespace YAMPConsole
 			
 			while(true)
 			{
-				Console.Write(" > ");
+				Console.Write(">> ");
 				query = Console.ReadLine();
 				
 				if(query.Equals(string.Empty))
 					break;
-				
-				var parser = YAMP.Parser.Parse(query);
-				Console.Write(" = ");
-				Console.WriteLine(parser.Execute());
-				Console.WriteLine(parser);
+
+                try
+                {
+                    var parser = YAMP.Parser.Parse(query);
+                    Console.Write(" = ");
+                    Console.WriteLine(parser.Execute());
+                    Console.WriteLine(parser);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
 			}
 		}
 		
@@ -81,30 +88,30 @@ namespace YAMPConsole
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
-            //var lines = new string[0];
+            var lines = new string[0];
 			// This is Benchmark #1
 			//var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
-            var lines = MakeTenK("2-3*5+7/2-8*2");
+            //var lines = MakeTenK("2-3*5+7/2-8*2");
 			// This is Benchmark #3
 			//var lines = MakeTenK("2+3");
 			// This is Benchmark #4
 			//var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
 			
 			//My own implementation
-			// 26155 ms ; 2773 ms ; 824 ms ; 3185 ms
+			// 26155 ms ; 3510 ms ; 824 ms ; 3185 ms
 			Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
 			
 			//http://www.codeproject.com/Articles/11164/Math-Parser
-			// 547334 ms ; 4892 ms ; 3293 ms ; 14110 ms
+			// 547334 ms ; 5024 ms ; 3293 ms ; 14110 ms
 			Benchmark("MathParser", lines, query => new MathParser.Parser().Evaluate(query));
 			
 			//http://www.codeproject.com/Tips/381509/Math-Parser-NET-Csharp
-			// FAILED ; 648 ms ; 206 ms ; 931 ms
+			// FAILED ; 685 ms ; 206 ms ; 931 ms
 			Benchmark("MathParserTK", lines, query => new MathParserTK_NET.MathParserTK().Parse(query, false));
 			
 			//http://www.codeproject.com/Articles/274093/Math-Parser-NET
-			// FAILED ; 5282 ms ; 4749 ms ; 5606 ms
+			// FAILED ; 5695 ms ; 4749 ms ; 5606 ms
 			Benchmark("MathParserNet", lines, query => new MathParserNet.Parser().Simplify(query));
 		}
 
@@ -174,6 +181,9 @@ namespace YAMPConsole
             Test("|1^(i+5)|", 1.0);
             Test("|(5+8i)^(i+1)|", 3.4284942595728127);
             Test("|(2+3i)/(1+8i)|", 0.447213595499958);
+            Test("|2*(1,2;1,2)|", 0.0);
+            Test("|max(1,5,7,9,8+5i)|", Math.Sqrt(89.0));
+            Test("|(2,3;1,5)-(2,3;1,5)'|", 4.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}

@@ -38,6 +38,16 @@ namespace YAMP
 			AddValue(left);
 			AddValue(right);
 		}
+
+        public VectorValue Clone()
+        {
+            var v = new VectorValue();
+
+            foreach (var scalar in this.Values)
+                v.AddValue(scalar.Clone());
+
+            return v;
+        }
 		
 		void AddValue(Value value)
 		{
@@ -53,16 +63,27 @@ namespace YAMP
 		{
 			if(right is VectorValue)
 			{
+                var v = new VectorValue();
 				var r = right as VectorValue;
 				
 				if(r.Dimension != Dimension)
 					throw new DimensionException(Dimension, r.Dimension);
 				
 				for(var i = 0; i < r.Dimension; i++)
-					_values[i] = _values[i].Add(r._values[i]) as ScalarValue;
+					v.AddValue(_values[i].Add(r._values[i]));
 				
-				return this;
+				return v;
 			}
+            else if (right is ScalarValue)
+            {
+                var v = new VectorValue();
+                var r = right as ScalarValue;
+
+                for (var i = 0; i < Dimension; i++)
+                    v.AddValue(r.Add(_values[i]));
+
+                return v;
+            }
 			
 			throw new OperationNotSupportedException("+", right);
 		}
@@ -70,17 +91,28 @@ namespace YAMP
 		public override Value Subtract (Value right)
 		{
 			if(right is VectorValue)
-			{
+            {
+                var v = new VectorValue();
 				var r = right as VectorValue;
 				
 				if(r.Dimension != Dimension)
 					throw new DimensionException(Dimension, r.Dimension);
 				
 				for(var i = 0; i < r.Dimension; i++)
-					_values[i] = _values[i].Subtract(r._values[i]) as ScalarValue;
+					v.AddValue(_values[i].Subtract(r._values[i]));
 				
-				return this;
+				return v;
 			}
+            else if (right is ScalarValue)
+            {
+                var v = new VectorValue();
+                var r = right as ScalarValue;
+
+                for (var i = 0; i < Dimension; i++)
+                    v.AddValue(_values[i].Subtract(r));
+
+                return v;
+            }
 			
 			throw new OperationNotSupportedException("-", right);
 		}
@@ -88,13 +120,14 @@ namespace YAMP
 		public override Value Multiply (Value right)
 		{
 			if(right is ScalarValue)
-			{
+            {
+                var v = new VectorValue();
 				var r = right as ScalarValue;
 				
 				for(var i = 0; i < Dimension; i++)
-					_values[i] = _values[i].Multiply(r) as ScalarValue;
+					v.AddValue(_values[i].Multiply(r));
 				
-				return this;
+				return v;
 			}
 			
 			throw new OperationNotSupportedException("*", right);
@@ -103,13 +136,14 @@ namespace YAMP
 		public override Value Divide (Value denominator)
 		{
 			if(denominator is ScalarValue)
-			{
+            {
+                var v = new VectorValue();
 				var d = denominator as ScalarValue;
 				
 				for(var i = 0; i < Dimension; i++)
-					_values[i] = _values[i].Divide(d) as ScalarValue;
+					v.AddValue(_values[i].Divide(d));
 				
-				return this;
+				return v;
 			}
 			
 			throw new OperationNotSupportedException("/", denominator);

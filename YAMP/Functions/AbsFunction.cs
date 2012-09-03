@@ -2,11 +2,9 @@ using System;
 
 namespace YAMP
 {
-	class AbsFunction : IFunction
-	{
-		#region IFunction implementation
-		
-		public Value Perform (Value argument)
+	class AbsFunction : StandardFunction
+	{		
+		public override Value Perform (Value argument)
 		{
 			if(argument is ScalarValue)
 			{
@@ -34,8 +32,6 @@ namespace YAMP
 			
 			throw new OperationNotSupportedException("abs", argument);
 		}
-		
-		#endregion	
 	}
 }
 

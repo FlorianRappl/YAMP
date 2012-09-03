@@ -44,6 +44,16 @@ namespace YAMP
 			AddValue(left);
 			AddValue(right);
 		}
+
+        public MatrixValue Clone()
+        {
+            var m = new MatrixValue();
+
+            foreach (var vec in this.Values)
+                m.AddValue(vec.Clone());
+
+            return m;
+        }
 		
 		void AddValue(Value value)
 		{
@@ -82,16 +92,26 @@ namespace YAMP
 		{
 			if(right is MatrixValue)
 			{
+                var m = new MatrixValue();
 				var r = right as MatrixValue;
 				
 				if(r.DimensionX != DimensionX)
 					throw new DimensionException(DimensionX, r.DimensionX);
 				
 				for(var i = 0; i < r.DimensionX; i++)
-					_values[i] = _values[i].Add(r._values[i]) as VectorValue;
+					m.AddValue(_values[i].Add(r._values[i]));
 				
-				return this;
+				return m;
 			}
+            else if (right is ScalarValue)
+            {
+                var m = new MatrixValue();
+
+                foreach (var col in _values)
+                    m.AddValue(col.Add(right));
+
+                return m;
+            }
 			
 			throw new OperationNotSupportedException("+", right);
 		}
@@ -104,17 +124,27 @@ namespace YAMP
 		public override Value Subtract (Value right)
 		{
 			if(right is MatrixValue)
-			{
+            {
+                var m = new MatrixValue();
 				var r = right as MatrixValue;
 				
 				if(r.DimensionX != DimensionX)
 					throw new DimensionException(DimensionX, r.DimensionX);
 				
 				for(var i = 0; i < r.DimensionX; i++)
-					_values[i] = _values[i].Subtract(r._values[i]) as VectorValue;
+					m.AddValue(_values[i].Subtract(r._values[i]));
 				
-				return this;
-			}
+				return m;
+            }
+            else if (right is ScalarValue)
+            {
+                var m = new MatrixValue();
+
+                foreach (var col in _values)
+                    m.AddValue(col.Subtract(right));
+
+                return m;
+            }
 			
 			throw new OperationNotSupportedException("-", right);
 		}
@@ -153,10 +183,14 @@ namespace YAMP
 				return new MatrixValue(m);
 			}
 			else if(right is ScalarValue)
-			{				
+			{
+                var A = this.Clone();
+
 				for(var i = 1; i <= DimensionX; i++)
 					for(var j = 1; j <= DimensionY; j++)
-						this[j, i] = this[j, i].Multiply(right) as ScalarValue;
+						A[j, i] = A[j, i].Multiply(right) as ScalarValue;
+
+                return A;
 			}
 			
 			throw new OperationNotSupportedException("*", right);
@@ -165,12 +199,13 @@ namespace YAMP
 		public override Value Divide (Value denominator)
 		{
 			if(denominator is ScalarValue)
-			{				
+			{
+                var m = new MatrixValue();
 				
 				for(var i = 0; i < DimensionX; i++)
-					_values[i] = _values[i].Divide(denominator) as VectorValue;
+					m.AddValue(_values[i].Divide(denominator));
 				
-				return this;
+				return m;
 			}
 			//TODO
 			
@@ -256,6 +291,8 @@ namespace YAMP
 			{
 				if(DimensionX == 1)
 					return this[1, 1];
+                else if (DimensionX == 2)
+                    return this[1, 1] * this[2, 2] - this[1, 2] * this[2, 1];
 			}
 			
 			return new ScalarValue(0.0);

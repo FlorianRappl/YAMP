@@ -2,22 +2,14 @@ using System;
 
 namespace YAMP
 {
-	class FloorFunction : IFunction
+	class FloorFunction : StandardFunction
 	{
-		#region IFunction implementation
-		
-		public Value Perform (Value argument)
-		{
-			if(argument is ScalarValue)
-			{
-				var v = Math.Floor((argument as ScalarValue).Value);
-				return new ScalarValue(v);
-			}
-			
-			throw new OperationNotSupportedException("floor", argument);
-		}
-		
-		#endregion		
+        protected override ScalarValue GetValue(ScalarValue value)
+        {
+            var re = Math.Floor(value.Value);
+            var im = Math.Floor(value.ImaginaryValue);
+			return new ScalarValue(re, im);
+        }	
 	}
 }
 

@@ -17,6 +17,7 @@ namespace YAMP
 		Hashtable constants;
 		Hashtable o_functions;
 		Hashtable o_constants;
+        Hashtable variables;
 		
 		#endregion
 
@@ -36,6 +37,7 @@ namespace YAMP
 			constants = new Hashtable();
 			o_functions = new Hashtable();
 			o_constants = new Hashtable();
+            variables = new Hashtable();
 		}
 		
 		#endregion
@@ -53,7 +55,10 @@ namespace YAMP
 			
 			foreach(var type in types)
 			{
-				if(type.GetInterface(ir) != null && !type.IsAbstract)
+                if (type.IsAbstract)
+                    continue;
+
+				if(type.GetInterface(ir) != null)
 					(type.GetConstructor(Type.EmptyTypes).Invoke(null) as IRegisterToken).RegisterToken();
 				
 				if(type.GetInterface(fu) != null)
@@ -72,11 +77,11 @@ namespace YAMP
 		{
 			operators.Add(pattern, type.GetConstructor(Type.EmptyTypes));
 		}
-		
-		public void AddExpression(string pattern, Type type)
-		{
-			expressions.Add(new Regex("^" + pattern), type.GetConstructor(Type.EmptyTypes));
-		}
+
+        public void AddExpression(string pattern, Type type)
+        {
+            expressions.Add(new Regex("^" + pattern), type.GetConstructor(Type.EmptyTypes));
+        }
 		
 		public void AddConstant(string name, double constant, bool custom)
 		{
@@ -129,10 +134,35 @@ namespace YAMP
 		}
 		
 		#endregion
-		
-		#region Find elements
-		
-		public Value FindConstants(string name)
+
+        #region Variables
+
+        public void AssignVariable(string name, Value value)
+        {
+            if (value != null)
+            {
+                if (variables.ContainsKey(name))
+                    variables[name] = value;
+                else
+                    variables.Add(name, value);
+            }
+            else if (variables.ContainsKey(name))
+                variables.Remove(name);
+        }
+
+        public Value GetVariable(string name)
+        {
+            if (variables.ContainsKey(name))
+                return variables[name] as Value;
+
+            return null;
+        }
+
+        #endregion
+
+        #region Find elements
+
+        public Value FindConstants(string name)
 		{
 			var lname = name.ToLower();
 
@@ -141,8 +171,8 @@ namespace YAMP
 			
 			if(name.Equals("i"))
 				return new ScalarValue(0.0, 1.0);
-			
-			return new SymbolValue(name);
+
+            throw new SymbolException(name);
 		}
 		
 		public FunctionDelegate FindFunction(string name)

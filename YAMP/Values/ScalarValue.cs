@@ -51,15 +51,12 @@ namespace YAMP
 		
 		public ScalarValue Abs()
 		{
-            _real = abs();
-            _imag = 0.0;
-			return this;
+			return new ScalarValue(abs());
 		}
 		
 		public ScalarValue Conjugate()
 		{
-            _imag *= -1.0;
-			return this;
+			return new ScalarValue(_real, -_imag);
 		}
 		
 		public override Value Add (Value right)
@@ -67,9 +64,19 @@ namespace YAMP
 			if(right is ScalarValue)
 			{
 				var r = right as ScalarValue;
-                _real = _real + r._real;
-                _imag = _imag + r._imag;
-                return this;
+                var re = _real + r._real;
+                var im = _imag + r._imag;
+                return new ScalarValue(re, im);
+            }
+            else if (right is VectorValue)
+            {
+                var r = right as VectorValue;
+                return r.Add(this);
+            }
+            else if (right is MatrixValue)
+            {
+                var r = right as MatrixValue;
+                return r.Add(this);
             }
 			
 			throw new OperationNotSupportedException("+", right);
@@ -80,9 +87,19 @@ namespace YAMP
 			if(right is ScalarValue)
 			{
 				var r = right as ScalarValue;
-                _real = _real - r._real;
-                _imag = _imag - r._imag;
-                return this;
+                var re = _real - r._real;
+                var im = _imag - r._imag;
+                return new ScalarValue(re, im);
+            }
+            else if (right is VectorValue)
+            {
+                var r = right as VectorValue;
+                return r.Subtract(this);
+            }
+            else if (right is MatrixValue)
+            {
+                var r = right as MatrixValue;
+                return r.Subtract(this);
             }
 			
 			throw new OperationNotSupportedException("-", right);
@@ -94,15 +111,19 @@ namespace YAMP
 			{
 				var r = right as ScalarValue;
 				var re = _real * r._real - _imag * r._imag;
-				_imag = _real * r._imag + _imag * r._real;
-                _real = re;
-                return this;
+				var im = _real * r._imag + _imag * r._real;
+                return new ScalarValue(re, im);
 			}
 			else if(right is VectorValue)
 			{
 				var r = right as VectorValue;
 				return r.Multiply(this);
 			}
+            else if (right is MatrixValue)
+            {
+                var r = right as MatrixValue;
+                return r.Multiply(this);
+            }
 			
 			throw new OperationNotSupportedException("*", right);
 		}
@@ -113,11 +134,9 @@ namespace YAMP
 			{
 				var r = (right as ScalarValue).Conjugate();
                 var q = r._real * r._real + r._imag * r._imag;
-                var re = _real * r._real - _imag * r._imag;
-                _imag = _real * r._imag + _imag * r._real;
-                _real = re / q;
-				_imag = _imag / q;
-				return this;
+                var re = (_real * r._real - _imag * r._imag) / q;
+                var im = (_real * r._imag + _imag * r._real) / q;
+				return new ScalarValue(re, im);
 			}
 			
 			throw new OperationNotSupportedException("/", right);
@@ -136,12 +155,11 @@ namespace YAMP
 				var R = (I.Multiply(phi) as ScalarValue).Exp();
 				var alpha = Math.Pow(L, exp._real);
 				var beta = theta * exp._real;
-                _real = Math.Cos(beta);
-                _imag = Math.Sin(beta);
-                var re = _real * R._real - _imag * R._imag;
-                _imag = alpha * (_real * R._imag + _imag * R._real);
-                _real = alpha * re;
-				return this;
+                var _cos = Math.Cos(beta);
+                var _sin = Math.Sin(beta);
+                var re = alpha * (_cos * R._real - _sin * R._imag);
+                var im = alpha * (_cos * R._imag + _sin * R._real);
+				return new ScalarValue(re, im);
 			}
 			
 			throw new OperationNotSupportedException("^", exponent);
@@ -239,7 +257,27 @@ namespace YAMP
 		public override int GetHashCode ()
 		{
 			return (_real + _imag).GetHashCode();
-		}
-}
+        }
+
+        public static ScalarValue operator +(ScalarValue a, ScalarValue b)
+        {
+            return a.Add(b) as ScalarValue;
+        }
+
+        public static ScalarValue operator -(ScalarValue a, ScalarValue b)
+        {
+            return a.Subtract(b) as ScalarValue;
+        }
+
+        public static ScalarValue operator *(ScalarValue a, ScalarValue b)
+        {
+            return a.Multiply(b) as ScalarValue;
+        }
+
+        public static ScalarValue operator /(ScalarValue a, ScalarValue b)
+        {
+            return a.Divide(b) as ScalarValue;
+        }
+    }
 }
 

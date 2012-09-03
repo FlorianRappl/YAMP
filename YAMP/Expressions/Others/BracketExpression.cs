@@ -22,19 +22,11 @@ namespace YAMP
 		}
 		
 		public override Value Interpret (Hashtable symbols)
-		{			
-			Operator op = null;
-			Value top = _tree.Expressions[0].Interpret(symbols);
-			Value bottom = null;
-
-			for(var i = 0; i < _tree.Operators.Length;)
-			{
-				op = _tree.Operators[i++];
-				bottom = _tree.Expressions[i].Interpret(symbols);
-				top = op.Perform(top, bottom);
-			}
-
-			return top;
+		{
+            if (_tree.Operators.Length == 1)
+                return _tree.Operators[0].Handle(_tree.Expressions[0], _tree.Expressions[1], symbols);
+            else
+                return _tree.Expressions[0].Interpret(symbols);
 		}
 		
 		public override string Set (string input)

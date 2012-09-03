@@ -39,6 +39,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Functions\MaxFunction.cs" />
+    <Compile Include="Functions\MinFunction.cs" />
+    <Compile Include="Functions\StandardFunction.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="AbstractExpression.cs" />
@@ -84,16 +87,7 @@
     <Compile Include="Expressions\Operators\ColonOperator.cs" />
     <Compile Include="Expressions\Operators\TransposeOperator.cs" />
     <Compile Include="Expressions\Operators\AssignmentOperator.cs" />
-    <Compile Include="Values\SymbolValue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Exceptions\" />
-    <Folder Include="Expressions\" />
-    <Folder Include="Values\" />
-    <Folder Include="Expressions\Others\" />
-    <Folder Include="Expressions\Operators\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Functions\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

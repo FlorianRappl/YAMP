@@ -2,21 +2,12 @@ using System;
 
 namespace YAMP
 {
-	class SinFunction : IFunction
+	class SinFunction : StandardFunction
 	{
-		#region IFunction implementation
-		
-		public Value Perform (Value argument)
-		{
-			if(argument is ScalarValue)
-			{
-				return (argument as ScalarValue).Sin();
-			}
-			
-			throw new OperationNotSupportedException("sin", argument);
-		}
-		
-		#endregion	
+        protected override ScalarValue GetValue(ScalarValue value)
+        {
+            return value.Sin();
+        }
 	}
 }
 

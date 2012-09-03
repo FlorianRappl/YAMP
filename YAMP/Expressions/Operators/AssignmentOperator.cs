@@ -1,24 +1,37 @@
 using System;
+using System.Collections;
 
 namespace YAMP
 {
 	class AssignmentOperator : Operator
 	{
-		public AssignmentOperator () : base("=", 0)
+		public AssignmentOperator () : this(string.Empty)
 		{
 		}
+
+        public AssignmentOperator(string prefix) : base(prefix + "=", 0)
+        {
+        }
+
+        public override Value Handle(AbstractExpression left, AbstractExpression right, Hashtable symbols)
+        {
+            var bottom = right.Interpret(symbols);
+
+            if (left is SymbolExpression)
+                Assign(left as SymbolExpression, bottom);
+
+            return bottom;
+        }
 		
 		public override Value Perform (Value left, Value right)
 		{
-			if(left is SymbolValue)
-				Assign(left as SymbolValue, right);
-			
 			return right;
 		}
-		
-		public void Assign(SymbolValue left, Value right)
+
+        void Assign(SymbolExpression left, Value value)
 		{
-			Console.WriteLine("symbol could be assigned... " + left.Name);
+            if(left.IsSymbol)
+                Tokens.Instance.AssignVariable(left.SymbolName, value);
 		}
 	}
 }

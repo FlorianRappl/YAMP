@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 namespace YAMP
 {
@@ -28,6 +29,13 @@ namespace YAMP
 		}
 		
 		public abstract Value Perform(Value left, Value right);
+
+        public virtual Value Handle(AbstractExpression left, AbstractExpression right, Hashtable symbols)
+        {
+            var l = left.Interpret(symbols);
+            var r = right.Interpret(symbols);
+            return Perform(l, r);
+        }
 
 		#region IRegisterToken implementation
 		
