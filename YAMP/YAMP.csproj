@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,6 +10,11 @@
     <RootNamespace>YAMP</RootNamespace>
     <AssemblyName>YAMP</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +39,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Exceptions\ArgumentException.cs" />
+    <Compile Include="Exceptions\ArgumentsException.cs" />
+    <Compile Include="Exceptions\ExpressionNotFoundException.cs" />
+    <Compile Include="Expressions\Operators\IndexOperator.cs" />
+    <Compile Include="Expressions\Operators\LeftDivideOperator.cs" />
+    <Compile Include="Expressions\Operators\RightDivideOperator.cs" />
+    <Compile Include="Functions\ArgumentFunction.cs" />
+    <Compile Include="Functions\DetFunction.cs" />
+    <Compile Include="Functions\FacultyFunction.cs" />
+    <Compile Include="Functions\MaxFunction.cs" />
+    <Compile Include="Functions\MinFunction.cs" />
+    <Compile Include="Functions\RandFunction.cs" />
+    <Compile Include="Functions\StandardFunction.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="AbstractExpression.cs" />
@@ -54,9 +72,7 @@
     <Compile Include="Expressions\Operators\PowerOperator.cs" />
     <Compile Include="Exceptions\OperationNotSupportedException.cs" />
     <Compile Include="Interfaces\IRegisterToken.cs" />
-    <Compile Include="Expressions\Others\ZeroExpression.cs" />
     <Compile Include="Expressions\Operators\MinusOperator.cs" />
-    <Compile Include="Expressions\Operators\DivideOperator.cs" />
     <Compile Include="ParseTree.cs" />
     <Compile Include="Interfaces\IFunction.cs" />
     <Compile Include="Functions\CeilFunction.cs" />
@@ -71,7 +87,6 @@
     <Compile Include="Values\Constants.cs" />
     <Compile Include="Expressions\Operators\FacultyOperator.cs" />
     <Compile Include="Expressions\Operators\CommaOperator.cs" />
-    <Compile Include="Values\VectorValue.cs" />
     <Compile Include="Interfaces\FunctionDelegate.cs" />
     <Compile Include="Functions\LnFunction.cs" />
     <Compile Include="Functions\LogFunction.cs" />
@@ -79,16 +94,7 @@
     <Compile Include="Expressions\Operators\ColonOperator.cs" />
     <Compile Include="Expressions\Operators\TransposeOperator.cs" />
     <Compile Include="Expressions\Operators\AssignmentOperator.cs" />
-    <Compile Include="Values\SymbolValue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Exceptions\" />
-    <Folder Include="Expressions\" />
-    <Folder Include="Values\" />
-    <Folder Include="Expressions\Others\" />
-    <Folder Include="Expressions\Operators\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Functions\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

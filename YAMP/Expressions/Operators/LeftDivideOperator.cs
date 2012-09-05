@@ -2,15 +2,15 @@ using System;
 
 namespace YAMP
 {
-	class DivideOperator : Operator
+	class LeftDivideOperator : Operator
 	{
-		public DivideOperator () : base("/", 20)
+		public LeftDivideOperator () : base(@"\", 20)
 		{
 		}
 		
 		public override Value Perform (Value left, Value right)
 		{
-			return left.Divide(right);
+			return right.Divide(left);
 		}
 	}
 }

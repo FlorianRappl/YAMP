@@ -14,11 +14,6 @@ namespace YAMP
 			}
 		}
 		
-		public override string ToString ()
-		{
-			return string.Format ("0");
-		}
-		
 		public abstract Value Add(Value right);
 		
 		public abstract Value Subtract(Value right);
@@ -28,8 +23,6 @@ namespace YAMP
 		public abstract Value Divide(Value denominator);
 		
 		public abstract Value Power(Value exponent);
-		
-		public abstract Value Faculty();
 	}
 }
 

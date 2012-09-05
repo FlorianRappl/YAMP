@@ -5,7 +5,7 @@ namespace YAMP
 {
     abstract class StandardFunction : IFunction
     {
-        string name;
+        protected string name;
 
         public StandardFunction()
         {
@@ -18,30 +18,19 @@ namespace YAMP
             {
                 return GetValue(argument as ScalarValue);
             }
-            else if (argument is VectorValue)
-            {
-                var v = argument as VectorValue;
-                var r = new VectorValue(GetValues(v.Values));
-                return r;
-            }
             else if (argument is MatrixValue)
             {
-                var m = argument as MatrixValue;
-                var l = new List<VectorValue>();
+                var A = argument as MatrixValue;
+				var M = new MatrixValue(A.DimensionY, A.DimensionX);
+				
+				for(var j = 1; j <= A.DimensionY; j++)
+					for(var i = 1; i <= A.DimensionX; i++)
+						M[j, i] = GetValue(A[j, i]);
 
-                foreach (var v in m.Values)
-                    l.Add(new VectorValue(GetValues(v.Values)));
-
-                return new MatrixValue(l);
+                return M;
             }
 
             throw new OperationNotSupportedException(name, argument);
-        }
-
-        protected virtual IEnumerable<ScalarValue> GetValues(IEnumerable<ScalarValue> values)
-        {
-            foreach (var value in values)
-                yield return GetValue(value);
         }
 
         protected virtual ScalarValue GetValue(ScalarValue value)

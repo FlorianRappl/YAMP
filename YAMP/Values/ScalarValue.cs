@@ -68,11 +68,6 @@ namespace YAMP
                 var im = _imag + r._imag;
                 return new ScalarValue(re, im);
             }
-            else if (right is VectorValue)
-            {
-                var r = right as VectorValue;
-                return r.Add(this);
-            }
             else if (right is MatrixValue)
             {
                 var r = right as MatrixValue;
@@ -91,11 +86,6 @@ namespace YAMP
                 var im = _imag - r._imag;
                 return new ScalarValue(re, im);
             }
-            else if (right is VectorValue)
-            {
-                var r = right as VectorValue;
-                return r.Subtract(this);
-            }
             else if (right is MatrixValue)
             {
                 var r = right as MatrixValue;
@@ -113,11 +103,6 @@ namespace YAMP
 				var re = _real * r._real - _imag * r._imag;
 				var im = _real * r._imag + _imag * r._real;
                 return new ScalarValue(re, im);
-			}
-			else if(right is VectorValue)
-			{
-				var r = right as VectorValue;
-				return r.Multiply(this);
 			}
             else if (right is MatrixValue)
             {
@@ -138,28 +123,36 @@ namespace YAMP
                 var im = (_real * r._imag + _imag * r._real) / q;
 				return new ScalarValue(re, im);
 			}
+			else if(right is MatrixValue)
+			{
+				var inv = (right as MatrixValue).Inverse();
+				return this.Multiply(inv);
+			}
 			
 			throw new OperationNotSupportedException("/", right);
 		}
 		
 		public override Value Power (Value exponent)
 		{
-			if(exponent is ScalarValue)
+            if(exponent is ScalarValue)
 			{
-				var exp = exponent as ScalarValue;
-				var theta = Math.Atan(_imag / _real);
-				var L = _real / Math.Cos(theta);
-				var phi = Ln();
+                if (Value == 0.0 && ImaginaryValue == 0.0)
+                    return new ScalarValue();
+
+                var exp = exponent as ScalarValue;
+                var theta = _real == 0.0 ? Math.PI / 2 * Math.Sign(ImaginaryValue) : Math.Atan(_imag / _real);
+                var L = _real / Math.Cos(theta);
+                var phi = Ln();
                 phi._real *= exp._imag;
                 phi._imag *= exp._imag;
-				var R = (I.Multiply(phi) as ScalarValue).Exp();
-				var alpha = Math.Pow(L, exp._real);
-				var beta = theta * exp._real;
+                var R = (I.Multiply(phi) as ScalarValue).Exp();
+                var alpha = _real == 0.0 ? 1.0 : Math.Pow(L, exp._real);
+                var beta = theta * exp._real;
                 var _cos = Math.Cos(beta);
                 var _sin = Math.Sin(beta);
                 var re = alpha * (_cos * R._real - _sin * R._imag);
                 var im = alpha * (_cos * R._imag + _sin * R._real);
-				return new ScalarValue(re, im);
+                return new ScalarValue(re, im);
 			}
 			
 			throw new OperationNotSupportedException("^", exponent);
@@ -194,7 +187,7 @@ namespace YAMP
 			return new ScalarValue(re, im);
 		}
 		
-		public override Value Faculty()
+		public ScalarValue Faculty()
 		{
 			var re = faculty(_real);
 			var im = faculty(_imag);
@@ -226,11 +219,6 @@ namespace YAMP
         }
 		
 		public override string ToString ()
-		{
-			return string.Format ("Scalar: {0}", ValueToString());
-		}
-		
-		public string ValueToString()
 		{
 			if(Math.Abs(_imag) < epsilon)
 				return string.Format(Tokens.NumberFormat, "{0}", Value);

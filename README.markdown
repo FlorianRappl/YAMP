@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **0.2.0**. This version is still an incomplete alpha build.
+The current version number is **0.3.0**. This version is still an incomplete alpha build.
 A NuGet package will be available quite soon. There are a lot of tests in the code - since
 the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -32,6 +32,15 @@ test application has no try-catch block, all exceptions will bubble up to you.
 
 Version history
 -------------------------------------------------------
+**0.3.0:**
+
+- Functions can now either perform operations on whole matrices or on each sub-element
+- Assignment operator has been introduced
+- Fixed a bug concerning powers of purely imaginary numbers
+- MatrixValue numerics have been improved
+- VectorValue has been replaced completely by MatrixValue
+- Improved the performance of the parser (factor 2)
+
 **0.2.0:**
 
 - More sophisticated operators (transpose, faculty, ...) have been integrated

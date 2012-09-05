@@ -170,7 +170,7 @@ namespace YAMP
 				return new ScalarValue((double)constants[lname]);
 			
 			if(name.Equals("i"))
-				return new ScalarValue(0.0, 1.0);
+				return ScalarValue.I;
 
             throw new SymbolException(name);
 		}
@@ -211,10 +211,14 @@ namespace YAMP
 			foreach(Regex rx in expressions.Keys)
 			{
 				if(rx.IsMatch(input))
-					return (expressions[rx] as ConstructorInfo).Invoke(null) as AbstractExpression;
+				{
+					var exp = (expressions[rx] as ConstructorInfo).Invoke(null) as AbstractExpression;
+					exp.Expression = rx;
+					return exp;
+				}
 			}
 			
-			return new ZeroExpression();
+			throw new ExpressionNotFoundException(input);
 		}
 		
 		#endregion
@@ -240,6 +244,15 @@ namespace YAMP
 		public static IFormatProvider NumberFormat
 		{
 			get { return numFormat; }
+		}
+		
+		#endregion
+		
+		#region Misc
+		
+		public void Touch()
+		{
+			//Empty on intention
 		}
 		
 		#endregion

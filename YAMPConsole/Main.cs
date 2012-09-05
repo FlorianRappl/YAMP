@@ -39,7 +39,6 @@ namespace YAMPConsole
                 try
                 {
                     var parser = YAMP.Parser.Parse(query);
-                    Console.Write(" = ");
                     Console.WriteLine(parser.Execute());
                     Console.WriteLine(parser);
                 }
@@ -49,57 +48,29 @@ namespace YAMPConsole
                 }
 			}
 		}
-		
-		static void GenerateBenchmarks ()
-		{
-			Console.Write("Generating benchmark file ... ");
-			
-			var r = new Random();
-			var count = 100000;
-			var operators = new string [] { "+", "-", "*", "^", "/" };
-			int length;
-			
-			using(var fs = File.CreateText(BMK_FILE))
-			{
-				for(var i = 0; i < count; i++)
-				{
-					length = r.Next(2, 14);
-					fs.Write(r.Next(-100, 100));
-					         
-					for(var j = 0; j < length; j++)
-					{
-						fs.Write(operators[r.Next(0, operators.Length)]);
-						fs.Write(r.Next(-100, 100));
-					}
-					
-					if(i < count - 1)
-						fs.WriteLine();
-				}
-			}
-			
-			Console.WriteLine("done !");
-		}
 
 		static void Benchmarks()
 		{
 			if(!File.Exists(BMK_FILE))
 				GenerateBenchmarks();
 			
+			YAMP.Parser.Load();
+			
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
             var lines = new string[0];
 			// This is Benchmark #1
-			//var lines = File.ReadAllLines(BMK_FILE);
+            //var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
             //var lines = MakeTenK("2-3*5+7/2-8*2");
 			// This is Benchmark #3
-			//var lines = MakeTenK("2+3");
+            //var lines = MakeTenK("2+3");
 			// This is Benchmark #4
-			//var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
+            //var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
 			
 			//My own implementation
-			// 26155 ms ; 3510 ms ; 824 ms ; 3185 ms
+			// 16231 ms ; 1357 ms ; 348 ms ; 1744 ms
 			Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
 			
 			//http://www.codeproject.com/Articles/11164/Math-Parser
@@ -107,7 +78,7 @@ namespace YAMPConsole
 			Benchmark("MathParser", lines, query => new MathParser.Parser().Evaluate(query));
 			
 			//http://www.codeproject.com/Tips/381509/Math-Parser-NET-Csharp
-			// FAILED ; 685 ms ; 206 ms ; 931 ms
+			// FAILED ; 673 ms ; 193 ms ; 931 ms
 			Benchmark("MathParserTK", lines, query => new MathParserTK_NET.MathParserTK().Parse(query, false));
 			
 			//http://www.codeproject.com/Articles/274093/Math-Parser-NET
@@ -174,7 +145,7 @@ namespace YAMPConsole
 			Test("|(2,3,1)-(1,3,1)|", 1.0);
 			Test("|(2^2,2+3,-2,-2)|", 7.0);
 			Test("|4*(2i-5)/3i|", 4.0 * Math.Sqrt(29.0) / 3.0);
-			Test("|(1;2;3)*(3,2,1)|", 10.0);
+			Test("|(3,2,1)*(1;2;3)|", 10.0);
 			Test("|(1;2;3)|-|(1,2,3)|", 0.0);
             Test("|(2+3i)^2|", 12.999999999999998);
             Test("|1^(i+5)|", 1.0);
@@ -183,7 +154,9 @@ namespace YAMPConsole
             Test("|(2+3i)/(1+8i)|", 0.447213595499958);
             Test("|2*(1,2;1,2)|", 0.0);
             Test("|max(1,5,7,9,8+5i)|", Math.Sqrt(89.0));
-            Test("|(2,3;1,5)-(2,3;1,5)'|", 4.0);
+            Test("|(2,1;3,5)-(2,1;3,5)'|", 4.0);
+			Test("(2,1,0)*(5;2;1)", 12.0);
+			Test("det((1;2)*(2,1))", 0.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}
@@ -207,7 +180,7 @@ namespace YAMPConsole
 				x += 0.1;
 			}
 			
-			Console.WriteLine("  with x = {2}..{3} ; {0} ( correct: {1} )", success, total, xmin, xmax);
+			Console.WriteLine("with x = {2}..{3} ;\n{0}\n-> correct: {1}", success, total, xmin, xmax);
 			return Asset(success == total);
 		}
 		
@@ -216,7 +189,7 @@ namespace YAMPConsole
 			var parser = YAMP.Parser.Parse(query);
 			Console.WriteLine("Testing: {0} = ...", query);
 			var value = parser.Execute(new { x });
-			Console.WriteLine("  with x = {2}; {0} ( correct: {1} )", value, result, x);
+			Console.WriteLine("with x = {2};\n{0}\n-> correct: {1}", value, result, x);
 			return Asset(value.Equals(result));
 		}
 		
@@ -225,7 +198,7 @@ namespace YAMPConsole
 			var parser = YAMP.Parser.Parse(query);
 			Console.WriteLine("Testing: {0} = ...", query);
 			var value = parser.Execute();
-			Console.WriteLine("  {0} ( correct: {1} )", value, result);
+			Console.WriteLine("{0}\n-> correct: {1}", value, result);
 			return Asset(value.Equals(result));
 		}
 		
@@ -247,6 +220,36 @@ namespace YAMPConsole
 			total++;
 			success += given ? 1 : 0;
 			return given;
+		}
+		
+		static void GenerateBenchmarks ()
+		{
+			Console.Write("Generating benchmark file ... ");
+			
+			var r = new Random();
+			var count = 100000;
+			var operators = new string [] { "+", "-", "*", "^", "/" };
+			int length;
+			
+			using(var fs = File.CreateText(BMK_FILE))
+			{
+				for(var i = 0; i < count; i++)
+				{
+					length = r.Next(2, 14);
+					fs.Write(r.Next(-100, 100));
+					         
+					for(var j = 0; j < length; j++)
+					{
+						fs.Write(operators[r.Next(0, operators.Length)]);
+						fs.Write(r.Next(-100, 100));
+					}
+					
+					if(i < count - 1)
+						fs.WriteLine();
+				}
+			}
+			
+			Console.WriteLine("done !");
 		}
 	}
 }

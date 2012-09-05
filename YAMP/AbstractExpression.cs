@@ -8,6 +8,13 @@ namespace YAMP
 	{	
 		string _pattern;
 		protected string _input;
+		Regex rx;
+		
+		internal Regex Expression
+		{
+			get { return rx; }
+			set { rx = value; }
+		}
 		
 		public AbstractExpression (string pattern)
 		{
@@ -23,7 +30,6 @@ namespace YAMP
 		
 		public virtual string Set(string input)
 		{
-			var rx = new Regex("^" + _pattern);
 			var match = rx.Match(input);
 			_input = match.Value;
 			return input.Substring(_input.Length);

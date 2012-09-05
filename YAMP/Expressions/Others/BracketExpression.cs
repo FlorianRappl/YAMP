@@ -63,6 +63,5 @@ namespace YAMP
 		{
 			return _tree.ToString();
 		}
+	}
 }
-}
-

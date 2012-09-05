@@ -10,7 +10,10 @@ namespace YAMP
 		
 		public override Value Perform (Value left, Value right)
 		{
-			return new MatrixValue(left, right);
+			if(left is MatrixValue || left is ScalarValue)
+				return MatrixValue.Create(left).AddRow(right);
+			
+			throw new OperationNotSupportedException(";", left);
 		}
 	}
 }

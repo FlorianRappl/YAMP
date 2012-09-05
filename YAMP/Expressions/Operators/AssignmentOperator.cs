@@ -9,7 +9,7 @@ namespace YAMP
 		{
 		}
 
-        public AssignmentOperator(string prefix) : base(prefix + "=", 0)
+        public AssignmentOperator(string prefix) : base(prefix + "=", -1)
         {
         }
 

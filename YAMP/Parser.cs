@@ -29,6 +29,11 @@ namespace YAMP
 			return new Parser(new Context(input));
 		}
 		
+		public static void Load()
+		{
+			Tokens.Instance.Touch();
+		}
+		
 		#endregion
 		
 		#region Properties

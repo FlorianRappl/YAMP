@@ -10,7 +10,7 @@ namespace YAMP
 		
 		public static void SetFunctionPattern(string pattern)
 		{
-			fx = new Regex(pattern);
+			fx = new Regex("^" + pattern);
 		}
 		
 		FunctionExpression func;

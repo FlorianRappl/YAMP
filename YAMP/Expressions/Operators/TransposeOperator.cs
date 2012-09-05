@@ -12,8 +12,6 @@ namespace YAMP
 		{
 			if(left is ScalarValue)
 				return left;
-			else if(left is VectorValue)
-				return (new MatrixValue(left).Transpose());
 			else if(left is MatrixValue)
 				return (left as MatrixValue).Transpose();
 			

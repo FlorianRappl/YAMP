@@ -9,35 +9,41 @@ namespace YAMP
         {
             if (argument is ScalarValue)
                 return argument;
-            else if (argument is VectorValue)
-                return GetVectorMin(argument as VectorValue);
             else if (argument is MatrixValue)
             {
                 var m = argument as MatrixValue;
-                var l = new List<VectorValue>();
 
-                foreach (var vec in m.Values)
-                    l.Add(new VectorValue(GetVectorMin(vec)));
-
-                return new MatrixValue(l);
+				if(m.DimensionX == 1)
+					return GetVectorMin(m.GetColumnVector(1));
+				else if(m.DimensionY == 1)
+					return GetVectorMin(m.GetRowVector(1));
+				else
+				{
+					var M = new MatrixValue(1, m.DimensionX);
+					
+					for(var i = 1; i <= m.DimensionX; i++)
+						M[1, i] = GetVectorMin(m.GetColumnVector(i));
+					
+					return M;
+				}
             }
 
             throw new OperationNotSupportedException("min", argument);
-        }
-
-        ScalarValue GetVectorMin(VectorValue vec)
+		}
+		
+        ScalarValue GetVectorMin(MatrixValue vec)
         {
             var buf = new ScalarValue();
             var min = double.PositiveInfinity;
             var temp = 0.0;
 
-            foreach (var value in vec.Values)
+            for(var i = 1; i <= vec.Length; i++)
             {
-                temp = value.Abs().Value;
+                temp = vec[i].Abs().Value;
 
                 if (temp < min)
                 {
-                    buf = value;
+                    buf = vec[i];
                     min = temp;
                 }
             }

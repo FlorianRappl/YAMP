@@ -4,13 +4,15 @@ namespace YAMP
 {
 	class FacultyOperator : Operator
 	{
+		static FacultyFunction fac = new FacultyFunction();
+		
 		public FacultyOperator () : base("!", 200)
 		{
 		}
 		
 		public override Value Perform (Value left, Value right)
 		{
-			return left.Faculty();
+			return fac.Perform(left);
 		}
 		
 		public override string Set (string input)

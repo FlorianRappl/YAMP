@@ -41,6 +41,10 @@ namespace YAMP
 			
 			throw new BracketException("|", input);
 		}
+		
+		public override string ToString ()
+		{
+			return "| | [ ExpressionType = Abs ]\n" + _child.ToString();
+		}
 	}
 }
-
