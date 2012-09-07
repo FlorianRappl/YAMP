@@ -14,6 +14,11 @@ namespace YAMP
 		public BracketException(string bracket, string near) : base("Error parsing the end of the bracket " + bracket + " near " + near + ".")
 		{
 		}
+		
+		public BracketException(int start, string bracket, string near) : 
+			base("Error parsing the end of the bracket " + bracket + " near " + near + " starting at index " + start + ".")
+		{
+		}
 	}
 }
 

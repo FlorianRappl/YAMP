@@ -23,10 +23,10 @@ namespace YAMP
 		
 		public override Value Interpret (Hashtable symbols)
 		{
-            if (_tree.Operators.Length == 1)
-                return _tree.Operators[0].Handle(_tree.Expressions[0], _tree.Expressions[1], symbols);
-            else
-                return _tree.Expressions[0].Interpret(symbols);
+            if (_tree.Operator != null)
+                return _tree.Operator.Evaluate(_tree.Expressions, symbols);
+            
+			return _tree.Expressions[0].Interpret(symbols);
 		}
 		
 		public override string Set (string input)
@@ -45,17 +45,17 @@ namespace YAMP
 					if(brackets == 0)
 					{
 						_input = input.Substring(1, i - 1);
-						_tree = new ParseTree(_input);
+						_tree = new ParseTree(_input, Offset);
 						i++;
 						return input.Length > i ? input.Substring(i) : string.Empty;
 					}
 				}
 				
-				throw new BracketException("(", input);
+				throw new BracketException(Offset, "(", input);
 			}
 			
 			_input = input;
-			_tree = new ParseTree(_input);
+			_tree = new ParseTree(_input, Offset);
 			return string.Empty;
 		}
 		

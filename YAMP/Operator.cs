@@ -18,6 +18,11 @@ namespace YAMP
 			_level = level;
 		}
 		
+		public string Op
+		{
+			get { return _op; }
+		}
+		
 		public int Level
 		{
 			get { return _level; }
@@ -28,14 +33,7 @@ namespace YAMP
 			return input.Substring(_op.Length);
 		}
 		
-		public abstract Value Perform(Value left, Value right);
-
-        public virtual Value Handle(AbstractExpression left, AbstractExpression right, Hashtable symbols)
-        {
-            var l = left.Interpret(symbols);
-            var r = right.Interpret(symbols);
-            return Perform(l, r);
-        }
+		public abstract Value Evaluate(AbstractExpression[] expressions, Hashtable symbols);
 
 		#region IRegisterToken implementation
 		

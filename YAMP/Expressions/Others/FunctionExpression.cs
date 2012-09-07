@@ -27,6 +27,7 @@ namespace YAMP
 			_name = input.Substring(0, pos);
 			_func = Tokens.Instance.FindFunction(_name);
 			_child = new BracketExpression();
+			_child.Offset = Offset + pos;
 			return _child.Set(input.Substring(pos));
 		}
 		

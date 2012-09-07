@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-	class PlusOperator : Operator
+	class PlusOperator : BinaryOperator
 	{
 		public PlusOperator () : base("+", 4)
 		{

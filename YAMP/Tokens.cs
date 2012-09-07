@@ -42,6 +42,15 @@ namespace YAMP
 		
 		#endregion
 		
+		#region Properties
+		
+		public Hashtable Variables
+		{
+			get { return variables; }
+		}
+		
+		#endregion
+		
 		#region Register tokens
 		
 		void RegisterTokens()

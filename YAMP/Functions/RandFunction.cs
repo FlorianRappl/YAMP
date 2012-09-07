@@ -6,6 +6,11 @@ namespace YAMP
 	{
 		static Random ran = new Random();
 		
+		public Value Function()
+		{
+			return new ScalarValue(ran.NextDouble());
+		}
+		
 		public Value Function(ScalarValue dim)
 		{
 			var k = (int)dim.Value;

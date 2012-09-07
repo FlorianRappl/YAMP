@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-	class MinusOperator : Operator
+	class MinusOperator : BinaryOperator
 	{
 		public MinusOperator () : base("-", 5)
 		{

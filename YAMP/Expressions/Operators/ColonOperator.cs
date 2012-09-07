@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-	class ColonOperator : Operator
+	class ColonOperator : BinaryOperator
 	{
 		public ColonOperator () : base(";", 1)
 		{

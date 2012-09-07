@@ -2,13 +2,13 @@ using System;
 
 namespace YAMP
 {
-	class TransposeOperator : Operator
+	class TransposeOperator : UnaryOperator
 	{
-		public TransposeOperator () : base("'", 200)
+		public TransposeOperator () : base("'")
 		{
 		}
 		
-		public override Value Perform (Value left, Value right)
+		public override Value Perform (Value left)
 		{
 			if(left is ScalarValue)
 				return left;
@@ -16,11 +16,6 @@ namespace YAMP
 				return (left as MatrixValue).Transpose();
 			
 			throw new OperationNotSupportedException("'", left);
-		}
-		
-		public override string Set (string input)
-		{
-			return "0" + base.Set (input);
 		}
 	}
 }

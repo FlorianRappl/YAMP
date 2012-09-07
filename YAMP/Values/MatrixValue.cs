@@ -45,7 +45,8 @@ namespace YAMP
 		
 		public MatrixValue(int rows, int cols) : this()
 		{
-			this[rows, cols] = new ScalarValue();
+			if(rows > 0 && cols > 0)
+				this[rows, cols] = new ScalarValue();
 		}
 		
 		public static MatrixValue Create(Value value)
@@ -463,39 +464,6 @@ namespace YAMP
 			
 			return new ScalarValue(0.0);
 		}
-
-        public Value Index(Value right)
-        {
-            if (right is ScalarValue)
-                return this[(int)(right as ScalarValue).Value];
-            else if (right is MatrixValue)
-            {
-                var m = right as MatrixValue;
-
-                if (m.DimensionX == 1)
-                {
-                    var r = new MatrixValue(m.DimensionY, 1);
-
-                    for (var j = 1; j <= m.DimensionY; j++)
-                        r[j] = this[(int)m[j].Value];
-
-                    return r;
-                }
-                else if (m.DimensionX == 2)
-                {
-                    var r = new MatrixValue(m.DimensionY, 1);
-
-                    for (var j = 1; j <= m.DimensionY; j++)
-                        r[j] = this[(int)m[j, 1].Value, (int)m[j, 2].Value];
-
-                    return r;
-                }
-
-                throw new DimensionException(2, m.DimensionX);
-            }
-
-            throw new OperationNotSupportedException("_", right);
-        }
     }
 }
 

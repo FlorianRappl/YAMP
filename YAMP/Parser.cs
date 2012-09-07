@@ -34,6 +34,11 @@ namespace YAMP
 			Tokens.Instance.Touch();
 		}
 		
+		public static Hashtable Variables
+		{
+			get { return Tokens.Instance.Variables; }
+		}
+		
 		#endregion
 		
 		#region Properties
@@ -72,6 +77,7 @@ namespace YAMP
 			}
 			
 			_expression.Output = _interpreter.Interpret(symbols);
+			Tokens.Instance.AssignVariable("$", _expression.Output);
 			return _expression.Output;
 		}
 		

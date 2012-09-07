@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -33,6 +33,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Benchmarks|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Benchmark</OutputPath>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -94,6 +100,11 @@
     <Compile Include="Expressions\Operators\ColonOperator.cs" />
     <Compile Include="Expressions\Operators\TransposeOperator.cs" />
     <Compile Include="Expressions\Operators\AssignmentOperator.cs" />
+    <Compile Include="Exceptions\AssignmentException.cs" />
+    <Compile Include="UnaryOperator.cs" />
+    <Compile Include="BinaryOperator.cs" />
+    <Compile Include="Expressions\Others\SpecialExpression.cs" />
+    <Compile Include="Expressions\Others\EmptyExpression.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

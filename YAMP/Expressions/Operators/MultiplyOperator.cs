@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-	class MultiplyOperator : Operator
+	class MultiplyOperator : BinaryOperator
 	{
 		public MultiplyOperator () : base("*", 10)
 		{

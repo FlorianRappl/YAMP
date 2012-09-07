@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-	class RightDivideOperator : Operator
+	class RightDivideOperator : BinaryOperator
 	{
 		public RightDivideOperator () : base("/", 20)
 		{

@@ -2,22 +2,17 @@ using System;
 
 namespace YAMP
 {
-	class FacultyOperator : Operator
+	class FacultyOperator : UnaryOperator
 	{
 		static FacultyFunction fac = new FacultyFunction();
 		
-		public FacultyOperator () : base("!", 200)
+		public FacultyOperator () : base("!")
 		{
 		}
 		
-		public override Value Perform (Value left, Value right)
+		public override Value Perform (Value left)
 		{
 			return fac.Perform(left);
-		}
-		
-		public override string Set (string input)
-		{
-			return "0" + base.Set (input);
 		}
 	}
 }

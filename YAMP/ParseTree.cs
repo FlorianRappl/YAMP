@@ -9,19 +9,20 @@ namespace YAMP
 	{
 		const string SPACING = "  ";
 		
-		Operator[] operators;
-		AbstractExpression[] expressions;
+		Operator _operator;
+		AbstractExpression[] _expressions;
 		string _input;
+		int _offset;
 
-		public Operator[] Operators
+		public Operator Operator
 		{
 			get
 			{
-				return this.operators;
+				return _operator;
 			}
 			set
 			{
-				operators = value;
+				_operator = value;
 			}
 		}
 		
@@ -29,34 +30,58 @@ namespace YAMP
 		{
 			get
 			{
-				return this.expressions;
+				return _expressions;
 			}
 			set
 			{
-				expressions = value;
+				_expressions = value;
 			}
 		}
 		
-		public ParseTree(Operator[] operators, AbstractExpression[] expressions)
+		public ParseTree(Operator op, AbstractExpression[] expressions)
 		{
-			this.operators = operators;
-			this.expressions = expressions;
+			_operator = op;
+			_expressions = expressions;
+		}
+		
+		public ParseTree(Operator op, AbstractExpression expression)
+		{
+			_operator = op;
+			_expressions = new AbstractExpression[] { expression };
+		}
+		
+		public ParseTree(Operator op, AbstractExpression left, AbstractExpression right)
+		{
+			_operator = op;
+			_expressions = new AbstractExpression[] { left, right };
+		}
+
+		public ParseTree (string input, int offset)
+		{
+			_offset = offset;
+			_input = input;
+			Parse();
 		}
 
 		public ParseTree (string input)
 		{
+			_offset = 0;
 			_input = input;
 			Parse();
 		}
 		
 		void Parse()
-		{
+		{			
 			var ops = new List<Operator>();
 			var exps = new List<AbstractExpression>();
 			var shadow = _input;
 			var takeop = false;
 			var maxLevel = 0;
 			var maxIndex = 0;
+			var offset = _offset;
+			
+			if(string.IsNullOrEmpty(_input))
+				exps.Add(new EmptyExpression());
 
 			while(shadow.Length > 0)
 			{
@@ -70,27 +95,43 @@ namespace YAMP
 						maxIndex = ops.Count;
 					}
 
-					ops.Add(op);
 					shadow = op.Set(shadow);
+					offset += op.Op.Length;
+					
+					if(op is UnaryOperator)
+					{
+						if(exps.Count == 0)
+							throw new ParseException(offset, shadow.Substring(0, Math.Min(shadow.Length, 3)));
+						
+						var tree = new ParseTree(op, exps[exps.Count - 1]);
+						var bracket = new BracketExpression(tree);
+						exps[exps.Count - 1] = bracket;		
+						continue;
+					}
+					else
+						ops.Add(op);
 				}
 				else
 				{
 					var exp = Tokens.Instance.FindExpression(shadow);
+					exp.Offset = offset;
+					var old = shadow.Length;
 					exps.Add(exp);
 					shadow = exp.Set(shadow);
+					offset += (old - shadow.Length);
 				}
 				
 				takeop = !takeop;
 			}
 			
 			if(exps.Count != ops.Count + 1)
-				throw new ParseException(_input.Length - 1, _input.Substring(Math.Max(_input.Length - 3, 0)));
+				throw new ParseException(offset, _input.Substring(Math.Max(_input.Length - 3, 0)));
 
 			while(ops.Count > 1)
 			{
 				var bracket = new BracketExpression(new ParseTree(
-					new Operator[] { ops[maxIndex] },
-					new AbstractExpression[] { exps[maxIndex], exps[maxIndex + 1] }
+					ops[maxIndex],
+					exps[maxIndex], exps[maxIndex + 1]
 				));
 				exps.RemoveAt(maxIndex + 1);
 				exps.RemoveAt(maxIndex);
@@ -109,8 +150,10 @@ namespace YAMP
 				}
 			}
 
-			operators = ops.ToArray();
-			expressions = exps.ToArray();
+			_expressions = exps.ToArray();
+			
+			if(ops.Count == 1)
+				_operator = ops[0];
 		}
 		
 		public override string ToString ()
@@ -118,10 +161,12 @@ namespace YAMP
 			var sb = new StringBuilder();
 			sb.Append(PrintExpression(Expressions[0]));
 			
-			for(var i = 0; i < Operators.Length; i++)
+			if(Operator != null)
 			{
-				sb.Append(SPACING).AppendLine(Operators[i].ToString());
-				sb.Append(PrintExpression(Expressions[i + 1]));
+				sb.Append(SPACING).AppendLine(Operator.ToString());
+				
+				if(Expressions.Length == 2)
+					sb.Append(PrintExpression(Expressions[1]));
 			}
 			
 			return sb.ToString();

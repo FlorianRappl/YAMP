@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-	class LeftDivideOperator : Operator
+	class LeftDivideOperator : BinaryOperator
 	{
 		public LeftDivideOperator () : base(@"\", 20)
 		{

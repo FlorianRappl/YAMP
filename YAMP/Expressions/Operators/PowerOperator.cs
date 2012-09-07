@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-	class PowerOperator : Operator
+	class PowerOperator : BinaryOperator
 	{
 		public PowerOperator () : base("^", 100)
 		{

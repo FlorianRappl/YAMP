@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-	class CommaOperator : Operator
+	class CommaOperator : BinaryOperator
 	{
 		public CommaOperator () : base(",", 2)
 		{

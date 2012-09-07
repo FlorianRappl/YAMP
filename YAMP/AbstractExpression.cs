@@ -9,11 +9,18 @@ namespace YAMP
 		string _pattern;
 		protected string _input;
 		Regex rx;
+		int _offset;
 		
 		internal Regex Expression
 		{
 			get { return rx; }
 			set { rx = value; }
+		}
+		
+		internal int Offset
+		{
+			get { return _offset; }
+			set { _offset = value; }
 		}
 		
 		public AbstractExpression (string pattern)
