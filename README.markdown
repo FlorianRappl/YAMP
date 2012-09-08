@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **0.3.0**. This version is still an incomplete alpha build.
+The current version number is **0.4.0**. This version is still an incomplete alpha build.
 A NuGet package will be available quite soon. There are a lot of tests in the code - since
 the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -32,6 +32,15 @@ test application has no try-catch block, all exceptions will bubble up to you.
 
 Version history
 -------------------------------------------------------
+**0.4.0:**
+
+- Added new functions (arsinh, arcosh, artanh, arcoth, sinh, cosh, tanh, coth, ...)
+- Improved the power functions
+- Added new matrix functions (eye, zeros, ones, ...)
+- Added random number generator (uniform)
+- Assignment operator now works with indices
+- Added new tests
+
 **0.3.0:**
 
 - Functions can now either perform operations on whole matrices or on each sub-element

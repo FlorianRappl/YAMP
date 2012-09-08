@@ -11,9 +11,9 @@ namespace YAMP
 		public override Value Perform (Value left)
 		{
 			if(left is ScalarValue)
-				return left;
+				return (left as ScalarValue).Conjugate();
 			else if(left is MatrixValue)
-				return (left as MatrixValue).Transpose();
+				return (left as MatrixValue).Adjungate();
 			
 			throw new OperationNotSupportedException("'", left);
 		}

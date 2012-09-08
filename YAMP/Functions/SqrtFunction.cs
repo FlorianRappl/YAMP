@@ -6,7 +6,7 @@ namespace YAMP
 	{
         protected override ScalarValue GetValue(ScalarValue value)
         {
-            return value.Power(new ScalarValue(0.5)) as ScalarValue;
+            return value.Sqrt();
         }
 	}
 }

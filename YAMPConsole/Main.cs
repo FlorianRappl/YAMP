@@ -35,24 +35,24 @@ namespace YAMPConsole
 			{
 				Console.Write(">> ");
 				query = Console.ReadLine();
-				
-				if(query.Equals("exit"))
-					break;
-				else if(query.Replace(" ", string.Empty).Equals(string.Empty))
-					Console.WriteLine();
-				else
-				{
-	                try
-	                {
-	                    var parser = YAMP.Parser.Parse(query);
-	                    Console.WriteLine(parser.Execute());
-	                    Console.WriteLine(parser);
-	                }
-	                catch (Exception ex)
-	                {
-	                    Console.WriteLine(ex.Message);
-	                }
-				}
+
+                if (query.Equals("exit"))
+                    break;
+                else if (query.Replace(" ", string.Empty).Equals(string.Empty))
+                    continue;
+                else
+                {
+                    try
+                    {
+                        var parser = YAMP.Parser.Parse(query);
+                        Console.WriteLine(parser.Execute());
+                        Console.WriteLine(parser);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
 			}
 #endif
 		}
@@ -203,7 +203,9 @@ namespace YAMPConsole
 			Test("det((1;2)*(2,1))", 0.0);
 			Test("X=(Y=5)+2", 7.0);
 			Test("Y", 5.0);
-			Test("(1,2,3;4,5,6;7,8,9)[2,3]", 6.0); 
+			Test("(1,2,3;4,5,6;7,8,9)[2,3]", 6.0);
+            Test("|cos(1+i)|", 1.2934544550420957);
+            Test("|arccos(0.83373002513-0.988897705i)|", 1.4142135618741407);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}

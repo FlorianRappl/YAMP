@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -51,13 +51,31 @@
     <Compile Include="Expressions\Operators\IndexOperator.cs" />
     <Compile Include="Expressions\Operators\LeftDivideOperator.cs" />
     <Compile Include="Expressions\Operators\RightDivideOperator.cs" />
+    <Compile Include="Functions\ArccosFunction.cs" />
+    <Compile Include="Functions\ArccotFunction.cs" />
+    <Compile Include="Functions\ArcoshFunction.cs" />
+    <Compile Include="Functions\ArcothFunction.cs" />
+    <Compile Include="Functions\ArcsinFunction.cs" />
+    <Compile Include="Functions\ArctanFunction.cs" />
     <Compile Include="Functions\ArgumentFunction.cs" />
+    <Compile Include="Functions\ArsinhFunction.cs" />
+    <Compile Include="Functions\ArtanhFunction.cs" />
+    <Compile Include="Functions\CoshFunction.cs" />
+    <Compile Include="Functions\CotFunction.cs" />
+    <Compile Include="Functions\CothFunction.cs" />
     <Compile Include="Functions\DetFunction.cs" />
+    <Compile Include="Functions\EyeFunction.cs" />
     <Compile Include="Functions\FacultyFunction.cs" />
+    <Compile Include="Functions\GammaFunction.cs" />
     <Compile Include="Functions\MaxFunction.cs" />
     <Compile Include="Functions\MinFunction.cs" />
+    <Compile Include="Functions\OnesFunction.cs" />
     <Compile Include="Functions\RandFunction.cs" />
+    <Compile Include="Functions\SinhFunction.cs" />
     <Compile Include="Functions\StandardFunction.cs" />
+    <Compile Include="Functions\TanFunction.cs" />
+    <Compile Include="Functions\TanhFunction.cs" />
+    <Compile Include="Functions\ZerosFunction.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="AbstractExpression.cs" />

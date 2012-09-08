@@ -53,6 +53,11 @@ namespace YAMP
 		{
 			return new ScalarValue(abs());
 		}
+
+        public ScalarValue AbsSquare()
+        {
+            return new ScalarValue(_real * _real + _imag * _imag);
+        }
 		
 		public ScalarValue Conjugate()
 		{
@@ -146,17 +151,26 @@ namespace YAMP
                 phi._real *= exp._imag;
                 phi._imag *= exp._imag;
                 var R = (I.Multiply(phi) as ScalarValue).Exp();
-                var alpha = _real == 0.0 ? 1.0 : Math.Pow(L, exp._real);
+                var alpha = _real == 0.0 ? 1.0 : Math.Pow(Math.Abs(L), exp._real);
                 var beta = theta * exp._real;
                 var _cos = Math.Cos(beta);
                 var _sin = Math.Sin(beta);
                 var re = alpha * (_cos * R._real - _sin * R._imag);
                 var im = alpha * (_cos * R._imag + _sin * R._real);
+
+                if (L < 0)
+                    return new ScalarValue(-im, re);
+                
                 return new ScalarValue(re, im);
 			}
 			
 			throw new OperationNotSupportedException("^", exponent);
 		}
+
+        public ScalarValue Sqrt()
+        {
+            return Power(new ScalarValue(0.5)) as ScalarValue;
+        }
 		
 		public ScalarValue Cos()
 		{
@@ -189,15 +203,21 @@ namespace YAMP
 		
 		public ScalarValue Faculty()
 		{
-			var re = faculty(_real);
-			var im = faculty(_imag);
+            var re = faculty(_real);
+            var im = faculty(_imag);
+
+            if (_imag == 0.0)
+                im = 0.0;
+            else if (_real == 0.0 && _imag != 0.0)
+                re = 0.0;
+
 			return new ScalarValue(re, im);
 		}
 		
 		double faculty(double r)
 		{
 			var k = (int)Math.Abs(r);
-			var value = Math.Sign(r);
+			var value = r < 0 ? -1.0 : 1.0;
 			
 			while(k > 1)
 			{
@@ -252,9 +272,29 @@ namespace YAMP
             return a.Add(b) as ScalarValue;
         }
 
+        public static ScalarValue operator +(ScalarValue a, double b)
+        {
+            return new ScalarValue(a._real + b, a._imag);
+        }
+
+        public static ScalarValue operator +(double b, ScalarValue a)
+        {
+            return a + b;
+        }
+
         public static ScalarValue operator -(ScalarValue a, ScalarValue b)
         {
             return a.Subtract(b) as ScalarValue;
+        }
+
+        public static ScalarValue operator -(ScalarValue a, double b)
+        {
+            return new ScalarValue(a._real - b, a._imag);
+        }
+
+        public static ScalarValue operator -(double b, ScalarValue a)
+        {
+            return new ScalarValue(b - a._real, a._imag);
         }
 
         public static ScalarValue operator *(ScalarValue a, ScalarValue b)
@@ -262,9 +302,34 @@ namespace YAMP
             return a.Multiply(b) as ScalarValue;
         }
 
+        public static ScalarValue operator *(double b, ScalarValue a)
+        {
+            return a * b;
+        }
+
+        public static ScalarValue operator *(ScalarValue a, double b)
+        {
+            return new ScalarValue(a._real * b, a._imag * b);
+        }
+
         public static ScalarValue operator /(ScalarValue a, ScalarValue b)
         {
             return a.Divide(b) as ScalarValue;
+        }
+
+        public static ScalarValue operator /(double b, ScalarValue a)
+        {
+            return new ScalarValue(b, 0.0) / a;
+        }
+
+        public static ScalarValue operator /(ScalarValue a, double b)
+        {
+            return new ScalarValue(a._real / b, a._imag / b);
+        }
+
+        public static ScalarValue operator -(ScalarValue a)
+        {
+            return new ScalarValue(-a._real, -a._imag);
         }
     }
 }

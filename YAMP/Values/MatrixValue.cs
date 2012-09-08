@@ -73,6 +73,17 @@ namespace YAMP
             return m;
         }
 
+        public static MatrixValue Ones(int rows, int cols)
+        {
+            var m = new MatrixValue(rows, cols);
+
+            for (var j = 1; j <= rows; j++)
+                for (var i = 1; i <= cols; i++)
+                    m[j, i] = new ScalarValue(1.0);
+
+            return m;
+        }
+
         public MatrixValue Clone()
         {
             var m = new MatrixValue();
@@ -428,6 +439,17 @@ namespace YAMP
 			
 			return m;
 		}
+
+        public MatrixValue Adjungate()
+        {
+            var m = new MatrixValue(dimX, dimY);
+
+            for (var i = 1; i <= DimensionY; i++)
+                for (var j = 1; j <= DimensionX; j++)
+                    m[j, i] = this[i, j].Conjugate();
+
+            return m;
+        }
 		
 		public MatrixValue Transpose()
 		{
