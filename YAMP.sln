@@ -52,7 +52,7 @@ Global
 		$4.scope = application/x-resource
 		$0.StandardHeader = $5
 		$5.Text = 
-		$5.inheritsSet = Apache2License
+		$5.IncludeInNewFiles = True
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

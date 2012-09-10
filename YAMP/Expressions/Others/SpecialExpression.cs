@@ -10,12 +10,15 @@ namespace YAMP
             get { return this._input; }
         }
 		
-		public SpecialExpression () : base(@"(\$)")
+		public SpecialExpression () : base(@"((\$)|(:))")
 		{
 		}
 		
 		public override Value Interpret (Hashtable symbols)
 		{
+			if(SpecialName.Equals(":"))
+				return new RangeValue();
+
             var variable = Tokens.Instance.GetVariable(SpecialName);
 
             if (variable != null)

@@ -7,6 +7,7 @@ namespace YAMP
 		string _original;
 		string _input;
 		Value _output;
+		bool _isMuted;
 		
 		public Context (string input)
 		{
@@ -21,7 +22,18 @@ namespace YAMP
 			{
 				_original = value;
 				_input = string.IsNullOrEmpty(value) ? "0" : Sanitize(value.Replace(" ", string.Empty));
+
+				if(_input.EndsWith(";"))
+				{
+					_input = _input.Remove(_input.Length - 1);
+					_isMuted = true;
+				}
 			}
+		}
+
+		public bool IsMuted
+		{
+			get { return _isMuted; }
 		}
 		
 		private string Sanitize(string input)

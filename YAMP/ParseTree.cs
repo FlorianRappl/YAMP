@@ -7,12 +7,28 @@ namespace YAMP
 {
 	public class ParseTree
 	{
+		#region Constants
+
 		const string SPACING = "  ";
+
+		#endregion
+
+		#region Members
 		
 		Operator _operator;
 		AbstractExpression[] _expressions;
 		string _input;
 		int _offset;
+		bool _isList;
+
+		#endregion
+
+		#region Properties
+
+		public bool IsList
+		{
+			get { return _isList; }
+		}
 
 		public Operator Operator
 		{
@@ -37,6 +53,10 @@ namespace YAMP
 				_expressions = value;
 			}
 		}
+
+		#endregion
+
+		#region ctor
 		
 		public ParseTree(Operator op, AbstractExpression[] expressions)
 		{
@@ -56,28 +76,43 @@ namespace YAMP
 			_expressions = new AbstractExpression[] { left, right };
 		}
 
-		public ParseTree (string input, int offset)
+		public ParseTree (string input, int offset) : this(input, offset, false)
+		{
+		}
+
+		public ParseTree (string input) : this(input, 0, false)
+		{
+		}
+
+		public ParseTree (string input, bool isList) : this(input, 0, isList)
+		{
+		}
+
+		public ParseTree(string input, int offset, bool isList)
 		{
 			_offset = offset;
 			_input = input;
-			Parse();
-		}
+			_isList = isList;
 
-		public ParseTree (string input)
-		{
-			_offset = 0;
-			_input = input;
+			if(_input.StartsWith("-"))
+				_input = "0" + _input;
+
 			Parse();
 		}
 		
+		#endregion
+		
 		void Parse()
 		{			
+			BracketExpression bracket = null;
 			var ops = new List<Operator>();
 			var exps = new List<AbstractExpression>();
 			var shadow = _input;
 			var takeop = false;
-			var maxLevel = 0;
+			var maxLevel = -100;
 			var maxIndex = 0;
+			var expIndex = 0;
+			var tmpExp = 0;
 			var offset = _offset;
 			
 			if(string.IsNullOrEmpty(_input))
@@ -93,57 +128,57 @@ namespace YAMP
 					{
 						maxLevel = op.Level;
 						maxIndex = ops.Count;
+						expIndex = exps.Count;
 					}
 
+					op.IsList = _isList;
+					ops.Add(op);
 					shadow = op.Set(shadow);
-					offset += op.Op.Length;
-					
-					if(op is UnaryOperator)
-					{
-						if(exps.Count == 0)
-							throw new ParseException(offset, shadow.Substring(0, Math.Min(shadow.Length, 3)));
-						
-						var tree = new ParseTree(op, exps[exps.Count - 1]);
-						var bracket = new BracketExpression(tree);
-						exps[exps.Count - 1] = bracket;		
-						continue;
-					}
-					else
-						ops.Add(op);
+					offset += op.Input.Length;
+					takeop = !op.ExpectExpression;
 				}
 				else
 				{
 					var exp = Tokens.Instance.FindExpression(shadow);
 					exp.Offset = offset;
-					var old = shadow.Length;
 					exps.Add(exp);
 					shadow = exp.Set(shadow);
-					offset += (old - shadow.Length);
+					offset += exp.Input.Length;
+					takeop = true;
 				}
-				
-				takeop = !takeop;
 			}
-			
-			if(exps.Count != ops.Count + 1)
-				throw new ParseException(offset, _input.Substring(Math.Max(_input.Length - 3, 0)));
+
+			expIndex--;
 
 			while(ops.Count > 1)
 			{
-				var bracket = new BracketExpression(new ParseTree(
-					ops[maxIndex],
-					exps[maxIndex], exps[maxIndex + 1]
-				));
-				exps.RemoveAt(maxIndex + 1);
-				exps.RemoveAt(maxIndex);
-				exps.Insert(maxIndex, bracket);
+				if(ops[maxIndex].ExpectExpression)
+				{
+					tmpExp = expIndex + 1;
+					bracket = new BracketExpression(new ParseTree(ops[maxIndex], exps[expIndex], exps[tmpExp]));
+					exps.RemoveAt(tmpExp);
+				}
+				else
+				{
+					bracket = new BracketExpression(new ParseTree(ops[maxIndex], exps[expIndex]));
+				}
+
+				exps.RemoveAt(expIndex);
+				exps.Insert(expIndex, bracket);
 				ops.RemoveAt(maxIndex);
+				tmpExp = 0;
+				expIndex = 0;
 				maxIndex = 0;
 				maxLevel = ops[0].Level;
 
 				for(var i = 1; i < ops.Count; i++)
-				{			
+				{	
+					if(ops[i].ExpectExpression)
+						tmpExp++;
+
 					if(maxLevel <= ops[i].Level)
 					{
+						expIndex = tmpExp;
 						maxIndex = i;
 						maxLevel = ops[i].Level;
 					}

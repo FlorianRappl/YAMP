@@ -2,11 +2,11 @@ using System;
 
 namespace YAMP
 {
-		public class RangeException
+	public class RangeException : Exception
+	{
+		public RangeException (string error) : base("Error in range expression: " + error + ".")
 		{
-				public RangeException ()
-				{
-				}
 		}
+	}
 }
 

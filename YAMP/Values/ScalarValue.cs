@@ -26,6 +26,11 @@ namespace YAMP
 			_real = real;
 			_imag = imag;
 		}
+
+		public int IntValue
+		{
+			get { return (int)_real; } 
+		}
 		
 		public double Value 
 		{
@@ -78,6 +83,11 @@ namespace YAMP
                 var r = right as MatrixValue;
                 return r.Add(this);
             }
+			else if(right is StringValue)
+			{
+				var t = new StringValue(this.ToString());
+				return t.Add(right);
+			}
 			
 			throw new OperationNotSupportedException("+", right);
 		}
@@ -93,8 +103,14 @@ namespace YAMP
             }
             else if (right is MatrixValue)
             {
-                var r = right as MatrixValue;
-                return r.Subtract(this);
+				var r = right as MatrixValue;
+				var m = new MatrixValue(r.DimensionY, r.DimensionX);
+				
+				for(var j = 1; j <= r.DimensionY; j++)
+					for(var i = 1; i <= r.DimensionX; i++)
+						m[j, i] = this.Subtract(r[j, i]) as ScalarValue;
+				
+				return m;
             }
 			
 			throw new OperationNotSupportedException("-", right);
@@ -163,8 +179,36 @@ namespace YAMP
                 
                 return new ScalarValue(re, im);
 			}
+			else if(exponent is MatrixValue)
+			{
+				var b = exponent as MatrixValue;
+				var m = new MatrixValue(b.DimensionY, b.DimensionX);
+
+				for(var i = 1; i <= b.DimensionX; i++)
+					for(var j = 1; j <= b.DimensionY; j++)
+						m[j, i] = Power(b[j, i]) as ScalarValue;
+
+				return m;
+			}
 			
 			throw new OperationNotSupportedException("^", exponent);
+		}
+		
+		public override byte[] Serialize ()
+		{
+			var re = BitConverter.GetBytes(_real);
+			var im = BitConverter.GetBytes(_imag);
+			var ov = new byte[re.Length + im.Length];
+			re.CopyTo(ov, 0);
+			im.CopyTo(ov, re.Length);
+			return ov;
+		}
+
+		public override Value Deserialize (byte[] content)
+		{
+			_real = BitConverter.ToDouble(content, 0);
+			_imag = BitConverter.ToDouble(content, 8);
+			return this;
 		}
 
         public ScalarValue Sqrt()

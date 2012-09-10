@@ -315,6 +315,49 @@ namespace YAMP
 			throw new OperationNotSupportedException("/", denominator);
 		}
 		
+		public override byte[] Serialize ()
+		{
+			var ms = new System.IO.MemoryStream();
+			var dy = BitConverter.GetBytes(dimY);
+			ms.Write(dy, 0, dy.Length);
+			var dx = BitConverter.GetBytes(dimX);
+			ms.Write(dx, 0, dx.Length);
+
+			for(var i = 1; i <= dimX; i++)
+			{
+				for(var j = 1; j <= dimY; j++)
+				{
+					var buffer = this[j, i].Serialize();
+					ms.Write(buffer, 0, buffer.Length);
+				}
+			}
+
+			var content = ms.ToArray();
+			ms.Close();
+			ms.Dispose();
+			return content;
+		}
+
+		public override Value Deserialize (byte[] content)
+		{
+			var dy = BitConverter.ToInt32 (content, 0);
+			var dx = BitConverter.ToInt32 (content, 4);
+			var pos = 8;
+
+			for(var i = 1; i <= dx; i++)
+			{
+				for(var j = 1; j <= dy; j++)
+				{
+					var re = BitConverter.ToDouble(content, pos);
+					var im = BitConverter.ToDouble(content, pos + 8);
+					this[j, i] = new ScalarValue(re, im);
+					pos += 16;
+				}
+			}
+
+			return this;
+		}
+		
 		public MatrixValue Inverse()
 		{
 			//TODO
@@ -485,6 +528,38 @@ namespace YAMP
 			}
 			
 			return new ScalarValue(0.0);
+		}
+
+		public override int GetHashCode ()
+		{
+			return dimX + dimY;
+		}
+
+		public override bool Equals (object obj)
+		{
+			if(obj is MatrixValue)
+			{
+				var m = obj as MatrixValue;
+
+				if(m.DimensionX != DimensionX)
+					return false;
+
+				if(m.DimensionY != DimensionY)
+					return false;
+
+				for(var i = 1; i <= DimensionX; i++)
+					for(var j = 1; j <= DimensionY; j++)
+						if(!this[j, i].Equals(m[j, i]))
+						   return false;
+
+				return true;
+			}
+			else if(DimensionX == 1 && DimensionY == 1)
+			{
+				return this[1, 1].Equals(obj);
+			}
+
+			return false;
 		}
     }
 }

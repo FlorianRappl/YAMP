@@ -22,7 +22,7 @@ namespace YAMP
 
         public string SymbolName
         {
-            get { return this._input; }
+            get { return _input; }
         }
 		
 		public SymbolExpression () : base(@"[A-Za-z]+[A-Za-z0-9]*\b")
@@ -58,7 +58,9 @@ namespace YAMP
 			if(fx.IsMatch(input))
 			{
 				func = new FunctionExpression();
-				return func.Set(input);
+				input = func.Set(input);
+				_input = func.Input;
+				return input;
 			}
 				
 			return base.Set (input);

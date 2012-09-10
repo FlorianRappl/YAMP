@@ -10,10 +10,17 @@ namespace YAMP
 		
 		public override Value Perform (Value left, Value right)
 		{
-			if(left is MatrixValue || left is ScalarValue)
+			if(IsList)
+				return ArgumentsValue.Create(left, right);
+			else if(IsNumeric(left) && IsNumeric(right))
 				return MatrixValue.Create(left).AddColumn(right);
 			
 			throw new OperationNotSupportedException(",", left);
+		}
+
+		bool IsNumeric (Value value)
+		{
+			return value is MatrixValue || value is ScalarValue;
 		}
 	}
 }

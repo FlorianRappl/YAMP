@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace YAMP
@@ -15,9 +15,7 @@ namespace YAMP
         public virtual Value Perform(Value argument)
         {
             if (argument is ScalarValue)
-            {
                 return GetValue(argument as ScalarValue);
-            }
             else if (argument is MatrixValue)
             {
                 var A = argument as MatrixValue;
@@ -29,6 +27,8 @@ namespace YAMP
 
                 return M;
             }
+			else if(argument is ArgumentsValue)
+				throw new ArgumentsException(name, (argument as ArgumentsValue).Length);
 
             throw new OperationNotSupportedException(name, argument);
         }

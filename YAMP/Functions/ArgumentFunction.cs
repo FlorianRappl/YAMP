@@ -28,6 +28,8 @@ namespace YAMP
 		{
 			if(argument is ScalarValue)
 				arguments = new Value[] { argument };
+			else if(argument is StringValue)
+				arguments = new Value[] { argument };
 			else if(argument is MatrixValue)
 			{
 				var vec = argument as MatrixValue;
@@ -40,6 +42,8 @@ namespace YAMP
 				for(var i = 0; i < arguments.Length;)
 					arguments[i] = vec[++i];
 			}
+			else if(argument is ArgumentsValue)
+				arguments = (argument as ArgumentsValue).Values;
 			else
 				throw new ArgumentException(name);
 			

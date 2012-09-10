@@ -21,7 +21,7 @@ namespace YAMP
 		
 		public override Value Interpret (Hashtable symbols)
 		{
-			return new MatrixValue();
+			return new ArgumentsValue();
 		}
 	}
 }

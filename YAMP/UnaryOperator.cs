@@ -5,7 +5,7 @@ namespace YAMP
 {
 	abstract class UnaryOperator : Operator
 	{
-		public UnaryOperator (string op) : base(op)
+		public UnaryOperator (string op, int level) : base(op, level, false)
 		{
 		}
 		

@@ -78,6 +78,10 @@ namespace YAMP
 			
 			_expression.Output = _interpreter.Interpret(symbols);
 			Tokens.Instance.AssignVariable("$", _expression.Output);
+
+			if(_expression.IsMuted)
+				return null;
+
 			return _expression.Output;
 		}
 		

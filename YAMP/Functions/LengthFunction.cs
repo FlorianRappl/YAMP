@@ -2,11 +2,19 @@ using System;
 
 namespace YAMP
 {
-		public class LengthFunction
+	class LengthFunction : StandardFunction
+	{
+		public override Value Perform (Value argument)
 		{
-				public LengthFunction ()
-				{
-				}
+			if(argument is ScalarValue)
+				return new ScalarValue(1.0);
+			else if(argument is MatrixValue)
+				return new ScalarValue((argument as MatrixValue).Length);
+			else if(argument is StringValue)
+				return new ScalarValue((argument as StringValue).Value.Length);
+
+			throw new OperationNotSupportedException("length", argument);
 		}
+	}
 }
 

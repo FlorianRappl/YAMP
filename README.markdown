@@ -20,22 +20,38 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **0.4.0**. This version is still an incomplete alpha build.
+The current version number is **0.5.0**. This version is still an incomplete alpha build.
 A NuGet package will be available quite soon. There are a lot of tests in the code - since
 the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
 
 The console project (provided in the solution) gives you instant access to benchmarks, 
-tests and your own trials. Parse equations as you want to and be warned - the parser and
-the interpreter are throwing exceptions if they do not like what they get. Since the
-test application has no try-catch block, all exceptions will bubble up to you.
+tests and your own trials. Parse equations as you want to. In the current release
+exceptions from the parser are catched in the console application. Currently the following
+builds are available:
+
+- Debug: Contains the expression tests.
+- Release: Contains a command line tool.
+- Benchmark: Performs benchmarks for YAMP and three other C# only parsers.
 
 Version history
 -------------------------------------------------------
+**0.5.0:**
+
+- Added new functions (load, save, eye, dim, length, ...)
+- The power function can now work with matrices
+- Added a datatype for Strings
+- Added the range operator (including special notations like ":" and "end")
+- The index operator now supports the range operator
+- Added new random number generator (gaussian) and integer number generator
+- Improved the parser (Unary operators)
+- Added new tests
+
 **0.4.0:**
 
 - Added new functions (arsinh, arcosh, artanh, arcoth, sinh, cosh, tanh, coth, ...)
 - Improved the power functions
+- Added an operator for left divisons (usual operator is for right divisions)
 - Added new matrix functions (eye, zeros, ones, ...)
 - Added random number generator (uniform)
 - Assignment operator now works with indices

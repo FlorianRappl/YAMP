@@ -22,6 +22,11 @@ namespace YAMP
 			get { return _offset; }
 			set { _offset = value; }
 		}
+
+		internal string Input
+		{
+			get { return _input; }
+		}
 		
 		public AbstractExpression (string pattern)
 		{

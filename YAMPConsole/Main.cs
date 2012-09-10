@@ -7,9 +7,13 @@ namespace YAMPConsole
 	class MainClass
 	{
 		delegate double CompareAction(double x);
-		
+
+#if DEBUG
+
 		static int success = 0;
 		static int total = 0;
+
+#endif
 		
 		const string BMK_FILE = "benchmarks.data";
 		
@@ -27,7 +31,7 @@ namespace YAMPConsole
 			Console.WriteLine("RELEASE MODE");
 			Console.WriteLine("Enter your own statements now (exit with empty line):");
 			var query = string.Empty;
-			
+
 			YAMP.Parser.AddCustomFunction("G", v => new YAMP.ScalarValue((v as YAMP.ScalarValue).Value * Math.PI) );
 			YAMP.Parser.AddCustomConstant("R", 2.53);
 			
@@ -46,7 +50,7 @@ namespace YAMPConsole
                     {
                         var parser = YAMP.Parser.Parse(query);
                         Console.WriteLine(parser.Execute());
-                        Console.WriteLine(parser);
+						Console.WriteLine(parser);
                     }
                     catch (Exception ex)
                     {
@@ -55,9 +59,11 @@ namespace YAMPConsole
                 }
 			}
 #endif
+
 		}
 
 #if BENCHMARKS
+
 		static void Benchmarks()
 		{
 			if(!File.Exists(BMK_FILE))
@@ -153,9 +159,11 @@ namespace YAMPConsole
 			
 			Console.WriteLine("done !");
 		}
+
 #endif
 		
-#if DEBUG		
+#if DEBUG
+
 		static void Tests()
 		{
 			Test("2.2", 2.2);
@@ -206,6 +214,7 @@ namespace YAMPConsole
 			Test("(1,2,3;4,5,6;7,8,9)[2,3]", 6.0);
             Test("|cos(1+i)|", 1.2934544550420957);
             Test("|arccos(0.83373002513-0.988897705i)|", 1.4142135618741407);
+			Test("|(x=(1,2,3;4,5,6;7,8,9))[:,1]|", Math.Sqrt(66.0));
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}
@@ -270,6 +279,7 @@ namespace YAMPConsole
 			success += given ? 1 : 0;
 			return given;
 		}
+
 #endif
 	}
 }

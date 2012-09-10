@@ -4,7 +4,7 @@ namespace YAMP
 {
 	class RandFunction : ArgumentFunction
 	{
-		static Random ran = new Random();
+		static readonly Random ran = new Random();
 		
 		public Value Function()
 		{

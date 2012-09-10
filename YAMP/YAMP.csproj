@@ -17,26 +17,26 @@
     <OldToolsVersion>3.5</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Benchmarks|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Benchmark</OutputPath>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -123,6 +123,21 @@
     <Compile Include="BinaryOperator.cs" />
     <Compile Include="Expressions\Others\SpecialExpression.cs" />
     <Compile Include="Expressions\Others\EmptyExpression.cs" />
+    <Compile Include="Values\StringValue.cs" />
+    <Compile Include="Expressions\Others\StringExpression.cs" />
+    <Compile Include="Expressions\Operators\RangeOperator.cs" />
+    <Compile Include="Functions\LengthFunction.cs" />
+    <Compile Include="Functions\LinspaceFunction.cs" />
+    <Compile Include="Values\RangeValue.cs" />
+    <Compile Include="Functions\LogspaceFunction.cs" />
+    <Compile Include="Functions\DimFunction.cs" />
+    <Compile Include="Functions\RandnFunction.cs" />
+    <Compile Include="Functions\SumFunction.cs" />
+    <Compile Include="Exceptions\RangeException.cs" />
+    <Compile Include="Functions\SaveFunction.cs" />
+    <Compile Include="Functions\LoadFunction.cs" />
+    <Compile Include="Values\ArgumentsValue.cs" />
+    <Compile Include="Functions\RandiFunction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

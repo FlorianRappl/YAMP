@@ -6,7 +6,7 @@ namespace YAMP
 	{
 		static FacultyFunction fac = new FacultyFunction();
 		
-		public FacultyOperator () : base("!")
+		public FacultyOperator () : base("!", 1000)
 		{
 		}
 		

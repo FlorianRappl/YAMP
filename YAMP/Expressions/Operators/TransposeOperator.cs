@@ -4,7 +4,7 @@ namespace YAMP
 {
 	class TransposeOperator : UnaryOperator
 	{
-		public TransposeOperator () : base("'")
+		public TransposeOperator () : base("'", 100)
 		{
 		}
 		
