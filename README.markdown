@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **0.5.0**. This version is still an incomplete alpha build.
+The current version number is **0.6.0**. This version is still an incomplete alpha build.
 A NuGet package will be available quite soon. There are a lot of tests in the code - since
 the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -31,11 +31,25 @@ exceptions from the parser are catched in the console application. Currently the
 builds are available:
 
 - Debug: Contains the expression tests.
-- Release: Contains a command line tool.
+- Console: Contains a command line tool.
 - Benchmark: Performs benchmarks for YAMP and three other C# only parsers.
+- Release: Version to produce the NuGet library and other productive output.
 
 Version history
 -------------------------------------------------------
+**0.6.0:**
+
+- Resorted the YAMP code (directory changes)
+- Added new functions (trace, eig, ev, ...)
+- Added some basic linear algebra functions
+- Added dot operators (.^, ./, .*, .&#92;)
+- Added new exceptions
+- Improved the exception handling in ArgumentFunctions
+- Improved the parser by a factor of 5
+- Fixed a small bug in the parser
+- Introduced the YAMP.Numerics namespace with some stuff for numerical mathematics
+- Added new tests
+
 **0.5.0:**
 
 - Added new functions (load, save, eye, dim, length, ...)

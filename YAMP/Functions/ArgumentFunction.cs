@@ -55,7 +55,15 @@ namespace YAMP
 			if(functions.ContainsKey(arguments.Length))
 			{
 				var method = (functions[arguments.Length] as MethodInfo);
-				return method.Invoke(this, arguments) as Value;
+
+                try
+                {
+                    return method.Invoke(this, arguments) as Value;
+                }
+                catch (Exception ex)
+                {
+                    throw ex.InnerException;
+                }
 			}
 			
 			throw new ArgumentsException(name, arguments.Length);

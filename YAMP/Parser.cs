@@ -34,7 +34,7 @@ namespace YAMP
 			Tokens.Instance.Touch();
 		}
 		
-		public static Hashtable Variables
+		public static IDictionary<string, Value> Variables
 		{
 			get { return Tokens.Instance.Variables; }
 		}

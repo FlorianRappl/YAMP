@@ -16,7 +16,7 @@ namespace YAMP
 		#region Members
 		
 		Operator _operator;
-		AbstractExpression[] _expressions;
+		Expression[] _expressions;
 		string _input;
 		int _offset;
 		bool _isList;
@@ -42,7 +42,7 @@ namespace YAMP
 			}
 		}
 		
-		public AbstractExpression[] Expressions
+		public Expression[] Expressions
 		{
 			get
 			{
@@ -58,22 +58,22 @@ namespace YAMP
 
 		#region ctor
 		
-		public ParseTree(Operator op, AbstractExpression[] expressions)
+		public ParseTree(Operator op, Expression[] expressions)
 		{
 			_operator = op;
 			_expressions = expressions;
 		}
 		
-		public ParseTree(Operator op, AbstractExpression expression)
+		public ParseTree(Operator op, Expression expression)
 		{
 			_operator = op;
-			_expressions = new AbstractExpression[] { expression };
+			_expressions = new Expression[] { expression };
 		}
 		
-		public ParseTree(Operator op, AbstractExpression left, AbstractExpression right)
+		public ParseTree(Operator op, Expression left, Expression right)
 		{
 			_operator = op;
-			_expressions = new AbstractExpression[] { left, right };
+			_expressions = new Expression[] { left, right };
 		}
 
 		public ParseTree (string input, int offset) : this(input, offset, false)
@@ -106,7 +106,7 @@ namespace YAMP
 		{			
 			BracketExpression bracket = null;
 			var ops = new List<Operator>();
-			var exps = new List<AbstractExpression>();
+			var exps = new List<Expression>();
 			var shadow = _input;
 			var takeop = false;
 			var maxLevel = -100;
@@ -114,9 +114,12 @@ namespace YAMP
 			var expIndex = 0;
 			var tmpExp = 0;
 			var offset = _offset;
-			
-			if(string.IsNullOrEmpty(_input))
-				exps.Add(new EmptyExpression());
+
+            if (string.IsNullOrEmpty(_input))
+            {
+                _expressions = new Expression[] { new EmptyExpression() };
+                return;
+            }
 
 			while(shadow.Length > 0)
 			{
@@ -146,12 +149,12 @@ namespace YAMP
 					offset += exp.Input.Length;
 					takeop = true;
 				}
-			}
+            }
 
-			expIndex--;
+            expIndex--;
 
 			while(ops.Count > 1)
-			{
+            {
 				if(ops[maxIndex].ExpectExpression)
 				{
 					tmpExp = expIndex + 1;
@@ -166,22 +169,22 @@ namespace YAMP
 				exps.RemoveAt(expIndex);
 				exps.Insert(expIndex, bracket);
 				ops.RemoveAt(maxIndex);
-				tmpExp = 0;
+				tmpExp = 1;
 				expIndex = 0;
 				maxIndex = 0;
 				maxLevel = ops[0].Level;
 
 				for(var i = 1; i < ops.Count; i++)
 				{	
-					if(ops[i].ExpectExpression)
-						tmpExp++;
-
 					if(maxLevel <= ops[i].Level)
 					{
 						expIndex = tmpExp;
 						maxIndex = i;
 						maxLevel = ops[i].Level;
-					}
+                    }
+
+                    if (ops[i].ExpectExpression)
+                        tmpExp++;
 				}
 			}
 
@@ -207,7 +210,7 @@ namespace YAMP
 			return sb.ToString();
 		}
 		
-		string PrintExpression(AbstractExpression exp)
+		string PrintExpression(Expression exp)
 		{
 			var lines = exp.ToString().Split(new string [] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 			var sb = new StringBuilder();

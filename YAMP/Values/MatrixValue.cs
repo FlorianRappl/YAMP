@@ -48,8 +48,15 @@ namespace YAMP
 			if(rows > 0 && cols > 0)
 				this[rows, cols] = new ScalarValue();
 		}
-		
-		public static MatrixValue Create(Value value)
+
+        public MatrixValue(double[][] values, int rows, int cols) : this(rows, cols)
+        {
+            for (var j = 0; j < rows; j++)
+                for (var i = 0; i < cols; i++)
+                    _values[i, j].Value = values[j][i];
+        }
+
+        public static MatrixValue Create(Value value)
 		{
 			if(value is MatrixValue)
 				return value as MatrixValue;
@@ -516,19 +523,55 @@ namespace YAMP
 			
 			return new ScalarValue(Math.Sqrt(sum));
 		}
+
+        public ScalarValue Trace()
+        {
+            var sum = new ScalarValue();
+            var n = Math.Min(DimensionX, DimensionY);
+
+            for(var i = 1; i <= n; i++)
+            {
+                sum = sum + this[n, n];
+            }
+
+            return sum;
+        }
 		
 		public ScalarValue Det()
 		{
 			if(DimensionX == DimensionY)
 			{
-				if(DimensionX == 1)
+                var n = DimensionX;
+
+				if(n == 1)
 					return this[1, 1];
-                else if (DimensionX == 2)
+                else if (n == 2)
                     return this[1, 1] * this[2, 2] - this[1, 2] * this[2, 1];
+                else if (n == 3)
+                {
+                    return  this[1, 1] * (this[2, 2] * this[3, 3] - this[2, 3] * this[3, 2]) +
+                            this[1, 2] * (this[2, 3] * this[3, 1] - this[2, 1] * this[3, 3]) +
+                            this[1, 3] * (this[2, 1] * this[3, 2] - this[2, 2] * this[3, 1]);
+                }
+                else if (n == 4)
+                {
+                    return  this[1, 1] * (this[2, 2] * (this[3, 3] * this[4, 4] - this[3, 4] * this[4, 3]) + this[2, 3] * (this[3, 4] * this[4, 2] - this[3, 2] * this[4, 4]) + this[2, 4] * (this[3, 2] * this[4, 3] - this[3, 3] * this[4, 2])) -
+                            this[1, 2] * (this[2, 1] * (this[3, 3] * this[4, 4] - this[3, 4] * this[4, 3]) + this[2, 3] * (this[3, 4] * this[4, 1] - this[3, 1] * this[4, 4]) + this[2, 4] * (this[3, 1] * this[4, 3] - this[3, 3] * this[4, 1])) +
+                            this[1, 3] * (this[2, 1] * (this[3, 2] * this[4, 4] - this[3, 4] * this[4, 2]) + this[2, 2] * (this[3, 4] * this[4, 1] - this[3, 1] * this[4, 4]) + this[2, 4] * (this[3, 1] * this[4, 2] - this[3, 2] * this[4, 1])) -
+                            this[1, 4] * (this[2, 1] * (this[3, 2] * this[4, 3] - this[3, 3] * this[4, 2]) + this[2, 2] * (this[3, 3] * this[4, 1] - this[3, 1] * this[4, 3]) + this[2, 3] * (this[3, 1] * this[4, 2] - this[3, 2] * this[4, 1]));
+                }
+                
+                return ComputeDet();
 			}
 			
-			return new ScalarValue(0.0);
+			return new ScalarValue();
 		}
+
+        public ScalarValue ComputeDet()
+        {
+            var lu = new YAMP.Numerics.LUDecomposition(this);
+            return new ScalarValue(lu.Determinant());
+        }
 
 		public override int GetHashCode ()
 		{
@@ -555,12 +598,47 @@ namespace YAMP
 				return true;
 			}
 			else if(DimensionX == 1 && DimensionY == 1)
-			{
 				return this[1, 1].Equals(obj);
-			}
 
 			return false;
 		}
+
+        public double[][] GetRealArray()
+        {
+            var array = new double[DimensionY][];
+
+            for (var j = 0; j < DimensionY; j++)
+            {
+                array[j] = new double[DimensionX];
+
+                for (var i = 0; i < DimensionX; i++)
+                    array[j][i] = _values[j, i].Value;
+            }
+
+            return array;
+        }
+
+        public MatrixValue SubMatrix(int dy, int dimy, int dx, int dimx)
+        {
+            var X = new MatrixValue(dimy - dy, dimx - dx);
+
+            for (int j = dy + 1; j <= dimy; j++)
+                for (int i = dx + 1; i <= dimx; i++)
+                    X[j - dy, i - dx] = this[j, i].Clone();
+
+            return X;
+        }
+
+        public MatrixValue SubMatrix(int[] y, int dx, int dimx)
+        {
+            var X = new MatrixValue(y.Length, dimx - dx);
+
+            for (int j = 1; j <= y.Length; j++)
+                for (int i = dx + 1; i <= dimx; i++)
+                    X[j, i - dx] = this[y[j - 1], i].Clone();
+
+            return X;
+        }
     }
 }
 

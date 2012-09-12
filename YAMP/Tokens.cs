@@ -10,14 +10,14 @@ namespace YAMP
 	class Tokens
 	{
 		#region Members
-		
-		Hashtable operators;
-		Hashtable expressions;
+
+        IDictionary<string, Operator> operators;
+        IDictionary<Regex, Expression> expressions;
 		Hashtable functions;
 		Hashtable constants;
 		Hashtable o_functions;
 		Hashtable o_constants;
-        Hashtable variables;
+        IDictionary<string, Value> variables;
 		
 		#endregion
 
@@ -31,20 +31,20 @@ namespace YAMP
 
         Tokens ()
 		{
-			operators = new Hashtable();
-			expressions = new Hashtable();
+            operators = new Dictionary<string, Operator>();
+            expressions = new Dictionary<Regex, Expression>();
 			functions = new Hashtable();
 			constants = new Hashtable();
 			o_functions = new Hashtable();
 			o_constants = new Hashtable();
-            variables = new Hashtable();
+            variables = new Dictionary<string, Value>();
 		}
 		
 		#endregion
 		
 		#region Properties
-		
-		public Hashtable Variables
+
+        public IDictionary<string, Value> Variables
 		{
 			get { return variables; }
 		}
@@ -82,14 +82,14 @@ namespace YAMP
 		
 		#region Add elements
 		
-		public void AddOperator(string pattern, Type type)
+		public void AddOperator(string pattern, Operator op)
 		{
-			operators.Add(pattern, type.GetConstructor(Type.EmptyTypes));
+			operators.Add(pattern, op);
 		}
 
-        public void AddExpression(string pattern, Type type)
+        public void AddExpression(string pattern, Expression exp)
         {
-            expressions.Add(new Regex("^" + pattern), type.GetConstructor(Type.EmptyTypes));
+            expressions.Add(new Regex("^" + pattern), exp);
         }
 		
 		public void AddConstant(string name, double constant, bool custom)
@@ -198,7 +198,7 @@ namespace YAMP
 		{
             var i = 0;
 
-			foreach(string op in operators.Keys)
+			foreach(var op in operators.Keys)
 			{
                 if (input.Length < op.Length)
                     continue;
@@ -206,7 +206,7 @@ namespace YAMP
                 for (i = 0; ; i++)
                 {
                     if(i == op.Length)
-                        return (operators[op] as ConstructorInfo).Invoke(null) as Operator;
+                        return operators[op].Create();
                     else if (input[i] != op[i])
                         break;
                 }					
@@ -215,14 +215,14 @@ namespace YAMP
 			throw new ParseException(input);
 		}
 		
-		public AbstractExpression FindExpression(string input)
+		public Expression FindExpression(string input)
 		{
-			foreach(Regex rx in expressions.Keys)
+			foreach(var rx in expressions.Keys)
 			{
 				if(rx.IsMatch(input))
 				{
-					var exp = (expressions[rx] as ConstructorInfo).Invoke(null) as AbstractExpression;
-					exp.Expression = rx;
+					var exp = expressions[rx].Create();
+					exp.SearchExpression = rx;
 					return exp;
 				}
 			}

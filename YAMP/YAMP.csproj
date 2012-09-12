@@ -40,6 +40,15 @@
     <OutputPath>bin\Benchmark</OutputPath>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Console|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Console\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
@@ -48,97 +57,119 @@
     <Compile Include="Exceptions\ArgumentException.cs" />
     <Compile Include="Exceptions\ArgumentsException.cs" />
     <Compile Include="Exceptions\ExpressionNotFoundException.cs" />
-    <Compile Include="Expressions\Operators\IndexOperator.cs" />
-    <Compile Include="Expressions\Operators\LeftDivideOperator.cs" />
-    <Compile Include="Expressions\Operators\RightDivideOperator.cs" />
-    <Compile Include="Functions\ArccosFunction.cs" />
-    <Compile Include="Functions\ArccotFunction.cs" />
-    <Compile Include="Functions\ArcoshFunction.cs" />
-    <Compile Include="Functions\ArcothFunction.cs" />
-    <Compile Include="Functions\ArcsinFunction.cs" />
-    <Compile Include="Functions\ArctanFunction.cs" />
+    <Compile Include="Exceptions\MatrixFormatException.cs" />
+    <Compile Include="Functions\LinearAlgebra\EigFunction.cs" />
+    <Compile Include="Functions\LinearAlgebra\EvFunction.cs" />
+    <Compile Include="Functions\LinearAlgebra\TraceFunction.cs" />
+    <Compile Include="Numerics\Decompositions\CholeskyDecomposition.cs" />
+    <Compile Include="Numerics\Decompositions\EigenvalueDecomposition.cs" />
+    <Compile Include="Numerics\Decompositions\LUDecomposition.cs" />
+    <Compile Include="Numerics\Decompositions\QRDecomposition.cs" />
+    <Compile Include="Numerics\Decompositions\SingularValueDecomposition.cs" />
+    <Compile Include="Numerics\NumericHelpers.cs" />
+    <Compile Include="Operators\UnaryOperators\AdjungateOperator.cs" />
+    <Compile Include="Operators\DotOperators\DotLeftDivideOperator.cs" />
+    <Compile Include="Operators\DotOperators\DotMultiplyOperator.cs" />
+    <Compile Include="Operators\DotOperators\DotOperator.cs" />
+    <Compile Include="Operators\DotOperators\DotPowerOperator.cs" />
+    <Compile Include="Operators\DotOperators\DotRightDivideOperator.cs" />
+    <Compile Include="Operators\UnaryOperators\IndexOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\LeftDivideOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\RightDivideOperator.cs" />
+    <Compile Include="Functions\Trigonometric\ArccosFunction.cs" />
+    <Compile Include="Functions\Trigonometric\ArccotFunction.cs" />
+    <Compile Include="Functions\Trigonometric\ArcoshFunction.cs" />
+    <Compile Include="Functions\Trigonometric\ArcothFunction.cs" />
+    <Compile Include="Functions\Trigonometric\ArcsinFunction.cs" />
+    <Compile Include="Functions\Trigonometric\ArctanFunction.cs" />
     <Compile Include="Functions\ArgumentFunction.cs" />
-    <Compile Include="Functions\ArsinhFunction.cs" />
-    <Compile Include="Functions\ArtanhFunction.cs" />
-    <Compile Include="Functions\CoshFunction.cs" />
-    <Compile Include="Functions\CotFunction.cs" />
-    <Compile Include="Functions\CothFunction.cs" />
-    <Compile Include="Functions\DetFunction.cs" />
-    <Compile Include="Functions\EyeFunction.cs" />
-    <Compile Include="Functions\FacultyFunction.cs" />
-    <Compile Include="Functions\GammaFunction.cs" />
-    <Compile Include="Functions\MaxFunction.cs" />
-    <Compile Include="Functions\MinFunction.cs" />
-    <Compile Include="Functions\OnesFunction.cs" />
-    <Compile Include="Functions\RandFunction.cs" />
-    <Compile Include="Functions\SinhFunction.cs" />
+    <Compile Include="Functions\Trigonometric\ArsinhFunction.cs" />
+    <Compile Include="Functions\Trigonometric\ArtanhFunction.cs" />
+    <Compile Include="Functions\Trigonometric\CoshFunction.cs" />
+    <Compile Include="Functions\Trigonometric\CotFunction.cs" />
+    <Compile Include="Functions\Trigonometric\CothFunction.cs" />
+    <Compile Include="Functions\LinearAlgebra\DetFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\EyeFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\FacultyFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\GammaFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\MaxFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\MinFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\OnesFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\RandFunction.cs" />
+    <Compile Include="Functions\Trigonometric\SinhFunction.cs" />
     <Compile Include="Functions\StandardFunction.cs" />
-    <Compile Include="Functions\TanFunction.cs" />
-    <Compile Include="Functions\TanhFunction.cs" />
-    <Compile Include="Functions\ZerosFunction.cs" />
+    <Compile Include="Functions\Trigonometric\TanFunction.cs" />
+    <Compile Include="Functions\Trigonometric\TanhFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\ZerosFunction.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Context.cs" />
-    <Compile Include="AbstractExpression.cs" />
-    <Compile Include="Value.cs" />
+    <Compile Include="Expressions\Expression.cs" />
+    <Compile Include="Values\Value.cs" />
     <Compile Include="Values\ScalarValue.cs" />
     <Compile Include="Exceptions\DimensionException.cs" />
     <Compile Include="Exceptions\ParseException.cs" />
-    <Compile Include="Expressions\Others\BracketExpression.cs" />
-    <Compile Include="Expressions\Others\SymbolExpression.cs" />
-    <Compile Include="Expressions\Others\NumberExpression.cs" />
-    <Compile Include="Expressions\Others\FunctionExpression.cs" />
-    <Compile Include="Operator.cs" />
-    <Compile Include="Expressions\Operators\PlusOperator.cs" />
+    <Compile Include="Expressions\BracketExpression.cs" />
+    <Compile Include="Expressions\SymbolExpression.cs" />
+    <Compile Include="Expressions\NumberExpression.cs" />
+    <Compile Include="Expressions\FunctionExpression.cs" />
+    <Compile Include="Operators\Operator.cs" />
+    <Compile Include="Operators\BinaryOperators\PlusOperator.cs" />
     <Compile Include="Tokens.cs" />
     <Compile Include="Exceptions\BracketException.cs" />
     <Compile Include="Exceptions\SymbolException.cs" />
-    <Compile Include="Expressions\Operators\MultiplyOperator.cs" />
-    <Compile Include="Expressions\Operators\PowerOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\MultiplyOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\PowerOperator.cs" />
     <Compile Include="Exceptions\OperationNotSupportedException.cs" />
     <Compile Include="Interfaces\IRegisterToken.cs" />
-    <Compile Include="Expressions\Operators\MinusOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\MinusOperator.cs" />
     <Compile Include="ParseTree.cs" />
     <Compile Include="Interfaces\IFunction.cs" />
-    <Compile Include="Functions\CeilFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\CeilFunction.cs" />
     <Compile Include="Exceptions\FunctionNotFoundException.cs" />
-    <Compile Include="Functions\FloorFunction.cs" />
-    <Compile Include="Functions\ExpFunction.cs" />
-    <Compile Include="Functions\SinFunction.cs" />
-    <Compile Include="Functions\CosFunction.cs" />
-    <Compile Include="Functions\AbsFunction.cs" />
-    <Compile Include="Expressions\Others\AbsExpression.cs" />
-    <Compile Include="Functions\SqrtFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\FloorFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\ExpFunction.cs" />
+    <Compile Include="Functions\Trigonometric\SinFunction.cs" />
+    <Compile Include="Functions\Trigonometric\CosFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\AbsFunction.cs" />
+    <Compile Include="Expressions\AbsExpression.cs" />
+    <Compile Include="Functions\StandardFunctions\SqrtFunction.cs" />
     <Compile Include="Values\Constants.cs" />
-    <Compile Include="Expressions\Operators\FacultyOperator.cs" />
-    <Compile Include="Expressions\Operators\CommaOperator.cs" />
-    <Compile Include="Interfaces\FunctionDelegate.cs" />
-    <Compile Include="Functions\LnFunction.cs" />
-    <Compile Include="Functions\LogFunction.cs" />
+    <Compile Include="Operators\UnaryOperators\FacultyOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\CommaOperator.cs" />
+    <Compile Include="Functions\FunctionDelegate.cs" />
+    <Compile Include="Functions\StandardFunctions\LnFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\LogFunction.cs" />
     <Compile Include="Values\MatrixValue.cs" />
-    <Compile Include="Expressions\Operators\ColonOperator.cs" />
-    <Compile Include="Expressions\Operators\TransposeOperator.cs" />
-    <Compile Include="Expressions\Operators\AssignmentOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\ColonOperator.cs" />
+    <Compile Include="Operators\UnaryOperators\TransposeOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\AssignmentOperator.cs" />
     <Compile Include="Exceptions\AssignmentException.cs" />
-    <Compile Include="UnaryOperator.cs" />
-    <Compile Include="BinaryOperator.cs" />
-    <Compile Include="Expressions\Others\SpecialExpression.cs" />
-    <Compile Include="Expressions\Others\EmptyExpression.cs" />
+    <Compile Include="Operators\UnaryOperator.cs" />
+    <Compile Include="Operators\BinaryOperator.cs" />
+    <Compile Include="Expressions\SpecialExpression.cs" />
+    <Compile Include="Expressions\EmptyExpression.cs" />
     <Compile Include="Values\StringValue.cs" />
-    <Compile Include="Expressions\Others\StringExpression.cs" />
-    <Compile Include="Expressions\Operators\RangeOperator.cs" />
-    <Compile Include="Functions\LengthFunction.cs" />
-    <Compile Include="Functions\LinspaceFunction.cs" />
+    <Compile Include="Expressions\StringExpression.cs" />
+    <Compile Include="Operators\BinaryOperators\RangeOperator.cs" />
+    <Compile Include="Functions\StandardFunctions\LengthFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\LinspaceFunction.cs" />
     <Compile Include="Values\RangeValue.cs" />
-    <Compile Include="Functions\LogspaceFunction.cs" />
-    <Compile Include="Functions\DimFunction.cs" />
-    <Compile Include="Functions\RandnFunction.cs" />
-    <Compile Include="Functions\SumFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\LogspaceFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\DimFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\RandnFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\SumFunction.cs" />
     <Compile Include="Exceptions\RangeException.cs" />
-    <Compile Include="Functions\SaveFunction.cs" />
-    <Compile Include="Functions\LoadFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\SaveFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\LoadFunction.cs" />
     <Compile Include="Values\ArgumentsValue.cs" />
-    <Compile Include="Functions\RandiFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\RandiFunction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Numerics\Integration\" />
+    <Folder Include="Numerics\Interpolations\" />
+    <Folder Include="Numerics\ODE\" />
+    <Folder Include="Numerics\Optimization\" />
+    <Folder Include="Numerics\Others\" />
+  </ItemGroup>
 </Project>

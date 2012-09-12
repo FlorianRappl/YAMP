@@ -9,27 +9,36 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMPConsole", "YAMPConsole\
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Benchmarks|Any CPU = Benchmarks|Any CPU
+		Console|Any CPU = Console|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-		Benchmarks|Any CPU = Benchmarks|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0E8EFCFC-EE84-4125-A801-CB436BD0C197}.Benchmarks|Any CPU.ActiveCfg = Benchmarks|Any CPU
-		{0E8EFCFC-EE84-4125-A801-CB436BD0C197}.Benchmarks|Any CPU.Build.0 = Benchmarks|Any CPU
-		{0E8EFCFC-EE84-4125-A801-CB436BD0C197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E8EFCFC-EE84-4125-A801-CB436BD0C197}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F183B45-E213-4DB0-9734-3CE7E26EB318}.Benchmarks|Any CPU.ActiveCfg = Benchmarks|Any CPU
 		{0F183B45-E213-4DB0-9734-3CE7E26EB318}.Benchmarks|Any CPU.Build.0 = Benchmarks|Any CPU
+		{0F183B45-E213-4DB0-9734-3CE7E26EB318}.Console|Any CPU.ActiveCfg = Console|Any CPU
+		{0F183B45-E213-4DB0-9734-3CE7E26EB318}.Console|Any CPU.Build.0 = Console|Any CPU
 		{0F183B45-E213-4DB0-9734-3CE7E26EB318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F183B45-E213-4DB0-9734-3CE7E26EB318}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F183B45-E213-4DB0-9734-3CE7E26EB318}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F183B45-E213-4DB0-9734-3CE7E26EB318}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E8EFCFC-EE84-4125-A801-CB436BD0C197}.Benchmarks|Any CPU.ActiveCfg = Benchmarks|Any CPU
+		{0E8EFCFC-EE84-4125-A801-CB436BD0C197}.Benchmarks|Any CPU.Build.0 = Benchmarks|Any CPU
+		{0E8EFCFC-EE84-4125-A801-CB436BD0C197}.Console|Any CPU.ActiveCfg = Console|Any CPU
+		{0E8EFCFC-EE84-4125-A801-CB436BD0C197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E8EFCFC-EE84-4125-A801-CB436BD0C197}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{260621E7-A5C4-4DE2-B072-3262FF241F76}.Benchmarks|Any CPU.ActiveCfg = Benchmarks|Any CPU
 		{260621E7-A5C4-4DE2-B072-3262FF241F76}.Benchmarks|Any CPU.Build.0 = Benchmarks|Any CPU
+		{260621E7-A5C4-4DE2-B072-3262FF241F76}.Console|Any CPU.ActiveCfg = Console|Any CPU
+		{260621E7-A5C4-4DE2-B072-3262FF241F76}.Console|Any CPU.Build.0 = Console|Any CPU
 		{260621E7-A5C4-4DE2-B072-3262FF241F76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{260621E7-A5C4-4DE2-B072-3262FF241F76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{260621E7-A5C4-4DE2-B072-3262FF241F76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{260621E7-A5C4-4DE2-B072-3262FF241F76}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = YAMPConsole\YAMPConsole.csproj
@@ -53,8 +62,5 @@ Global
 		$0.StandardHeader = $5
 		$5.Text = 
 		$5.IncludeInNewFiles = True
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

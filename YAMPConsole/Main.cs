@@ -27,8 +27,8 @@ namespace YAMPConsole
 #elif BENCHMARKS
 			Console.WriteLine("BENCHMARK MODE");
 			Benchmarks();
-#else
-			Console.WriteLine("RELEASE MODE");
+#elif CONSOLE
+			Console.WriteLine("CONSOLE MODE");
 			Console.WriteLine("Enter your own statements now (exit with empty line):");
 			var query = string.Empty;
 
@@ -57,10 +57,12 @@ namespace YAMPConsole
                         Console.WriteLine(ex.Message);
                     }
                 }
-			}
+            }
+#else
+			Console.WriteLine("RELEASE MODE");
 #endif
 
-		}
+        }
 
 #if BENCHMARKS
 
