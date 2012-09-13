@@ -56,6 +56,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="LLMathParser\CountVisitor.cs" />
+    <Compile Include="LLMathParser\IVisitor.cs" />
+    <Compile Include="LLMathParser\MathObj.cs" />
+    <Compile Include="LLMathParser\MathParserBinaryTree.cs" />
+    <Compile Include="LLMathParser\MathParserException.cs" />
+    <Compile Include="LLMathParser\MathParserTreeNode.cs" />
+    <Compile Include="LLMathParser\Nonterminal.cs" />
+    <Compile Include="LLMathParser\Operation.cs" />
+    <Compile Include="LLMathParser\PolishVisitor.cs" />
+    <Compile Include="MathFormula\MathFormula.cs" />
     <Compile Include="MathParser\Parser.cs" />
     <Compile Include="MathParserNet\FunctionArgumentList.cs" />
     <Compile Include="MathParserNet\IOrderedDictionary.cs" />

@@ -4,35 +4,54 @@ namespace YAMP
 {
 	class Constants
 	{
-		public double Pi
+        static readonly ScalarValue pi = new ScalarValue(Math.PI);
+
+        public ScalarValue Pi
 		{
-			get { return Math.PI; }
+			get { return pi; }
 		}
-		
-		public double E
+
+        static readonly ScalarValue e = new ScalarValue(Math.E);
+
+        public ScalarValue E
 		{
-			get { return Math.E; }
+			get { return e; }
 		}
-		
-		public double Gamma
+
+        static readonly ScalarValue gamma = new ScalarValue(0.57721566490153286060651209008240243);
+
+        public ScalarValue Gamma
 		{
-			get { return 0.57721566490153286060651209008240243; }
+			get { return gamma; }
 		}
-		
-		public double Phi
+
+        static readonly ScalarValue phi = new ScalarValue(1.61803398874989484820458683436563811);
+
+        public ScalarValue Phi
 		{
-			get { return 1.61803398874989484820458683436563811; }
+			get { return phi; }
 		}
-		
-		public double Delta
+
+        static readonly ScalarValue delta = new ScalarValue(4.66920160910299067185320382046620161);
+
+        public ScalarValue Delta
 		{
-			get { return 4.66920160910299067185320382046620161; }
+			get { return delta; }
 		}
-		
-		public double Alpha
+
+        static readonly ScalarValue alpha = new ScalarValue(2.50290787509589282228390287321821578);
+
+        public ScalarValue Alpha
 		{
-			get { return 2.50290787509589282228390287321821578; }
+			get { return alpha; }
 		}
+
+        static readonly ScalarValue i = ScalarValue.I;
+
+        public ScalarValue I
+        {
+            get { return i; }
+        }
 	}
 }
 

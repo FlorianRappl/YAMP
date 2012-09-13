@@ -13,11 +13,12 @@ namespace YAMP
 
         IDictionary<string, Operator> operators;
         IDictionary<Regex, Expression> expressions;
-		Hashtable functions;
-		Hashtable constants;
-		Hashtable o_functions;
-		Hashtable o_constants;
+        IDictionary<string, FunctionDelegate> functions;
+        IDictionary<string, Value> constants;
         IDictionary<string, Value> variables;
+
+        IDictionary<string, FunctionDelegate> o_functions;
+        IDictionary<string, Value> o_constants;
 		
 		#endregion
 
@@ -33,10 +34,10 @@ namespace YAMP
 		{
             operators = new Dictionary<string, Operator>();
             expressions = new Dictionary<Regex, Expression>();
-			functions = new Hashtable();
-			constants = new Hashtable();
-			o_functions = new Hashtable();
-			o_constants = new Hashtable();
+            functions = new Dictionary<string, FunctionDelegate>();
+            constants = new Dictionary<string, Value>();
+            o_functions = new Dictionary<string, FunctionDelegate>();
+            o_constants = new Dictionary<string, Value>();
             variables = new Dictionary<string, Value>();
 		}
 		
@@ -72,10 +73,10 @@ namespace YAMP
 				
 				if(type.GetInterface(fu) != null)
 					AddFunction(type.Name.Replace("Function", string.Empty), (type.GetConstructor(Type.EmptyTypes).Invoke(null) as IFunction).Perform, false);
-			}			
+			}
 			
 			foreach(var prop in props)
-				AddConstant(prop.Name, (double)prop.GetValue(mycst, null), false);
+				AddConstant(prop.Name, prop.GetValue(mycst, null) as Value, false);
 		}
 		
 		#endregion
@@ -94,16 +95,21 @@ namespace YAMP
 		
 		public void AddConstant(string name, double constant, bool custom)
 		{
-			var lname = name.ToLower();
-			
-			if(constants.ContainsKey(lname))
-				constants[lname] = constant;
-			else
-				constants.Add(lname, constant);
-			
-			if(!custom)
-				o_constants.Add(lname, constant);
+            AddConstant(name, new ScalarValue(constant), custom);
 		}
+
+        public void AddConstant(string name, Value constant, bool custom)
+        {
+            var lname = name.ToLower();
+
+            if (constants.ContainsKey(lname))
+                constants[lname] = constant;
+            else
+                constants.Add(lname, constant);
+
+            if (!custom)
+                o_constants.Add(lname, constant);
+        }
 		
 		public void AddFunction(string name, FunctionDelegate f, bool custom)
 		{
@@ -127,7 +133,7 @@ namespace YAMP
 			var lname = name.ToLower();
 			
 			if(o_constants.ContainsKey(lname))
-				AddConstant(name, (double)o_constants[lname], true);
+				AddConstant(name, o_constants[lname], true);
 			else if(constants.ContainsKey(lname))
 				constants.Remove(lname);
 		}
@@ -137,7 +143,7 @@ namespace YAMP
 			var lname = name.ToLower();
 			
 			if(o_functions.ContainsKey(lname))
-				AddFunction(name, o_functions[lname] as FunctionDelegate, true);
+				AddFunction(name, o_functions[lname], true);
 			else if(functions.ContainsKey(lname))
 				functions.Remove(lname);
 		}
@@ -176,10 +182,7 @@ namespace YAMP
 			var lname = name.ToLower();
 
 			if(constants.ContainsKey(lname))
-				return new ScalarValue((double)constants[lname]);
-			
-			if(name.Equals("i"))
-				return ScalarValue.I;
+				return constants[lname];
 
             throw new SymbolException(name);
 		}
@@ -189,7 +192,7 @@ namespace YAMP
 			var lname = name.ToLower();
 
 			if(functions.ContainsKey(lname))
-				return functions[lname] as FunctionDelegate;
+				return functions[lname];
 			
 			throw new FunctionNotFoundException(name);
 		}
@@ -200,6 +203,9 @@ namespace YAMP
 
 			foreach(var op in operators.Keys)
 			{
+                if (input.StartsWith(op))
+                    return operators[op].Create();
+                
                 if (input.Length < op.Length)
                     continue;
 
@@ -209,7 +215,7 @@ namespace YAMP
                         return operators[op].Create();
                     else if (input[i] != op[i])
                         break;
-                }					
+                }
 			}
 			
 			throw new ParseException(input);

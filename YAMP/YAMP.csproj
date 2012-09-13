@@ -61,12 +61,14 @@
     <Compile Include="Functions\LinearAlgebra\EigFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\EvFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\TraceFunction.cs" />
+    <Compile Include="Functions\Spectroscopy\FFTFunction.cs" />
     <Compile Include="Numerics\Decompositions\CholeskyDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\EigenvalueDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\LUDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\QRDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\SingularValueDecomposition.cs" />
     <Compile Include="Numerics\NumericHelpers.cs" />
+    <Compile Include="Numerics\Others\FFT.cs" />
     <Compile Include="Operators\UnaryOperators\AdjungateOperator.cs" />
     <Compile Include="Operators\DotOperators\DotLeftDivideOperator.cs" />
     <Compile Include="Operators\DotOperators\DotMultiplyOperator.cs" />
@@ -170,6 +172,5 @@
     <Folder Include="Numerics\Interpolations\" />
     <Folder Include="Numerics\ODE\" />
     <Folder Include="Numerics\Optimization\" />
-    <Folder Include="Numerics\Others\" />
   </ItemGroup>
 </Project>

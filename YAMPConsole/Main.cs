@@ -75,35 +75,45 @@ namespace YAMPConsole
 			var a = new MathParser.Parser();
 			var b = new MathParserTK_NET.MathParserTK();
 			var c = new MathParserNet.Parser();
+            var d = new MathFunctions.MathParser();
+            var e = new MathParserDataStructures.MathObj();
 			
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
-            //var lines = new string[0];
+            var lines = new string[0];
 			// This is Benchmark #1
             //var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
-            var lines = MakeTenK("2-3*5+7/2-8*2");
+            //var lines = MakeTenK("2-3*5+7/2-8*2");
 			// This is Benchmark #3
             //var lines = MakeTenK("2+3");
 			// This is Benchmark #4
             //var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
 			
-			//My own implementation
-			// 13795 ms ; 1210 ms ; 348 ms ; 1582 ms
+			// The implementation here... YAMP
+			// 6016 ms ; 414 ms ; 167 ms ; 567 ms
 			Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
 			
 			//http://www.codeproject.com/Articles/11164/Math-Parser
-			// 547334 ms ; 3908 ms ; 625 ms ; 15212 ms
+            // 372847 ms ; 4795 ms ; 3385 ms ; 14508 ms
 			Benchmark("MathParser", lines, query => a.Evaluate(query));
 			
 			//http://www.codeproject.com/Tips/381509/Math-Parser-NET-Csharp
-			// FAILED ; 915 ms ; 193 ms ; 1407 ms
+			// FAILED ; 563 ms ; 136 ms ; 850 ms
 			Benchmark("MathParserTK", lines, query => b.Parse(query, false));
 			
 			//http://www.codeproject.com/Articles/274093/Math-Parser-NET
-			// FAILED ; 15933 ms ; 15483 ms ; 16617 ms
+			// FAILED ; 5122 ms ; 5194 ms ; 5444 ms
 			Benchmark("MathParserNet", lines, query => c.Simplify(query));
+
+            //http://www.codeproject.com/Articles/23061/MathParser-Math-Formula-Parser
+            // FAILED ; 147 ms ; 54 ms ; FAILED
+            Benchmark("MathFormulaParser", lines, query => d.Calculate(query));
+
+            //http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
+            // 1611 ms ; 48 ms ; 55 ms ; 62 ms
+            Benchmark("LLMathParser", lines, query => e.Evaluate(query, new char[0], new double[0]));
 		}
 
 		static string[] MakeTenK(string s)

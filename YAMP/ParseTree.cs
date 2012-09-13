@@ -113,7 +113,7 @@ namespace YAMP
 			var maxIndex = 0;
 			var expIndex = 0;
 			var tmpExp = 0;
-			var offset = _offset;
+            var offset = _offset;
 
             if (string.IsNullOrEmpty(_input))
             {
