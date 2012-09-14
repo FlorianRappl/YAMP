@@ -1,12 +1,28 @@
 using System;
+using System.Text;
 
 namespace YAMP
 {
-		public class Extensions
+	static class Extensions
+	{
+		public static string Substring(this StringBuilder sb, int startIndex, int length)
 		{
-				public Extensions ()
-				{
-				}
+			var chars = new char[length];
+
+			for(var i = 0; i < length; i++)
+				chars[i] = sb[i + startIndex];
+
+			return new string(chars);
 		}
+
+		public static int IndexOf(this StringBuilder sb, char character)
+		{
+			for(var i = 0; i < sb.Length; i++)
+				if(sb[i] == character)
+					return i;
+
+			return -1;
+		}
+	}
 }
 

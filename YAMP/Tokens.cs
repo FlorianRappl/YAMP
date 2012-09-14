@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections;
 using System.Globalization;
 using System.Collections.Generic;
@@ -19,6 +20,8 @@ namespace YAMP
 
         IDictionary<string, FunctionDelegate> o_functions;
         IDictionary<string, Value> o_constants;
+
+		IDictionary<string, string> sanatizers;
 		
 		#endregion
 
@@ -39,6 +42,7 @@ namespace YAMP
             o_functions = new Dictionary<string, FunctionDelegate>();
             o_constants = new Dictionary<string, Value>();
             variables = new Dictionary<string, Value>();
+			sanatizers = new Dictionary<string, string>();
 		}
 		
 		#endregion
@@ -48,6 +52,11 @@ namespace YAMP
         public IDictionary<string, Value> Variables
 		{
 			get { return variables; }
+		}
+
+		public IDictionary<string, string> Sanatizers
+		{
+			get { return sanatizers; }
 		}
 		
 		#endregion
@@ -77,6 +86,17 @@ namespace YAMP
 			
 			foreach(var prop in props)
 				AddConstant(prop.Name, prop.GetValue(mycst, null) as Value, false);
+
+			sanatizers.Add("++", "+");
+			sanatizers.Add("--", "+");
+			sanatizers.Add("+-", "-");
+			sanatizers.Add("-+", "-");
+			sanatizers.Add("//", "*");
+			sanatizers.Add("**", "*");
+			sanatizers.Add("^*", "^");
+			sanatizers.Add("*^", "^");
+			sanatizers.Add("*/", "/");
+			sanatizers.Add("/*", "/");
 		}
 		
 		#endregion
@@ -196,41 +216,43 @@ namespace YAMP
 			
 			throw new FunctionNotFoundException(name);
 		}
-		
+
 		public Operator FindOperator(string input)
 		{
-            var i = 0;
+			var maxop = string.Empty;
+			var notfound = true;
 
 			foreach(var op in operators.Keys)
 			{
-                if (input.StartsWith(op))
-                    return operators[op].Create();
-                
-                if (input.Length < op.Length)
-                    continue;
+				if(op.Length <= maxop.Length)
+					continue;
 
-                for (i = 0; ; i++)
-                {
-                    if(i == op.Length)
-                        return operators[op].Create();
-                    else if (input[i] != op[i])
-                        break;
-                }
+				notfound = false;
+
+				for(var i = 0; i < op.Length; i++)
+					if(notfound = (input[i] != op[i]))
+						break;
+
+				if(notfound == false)
+					maxop = op;
 			}
-			
-			throw new ParseException(input);
+
+			if(maxop.Length == 0)
+				throw new ParseException(input);
+
+			return operators[maxop].Create();
 		}
 		
 		public Expression FindExpression(string input)
 		{
+			Match m = null;
+
 			foreach(var rx in expressions.Keys)
 			{
-				if(rx.IsMatch(input))
-				{
-					var exp = expressions[rx].Create();
-					exp.SearchExpression = rx;
-					return exp;
-				}
+				m = rx.Match(input);
+
+				if(m.Success)
+					return expressions[rx].Create(m);
 			}
 			
 			throw new ExpressionNotFoundException(input);

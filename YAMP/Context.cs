@@ -21,12 +21,23 @@ namespace YAMP
 			set 
 			{
 				_original = value;
-				_input = string.IsNullOrEmpty(value) ? "0" : Sanitize(value.Replace(" ", string.Empty));
 
-				if(_input.EndsWith(";"))
+				if(string.IsNullOrEmpty(value))
 				{
-					_input = _input.Remove(_input.Length - 1);
-					_isMuted = true;
+					_input = "0";
+				}
+				else
+				{
+					_input = value;
+
+					if(_input.EndsWith(";"))
+					{
+						_input = _input.Remove(_input.Length - 1);
+						_isMuted = true;
+					}
+
+					if(_input.Replace(" ", string.Empty).Length == 0)
+						_input = "0";
 				}
 			}
 		}
@@ -34,26 +45,6 @@ namespace YAMP
 		public bool IsMuted
 		{
 			get { return _isMuted; }
-		}
-		
-		private string Sanitize(string input)
-		{
-			var check = input.Length;
-			input = input.Replace("++", "+")
-						.Replace("--", "+")
-						.Replace("+-", "-")
-						.Replace("-+", "-")
-						.Replace("//", "*")
-						.Replace("**", "*")
-						.Replace("^*", "^")
-						.Replace("*^", "^")
-						.Replace("*/", "/")
-						.Replace("/*", "/");
-			
-			if(check != input.Length)
-				return Sanitize(input);
-			
-			return input;
 		}
 		
 		public string Original

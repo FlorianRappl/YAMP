@@ -1,5 +1,7 @@
 using System;
+using System.Text;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace YAMP
 {
@@ -13,7 +15,7 @@ namespace YAMP
 			abs = new AbsFunction();
 		}
 
-        public override Expression Create()
+        public override Expression Create(Match match)
         {
             return new AbsExpression();
         }
@@ -27,21 +29,23 @@ namespace YAMP
 		public override string Set (string input)
 		{		
 			var brackets = 0;
+			var sb = new StringBuilder();
 			
 			for(var i = 1; i < input.Length; i++)
 			{
-				if(input[i] == ')')
+				if(input[i] == ')' || input[i] == ']' || input[i] == '}')
 					brackets--;
-				else if(input[i] == '(')
+				else if(input[i] == '(' || input[i] == '[' || input[i] == '{')
 					brackets++;
-				
-				if(brackets == 0 && input[i] == '|')
+				else if(brackets == 0 && input[i] == '|')
 				{
-					_input = input.Substring(1, i - 1);
+					_input = sb.ToString();
 					var _tree = new ParseTree(_input);
 					_child = new BracketExpression(_tree); 
-					return input.Length > i + 1 ? input.Substring(i + 1) : string.Empty;
+					return input.Substring(i + 1);
 				}
+
+				sb.Append(input[i]);
 			}
 			
 			throw new BracketException("|", input);

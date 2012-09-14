@@ -2,11 +2,21 @@ using System;
 
 namespace YAMP
 {
-		public class LtOperator
+	class LtOperator : LogicOperator
+	{
+		public LtOperator () : base("<")
 		{
-				public LtOperator ()
-				{
-				}
 		}
+
+		public override Operator Create ()
+		{
+			return new LtOperator();
+		}
+
+		public override ScalarValue Compare (ScalarValue left, ScalarValue right)
+		{
+			return left < right;
+		}
+	}
 }
 

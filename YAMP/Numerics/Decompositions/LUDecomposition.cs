@@ -53,7 +53,7 @@ namespace YAMP.Numerics
             piv = new int[m];
 
             for (int i = 0; i < m; i++)
-                piv[i] = i;
+                piv[i] = i + 1;
             
             pivsign = 1;
             var LUrowi = new double[0];
@@ -259,8 +259,7 @@ namespace YAMP.Numerics
 
             // Copy right hand side with pivoting
             var nx = B.DimensionX;
-            var Xmat = B.SubMatrix(piv, 0, nx);
-            var X = Xmat.GetRealArray();
+            var X = B.SubMatrix(piv, 0, nx).GetRealArray();
 
             // Solve L*Y = B(piv,:)
             for (int k = 0; k < n; k++)
@@ -285,7 +284,7 @@ namespace YAMP.Numerics
                 }
             }
 
-            return Xmat;
+			return new MatrixValue(X, piv.Length, nx);
         }
 
         #endregion //  Public Methods

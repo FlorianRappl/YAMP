@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **0.6.0**. This version is still an incomplete alpha build.
+The current version number is **0.7.0**. This version is still an incomplete alpha build.
 A NuGet package will be available quite soon. There are a lot of tests in the code - since
 the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -37,6 +37,16 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**0.7.0:**
+- Introduced logic operators (>, <, ==, ~=)
+- Included logical subscripting (like x[x>0]=...)
+- Improved the parser performance (factor 1.5)
+- Improved the bracket expressions
+- Added new linear algebra functions (inv(), trace())
+- Added new Spectroscopy function (FFT)
+- Added new tests
+- Added new parsers for comparison (LL MP, MFP)
+
 **0.6.0:**
 
 - Resorted the YAMP code (directory changes)

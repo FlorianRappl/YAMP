@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace YAMP
 {
@@ -9,15 +10,19 @@ namespace YAMP
 		FunctionDelegate _func;
 		string _name;
 		BracketExpression _child;
-		const string PATTERN = @"[A-Za-z]+[A-Za-z0-9]*\(.*\)";
 		
-		public FunctionExpression () : base(PATTERN)
+		public FunctionExpression () : base(@"[A-Za-z]+[A-Za-z0-9]*\(.*\)")
 		{
 		}
 
-        public override Expression Create()
+		public FunctionExpression (Match match) : this()
+		{
+			mx = match;
+		}
+
+		public override Expression Create(Match match)
         {
-            return new FunctionExpression();
+            return new FunctionExpression(match);
         }
 		
 		public override Value Interpret (Hashtable symbols)
@@ -28,13 +33,17 @@ namespace YAMP
 		
 		public override string Set (string input)
 		{
+			var sb = new StringBuilder();
 			var pos = input.IndexOf('(');
 			_name = input.Substring(0, pos);
+			sb.Append(_name).Append("(");
 			_func = Tokens.Instance.FindFunction(_name);
 			_child = new BracketExpression();
 			_child.Offset = Offset + pos;
-			_input = _name + "(" + _child.Input + ")";
-			return _child.Set(input.Substring(pos));
+			input = _child.Set(input.Substring(pos));
+			sb.Append(_child.Input).Append(")");
+			_input = sb.ToString();
+			return input;
 		}
 		
 		public override string ToString ()
@@ -47,7 +56,7 @@ namespace YAMP
 		
 		public override void RegisterToken ()
 		{
-			SymbolExpression.SetFunctionPattern(PATTERN);
+			SymbolExpression.SetFunctionPattern(Pattern);
 		}
 	}
 }

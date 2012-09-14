@@ -1,6 +1,8 @@
 using System;
 using System.Globalization;
 using System.Collections;
+using System.Text.RegularExpressions;
+
 namespace YAMP
 {
 	class NumberExpression : Expression
@@ -11,9 +13,14 @@ namespace YAMP
 		{
 		}
 
-        public override Expression Create()
+		public NumberExpression (Match match) : this()
+		{
+			mx = match;
+		}
+
+		public override Expression Create(Match match)
         {
-            return new NumberExpression();
+            return new NumberExpression(match);
         }
 		
 		public override Value Interpret (Hashtable symbols)

@@ -1,20 +1,26 @@
 using System;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
 namespace YAMP
 {
 	public abstract class Expression : IRegisterToken
 	{	
 		string _pattern;
 		protected string _input;
-		Regex rx;
+		protected Match mx;
 		int _offset;
-		
-		internal Regex SearchExpression
+
+		internal string Pattern
 		{
-			get { return rx; }
-			set { rx = value; }
+			get { return _pattern; }
+		}
+
+		internal Match Match
+		{
+			get { return mx; }
 		}
 		
 		internal int Offset
@@ -23,7 +29,7 @@ namespace YAMP
 			set { _offset = value; }
 		}
 
-		internal string Input
+		internal virtual string Input
 		{
 			get { return _input; }
 		}
@@ -40,12 +46,11 @@ namespace YAMP
 		
 		public abstract Value Interpret(Hashtable symbols);
 
-        public abstract Expression Create();
+        public abstract Expression Create(Match match);
 		
 		public virtual string Set(string input)
 		{
-			var match = rx.Match(input);
-			_input = match.Value;
+			_input = mx.Value;
 			return input.Substring(_input.Length);
 		}
 

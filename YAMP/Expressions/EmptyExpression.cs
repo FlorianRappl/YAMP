@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Collections;
 
 namespace YAMP
@@ -9,9 +10,9 @@ namespace YAMP
 		{
 		}
 
-        public override Expression Create()
+        public override Expression Create(Match match)
         {
-            return new EmptyExpression();
+			return new EmptyExpression();
         }
 		
 		public override string Set (string input)

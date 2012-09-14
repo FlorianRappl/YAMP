@@ -650,6 +650,9 @@ namespace MathParserDataStructures
         /// <exception cref="ArgumentException">ArgumentException</exception>
         public virtual double Evaluate(string mathInput, char[] vars, double[] varsValues)
         {
+			// We do not want to cache the results - bad for benchmarks!
+			this._mathInput = string.Empty;
+
             if (String.IsNullOrEmpty(mathInput))
                 throw new ArgumentException("String mathInput is empty or null");
 

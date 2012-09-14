@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace YAMP
 {
@@ -10,7 +11,7 @@ namespace YAMP
 		{
 		}
 
-        public override Expression Create()
+		public override Expression Create(Match match)
         {
             return new StringExpression();
         }

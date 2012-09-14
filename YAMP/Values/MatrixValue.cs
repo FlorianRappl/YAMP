@@ -367,8 +367,16 @@ namespace YAMP
 		
 		public MatrixValue Inverse()
 		{
-			//TODO
-			return this.Transpose();
+			var target = One(DimensionX);
+
+			if(DimensionX != DimensionY || DimensionX < 32)
+			{
+				var lu = new YAMP.Numerics.LUDecomposition(this);
+				return lu.Solve(target);
+			}
+
+			var qr = new YAMP.Numerics.QRDecomposition(this);
+			return qr.Solve(target);
 		}
 		
 		public override string ToString ()
@@ -612,7 +620,7 @@ namespace YAMP
                 array[j] = new double[DimensionX];
 
                 for (var i = 0; i < DimensionX; i++)
-                    array[j][i] = _values[j, i].Value;
+                    array[j][i] = _values[i, j].Value;
             }
 
             return array;

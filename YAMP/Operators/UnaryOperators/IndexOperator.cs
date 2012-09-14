@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,10 +7,9 @@ namespace YAMP
 {
     class IndexOperator : UnaryOperator
     {
-		ParseTree _tree;
+		BracketExpression _bracket;
 		object[][] _indices;
 		Type[] _types;
-		string _input;
 		int _dimX;
 		int _dimY;
 
@@ -19,7 +19,7 @@ namespace YAMP
 		{
 			get 
 			{
-				return "[" + _input + "]";
+				return _bracket.Input;
 			}
 		}
 		
@@ -34,25 +34,8 @@ namespace YAMP
 		
 		public override string Set (string input)
 		{
-			var brackets = 1;
-			
-			for(var i = 1; i < input.Length; i++)
-			{
-				if(input[i] == ']')
-					brackets--;
-				else if(input[i] == '[')
-					brackets++;
-				
-				if(brackets == 0)
-				{
-					_input = input.Substring(1, i - 1);
-					_tree = new ParseTree(_input, true);
-					i++;
-					return input.Length > i ? input.Substring(i) : string.Empty;
-				}
-			}
-			
-			throw new BracketException("[", input);
+			_bracket = new BracketExpression();
+			return _bracket.Set(input, true);
 		}
 		
 		public override Value Perform (Value left)
@@ -139,14 +122,25 @@ namespace YAMP
 		void GetIndex(Hashtable symbols, Value left)
 		{
 			Value _value;
-			
-            if (_tree.Operator != null)
-                _value = _tree.Operator.Evaluate(_tree.Expressions, symbols);
-            else
-				_value = _tree.Expressions[0].Interpret(symbols);
+
+			if (_bracket.Tree.Operator != null)
+				_value = _bracket.Tree.Operator.Evaluate(_bracket.Tree.Expressions, symbols);
+			else
+				_value = _bracket.Tree.Expressions[0].Interpret(symbols);
 			
 			if(_value is ScalarValue || _value is MatrixValue)
 			{
+				if(_value is MatrixValue)
+				{
+					var m = _value as MatrixValue;
+
+					if(m.DimensionX == GetDimX (left) && m.DimensionY == GetDimY(left))
+					{
+						LogicalSubscripting(m);
+						return;
+					}
+				}
+
 				_types = new Type[] { typeof(int) };
 				var values = GetIndices(_value, GetLength(left));
 				BuildIndices(values);
@@ -216,6 +210,21 @@ namespace YAMP
 				for(var j = 0; j < _dimY; j++)
 					_indices[k++] = new object[] { rows[j], cols[i] };
 		}
+
+		void LogicalSubscripting(MatrixValue m)
+		{
+			_types = new Type[] { typeof(int), typeof(int) };
+			var idx = new List<object[]>();
+
+			for(var i = 1; i <= m.DimensionX; i++)
+				for(var j = 1; j <= m.DimensionY; j++)
+					if(m[j, i].Value != 0.0)
+						idx.Add(new object[] { j, i });
+
+			_dimX = 1;
+			_dimY = idx.Count;
+			_indices = idx.ToArray();
+		}
 		
 		public override Value Handle (Expression expression, Hashtable symbols)
 		{
@@ -241,7 +250,7 @@ namespace YAMP
 
 		public override string ToString ()
 		{
-			return base.ToString() + Environment.NewLine + _tree.ToString();
+			return base.ToString() + Environment.NewLine + _bracket.ToString();
 		}
     }
 }

@@ -94,7 +94,7 @@ namespace YAMP
 			_input = input;
 			_isList = isList;
 
-			if(_input.StartsWith("-"))
+			if(_input.Length > 0 && _input[0] == '-')
 				_input = "0" + _input;
 
 			Parse();
@@ -115,7 +115,7 @@ namespace YAMP
 			var tmpExp = 0;
             var offset = _offset;
 
-            if (string.IsNullOrEmpty(_input))
+            if (_input.Length == 0)
             {
                 _expressions = new Expression[] { new EmptyExpression() };
                 return;
@@ -123,6 +123,25 @@ namespace YAMP
 
 			while(shadow.Length > 0)
 			{
+				if(shadow[0] == ' ')
+				{
+					offset++;
+					shadow = shadow.Substring(1);
+					continue;
+				}
+
+				if(shadow.Length > 1)
+				{
+					var key = new string(new char[] { shadow[0], shadow[1] });
+
+					if(Tokens.Instance.Sanatizers.ContainsKey(key))
+					{
+						offset++;
+						shadow = Tokens.Instance.Sanatizers[key] + shadow.Substring(2);
+						continue;
+					}
+				}
+
 				if(takeop)
 				{
 					var op = Tokens.Instance.FindOperator(shadow);
@@ -130,7 +149,8 @@ namespace YAMP
 					if(op.Level >= maxLevel)
 					{
 						maxLevel = op.Level;
-						maxIndex = ops.Count;
+						maxIndex
+							= ops.Count;
 						expIndex = exps.Count;
 					}
 

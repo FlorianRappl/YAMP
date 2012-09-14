@@ -19,7 +19,7 @@ namespace YAMPConsole
 		
 		public static void Main (string[] args)
 		{
-			Console.WriteLine ("Command Line Test Tool of YAMP");			
+			Console.WriteLine ("Command Line Test Tool of YAMP");
 
 #if DEBUG
 			Console.WriteLine("DEBUG MODE");
@@ -38,7 +38,7 @@ namespace YAMPConsole
 			while(true)
 			{
 				Console.Write(">> ");
-				query = Console.ReadLine();
+				query = System.Console.ReadLine();
 
                 if (query.Equals("exit"))
                     break;
@@ -81,11 +81,11 @@ namespace YAMPConsole
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
-            var lines = new string[0];
+			//var lines = new string[0];
 			// This is Benchmark #1
             //var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
-            //var lines = MakeTenK("2-3*5+7/2-8*2");
+            var lines = MakeTenK("2-3*5+7/2-8*2");
 			// This is Benchmark #3
             //var lines = MakeTenK("2+3");
 			// This is Benchmark #4
@@ -110,10 +110,10 @@ namespace YAMPConsole
             //http://www.codeproject.com/Articles/23061/MathParser-Math-Formula-Parser
             // FAILED ; 147 ms ; 54 ms ; FAILED
             Benchmark("MathFormulaParser", lines, query => d.Calculate(query));
-
-            //http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
-            // 1611 ms ; 48 ms ; 55 ms ; 62 ms
-            Benchmark("LLMathParser", lines, query => e.Evaluate(query, new char[0], new double[0]));
+			
+			//http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
+			// 1611 ms ; 48 ms ; 55 ms ; 62 ms
+			Benchmark("LLMathParser", lines, query => e.Evaluate(query, new char[0], new double[0]));
 		}
 
 		static string[] MakeTenK(string s)
@@ -227,6 +227,11 @@ namespace YAMPConsole
             Test("|cos(1+i)|", 1.2934544550420957);
             Test("|arccos(0.83373002513-0.988897705i)|", 1.4142135618741407);
 			Test("|(x=(1,2,3;4,5,6;7,8,9))[:,1]|", Math.Sqrt(66.0));
+			Test("17>12", 1.0);
+			Test("7<-1.5", 0.0);
+			Test("|(1,2,3,4,5,6,7) < 5|", 2.0);
+			Test("2+i==2-i", 0.0);
+			Test("3-i~=4", 1.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}
@@ -251,7 +256,7 @@ namespace YAMPConsole
 			}
 			
 			Console.WriteLine("with x = {2}..{3} ;\n{0}\n-> correct: {1}", success, total, xmin, xmax);
-			return Asset(success == total);
+			return Assert(success, total);
 		}
 		
 		static bool Test(string query, double x, double result)
@@ -260,7 +265,7 @@ namespace YAMPConsole
 			Console.WriteLine("Testing: {0} = ...", query);
 			var value = parser.Execute(new { x });
 			Console.WriteLine("with x = {2};\n{0}\n-> correct: {1}", value, result, x);
-			return Asset(value.Equals(result));
+			return Assert(value, result);
 		}
 		
 		static bool Test(string query, double result)
@@ -269,27 +274,40 @@ namespace YAMPConsole
 			Console.WriteLine("Testing: {0} = ...", query);
 			var value = parser.Execute();
 			Console.WriteLine("{0}\n-> correct: {1}", value, result);
-			return Asset(value.Equals(result));
+			return Assert(value as YAMP.ScalarValue, result);
+		}
+
+		static bool Assert(int total, int result)
+		{
+			return Assert ((double)total, (double)result);
 		}
 		
-		static bool Asset(bool given)
-		{			
-			if(given)
+		static bool Assert (YAMP.Value value, double result)
+		{
+			return Assert ((value as YAMP.ScalarValue).Value, result);
+		}
+
+		static bool Assert(double value, double result)
+		{
+			var isSuccess = true;
+			total++;
+
+			if(value == result)
 			{
+				success++;
 				Console.ForegroundColor = ConsoleColor.Green;
 				Console.WriteLine("Test successful!");
 			}
 			else
 			{
+				isSuccess = false;
 				Console.ForegroundColor = ConsoleColor.Red;
 				Console.WriteLine("Test failed!");
 			}
 			
 			Console.ResetColor();
 			Console.WriteLine("---");
-			total++;
-			success += given ? 1 : 0;
-			return given;
+			return isSuccess;
 		}
 
 #endif

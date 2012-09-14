@@ -1,6 +1,7 @@
 using System;
-using System.Text.RegularExpressions;
+using System.Text;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace YAMP
 {
@@ -8,15 +9,15 @@ namespace YAMP
 	{
         static Regex fx;
         FunctionExpression func;
-		
+
 		public static void SetFunctionPattern(string pattern)
 		{
 			fx = new Regex("^" + pattern);
 		}
 
-        public override Expression Create()
+		public override Expression Create( Match match)
         {
-            return new SymbolExpression();
+            return new SymbolExpression(match);
         }
 
         public bool IsSymbol
@@ -31,6 +32,11 @@ namespace YAMP
 		
 		public SymbolExpression () : base(@"[A-Za-z]+[A-Za-z0-9]*\b")
 		{
+		}
+
+		public SymbolExpression (Match match) : this()
+		{
+		    mx = match;
 		}
 		
 		public override Value Interpret (Hashtable symbols)
@@ -59,9 +65,11 @@ namespace YAMP
 		
 		public override string Set (string input)
 		{
-			if(fx.IsMatch(input))
+			var m = fx.Match(input);
+
+			if(m.Success)
 			{
-				func = new FunctionExpression();
+				func = new FunctionExpression(m);
 				input = func.Set(input);
 				_input = func.Input;
 				return input;

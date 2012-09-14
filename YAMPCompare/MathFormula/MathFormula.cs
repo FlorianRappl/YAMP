@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Collections;
 
@@ -32,7 +31,7 @@ namespace MathFunctions
         {
             try
             {
-                string[] arr = Formula.Split("/+-*()".ToCharArray(),    StringSplitOptions.RemoveEmptyEntries);
+                string[] arr = Formula.Split("/+-*()".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 foreach (KeyValuePair<Parameters, decimal> de in _Parameters)
                 {
                     foreach(string s in arr)

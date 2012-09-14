@@ -2,11 +2,21 @@ using System;
 
 namespace YAMP
 {
-		public class GtOperator
+	class GtOperator : LogicOperator
+	{
+		public GtOperator () : base(">")
 		{
-				public GtOperator ()
-				{
-				}
 		}
+		
+		public override Operator Create ()
+		{
+			return new GtOperator();
+		}
+
+		public override ScalarValue Compare (ScalarValue left, ScalarValue right)
+		{
+			return left > right;
+		}
+	}
 }
 

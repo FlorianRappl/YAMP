@@ -245,6 +245,13 @@ namespace YAMP
 			return new ScalarValue(re, im);
 		}
 		
+		public ScalarValue Log()
+		{
+			var re = Math.Log(abs(), 10.0);
+			var im = arg();
+			return new ScalarValue(re, im);
+		}
+		
 		public ScalarValue Faculty()
 		{
             var re = faculty(_real);
@@ -284,12 +291,13 @@ namespace YAMP
 		
 		public override string ToString ()
 		{
+			//TODO
 			if(Math.Abs(_imag) < epsilon)
-				return string.Format(Tokens.NumberFormat, "{0}", Value);
+				return string.Format(Tokens.NumberFormat, "{0}", Math.Abs (Value) < epsilon ? 0.0 : Math.Round(Value, 4));
 			else if(Math.Abs(_real) < epsilon)
-				return string.Format(Tokens.NumberFormat, "{0}i", ImaginaryValue);
+				return string.Format(Tokens.NumberFormat, "{0}i", Math.Round(ImaginaryValue, 4));
 			
-			return string.Format (Tokens.NumberFormat, "{0}{2}{1}i", Value, ImaginaryValue, ImaginaryValue < 0 ? string.Empty : "+");
+			return string.Format (Tokens.NumberFormat, "{0}{2}{1}i", Math.Round(Value, 4), Math.Round(ImaginaryValue, 4), ImaginaryValue < 0.0 ? string.Empty : "+");
 		}
 		
 		public override bool Equals (object obj)
@@ -350,6 +358,54 @@ namespace YAMP
         {
             return a * b;
         }
+
+		public static ScalarValue operator <(ScalarValue l, ScalarValue r)
+		{
+			if(l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
+			{
+				if(l._real < r._real)
+					return new ScalarValue(1.0, 0.0);
+			}
+			else if(l.abs() < r.abs ())
+				return new ScalarValue(1.0, 0.0);
+
+			return new ScalarValue();
+		}
+		
+		public static ScalarValue operator >(ScalarValue l, ScalarValue r)
+		{
+			if(l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
+			{
+				if(l._real > r._real)
+					return new ScalarValue(1.0, 0.0);
+			}
+			else if(l.abs() > r.abs ())
+				return new ScalarValue(1.0, 0.0);
+			
+			return new ScalarValue();
+		}
+		
+		public static ScalarValue operator ==(ScalarValue l, ScalarValue r)
+		{
+			if(Math.Abs (l.ImaginaryValue - r.ImaginaryValue) > epsilon)
+				return new ScalarValue();
+
+			if(Math.Abs(l.Value - r.Value) > epsilon)
+				return new ScalarValue();
+			
+			return new ScalarValue(1.0);
+		}
+		
+		public static ScalarValue operator !=(ScalarValue l, ScalarValue r)
+		{
+			if(Math.Abs (l.ImaginaryValue - r.ImaginaryValue) > epsilon)
+				return new ScalarValue(1.0);
+			
+			if(Math.Abs(l.Value - r.Value) > epsilon)
+				return new ScalarValue(1.0);
+			
+			return new ScalarValue();
+		}
 
         public static ScalarValue operator *(ScalarValue a, double b)
         {

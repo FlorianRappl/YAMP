@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace YAMP
 {
@@ -14,9 +15,14 @@ namespace YAMP
 		{
 		}
 
-        public override Expression Create()
+		public SpecialExpression (Match match) : this()
+		{
+			mx = match;
+		}
+
+		public override Expression Create(Match match)
         {
-            return new SpecialExpression();
+            return new SpecialExpression(match);
         }
 		
 		public override Value Interpret (Hashtable symbols)
