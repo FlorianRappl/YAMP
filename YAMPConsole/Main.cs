@@ -232,6 +232,7 @@ namespace YAMPConsole
 			Test("|(1,2,3,4,5,6,7) < 5|", 2.0);
 			Test("2+i==2-i", 0.0);
 			Test("3-i~=4", 1.0);
+			Test("abs((1,2,3;4,5,6;7,8,9)[1,:])", Math.Sqrt(14.0));
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}
