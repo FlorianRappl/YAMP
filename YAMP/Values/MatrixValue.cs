@@ -10,15 +10,14 @@ namespace YAMP
 		ScalarValue[,] _values;
 		
 		int capacityX;
-		int dimX;
+        int dimX;
+        int capacityY;
+        int dimY;
 		
 		public int DimensionX
 		{
 			get { return dimX; }
 		}
-		
-		int capacityY;
-		int dimY;
 		
 		public int DimensionY
 		{
@@ -29,6 +28,29 @@ namespace YAMP
 		{
 			get { return dimY * dimX; }
 		}
+
+        public bool IsSymmetric
+        {
+            get
+            {
+                if(DimensionX != DimensionY)
+                    return false;
+
+                for (var i = 1; i <= DimensionX; i++)
+                {
+                    for (var j = 1; j < i; j++)
+                    {
+                        if (this[i, j].Value != this[j, i].Value)
+                            return false;
+
+                        if (this[i, j].ImaginaryValue != -this[j, i].ImaginaryValue)
+                            return false;
+                    }
+                }
+
+                return true;
+            }
+        }
 		
 		public MatrixValue ()
 		{
@@ -525,9 +547,7 @@ namespace YAMP
 			var sum = 0.0;
 			
 			foreach(var p in _values)
-			{
 				sum += (p.Value * p.Value + p.ImaginaryValue * p.ImaginaryValue);
-			}
 			
 			return new ScalarValue(Math.Sqrt(sum));
 		}
@@ -646,6 +666,31 @@ namespace YAMP
                     X[j, i - dx] = this[y[j - 1], i].Clone();
 
             return X;
+        }
+
+        public static MatrixValue operator *(MatrixValue a, MatrixValue b)
+        {
+            return a.Multiply(b) as MatrixValue;
+        }
+
+        public static MatrixValue operator *(ScalarValue a, MatrixValue b)
+        {
+            return b.Multiply(a) as MatrixValue;
+        }
+
+        public static MatrixValue operator /(MatrixValue a, MatrixValue b)
+        {
+            return a.Divide(b) as MatrixValue;
+        }
+
+        public static MatrixValue operator -(MatrixValue a, MatrixValue b)
+        {
+            return a.Subtract(b) as MatrixValue;
+        }
+
+        public static MatrixValue operator +(MatrixValue a, MatrixValue b)
+        {
+            return a.Add(b) as MatrixValue;
         }
     }
 }

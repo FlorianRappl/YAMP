@@ -1,28 +1,57 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace YAMP
 {
 	class LoadFunction : ArgumentFunction
 	{
+        public LoadFunction() : base(2)
+        {
+        }
+
 		public Value Function(StringValue filename)
 		{
             if (!File.Exists(filename.Value))
                 throw new FileNotFoundException("The specified file has not been found.");
 
-			var v = Load (filename.Value);
+			var v = Load(filename.Value);
 
-			foreach(string key in v.Keys)
-				Tokens.Instance.AssignVariable(key, v[key] as Value);
+			foreach(var key in v.Keys)
+				Tokens.Instance.AssignVariable(key, v[key]);
 
 			return new StringValue(v.Count + " objects loaded.");
 		}
+
+        public Value Function(StringValue filename, ArgumentsValue args)
+        {
+            if (!File.Exists(filename.Value))
+                throw new FileNotFoundException("The specified file has not been found.");
+
+            var v = Load(filename.Value);
+            var count = 0;
+
+            foreach (var arg in args.Values)
+            {
+                if (arg is StringValue)
+                {
+                    var name = (arg as StringValue).Value;
+
+                    if (v.ContainsKey(name))
+                    {
+                        Tokens.Instance.AssignVariable(name, v[name] as Value);
+                        count++;
+                    }
+                }
+            }
+
+            return new StringValue(count + " objects loaded.");
+        }
 		
-		public static Hashtable Load(string filename)
+		public static IDictionary<string, Value> Load(string filename)
 		{
-			var ht = new Hashtable();
+            var ht = new Dictionary<string, Value>();
 			var lenbuffer = new byte[4];
 			var ctnbuffer = new byte[0];
 

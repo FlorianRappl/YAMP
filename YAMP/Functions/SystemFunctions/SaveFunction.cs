@@ -7,11 +7,34 @@ namespace YAMP
 {
 	class SaveFunction : ArgumentFunction
 	{
+        public SaveFunction() : base(2)
+        {
+        }
+
 		public Value Function(StringValue filename)
 		{
 			Save(filename.Value, Tokens.Instance.Variables);
 			return new StringValue(Tokens.Instance.Variables.Count + " objects saved.");
 		}
+
+        public Value Function(StringValue filename, ArgumentsValue args)
+        {
+            var workspace = new Dictionary<string, Value>();
+
+            foreach (var arg in args.Values)
+            {
+                if (arg is StringValue)
+                {
+                    var name = (arg as StringValue).Value;
+
+                    if (Tokens.Instance.Variables.ContainsKey(name))
+                        workspace.Add(name, Tokens.Instance.Variables[name]);
+                }
+            }
+
+            Save(filename.Value, workspace);
+            return new StringValue(workspace.Count + " objects saved.");
+        }
 
 		public static void Save(string filename, IDictionary<string, Value> workspace)
 		{

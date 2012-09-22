@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **0.7.0**. This version is still an incomplete alpha build.
+The current version number is **0.8.0**. This version is still an incomplete alpha build.
 A NuGet package will be available quite soon. There are a lot of tests in the code - since
 the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -37,6 +37,15 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**0.8.0:**
+- Introduced combined assignment operators (+=, -=, *=, ^=, /=, \=, ...)
+- Added a function for setting the output precision (precision())
+- Added the CG method and a proper (prelimary) solve() method
+- Improved the ArgumentsFunction class to support optional arguments
+- Added the possibility to specify the variables to load, save and clear in those functions
+- Small changes in the code for more elegance
+- Improved the performance of the parser
+
 **0.7.0:**
 - Introduced logic operators (>, <, ==, ~=)
 - Included logical subscripting (like x[x>0]=...)

@@ -165,11 +165,9 @@ namespace YAMP
                     return new ScalarValue();
 
                 var exp = exponent as ScalarValue;
-                var theta = _real == 0.0 ? Math.PI / 2 * Math.Sign(ImaginaryValue) : Math.Atan(_imag / _real);
+                var theta = _real == 0.0 ? Math.PI / 2 * Math.Sign(ImaginaryValue) : Math.Atan2(_imag, _real);
                 var L = _real / Math.Cos(theta);
-                var phi = Ln();
-                phi._real *= exp._imag;
-                phi._imag *= exp._imag;
+                var phi = Ln() * exp._imag;
                 var R = (I.Multiply(phi) as ScalarValue).Exp();
                 var alpha = _real == 0.0 ? 1.0 : Math.Pow(Math.Abs(L), exp._real);
                 var beta = theta * exp._real;
@@ -263,8 +261,21 @@ namespace YAMP
 
 		public ScalarValue IsPrime ()
 		{
-			//TODO
-			//if(IsInt() 
+            if (IsInt().Value == 1)
+            {
+                var k = IntValue;
+
+                if ((k & 1) == 0)
+                    return new ScalarValue(false);
+
+                var sqrt = (int)Math.Sqrt(Value);
+
+                for (var i = 3; i < sqrt; i += 2)
+                    if (k % i == 0)
+                        return new ScalarValue(false);
+
+                return new ScalarValue(true);
+            }
 
 			return new ScalarValue(false);
 		}
@@ -308,13 +319,12 @@ namespace YAMP
 		
 		public override string ToString ()
 		{
-			//TODO
 			if(Math.Abs(_imag) < epsilon)
-				return string.Format(Tokens.NumberFormat, "{0}", Math.Abs (Value) < epsilon ? 0.0 : Math.Round(Value, 4));
+				return string.Format(Tokens.NumberFormat, "{0}", Math.Abs (Value) < epsilon ? 0.0 : Math.Round(Value, Tokens.Precision));
 			else if(Math.Abs(_real) < epsilon)
-				return string.Format(Tokens.NumberFormat, "{0}i", Math.Round(ImaginaryValue, 4));
-			
-			return string.Format (Tokens.NumberFormat, "{0}{2}{1}i", Math.Round(Value, 4), Math.Round(ImaginaryValue, 4), ImaginaryValue < 0.0 ? string.Empty : "+");
+                return string.Format(Tokens.NumberFormat, "{0}i", Math.Round(ImaginaryValue, Tokens.Precision));
+
+            return string.Format(Tokens.NumberFormat, "{0}{2}{1}i", Math.Round(Value, Tokens.Precision), Math.Round(ImaginaryValue, Tokens.Precision), ImaginaryValue < 0.0 ? string.Empty : "+");
 		}
 		
 		public override bool Equals (object obj)
@@ -400,7 +410,33 @@ namespace YAMP
 				return new ScalarValue(true);
 			
 			return new ScalarValue(false);
-		}
+        }
+
+        public static ScalarValue operator <=(ScalarValue l, ScalarValue r)
+        {
+            if (l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
+            {
+                if (l._real <= r._real)
+                    return new ScalarValue(true);
+            }
+            else if (l.abs() <= r.abs())
+                return new ScalarValue(true);
+
+            return new ScalarValue(false);
+        }
+
+        public static ScalarValue operator >=(ScalarValue l, ScalarValue r)
+        {
+            if (l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
+            {
+                if (l._real >= r._real)
+                    return new ScalarValue(true);
+            }
+            else if (l.abs() >= r.abs())
+                return new ScalarValue(true);
+
+            return new ScalarValue(false);
+        }
 		
 		public static ScalarValue operator ==(ScalarValue l, ScalarValue r)
 		{

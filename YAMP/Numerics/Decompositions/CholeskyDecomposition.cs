@@ -11,7 +11,7 @@ namespace YAMP.Numerics
     /// returns a partial decomposition and sets an internal flag that may
     /// be queried by the isSPD() method.
     /// </summary>
-    public class CholeskyDecomposition
+    public class CholeskyDecomposition : DirectSolver
     {
         #region Members
 
@@ -117,7 +117,7 @@ namespace YAMP.Numerics
         /// <exception cref="System.SystemException"> Matrix is not symmetric positive definite.
         /// </exception>
 
-        public virtual MatrixValue Solve(MatrixValue B)
+        public override MatrixValue Solve(MatrixValue B)
         {
             if (B.DimensionY != n)
                 throw new DimensionException(n, B.DimensionY);

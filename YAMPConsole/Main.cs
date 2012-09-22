@@ -81,18 +81,18 @@ namespace YAMPConsole
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
-			//var lines = new string[0];
+			var lines = new string[0];
 			// This is Benchmark #1
             //var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
-            var lines = MakeTenK("2-3*5+7/2-8*2");
+            //var lines = MakeTenK("2-3*5+7/2-8*2");
 			// This is Benchmark #3
             //var lines = MakeTenK("2+3");
 			// This is Benchmark #4
             //var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
 			
 			// The implementation here... YAMP
-			// 6016 ms ; 414 ms ; 167 ms ; 567 ms
+			// 5716 ms ; 398 ms ; 131 ms ; 543 ms
 			Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
 			
 			//http://www.codeproject.com/Articles/11164/Math-Parser
@@ -112,7 +112,7 @@ namespace YAMPConsole
             Benchmark("MathFormulaParser", lines, query => d.Calculate(query));
 			
 			//http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
-			// 1611 ms ; 48 ms ; 55 ms ; 62 ms
+			// 1611 ms ; 167 ms ; 81 ms ; 177 ms
 			Benchmark("LLMathParser", lines, query => e.Evaluate(query, new char[0], new double[0]));
 		}
 
@@ -233,6 +233,7 @@ namespace YAMPConsole
 			Test("2+i==2-i", 0.0);
 			Test("3-i~=4", 1.0);
 			Test("abs((1,2,3;4,5,6;7,8,9)[1,:])", Math.Sqrt(14.0));
+            Test("(-25)^2", 625.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}

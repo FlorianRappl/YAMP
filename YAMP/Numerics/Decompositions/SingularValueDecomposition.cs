@@ -620,7 +620,7 @@ namespace YAMP.Numerics
         {
             var eps = Math.Pow(2.0, -52.0);
             var tol = Math.Max(m, n) * s[0] * eps;
-            int r = 0;
+            var r = 0;
 
             for (int i = 0; i < s.Length; i++)
             {

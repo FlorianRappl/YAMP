@@ -109,6 +109,13 @@ namespace YAMP
 			{
 				return _values[i];
 			}
+            set
+            {
+                if (i == _values.Count)
+                    _values.Add(value);
+                else if(i < _values.Count)
+                    _values[i] = value;
+            }
 		}
 
 		#endregion

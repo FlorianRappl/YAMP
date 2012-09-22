@@ -18,7 +18,7 @@ namespace YAMP.Numerics
     /// conditioned, or even singular, so the validity of the equation
     /// A = V*D*Inverse(V) depends upon V.cond().
     /// </summary>
-    public class EigenvalueDecomposition
+    public class Eigenvalues
     {
         #region	 Members
 
@@ -1005,7 +1005,7 @@ namespace YAMP.Numerics
         /// </summary>
         /// <param name="Arg">Square matrix</param>
         /// <returns>Structure to access D and V.</returns>
-        public EigenvalueDecomposition(MatrixValue Arg)
+        public Eigenvalues(MatrixValue Arg)
         {
             var A = Arg.GetRealArray();
             n = Arg.DimensionX;

@@ -34,13 +34,14 @@ namespace YAMP
 		public override string Set (string input)
 		{
 			var sb = new StringBuilder();
-			var pos = input.IndexOf('(');
+            var pos = input.IndexOf('(');
+            var isList = false;
 			_name = input.Substring(0, pos);
 			sb.Append(_name).Append("(");
-			_func = Tokens.Instance.FindFunction(_name);
+			_func = Tokens.Instance.FindFunction(_name, out isList);
 			_child = new BracketExpression();
 			_child.Offset = Offset + pos;
-			input = _child.Set(input.Substring(pos));
+			input = _child.Set(input.Substring(pos), isList);
 			sb.Append(_child.Input).Append(")");
 			_input = sb.ToString();
 			return input;

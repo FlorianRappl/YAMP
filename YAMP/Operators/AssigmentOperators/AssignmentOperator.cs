@@ -29,7 +29,7 @@ namespace YAMP
 			return right;
 		}
 		
-		Value Assign(Expression left, Value value, Hashtable symbols)
+		protected Value Assign(Expression left, Value value, Hashtable symbols)
 		{
 			if (left is SymbolExpression)
                 return Assign(left as SymbolExpression, value);

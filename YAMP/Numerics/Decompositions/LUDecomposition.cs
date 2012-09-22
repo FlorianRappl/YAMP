@@ -16,7 +16,7 @@ namespace YAMP.Numerics
     /// LU decomposition is in the solution of square systems of simultaneous
     /// linear equations. This will fail if IsNonSingular() returns false.
     /// </summary>
-    public class LUDecomposition
+    public class LUDecomposition : DirectSolver
     {
         #region Members
 
@@ -249,7 +249,7 @@ namespace YAMP.Numerics
         /// </summary>
         /// <param name="B">A Matrix with as many rows as A and any number of columns.</param>
         /// <returns>X so that L*U*X = B(piv,:)</returns>
-        public virtual MatrixValue Solve(MatrixValue B)
+        public override MatrixValue Solve(MatrixValue B)
         {
             if (B.DimensionY != m)
                 throw new DimensionException(B.DimensionY, m);

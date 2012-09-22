@@ -1,17 +1,30 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace YAMP
 {
 	abstract class ArgumentFunction : StandardFunction
 	{
 		protected Value[] arguments;
-		Hashtable functions;
+		IDictionary<int, MethodInfo> functions;
+        int _optArg;
+        bool _hasOpt;
+
+        public ArgumentFunction() : this(0, false)
+        {
+        }
+
+        public ArgumentFunction(int optArg) : this(optArg, true)
+        {
+        }
 		
-		public ArgumentFunction ()
+		ArgumentFunction (int optArg, bool hasArg)
 		{
-			functions = new Hashtable();
+            _hasOpt = hasArg;
+            _optArg = optArg;
+			functions = new Dictionary<int, MethodInfo>();
 			var methods = this.GetType().GetMethods();
 			
 			foreach(var method in methods)
@@ -26,35 +39,39 @@ namespace YAMP
 		
 		public override Value Perform (Value argument)
 		{
-			if(argument is ScalarValue)
-				arguments = new Value[] { argument };
-			else if(argument is StringValue)
-				arguments = new Value[] { argument };
-			else if(argument is MatrixValue)
-			{
-				var vec = argument as MatrixValue;
-				
-				if(vec.DimensionY > 1)
-					throw new ArgumentException(name);
-				
-				arguments = new Value[vec.DimensionX];
-				
-				for(var i = 0; i < arguments.Length;)
-					arguments[i] = vec[++i];
-			}
-			else if(argument is ArgumentsValue)
+			if(argument is ArgumentsValue)
 				arguments = (argument as ArgumentsValue).Values;
 			else
-				throw new ArgumentException(name);
+				arguments = new Value[] { argument };
 			
 			return Execute();
 		}
 		
 		Value Execute()
 		{
-			if(functions.ContainsKey(arguments.Length))
+            var args = arguments.Length;
+
+            if (_hasOpt && args >= _optArg)
+            {
+                var i = 0;
+                var length = arguments.Length;
+                var old = arguments;
+                var a = new ArgumentsValue();
+                arguments = new Value[_optArg];
+                args = _optArg;
+
+                for (; i < args - 1; i++)
+                    arguments[i] = old[i];
+
+                for (; i < length; i++)
+                    a[i - args + 1] = old[i];
+
+                arguments[args - 1] = a;
+            }
+            
+            if(functions.ContainsKey(args))
 			{
-				var method = (functions[arguments.Length] as MethodInfo);
+				var method = functions[args];
 
                 try
                 {
@@ -64,7 +81,7 @@ namespace YAMP
                 {
                     throw ex.InnerException;
                 }
-			}
+            }
 			
 			throw new ArgumentsException(name, arguments.Length);
 		}

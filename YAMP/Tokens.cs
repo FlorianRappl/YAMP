@@ -22,12 +22,14 @@ namespace YAMP
         IDictionary<string, Value> o_constants;
 
 		IDictionary<string, string> sanatizers;
+        List<string> argumentFunctions;
 		
 		#endregion
 
-        #region Fields
+        #region Static Fields
 
         static readonly NumberFormatInfo numFormat = new CultureInfo("en-us").NumberFormat;
+        static int precision = 5;
 
         #endregion
 
@@ -43,6 +45,7 @@ namespace YAMP
             o_constants = new Dictionary<string, Value>();
             variables = new Dictionary<string, Value>();
 			sanatizers = new Dictionary<string, string>();
+            argumentFunctions = new List<string>();
 		}
 		
 		#endregion
@@ -69,6 +72,7 @@ namespace YAMP
 			var types = assembly.GetTypes();
 			var ir = typeof(IRegisterToken).Name;
 			var fu = typeof(IFunction).Name;
+            var af = typeof(ArgumentFunction);
 			var mycst = new Constants();
 			var props = mycst.GetType().GetProperties();
 			
@@ -79,9 +83,15 @@ namespace YAMP
 
 				if(type.GetInterface(ir) != null)
 					(type.GetConstructor(Type.EmptyTypes).Invoke(null) as IRegisterToken).RegisterToken();
-				
-				if(type.GetInterface(fu) != null)
-					AddFunction(type.Name.Replace("Function", string.Empty), (type.GetConstructor(Type.EmptyTypes).Invoke(null) as IFunction).Perform, false);
+
+                if (type.GetInterface(fu) != null)
+                {
+                    var name = type.Name.Replace("Function", string.Empty).ToLower();
+                    AddFunction(name, (type.GetConstructor(Type.EmptyTypes).Invoke(null) as IFunction).Perform, false);
+                
+                    if(type.IsSubclassOf(af))
+                        argumentFunctions.Add(name);
+                }
 			}
 			
 			foreach(var prop in props)
@@ -206,13 +216,22 @@ namespace YAMP
 
             throw new SymbolException(name);
 		}
+
+        public FunctionDelegate FindFunction(string name)
+        {
+            var dummy = false;
+            return FindFunction(name, out dummy);
+        }
 		
-		public FunctionDelegate FindFunction(string name)
+		public FunctionDelegate FindFunction(string name, out bool isList)
 		{
 			var lname = name.ToLower();
 
-			if(functions.ContainsKey(lname))
-				return functions[lname];
+            if (functions.ContainsKey(lname))
+            {
+                isList = argumentFunctions.Contains(lname);
+                return functions[lname];
+            }
 			
 			throw new FunctionNotFoundException(name);
 		}
@@ -282,6 +301,12 @@ namespace YAMP
 		{
 			get { return numFormat; }
 		}
+
+        public static int Precision
+        {
+            get { return precision; }
+            internal set { precision = value; }
+        }
 		
 		#endregion
 		

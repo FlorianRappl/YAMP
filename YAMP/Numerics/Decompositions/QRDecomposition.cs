@@ -14,7 +14,7 @@ namespace YAMP.Numerics
     /// of simultaneous linear equations.  This will fail if IsFullRank()
     /// returns false.
     /// </summary>
-    public class QRDecomposition
+    public class QRDecomposition : DirectSolver
     {
         #region Members
 
@@ -215,7 +215,7 @@ namespace YAMP.Numerics
         /// <returns>X that minimizes the two norm of Q*R*X-B.</returns>
         /// <exception cref="System.ArgumentException"> Matrix row dimensions must agree.</exception>
         /// <exception cref="System.SystemException"> Matrix is rank deficient.</exception>
-        public virtual MatrixValue Solve(MatrixValue B)
+        public override MatrixValue Solve(MatrixValue B)
         {
             if (B.DimensionY != m)
                 throw new DimensionException(B.DimensionY, m);

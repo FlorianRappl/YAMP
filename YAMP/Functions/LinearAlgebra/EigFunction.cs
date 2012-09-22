@@ -9,7 +9,7 @@ namespace YAMP
         {
             if (argument is MatrixValue)
             {
-                var ev = new EigenvalueDecomposition(argument as MatrixValue);
+                var ev = new Eigenvalues(argument as MatrixValue);
                 var m = new MatrixValue(ev.RealEigenvalues.Length, 1);
 
                 for (var i = 1; i <= ev.RealEigenvalues.Length; i++)
