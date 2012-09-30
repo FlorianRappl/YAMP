@@ -21,9 +21,9 @@ Current status
 -------------------------------------------------------
 
 The current version number is **0.9.0**. This version is still an incomplete alpha build.
-A NuGet package is available at TODO. There are a lot of tests in the code - since
-the package aims to be cross platform (created with Mono), no particular unit testing
-framework has been chosen.
+A NuGet package is available [here](http://nuget.org/packages/YAMP). There are a lot of
+tests in the code - since the package aims to be cross platform (created with Mono), no
+particular unit testing framework has been chosen.
 
 The console project (provided in the solution) gives you instant access to benchmarks, 
 tests and your own trials. Parse equations as you want to. In the current release
