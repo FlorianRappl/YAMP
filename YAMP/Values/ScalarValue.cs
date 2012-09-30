@@ -484,6 +484,12 @@ namespace YAMP
         {
             return new ScalarValue(-a._real, -a._imag);
         }
+
+        public void Clear()
+        {
+            this._real = 0.0;
+            this._imag = 0.0;
+        }
     }
 }
 

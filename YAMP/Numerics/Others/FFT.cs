@@ -5,11 +5,24 @@ namespace YAMP.Numerics
 {
     public class FFT
     {
-        private FFT()
+        MatrixValue _values;
+
+        public FFT(MatrixValue values)
         {
+            _values = values;
         }
 
-        public static MatrixValue fft(MatrixValue x)
+        public MatrixValue Transform1D()
+        {
+            return ifft(_values);
+        }
+
+        public MatrixValue Transform2D()
+        {
+            return ifft2d(_values);
+        }
+
+        MatrixValue fft(MatrixValue x)
         {
             var length = x.Length;
 
@@ -50,7 +63,7 @@ namespace YAMP.Numerics
             return y;
         }
 
-        public static MatrixValue ifft(MatrixValue x)
+        MatrixValue ifft(MatrixValue x)
         {
             var length = x.Length;
 
@@ -74,7 +87,7 @@ namespace YAMP.Numerics
             return y;
         }
 
-        public static MatrixValue fft2d(MatrixValue input)
+        MatrixValue fft2d(MatrixValue input)
         {
             var output = input.Clone();
 
@@ -109,7 +122,7 @@ namespace YAMP.Numerics
             return output;
         }
 
-        public static MatrixValue ifft2d(MatrixValue input)
+        MatrixValue ifft2d(MatrixValue input)
         {
             var output = input.Clone();
 

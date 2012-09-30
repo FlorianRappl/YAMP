@@ -5,13 +5,16 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
+    [Description("Loads compatible files into YAMP.")]
 	class LoadFunction : ArgumentFunction
 	{
         public LoadFunction() : base(2)
         {
         }
 
-		public Value Function(StringValue filename)
+        [Description("Loads all variables found in the file.")]
+        [Example("load(\"myfile.mat\")", "Opens the file myfile.mat and reads out all variables.")]
+        public StringValue Function(StringValue filename)
 		{
             if (!File.Exists(filename.Value))
                 throw new FileNotFoundException("The specified file has not been found.");
@@ -24,7 +27,9 @@ namespace YAMP
 			return new StringValue(v.Count + " objects loaded.");
 		}
 
-        public Value Function(StringValue filename, ArgumentsValue args)
+        [Description("Loads specified variables found in the file.")]
+        [Example("load(\"myfile.mat\", \"x\", \"y\", \"z\")", "Opens the file myfile.mat and reads out variables that have been named x, y and z.")]
+        public StringValue Function(StringValue filename, ArgumentsValue args)
         {
             if (!File.Exists(filename.Value))
                 throw new FileNotFoundException("The specified file has not been found.");
@@ -49,7 +54,7 @@ namespace YAMP
             return new StringValue(count + " objects loaded.");
         }
 		
-		public static IDictionary<string, Value> Load(string filename)
+		static IDictionary<string, Value> Load(string filename)
 		{
             var ht = new Dictionary<string, Value>();
 			var lenbuffer = new byte[4];

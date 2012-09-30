@@ -2,45 +2,47 @@ using System;
 
 namespace YAMP
 {
+    [Description("Generates a matrix with normally (gaussian) distributed random values.")]
 	class RandnFunction : ArgumentFunction
 	{	
 		static readonly Random ran = new Random();
 		static bool buffered = false;
 		static double buffer;
-		
-		public Value Function()
+
+        [Description("Generates one normally (gaussian) distributed random value around 0 with standard deviation 1.")]
+		public ScalarValue Function()
 		{
 			return new ScalarValue(Gaussian());
 		}
-		
-		public Value Function(ScalarValue dim)
+
+        [Description("Generates a n-by-n matrix with normally (gaussian) distributed random value around 0 with standard deviation 1.")]
+        [Example("randn(3)", "Gives a 3x3 matrix with normally dist. rand. values.")]
+        public MatrixValue Function(ScalarValue dim)
 		{
-			var k = (int)dim.Value;
-			
-			if(k <= 1)
-				return new ScalarValue(Gaussian());
-			
-			var m = new MatrixValue(k, k);
-			
-			for(var i = 1; i <= k; i++)
-				for(var j = 1; j <= k; j++)
-					m[j, i] = new ScalarValue(Gaussian());
-			
-			return m;
+            return Function(dim, dim);
 		}
-		
-		public Value Function(ScalarValue rows, ScalarValue cols)
+
+        [Description("Generates a m-by-n matrix with normally (gaussian) distributed random value around 0 with standard deviation 1.")]
+        [Example("randn(3, 1)", "Gives a 3x1 matrix with normally dist. rand. values.")]
+        public MatrixValue Function(ScalarValue rows, ScalarValue cols)
 		{
-			var k = (int)rows.Value;
-			var l = (int)cols.Value;
-			var m = new MatrixValue(k, l);
-			
-			for(var i = 1; i <= l; i++)
-				for(var j = 1; j <= k; j++)
-					m[j, i] = new ScalarValue(Gaussian());
-			
-			return m;
+            return Function(rows, cols, new ScalarValue(), new ScalarValue(1.0));
 		}
+
+        [Description("Generates a m-by-n matrix with normally (gaussian) distributed random value around mu with standard deviation sigma.")]
+        [Example("randn(3, 1, 10, 2.5)", "Gives a 3x1 matrix with normally dist. rand. values around 10 with standard deviation sigma.")]
+        public MatrixValue Function(ScalarValue rows, ScalarValue cols, ScalarValue mu, ScalarValue sigma)
+        {
+            var k = (int)rows.Value;
+            var l = (int)cols.Value;
+            var m = new MatrixValue(k, l);
+
+            for (var i = 1; i <= l; i++)
+                for (var j = 1; j <= k; j++)
+                    m[j, i] = new ScalarValue(Gaussian(sigma.Value, mu.Value));
+
+            return m;
+        }
 
 		double Gaussian()
 		{

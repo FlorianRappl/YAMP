@@ -14,14 +14,14 @@ perform (parse and interpret) thousands of queries within a second.
 Features of YAMP is (complex) (matrix) numerics (scalars, vectors, matrices) with
 symbolic terms (constants, variables, functions) that can be customized. Even though
 the current release does not support adding your own operators (they can be added in
-the code within a few lines), it is easily possible. This could allow operator
+the code within a few lines), it is easily possible. This allows operator
 overloading as well.
 
 Current status
 -------------------------------------------------------
 
-The current version number is **0.8.0**. This version is still an incomplete alpha build.
-A NuGet package will be available quite soon. There are a lot of tests in the code - since
+The current version number is **0.9.0**. This version is still an incomplete alpha build.
+A NuGet package is available at TODO. There are a lot of tests in the code - since
 the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
 
@@ -37,6 +37,19 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**0.9.0:**
+- Changed the license from the CPOL to the New BSD License
+- Underscores can now also be used in symbol or function expressions
+- Added a new help() method to provide help for included methods
+- Added `DescriptionAttribute` and `ExampleAttribute` classes to write help messages
+- `ArgumentFunction` derived types are now type-safe
+- Included help for most non-trivial functions
+- Fixed a bug concerning the `trace()` method of the `MatrixValue` class
+- Included a class `AsyncTask` that is used for async invoking
+- Provided a method `ExecuteAsync()` for async execution
+- Added some simple integrators
+- Added the GMRES(k) method for solving non-SPD matrices
+
 **0.8.0:**
 - Introduced combined assignment operators (+=, -=, *=, ^=, /=, \=, ...)
 - Added a function for setting the output precision (precision())
@@ -149,18 +162,26 @@ Some legal stuff
 ------------------
 
 Copyright (c) 2012, Florian Rappl.
+All rights reserved.
 
-This project is licensed under the Code Project Open License
-([CPOL](http://www.codeproject.com/info/cpol10.aspx)) 1.02.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the YAMP team nor the names of its contributors
+      may be used to endorse or promote products derived from this
+      software without specific prior written permission.
 
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the license
-is respected in every way.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

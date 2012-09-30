@@ -2,6 +2,7 @@ using System;
 
 namespace YAMP
 {
+    [Description("Represents the floor function to round down.")]
 	class FloorFunction : StandardFunction
 	{
         protected override ScalarValue GetValue(ScalarValue value)

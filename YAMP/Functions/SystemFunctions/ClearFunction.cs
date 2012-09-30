@@ -2,20 +2,26 @@
 
 namespace YAMP
 {
+    [Description("Deletes variables from memory.")]
     class ClearFunction : ArgumentFunction
     {
         public ClearFunction() : base(1)
         {
         }
 
-        public Value Function()
+        [Description("Clears all variables.")]
+        [ExampleAttribute("clear()")]
+        public StringValue Function()
         {
             var count = Tokens.Instance.Variables.Count;
             Tokens.Instance.Variables.Clear();
             return new StringValue(count + " objects cleared.");
         }
 
-        public Value Function(ArgumentsValue args)
+        [Description("Clears the specified variables given with their names as strings.")]
+        [ExampleAttribute("clear(\"x\")", "Deletes the variable x.")]
+        [ExampleAttribute("clear(\"x\", \"y\", \"z\")", "Deletes the variables x, y and z.")]
+        public StringValue Function(ArgumentsValue args)
         {
             var count = 0;
 

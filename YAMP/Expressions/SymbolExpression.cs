@@ -30,7 +30,7 @@ namespace YAMP
             get { return _input; }
         }
 		
-		public SymbolExpression () : base(@"[A-Za-z]+[A-Za-z0-9]*\b")
+		public SymbolExpression () : base(@"[A-Za-z]+[A-Za-z0-9_]*\b")
 		{
 		}
 

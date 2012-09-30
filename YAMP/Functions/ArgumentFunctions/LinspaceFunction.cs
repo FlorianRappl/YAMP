@@ -2,17 +2,20 @@ using System;
 
 namespace YAMP
 {
+    [Description("Returns a uniformly increased vector.")]
 	class LinspaceFunction : ArgumentFunction
 	{
-		public Value Function (ScalarValue _from, ScalarValue _to, ScalarValue _count)
+        [Description("Creates a vector with count elements ranging from a certain value to a certain value.")]
+        [Example("linspace(0, 10, 5)", "Creates the vector (0, 2.5, 5, 7.5, 10), i.e. stepping 2.5 and number of elements 5.")]
+        public MatrixValue Function(ScalarValue from, ScalarValue to, ScalarValue count)
 		{
-			var c = _count.IntValue;
+			var c = count.IntValue;
 
 			if(c < 2)
 				throw new ArgumentException("linspace");
 
-			var step = (_to.Value - _from.Value) / (c - 1);
-			return new RangeValue(_from.Value, _to.Value, step);
+			var step = (to.Value - from.Value) / (c - 1);
+			return new RangeValue(from.Value, to.Value, step);
 		}
 	}
 }

@@ -81,8 +81,13 @@ namespace YAMP
 		{
 			Tokens.Instance.AddOperator(_op, this);
 		}
-		
-		#endregion
+
+        #endregion
+
+        protected bool IsNumeric(Value value)
+        {
+            return value is MatrixValue || value is ScalarValue;
+        }
 		
 		public override string ToString ()
 		{

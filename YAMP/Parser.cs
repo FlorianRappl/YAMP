@@ -1,7 +1,36 @@
+/*
+    Copyright (c) 2012, Florian Rappl.
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+          notice, this list of conditions and the following disclaimer in the
+          documentation and/or other materials provided with the distribution.
+        * Neither the name of the YAMP team nor the names of its contributors
+          may be used to endorse or promote products derived from this
+          software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 using System;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.ComponentModel;
 
 namespace YAMP
 {
@@ -30,13 +59,64 @@ namespace YAMP
 		/// <summary>
 		/// Creates the parse tree for the given expression.
 		/// </summary>
-		/// <param name='input'>
+		/// <param name="input">
 		/// The expression to evaluate.
 		/// </param>
 		public static Parser Parse(string input)
 		{
 			return new Parser(new Context(input));
 		}
+
+        /// <summary>
+        /// Creates the parse tree and evaluates the expression asynchronously.
+        /// </summary>
+        /// <param name="input">
+        /// The expression to evaluate.
+        /// </param>
+        /// <param name="continuation">
+        /// The continuation action to invoke after the evaluation finished.
+        /// </param>
+        public static void ExecuteAsync(string input, Action<Value, Exception> continuation)
+        {
+            ExecuteAsync(input, null, continuation);
+        }
+
+        /// <summary>
+        /// Creates the parse tree and evaluates the expression asynchronously.
+        /// </summary>
+        /// <param name="input">
+        /// The expression to evaluate.
+        /// </param>
+        /// <param name="variables">
+        /// The variables to consider from external.
+        /// </param>
+        /// <param name="continuation">
+        /// The continuation action to invoke after the evaluation finished.
+        /// </param>
+        public static void ExecuteAsync(string input, Hashtable variables, Action<Value, Exception> continuation)
+        {
+            var worker = new AsyncTask();
+            worker.Continuation = continuation;
+            worker.RunWorkerAsync(new object[] { input, variables });
+            worker.DoWork += new DoWorkEventHandler(taskInitialized);
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(taskCompleted);
+        }
+
+        static void taskInitialized(object sender, DoWorkEventArgs e)
+        {
+            var parameters = e.Argument as object[];
+            var input = parameters[0] as string;
+            var variables = parameters[1] as Hashtable;
+            var parser = new Parser(new Context(input));
+            var result = parser.Execute(variables);
+            e.Result = result;
+        }
+
+        static void taskCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var worker = sender as AsyncTask;
+            worker.Continuation(e.Result as Value, e.Error);
+        }
 
 		/// <summary>
 		/// Load the required functions, operators and expressions (CAN only be performed once).

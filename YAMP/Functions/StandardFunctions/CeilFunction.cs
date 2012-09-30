@@ -2,6 +2,7 @@ using System;
 
 namespace YAMP
 {
+    [Description("Represents the ceil function to round up.")]
 	class CeilFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

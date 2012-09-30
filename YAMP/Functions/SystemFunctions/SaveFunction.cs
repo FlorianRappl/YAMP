@@ -5,19 +5,24 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
+    [Description("Saves variables from memory in the filesystem.")]
 	class SaveFunction : ArgumentFunction
 	{
         public SaveFunction() : base(2)
         {
         }
 
-		public Value Function(StringValue filename)
+        [Description("Saves all variables that are currently available.")]
+        [Example("save(\"myfile.mat\")", "Saves all variables in the file myfile.mat")]
+        public StringValue Function(StringValue filename)
 		{
 			Save(filename.Value, Tokens.Instance.Variables);
 			return new StringValue(Tokens.Instance.Variables.Count + " objects saved.");
 		}
 
-        public Value Function(StringValue filename, ArgumentsValue args)
+        [Description("Saves the specified variables in the file.")]
+        [Example("save(\"myfile.mat\", \"x\", \"y\")", "Saves the variables x and y in the file myfile.mat")]
+        public StringValue Function(StringValue filename, ArgumentsValue args)
         {
             var workspace = new Dictionary<string, Value>();
 
@@ -36,7 +41,7 @@ namespace YAMP
             return new StringValue(workspace.Count + " objects saved.");
         }
 
-		public static void Save(string filename, IDictionary<string, Value> workspace)
+		static void Save(string filename, IDictionary<string, Value> workspace)
 		{
 			using(var fs = File.Create (filename))
 			{

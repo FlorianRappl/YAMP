@@ -3,13 +3,16 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
+    /// <summary>
+    /// The abstract base class used for all standard functions.
+    /// </summary>
     abstract class StandardFunction : IFunction
     {
         protected string name;
 
         public StandardFunction()
         {
-            name = GetType().Name.ToLower().Replace("function", string.Empty);
+            name = GetType().Name.RemoveFunctionConvention().ToLower();
         }
 
         public virtual Value Perform(Value argument)

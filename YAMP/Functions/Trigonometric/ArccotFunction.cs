@@ -2,6 +2,7 @@
 
 namespace YAMP
 {
+    [Description("The inverse of the cot(x) function, which is cos(x) / sin(x).")]
     class ArccotFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

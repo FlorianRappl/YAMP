@@ -509,6 +509,15 @@ namespace YAMP
 			
 			return m;
 		}
+
+        public void SetRowVector(int j, MatrixValue m)
+        {
+            if (m.Length != DimensionX)
+                throw new DimensionException(m.Length, DimensionX);
+
+            for (var i = 1; i <= DimensionX; i++)
+                this[j, i] = m[i].Clone();
+        }
 		
 		public MatrixValue GetColumnVector(int i)
 		{
@@ -519,6 +528,15 @@ namespace YAMP
 			
 			return m;
 		}
+
+        public void SetColumnVector(int i, MatrixValue m)
+        {
+            if (m.Length != DimensionY)
+                throw new DimensionException(m.Length, DimensionY);
+
+            for (var j = 1; j <= DimensionY; j++)
+                this[j, i] = m[j].Clone();
+        }
 
         public MatrixValue Adjungate()
         {
@@ -558,9 +576,7 @@ namespace YAMP
             var n = Math.Min(DimensionX, DimensionY);
 
             for(var i = 1; i <= n; i++)
-            {
-                sum = sum + this[n, n];
-            }
+                sum = sum + this[i, i];
 
             return sum;
         }
@@ -691,6 +707,13 @@ namespace YAMP
         public static MatrixValue operator +(MatrixValue a, MatrixValue b)
         {
             return a.Add(b) as MatrixValue;
+        }
+
+        public void Clear()
+        {
+            for (var i = 1; i <= DimensionX; i++)
+                for (var j = 1; j <= DimensionY; j++)
+                    this[j, i].Clear();
         }
     }
 }

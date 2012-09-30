@@ -3,8 +3,12 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
+    [Description("Computes the minimum value of a given vector or minimum value of each column vector of a matrix.")]
     class MinFunction : StandardFunction
     {
+        [Description("Evaluates the vector(s) and outputs the minimum scalar(s) in the vector(s).")]
+        [Example("min(1,2,3,4,5,6,7,-1)", "Finds the minimum in the vector, which is -1 in this case.")]
+        [Example("min(1,2;3,4;5,6;7,-1)", "Finds the minimums of the vectors (of the matrix), which are 1 and -1 in this case.")]
         public override Value Perform(Value argument)
         {
             if (argument is ScalarValue)

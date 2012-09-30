@@ -22,11 +22,6 @@ namespace YAMP
 			
 			throw new OperationNotSupportedException(",", left);
 		}
-
-		bool IsNumeric (Value value)
-		{
-			return value is MatrixValue || value is ScalarValue;
-		}
 	}
 }
 

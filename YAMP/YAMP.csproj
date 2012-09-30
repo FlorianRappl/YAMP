@@ -61,8 +61,12 @@
     <Compile Include="Exceptions\ArgumentTypeNotSupportedException.cs" />
     <Compile Include="Exceptions\ExpressionNotFoundException.cs" />
     <Compile Include="Exceptions\MatrixFormatException.cs" />
+    <Compile Include="Functions\ArgumentFunctions\SimpsFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\TrapzFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\CGFunction.cs" />
+    <Compile Include="Functions\LinearAlgebra\GMRESFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\SolveFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\RoundFunction.cs" />
     <Compile Include="Functions\SystemFunctions\ClearFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\EigFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\EvFunction.cs" />
@@ -72,17 +76,23 @@
     <Compile Include="Functions\Spectroscopy\FFTFunction.cs" />
     <Compile Include="Functions\StandardFunctions\HeavisideFunction.cs" />
     <Compile Include="Functions\StandardFunctions\SignFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\HelpFunction.cs" />
     <Compile Include="Functions\SystemFunctions\PrecisionFunction.cs" />
     <Compile Include="Functions\SystemFunctions\TimerFunction.cs" />
     <Compile Include="Numerics\Decompositions\CholeskyDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\DirectSolver.cs" />
+    <Compile Include="Numerics\Integration\Integrator.cs" />
+    <Compile Include="Numerics\Integration\SimpsonIntegrator.cs" />
+    <Compile Include="Numerics\Integration\TrapezIntegrator.cs" />
     <Compile Include="Numerics\Others\Eigenvalues.cs" />
     <Compile Include="Numerics\Decompositions\LUDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\QRDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\SingularValueDecomposition.cs" />
     <Compile Include="Numerics\NumericHelpers.cs" />
     <Compile Include="Numerics\Others\FFT.cs" />
+    <Compile Include="Numerics\Solvers\Arnoldi.cs" />
     <Compile Include="Numerics\Solvers\CGSolver.cs" />
+    <Compile Include="Numerics\Solvers\GMRESkSolver.cs" />
     <Compile Include="Numerics\Solvers\IterativeSolver.cs" />
     <Compile Include="Operators\AssigmentOperators\AssignmentPrefixOperator.cs" />
     <Compile Include="Operators\AssigmentOperators\LeftDivideAssignmentOperator.cs" />
@@ -130,6 +140,12 @@
     <Compile Include="Parser.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Expressions\Expression.cs" />
+    <Compile Include="Providers\AsyncTask.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Providers\ConventionExtensions.cs" />
+    <Compile Include="Providers\DescriptionAttribute.cs" />
+    <Compile Include="Providers\ExampleAttribute.cs" />
     <Compile Include="Values\Value.cs" />
     <Compile Include="Values\ScalarValue.cs" />
     <Compile Include="Exceptions\DimensionException.cs" />
@@ -159,7 +175,7 @@
     <Compile Include="Functions\StandardFunctions\AbsFunction.cs" />
     <Compile Include="Expressions\AbsExpression.cs" />
     <Compile Include="Functions\StandardFunctions\SqrtFunction.cs" />
-    <Compile Include="Values\Constants.cs" />
+    <Compile Include="Providers\Constants.cs" />
     <Compile Include="Operators\UnaryOperators\FacultyOperator.cs" />
     <Compile Include="Operators\BinaryOperators\CommaOperator.cs" />
     <Compile Include="Functions\FunctionDelegate.cs" />
@@ -190,7 +206,6 @@
     <Compile Include="Values\ArgumentsValue.cs" />
     <Compile Include="Functions\ArgumentFunctions\RandiFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\InvFunction.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="Operators\LogicOperators\LtOperator.cs" />
     <Compile Include="Exceptions\TypeNotEqualException.cs" />
     <Compile Include="Operators\LogicOperators\GtOperator.cs" />
@@ -200,9 +215,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Numerics\Integration\" />
     <Folder Include="Numerics\Interpolations\" />
     <Folder Include="Numerics\ODE\" />
     <Folder Include="Numerics\Optimization\" />
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Release (
+xcopy "$(TargetPath)" "$(SolutionDir)\Nuget\lib\net35\"
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

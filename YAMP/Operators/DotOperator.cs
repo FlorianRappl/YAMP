@@ -15,10 +15,12 @@ namespace YAMP
 
         public override Value Perform(Value left, Value right)
         {
-            if (left.GetType() != right.GetType())
+            if (!IsNumeric(left))
+                throw new OperationNotSupportedException(Op, left);
+            else if(!IsNumeric(right))
                 throw new OperationNotSupportedException(Op, right);
 
-            if (left is MatrixValue)
+            if (left is MatrixValue && right is MatrixValue)
             {
                 var l = left as MatrixValue;
                 var r = right as MatrixValue;
@@ -34,6 +36,30 @@ namespace YAMP
                 for (var i = 1; i <= l.DimensionX; i++)
                     for (var j = 1; j <= l.DimensionY; j++)
                         m[j, i] = Operation(l[j, i], r[j, i]);
+
+                return m;
+            }
+            else if (left is MatrixValue && right is ScalarValue)
+            {
+                var l = left as MatrixValue;
+                var r = right as ScalarValue;
+                var m = new MatrixValue(l.DimensionY, l.DimensionX);
+
+                for (var i = 1; i <= l.DimensionX; i++)
+                    for (var j = 1; j <= l.DimensionY; j++)
+                        m[j, i] = Operation(l[j, i], r);
+
+                return m;
+            }
+            else if (left is ScalarValue && right is MatrixValue)
+            {
+                var l = left as ScalarValue;
+                var r = right as MatrixValue;
+                var m = new MatrixValue(r.DimensionY, r.DimensionX);
+
+                for (var i = 1; i <= r.DimensionX; i++)
+                    for (var j = 1; j <= r.DimensionY; j++)
+                        m[j, i] = Operation(l, r[j, i]);
 
                 return m;
             }

@@ -2,8 +2,12 @@ using System;
 
 namespace YAMP
 {
+    [Description("Computes the sum of a given vector or the sum for each column vector of a matrix.")]
 	class SumFunction : StandardFunction
-	{
+    {
+        [Description("Evaluates the vector(s) and outputs the sum(s) of the vector(s).")]
+        [Example("sum(1,2,3,4,5,6,7,-1)", "Computes the sum of the vector, which is 27 in this case.")]
+        [Example("sum(1,2;3,4;5,6;7,-1)", "Computes the sums of the two vectors, which are 16 and 11 in this case.")]
 		public override Value Perform(Value argument)
 		{
 			if (argument is ScalarValue)

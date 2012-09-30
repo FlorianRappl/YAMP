@@ -2,6 +2,7 @@
 
 namespace YAMP
 {
+    [Description("The standard tanh(x) function, which is sinh(x) / cosh(x).")]
     class TanhFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

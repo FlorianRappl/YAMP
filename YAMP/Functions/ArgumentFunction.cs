@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
+    /// <summary>
+    /// The abstract base class used for all argument functions. (provide all functions with the name function).
+    /// </summary>
 	abstract class ArgumentFunction : StandardFunction
 	{
 		protected Value[] arguments;
@@ -29,7 +32,7 @@ namespace YAMP
 			
 			foreach(var method in methods)
 			{
-				if(method.Name.Equals("Function"))
+				if(method.Name.IsArgumentFunction())
 				{
 					var args = method.GetParameters().Length;
 					functions.Add(args, method);
@@ -75,11 +78,19 @@ namespace YAMP
 
                 try
                 {
+                    var pis = method.GetParameters();
+
+                    for (int i = 0; i < pis.Length; i++)
+                    {
+                        if (!pis[i].ParameterType.IsInstanceOfType(arguments[i]))
+                            throw new ArgumentTypeNotSupportedException(name, i, pis[i].ParameterType);
+                    }
+
                     return method.Invoke(this, arguments) as Value;
                 }
                 catch (Exception ex)
                 {
-                    throw ex.InnerException;
+                    throw ex.InnerException ?? ex;
                 }
             }
 			

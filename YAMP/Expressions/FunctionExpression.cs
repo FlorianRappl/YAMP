@@ -11,7 +11,7 @@ namespace YAMP
 		string _name;
 		BracketExpression _child;
 		
-		public FunctionExpression () : base(@"[A-Za-z]+[A-Za-z0-9]*\(.*\)")
+		public FunctionExpression () : base(@"[A-Za-z]+[A-Za-z0-9_]*\(.*\)")
 		{
 		}
 

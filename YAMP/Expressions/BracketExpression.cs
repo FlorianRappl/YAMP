@@ -48,7 +48,7 @@ namespace YAMP
 		{
             if (_tree.Operator != null)
                 return _tree.Operator.Evaluate(_tree.Expressions, symbols);
-            
+
 			return _tree.Expressions[0].Interpret(symbols);
 		}
 		

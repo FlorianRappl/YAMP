@@ -53,6 +53,11 @@ namespace YAMP
 
 			return Value.Empty;
 		}
+
+        public override string ToString()
+        {
+            return string.Empty;
+        }
 	}
 }
 

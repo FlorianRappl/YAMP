@@ -2,6 +2,7 @@
 
 namespace YAMP
 {
+    [Description("The inverse of the tanh(x) function, which is sinh(x) / cosh(x).")]
     class ArtanhFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

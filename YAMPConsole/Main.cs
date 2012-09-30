@@ -42,8 +42,6 @@ namespace YAMPConsole
 
                 if (query.Equals("exit"))
                     break;
-                else if (query.Replace(" ", string.Empty).Equals(string.Empty))
-                    continue;
                 else
                 {
                     try
@@ -81,7 +79,7 @@ namespace YAMPConsole
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
-			var lines = new string[0];
+            var lines = new string[0];
 			// This is Benchmark #1
             //var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
@@ -93,7 +91,11 @@ namespace YAMPConsole
 			
 			// The implementation here... YAMP
 			// 5716 ms ; 398 ms ; 131 ms ; 543 ms
-			Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
+            Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
+
+            //http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
+            // 1611 ms ; 167 ms ; 81 ms ; 177 ms
+            Benchmark("LLMathParser", lines, query => e.Evaluate(query, new char[0], new double[0]));
 			
 			//http://www.codeproject.com/Articles/11164/Math-Parser
             // 372847 ms ; 4795 ms ; 3385 ms ; 14508 ms
@@ -110,10 +112,6 @@ namespace YAMPConsole
             //http://www.codeproject.com/Articles/23061/MathParser-Math-Formula-Parser
             // FAILED ; 147 ms ; 54 ms ; FAILED
             Benchmark("MathFormulaParser", lines, query => d.Calculate(query));
-			
-			//http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
-			// 1611 ms ; 167 ms ; 81 ms ; 177 ms
-			Benchmark("LLMathParser", lines, query => e.Evaluate(query, new char[0], new double[0]));
 		}
 
 		static string[] MakeTenK(string s)

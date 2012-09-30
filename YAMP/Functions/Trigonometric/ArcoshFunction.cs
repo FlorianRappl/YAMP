@@ -2,6 +2,7 @@
 
 namespace YAMP
 {
+    [Description("The inverse of the cosh(x) function.")]
     class ArcoshFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)
