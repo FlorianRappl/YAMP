@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **0.9.0**. This version is still an incomplete alpha build.
+The current version number is **0.9.1**. This version is still an incomplete alpha build.
 A NuGet package is available [here](http://nuget.org/packages/YAMP). There are a lot of
 tests in the code - since the package aims to be cross platform (created with Mono), no
 particular unit testing framework has been chosen.
@@ -37,6 +37,15 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**0.9.1:**
+- Added the "who()" command to view the current workspace
+- Added a method called `LoadPlugin()` to the Parser - now it should be easily possible
+  to load libraries full of functions, operators and other YAMPy stuff
+- Added more functions for async operations
+- Improved the structure of the code, so that it is somehow more clear what must be done
+  to write own YAMP libraries / plugins
+- Added more tests
+
 **0.9.0:**
 - Changed the license from the CPOL to the New BSD License
 - Underscores can now also be used in symbol or function expressions
@@ -166,14 +175,17 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the YAMP team nor the names of its contributors
-      may be used to endorse or promote products derived from this
-      software without specific prior written permission.
+
+*	Redistributions of source code must retain the above copyright
+	notice, this list of conditions and the following disclaimer.
+
+*	Redistributions in binary form must reproduce the above copyright
+	notice, this list of conditions and the following disclaimer in the
+	documentation and/or other materials provided with the distribution.
+
+*	Neither the name of the YAMP team nor the names of its contributors
+	may be used to endorse or promote products derived from this
+	software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED

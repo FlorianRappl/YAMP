@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace YAMP
 {
-	abstract class BinaryOperator : Operator
+    public abstract class BinaryOperator : Operator
 	{
 		public BinaryOperator (string op, int level) : base(op, level)
 		{

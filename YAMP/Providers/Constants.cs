@@ -3,9 +3,9 @@ using System;
 namespace YAMP
 {
     /// <summary>
-    /// Represents a list of ready to use constants for the parser
+    /// Represents a list of ready to use constants for the parser.
     /// </summary>
-	class Constants
+    class Constants : IConstants
 	{
         static readonly ScalarValue pi = new ScalarValue(Math.PI);
 

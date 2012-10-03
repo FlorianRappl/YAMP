@@ -5,7 +5,7 @@ namespace YAMP
     /// <summary>
     /// Contains some extensions used to tackle some conventions used in the code.
     /// </summary>
-    static class ConventionExtensions
+    public static class ConventionExtensions
     {
         public static string RemoveFunctionConvention(this string functionName)
         {

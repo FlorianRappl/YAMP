@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace YAMP
 {
-	public class StringExpression : Expression
+	class StringExpression : Expression
 	{
 		public StringExpression () : base(@"\""")
 		{

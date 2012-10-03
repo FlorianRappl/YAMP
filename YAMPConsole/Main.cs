@@ -232,6 +232,10 @@ namespace YAMPConsole
 			Test("3-i~=4", 1.0);
 			Test("abs((1,2,3;4,5,6;7,8,9)[1,:])", Math.Sqrt(14.0));
             Test("(-25)^2", 625.0);
+            Test("length(help()) > 0", 1.0);
+            Test("abs(3+4i)", 5.0);
+            Test("eig(1,2;4,5)[1]", 3.0 - Math.Sqrt(12));
+            Test("abs(ev(1,2;4,5)[1:2])", 1.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}

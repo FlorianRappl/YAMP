@@ -8,7 +8,7 @@ namespace YAMP
     /// <summary>
     /// The abstract base class used for all argument functions. (provide all functions with the name function).
     /// </summary>
-	abstract class ArgumentFunction : StandardFunction
+	public abstract class ArgumentFunction : StandardFunction
 	{
 		protected Value[] arguments;
 		IDictionary<int, MethodInfo> functions;

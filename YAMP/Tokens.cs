@@ -115,35 +115,7 @@ namespace YAMP
 		void RegisterTokens()
 		{
 			var assembly = Assembly.GetExecutingAssembly();
-			var types = assembly.GetTypes();
-			var ir = typeof(IRegisterToken).Name;
-			var fu = typeof(IFunction).Name;
-            var af = typeof(ArgumentFunction);
-			var mycst = new Constants();
-			var props = mycst.GetType().GetProperties();
-			
-			foreach(var type in types)
-			{
-                if (type.IsAbstract)
-                    continue;
-
-				if(type.GetInterface(ir) != null)
-					(type.GetConstructor(Type.EmptyTypes).Invoke(null) as IRegisterToken).RegisterToken();
-
-                if (type.GetInterface(fu) != null)
-                {
-                    var name = type.Name.RemoveFunctionConvention().ToLower();
-                    var method = type.GetConstructor(Type.EmptyTypes).Invoke(null) as IFunction;
-                    methods.Add(method);
-                    AddFunction(name, method.Perform, false);
-                
-                    if(type.IsSubclassOf(af))
-                        argumentFunctions.Add(name);
-                }
-			}
-			
-			foreach(var prop in props)
-				AddConstant(prop.Name, prop.GetValue(mycst, null) as Value, false);
+            RegisterAssembly(assembly);
 
 			sanatizers.Add("++", "+");
 			sanatizers.Add("--", "+");
@@ -156,6 +128,48 @@ namespace YAMP
 			sanatizers.Add("*/", "/");
 			sanatizers.Add("/*", "/");
 		}
+
+        public void RegisterAssembly(Assembly assembly)
+        {
+            var types = assembly.GetTypes();
+            var ir = typeof(IRegisterToken).Name;
+            var fu = typeof(IFunction).Name;
+            var ct = typeof(IConstants).Name;
+
+            foreach (var type in types)
+            {
+                if (type.IsAbstract)
+                    continue;
+
+                if (type.GetInterface(ir) != null)
+                    (type.GetConstructor(Type.EmptyTypes).Invoke(null) as IRegisterToken).RegisterToken();
+
+                if (type.GetInterface(fu) != null)
+                {
+                    var name = type.Name.RemoveFunctionConvention().ToLower();
+                    var method = type.GetConstructor(Type.EmptyTypes).Invoke(null) as IFunction;
+                    methods.Add(method);
+                    AddFunction(name, method.Perform, false);
+
+                    if (type.IsSubclassOf(typeof(ArgumentFunction)))
+                        argumentFunctions.Add(name);
+                }
+
+                if (type.GetInterface(ct) != null)
+                {
+                    var props = type.GetProperties();
+                    var mycst = type.GetConstructor(Type.EmptyTypes).Invoke(null);
+
+                    foreach (var prop in props)
+                    {
+                        if (prop.PropertyType.IsSubclassOf(typeof(Value)))
+                        {
+                            AddConstant(prop.Name, prop.GetValue(mycst, null) as Value, false);
+                        }
+                    }
+                }
+            }
+        }
 		
 		#endregion
 		

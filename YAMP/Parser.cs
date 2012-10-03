@@ -31,6 +31,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace YAMP
 {
@@ -46,17 +47,27 @@ namespace YAMP
 		ParseTree _tree;
 		
 		#endregion
-		
-		#region ctor
-		
-		private Parser (Context expression)
+
+        #region static Events
+
+        public static event Action<Value, Exception> OnExecuted;
+
+        #endregion
+
+        #region ctor
+
+        private Parser (Context expression)
 		{
 			_expression = expression;
 			_tree = new ParseTree(expression.Input);
 			_interpreter = new BracketExpression(_tree);
 		}
 
-		/// <summary>
+        #endregion
+
+        #region Static constructions
+
+        /// <summary>
 		/// Creates the parse tree for the given expression.
 		/// </summary>
 		/// <param name="input">
@@ -66,6 +77,22 @@ namespace YAMP
 		{
 			return new Parser(new Context(input));
 		}
+
+        /// <summary>
+        /// Creates the parse tree and evaluates the expression asynchronously (followed by a continuation with the OnExecuted event).
+        /// </summary>
+        /// <param name="input">
+        /// The expression to evaluate.
+        /// </param>
+        public static void ExecuteAsync(string input)
+        {
+            var continuation = OnExecuted;
+            
+            if(continuation == null)
+                continuation = (v, e) => {};
+
+            ExecuteAsync(input, null, continuation);
+        }
 
         /// <summary>
         /// Creates the parse tree and evaluates the expression asynchronously.
@@ -220,10 +247,10 @@ namespace YAMP
 		/// <summary>
 		/// Adds a custom constant to the parser.
 		/// </summary>
-		/// <param name='name'>
+		/// <param name="name">
 		/// The name of the symbol corresponding to the constant.
 		/// </param>
-		/// <param name='constant'>
+		/// <param name="constant">
 		/// The value of the constant.
 		/// </param>
 		public static void AddCustomConstant(string name, double constant)
@@ -234,10 +261,10 @@ namespace YAMP
 		/// <summary>
 		/// Adds a custom constant to the parser.
 		/// </summary>
-		/// <param name='name'>
+		/// <param name="name">
 		/// The name of the symbol corresponding to the constant.
 		/// </param>
-		/// <param name='constant'>
+		/// <param name="constant">
 		/// The value of the constant.
 		/// </param>
 		public static void AddCustomConstant(string name, Value constant)
@@ -248,7 +275,7 @@ namespace YAMP
 		/// <summary>
 		/// Removes a custom constant.
 		/// </summary>
-		/// <param name='name'>
+		/// <param name="name">
 		/// The name of the symbol corresponding to the constant that should be removed.
 		/// </param>
 		public static void RemoveCustomConstant(string name)
@@ -259,10 +286,10 @@ namespace YAMP
 		/// <summary>
 		/// Adds a custom function to be used by the parser.
 		/// </summary>
-		/// <param name='name'>
+		/// <param name="name">
 		/// The name of the symbol corresponding to the function that should be added.
 		/// </param>
-		/// <param name='f'>
+		/// <param name="f">
 		/// The function that fulfills the signature Value f(Value v).
 		/// </param>
 		public static void AddCustomFunction(string name, FunctionDelegate f)
@@ -273,13 +300,50 @@ namespace YAMP
 		/// <summary>
 		/// Removes a custom function.
 		/// </summary>
-		/// <param name='name'>
+		/// <param name="name">
 		/// The name of the symbol corresponding to the function that should be removed.
 		/// </param>
 		public static void RemoveCustomFunction(string name)
 		{
 			Tokens.Instance.RemoveFunction(name);
 		}
+
+		/// <summary>
+		/// Adds a variable to be used by the parser.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the symbol corresponding to the variable that should be added.
+		/// </param>
+		/// <param name="value">
+		/// The value of the variable.
+		/// </param>
+		public static void AddVariable(string name, Value value)
+		{
+			Tokens.Instance.Variables.Add(name, value);
+		}
+
+		/// <summary>
+		/// Removes a variable from the workspace.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the symbol corresponding to the variable that should be removed.
+		/// </param>
+		public static void RemoveVariable(string name)
+		{
+            if(Tokens.Instance.Variables.ContainsKey(name))
+			    Tokens.Instance.Variables.Remove(name);
+		}
+
+        /// <summary>
+        /// Loads an external library (assembly) that uses IFunction, Operator, ..., 
+        /// </summary>
+        /// <param name="assembly">
+        /// The assembly to load as a plugin.
+        /// </param>
+        public static void LoadPlugin(Assembly assembly)
+        {
+            Tokens.Instance.RegisterAssembly(assembly);
+        }
 		
 		#endregion
 		

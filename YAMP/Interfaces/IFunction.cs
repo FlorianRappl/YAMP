@@ -1,4 +1,5 @@
 using System;
+
 namespace YAMP
 {
 	public interface IFunction
@@ -6,4 +7,3 @@ namespace YAMP
 		Value Perform(Value argument);
 	}
 }
-

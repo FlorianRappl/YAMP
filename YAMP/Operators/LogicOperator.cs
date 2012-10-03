@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-	abstract class LogicOperator : BinaryOperator
+    public abstract class LogicOperator : BinaryOperator
 	{
 		public LogicOperator (string op) : base(op, 3)
 		{

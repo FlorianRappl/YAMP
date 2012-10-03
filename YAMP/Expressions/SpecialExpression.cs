@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace YAMP
 {
-	public class SpecialExpression : Expression
+	class SpecialExpression : Expression
 	{
         public string SpecialName
         {

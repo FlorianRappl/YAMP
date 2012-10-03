@@ -79,6 +79,8 @@
     <Compile Include="Functions\SystemFunctions\HelpFunction.cs" />
     <Compile Include="Functions\SystemFunctions\PrecisionFunction.cs" />
     <Compile Include="Functions\SystemFunctions\TimerFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\WhoFunction.cs" />
+    <Compile Include="Interfaces\IConstants.cs" />
     <Compile Include="Numerics\Decompositions\CholeskyDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\DirectSolver.cs" />
     <Compile Include="Numerics\Integration\Integrator.cs" />
@@ -221,7 +223,7 @@
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
-xcopy "$(TargetPath)" "$(SolutionDir)\Nuget\lib\net35\"
+xcopy /y "$(TargetPath)" "$(SolutionDir)\Nuget\lib\net35\"
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>

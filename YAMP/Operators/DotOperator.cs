@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-    abstract class DotOperator : BinaryOperator
+    public abstract class DotOperator : BinaryOperator
     {
         BinaryOperator _top;
 

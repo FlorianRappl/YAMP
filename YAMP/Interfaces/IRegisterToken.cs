@@ -1,7 +1,7 @@
 using System;
 namespace YAMP
 {
-	public interface IRegisterToken
+	interface IRegisterToken
 	{
 		void RegisterToken();
 	}

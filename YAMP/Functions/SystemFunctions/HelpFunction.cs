@@ -15,14 +15,11 @@ namespace YAMP
         public StringValue Function()
         {
             var sb = new StringBuilder();
-            //sb.AppendLine("List of available methods ...");
-            //sb.AppendLine("---");
             var methods = Tokens.Instance.Methods.Select(m => m.GetType().Name.RemoveFunctionConvention().ToLower()).OrderBy(m => m).AsEnumerable();
 
             foreach (var method in methods)
                 sb.AppendLine(method);
 
-            //sb.AppendLine("---");
             return new StringValue(sb.ToString());
         }
 

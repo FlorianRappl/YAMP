@@ -6,7 +6,7 @@ namespace YAMP
     /// <summary>
     /// The abstract base class used for all standard functions.
     /// </summary>
-    abstract class StandardFunction : IFunction
+    public abstract class StandardFunction : IFunction
     {
         protected string name;
 
