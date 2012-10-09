@@ -4,6 +4,6 @@ namespace YAMP
 {
 	public interface IFunction
 	{
-		Value Perform(Value argument);
+		Value Perform(ParseContext context, Value argument);
 	}
 }

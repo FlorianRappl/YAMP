@@ -9,7 +9,7 @@ namespace YAMP
 	public abstract class Expression : IRegisterToken
 	{	
 		string _pattern;
-		protected string _input;
+        protected string _input;
 		protected Match mx;
 		int _offset;
 
@@ -33,6 +33,8 @@ namespace YAMP
 		{
 			get { return _input; }
 		}
+
+        public ParseContext Context { get; protected set; }
 		
 		public Expression (string pattern)
 		{
@@ -46,9 +48,14 @@ namespace YAMP
 		
 		public abstract Value Interpret(Hashtable symbols);
 
-        public abstract Expression Create(Match match);
-		
-		public virtual string Set(string input)
+        public virtual Expression Create(Match match)
+        {
+            return Create(ParseContext.Default, match);
+        }
+
+        public abstract Expression Create(ParseContext context, Match match);
+
+        public virtual string Set(string input)
 		{
 			_input = mx.Value;
 			return input.Substring(_input.Length);

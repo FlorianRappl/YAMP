@@ -28,7 +28,6 @@
 using System;
 using System.Text;
 using System.Collections;
-using System.Globalization;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Reflection;
@@ -44,53 +43,22 @@ namespace YAMP
 
         IDictionary<string, Operator> operators;
         IDictionary<Regex, Expression> expressions;
-        IDictionary<string, FunctionDelegate> functions;
-        IDictionary<string, Value> constants;
-        IDictionary<string, Value> variables;
-
-        IDictionary<string, FunctionDelegate> o_functions;
-        IDictionary<string, Value> o_constants;
-
 		IDictionary<string, string> sanatizers;
-        List<string> argumentFunctions;
-        List<IFunction> methods;
 		
 		#endregion
-
-        #region Static Fields
-
-        static readonly NumberFormatInfo numFormat = new CultureInfo("en-us").NumberFormat;
-        static int precision = 5;
-
-        #endregion
 
         #region ctor
 
         Tokens ()
 		{
-            methods = new List<IFunction>();
             operators = new Dictionary<string, Operator>();
             expressions = new Dictionary<Regex, Expression>();
-            functions = new Dictionary<string, FunctionDelegate>();
-            constants = new Dictionary<string, Value>();
-            o_functions = new Dictionary<string, FunctionDelegate>();
-            o_constants = new Dictionary<string, Value>();
-            variables = new Dictionary<string, Value>();
 			sanatizers = new Dictionary<string, string>();
-            argumentFunctions = new List<string>();
 		}
 		
 		#endregion
 		
 		#region Properties
-
-        /// <summary>
-        /// Gets the assigned variables.
-        /// </summary>
-        public IDictionary<string, Value> Variables
-		{
-			get { return variables; }
-		}
 
         /// <summary>
         /// Gets the available sanatizers.
@@ -99,14 +67,6 @@ namespace YAMP
 		{
 			get { return sanatizers; }
 		}
-
-        /// <summary>
-        /// Gets the methods provided by the parser.
-        /// </summary>
-        public List<IFunction> Methods
-        {
-            get { return methods; }
-        }
 		
 		#endregion
 		
@@ -115,7 +75,7 @@ namespace YAMP
 		void RegisterTokens()
 		{
 			var assembly = Assembly.GetExecutingAssembly();
-            RegisterAssembly(assembly);
+            RegisterAssembly(ParseContext.Default, assembly);
 
 			sanatizers.Add("++", "+");
 			sanatizers.Add("--", "+");
@@ -129,7 +89,16 @@ namespace YAMP
 			sanatizers.Add("/*", "/");
 		}
 
-        public void RegisterAssembly(Assembly assembly)
+        /// <summary>
+        /// Registers the IFunction, IConstant and IRegisterToken token classes at the specified context.
+        /// </summary>
+        /// <param name="context">
+        /// The context where the IFunction and IConstant instances will be placed.
+        /// </param>
+        /// <param name="assembly">
+        /// The assembly to load.
+        /// </param>
+        public void RegisterAssembly(ParseContext context, Assembly assembly)
         {
             var types = assembly.GetTypes();
             var ir = typeof(IRegisterToken).Name;
@@ -146,13 +115,14 @@ namespace YAMP
 
                 if (type.GetInterface(fu) != null)
                 {
-                    var name = type.Name.RemoveFunctionConvention().ToLower();
-                    var method = type.GetConstructor(Type.EmptyTypes).Invoke(null) as IFunction;
-                    methods.Add(method);
-                    AddFunction(name, method.Perform, false);
+                    var constructor = type.GetConstructor(Type.EmptyTypes);
 
-                    if (type.IsSubclassOf(typeof(ArgumentFunction)))
-                        argumentFunctions.Add(name);
+                    if(constructor != null)
+                    {
+                        var name = type.Name.RemoveFunctionConvention().ToLower();
+                        var method = constructor.Invoke(null) as IFunction;
+                        context.AddFunction(name, method);
+                    }
                 }
 
                 if (type.GetInterface(ct) != null)
@@ -163,9 +133,7 @@ namespace YAMP
                     foreach (var prop in props)
                     {
                         if (prop.PropertyType.IsSubclassOf(typeof(Value)))
-                        {
-                            AddConstant(prop.Name, prop.GetValue(mycst, null) as Value, false);
-                        }
+                            context.AddConstant(prop.Name, prop.GetValue(mycst, null) as Value);
                     }
                 }
             }
@@ -185,120 +153,11 @@ namespace YAMP
             expressions.Add(new Regex("^" + pattern), exp);
         }
 		
-		public void AddConstant(string name, double constant, bool custom)
-		{
-            AddConstant(name, new ScalarValue(constant), custom);
-		}
-
-        public void AddConstant(string name, Value constant, bool custom)
-        {
-            var lname = name.ToLower();
-
-            if (constants.ContainsKey(lname))
-                constants[lname] = constant;
-            else
-                constants.Add(lname, constant);
-
-            if (!custom)
-                o_constants.Add(lname, constant);
-        }
-		
-		public void AddFunction(string name, FunctionDelegate f, bool custom)
-		{
-			var lname = name.ToLower();
-			
-			if(functions.ContainsKey(lname))
-				functions[lname] = f;
-			else
-				functions.Add(lname, f);
-			
-			if(!custom)
-				o_functions.Add(lname, f);
-		}
-		
 		#endregion
-		
-		#region Remove elements
-		
-		public void RemoveConstant(string name)
-		{
-			var lname = name.ToLower();
-			
-			if(o_constants.ContainsKey(lname))
-				AddConstant(name, o_constants[lname], true);
-			else if(constants.ContainsKey(lname))
-				constants.Remove(lname);
-		}
-		
-		public void RemoveFunction(string name)
-		{
-			var lname = name.ToLower();
-			
-			if(o_functions.ContainsKey(lname))
-				AddFunction(name, o_functions[lname], true);
-			else if(functions.ContainsKey(lname))
-				functions.Remove(lname);
-		}
-		
-		#endregion
-
-        #region Variables
-
-        public void AssignVariable(string name, Value value)
-        {
-            if (value != null)
-            {
-                if (variables.ContainsKey(name))
-                    variables[name] = value;
-                else
-                    variables.Add(name, value);
-            }
-            else if (variables.ContainsKey(name))
-                variables.Remove(name);
-        }
-
-        public Value GetVariable(string name)
-        {
-            if (variables.ContainsKey(name))
-                return variables[name] as Value;
-
-            return null;
-        }
-
-        #endregion
 
         #region Find elements
 
-        public Value FindConstants(string name)
-		{
-			var lname = name.ToLower();
-
-			if(constants.ContainsKey(lname))
-				return constants[lname];
-
-            throw new SymbolException(name);
-		}
-
-        public FunctionDelegate FindFunction(string name)
-        {
-            var dummy = false;
-            return FindFunction(name, out dummy);
-        }
-		
-		public FunctionDelegate FindFunction(string name, out bool isList)
-		{
-			var lname = name.ToLower();
-
-            if (functions.ContainsKey(lname))
-            {
-                isList = argumentFunctions.Contains(lname);
-                return functions[lname];
-            }
-			
-			throw new FunctionNotFoundException(name);
-		}
-
-		public Operator FindOperator(string input)
+		public Operator FindOperator(ParseContext context, string input)
 		{
 			var maxop = string.Empty;
 			var notfound = true;
@@ -321,10 +180,10 @@ namespace YAMP
 			if(maxop.Length == 0)
 				throw new ParseException(input);
 
-			return operators[maxop].Create();
+			return operators[maxop].Create(context);
 		}
 		
-		public Expression FindExpression(string input)
+		public Expression FindExpression(ParseContext context, string input)
 		{
 			Match m = null;
 
@@ -333,7 +192,7 @@ namespace YAMP
 				m = rx.Match(input);
 
 				if(m.Success)
-					return expressions[rx].Create(m);
+					return expressions[rx].Create(context, m);
 			}
 			
 			throw new ExpressionNotFoundException(input);
@@ -352,23 +211,12 @@ namespace YAMP
 				if(_instance == null)
 				{
 					_instance = new Tokens();
-					_instance.RegisterTokens();
+                    _instance.RegisterTokens();
 				}
 				
 				return _instance;
 			}
 		}
-		
-		public static IFormatProvider NumberFormat
-		{
-			get { return numFormat; }
-		}
-
-        public static int Precision
-        {
-            get { return precision; }
-            internal set { precision = value; }
-        }
 		
 		#endregion
 		

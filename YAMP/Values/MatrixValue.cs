@@ -401,7 +401,7 @@ namespace YAMP
 			return qr.Solve(target);
 		}
 		
-		public override string ToString ()
+		public override string ToString (ParseContext context)
 		{			
 			var sb = new StringBuilder();
 			
@@ -409,7 +409,7 @@ namespace YAMP
 			{
 				for(var i = 1; i <= DimensionX; i++)
 				{
-					sb.Append(this[j, i].ToString());
+					sb.Append(this[j, i].ToString(context));
 					
 					if(i < DimensionX)
 						sb.Append("\t");
@@ -707,6 +707,33 @@ namespace YAMP
         public static MatrixValue operator +(MatrixValue a, MatrixValue b)
         {
             return a.Add(b) as MatrixValue;
+        }
+
+        public static bool operator ==(MatrixValue l, MatrixValue r)
+        {
+            if (ReferenceEquals(l, r))
+                return true;
+
+            if ((object)l == null || (object)r == null)
+                return false;
+
+            if (l.DimensionX != r.DimensionX)
+                return false;
+
+            if (l.DimensionY != r.DimensionY)
+                return false;
+
+            for (var i = 1; i <= l.DimensionX; i++)
+                for (var j = 1; j <= l.DimensionY; j++)
+                    if (l[j, i] != r[j, i])
+                        return false;
+
+            return true;
+        }
+
+        public static bool operator !=(MatrixValue l, MatrixValue r)
+        {
+            return !(l == r);
         }
 
         public void Clear()

@@ -5,17 +5,29 @@ namespace YAMP
 {
 	class AssignmentOperator : BinaryOperator
 	{
-		public AssignmentOperator () : this(string.Empty)
+        protected ParseContext _context;
+
+		public AssignmentOperator () : this(ParseContext.Default, string.Empty)
 		{
 		}
 
-        public AssignmentOperator(string prefix) : base(prefix + "=", -1)
+        public AssignmentOperator(ParseContext context, string prefix) : base(prefix + "=", -1)
+        {
+            _context = context;
+        }
+
+        public AssignmentOperator(ParseContext context) : this(context, string.Empty)
         {
         }
 
         public override Operator Create()
         {
-            return new AssignmentOperator();
+            return Create(ParseContext.Default);
+        }
+
+        public override Operator Create(ParseContext context)
+        {
+            return new AssignmentOperator(context);
         }
 
         public override Value Handle(Expression left, Expression right, Hashtable symbols)
@@ -45,7 +57,7 @@ namespace YAMP
 					return ix.Handle(bracket.Tree.Expressions[0], value, symbols);
 				}
 				else
-					throw new AssignmentException("The left side of an assignment must be a symbol or index on a symbol");
+					throw new AssignmentException(Op);
 			}
 			
 			return value;
@@ -54,9 +66,9 @@ namespace YAMP
         Value Assign(SymbolExpression left, Value value)
 		{
             if(left.IsSymbol)
-                Tokens.Instance.AssignVariable(left.SymbolName, value);
+                _context.AssignVariable(left.SymbolName, value);
 			else
-				throw new AssignmentException("The left side must be a symbol - found a function.");
+				throw new AssignmentException(Op);
 			
 			return value;
 		}

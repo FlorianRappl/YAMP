@@ -15,9 +15,9 @@ namespace YAMP
 			fx = new Regex("^" + pattern);
 		}
 
-		public override Expression Create( Match match)
+		public override Expression Create(ParseContext context, Match match)
         {
-            return new SymbolExpression(match);
+            return new SymbolExpression(context, match);
         }
 
         public bool IsSymbol
@@ -34,8 +34,9 @@ namespace YAMP
 		{
 		}
 
-		public SymbolExpression (Match match) : this()
+		public SymbolExpression (ParseContext context, Match match) : this()
 		{
+            Context = context;
 		    mx = match;
 		}
 		
@@ -47,12 +48,12 @@ namespace YAMP
 			if(symbols.ContainsKey(_input))
 				return new ScalarValue((double)symbols[_input]);
 
-            var variable = Tokens.Instance.GetVariable(_input);
+            var variable = Context.GetVariable(_input);
 
             if (variable != null)
                 return variable;
 			
-			return Tokens.Instance.FindConstants(_input);
+			return Context.FindConstants(_input);
 		}
 		
 		public override string ToString ()
@@ -69,7 +70,7 @@ namespace YAMP
 
 			if(m.Success)
 			{
-				func = new FunctionExpression(m);
+				func = new FunctionExpression(Context, m);
 				input = func.Set(input);
 				_input = func.Input;
 				return input;

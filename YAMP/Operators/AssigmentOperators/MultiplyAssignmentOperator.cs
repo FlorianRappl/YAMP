@@ -4,13 +4,19 @@ namespace YAMP
 {
     class MultiplyAssignmentOperator : AssignmentPrefixOperator
     {
-        public MultiplyAssignmentOperator() : base(new MultiplyOperator())
+        public MultiplyAssignmentOperator(ParseContext context)
+            : base(context, new MultiplyOperator())
         {
         }
 
-        public override Operator Create()
+        public MultiplyAssignmentOperator()
+            : this(ParseContext.Default)
         {
-            return new MultiplyAssignmentOperator();
+        }
+
+        public override Operator Create(ParseContext context)
+        {
+            return new MultiplyAssignmentOperator(context);
         }
     }
 }

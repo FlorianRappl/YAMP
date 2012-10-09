@@ -2,9 +2,10 @@
 
 namespace YAMP
 {
-    public class MatrixFormatException : Exception
+    public class MatrixFormatException : YAMPException
     {
-        public MatrixFormatException(string expected) : base("The matrix has to be " + expected + ".")
+        public MatrixFormatException(string expected)
+            : base("The matrix has to be {0}.", expected)
         {
         }
     }

@@ -30,25 +30,35 @@ using System;
 namespace YAMP
 {
     /// <summary>
-    /// Represents the context that is used for the current parser.
+    /// Represents the context that is used for the current input query.
     /// </summary>
-	public class Context
-	{
-		string _original;
+	public class QueryContext
+    {
+        #region Members
+
+        string _original;
 		string _input;
 		Value _output;
 		bool _isMuted;
-		
+
+        #endregion
+
+        #region ctor
+
         /// <summary>
-        /// Creates a new parser context.
+        /// Creates a new query context.
         /// </summary>
         /// <param name="input">The input to parse</param>
-		public Context (string input)
+		public QueryContext (string input)
 		{
 			Input = input;
 			Output = Value.Empty;
 		}
-		
+
+        #endregion
+
+        #region Properties
+
         /// <summary>
         /// Gets the input that is being used by the parser.
         /// </summary>
@@ -95,6 +105,8 @@ namespace YAMP
 		{
 			get { return _output; }
 			set { _output = value; }
-		}
-	}
+        }
+
+        #endregion
+    }
 }

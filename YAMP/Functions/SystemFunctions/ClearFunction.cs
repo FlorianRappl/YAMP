@@ -3,7 +3,7 @@
 namespace YAMP
 {
     [Description("Deletes variables from memory.")]
-    class ClearFunction : ArgumentFunction
+    class ClearFunction : SystemFunction
     {
         public ClearFunction() : base(1)
         {
@@ -13,8 +13,8 @@ namespace YAMP
         [ExampleAttribute("clear()")]
         public StringValue Function()
         {
-            var count = Tokens.Instance.Variables.Count;
-            Tokens.Instance.Variables.Clear();
+            var count = Context.Variables.Count;
+            Context.Variables.Clear();
             return new StringValue(count + " objects cleared.");
         }
 
@@ -31,9 +31,9 @@ namespace YAMP
                 {
                     var name = (arg as StringValue).Value;
 
-                    if (Tokens.Instance.Variables.ContainsKey(name))
+                    if (Context.Variables.ContainsKey(name))
                     {
-                        Tokens.Instance.Variables.Remove(name);
+                        Context.Variables.Remove(name);
                         count++;
                     }
                 }

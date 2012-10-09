@@ -72,6 +72,11 @@ namespace YAMP
 		}
 
         public abstract Operator Create();
+
+        public virtual Operator Create(ParseContext context)
+        {
+            return Create();
+        }
 		
 		public abstract Value Evaluate(Expression[] expressions, Hashtable symbols);
 

@@ -86,7 +86,7 @@ namespace YAMP
 
 		#region Overrides
 
-		public override string ToString ()
+		public override string ToString (ParseContext context)
 		{
 			return _value;
 		}

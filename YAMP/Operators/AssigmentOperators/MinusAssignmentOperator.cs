@@ -4,13 +4,19 @@ namespace YAMP
 {
     class MinusAssignmentOperator : AssignmentPrefixOperator
     {
-        public MinusAssignmentOperator() : base(new MinusOperator())
+        public MinusAssignmentOperator(ParseContext context)
+            : base(context, new MinusOperator())
         {
         }
 
-        public override Operator Create()
+        public MinusAssignmentOperator()
+            : this(ParseContext.Default)
         {
-            return new MinusAssignmentOperator();
+        }
+
+        public override Operator Create(ParseContext context)
+        {
+            return new MinusAssignmentOperator(context);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace YAMP
     {        
         BinaryOperator _child;
 
-        public AssignmentPrefixOperator(BinaryOperator child) : base(child.Op)
+        public AssignmentPrefixOperator(ParseContext context, BinaryOperator child) : base(context, child.Op)
         {
             _child = child;
         }

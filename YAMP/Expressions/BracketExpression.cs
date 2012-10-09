@@ -23,6 +23,11 @@ namespace YAMP
 			_bracketIndex = -1;
 		}
 
+        public BracketExpression(ParseContext context) : this()
+        {
+            Context = context;
+        }
+
 		internal override string Input 
 		{
 			get
@@ -34,9 +39,9 @@ namespace YAMP
 			}
 		}
 
-		public override Expression Create(Match match)
+		public override Expression Create(ParseContext context, Match match)
         {
-            return new BracketExpression();
+            return new BracketExpression(context);
         }
 		
 		public ParseTree Tree
@@ -54,7 +59,7 @@ namespace YAMP
 		
 		public override string Set (string input)
 		{
-			return Set (input, false);
+			return Set(input, false);
 		}
 
 		public string Set (string input, bool isList)
@@ -67,9 +72,9 @@ namespace YAMP
 					return SetBracketContent(input, isList);
 				}
 			}
-			
+
 			_input = input;
-			_tree = new ParseTree(_input, Offset, isList);
+			_tree = new ParseTree(Context, _input, Offset, isList);
 			return string.Empty;
 		}
 		
@@ -77,8 +82,8 @@ namespace YAMP
 		{
 			return _tree.ToString();
 		}
-		
-		protected virtual string SetBracketContent(string input, bool isList)
+
+        protected virtual string SetBracketContent(string input, bool isList)
 		{
 			var brackets = 1;
 			
@@ -102,7 +107,7 @@ namespace YAMP
 						throw new BracketException(Offset + i, closeBrackets[_bracketIndex].ToString(), input);
 
 					_input = input.Substring(1, i - 1);
-					_tree = new ParseTree(_input, Offset, isList);
+					_tree = new ParseTree(Context, _input, Offset, isList);
 					return input.Substring(i + 1);
 				}
 			}

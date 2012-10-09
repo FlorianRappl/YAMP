@@ -12,6 +12,7 @@ namespace YAMP
 		Type[] _types;
 		int _dimX;
 		int _dimY;
+        ParseContext _context;
 
 		static readonly Type mt = typeof(MatrixValue);
 
@@ -25,16 +26,27 @@ namespace YAMP
 		
         public IndexOperator() : base("[", 1000)
 		{
+            _context = ParseContext.Default;
 		}
+
+        public IndexOperator(ParseContext context) : base("[", 1000)
+        {
+            _context = context;
+        }
 
         public override Operator Create()
         {
             return new IndexOperator();
         }
+
+        public override Operator Create(ParseContext context)
+        {
+            return new IndexOperator(context);
+        }
 		
 		public override string Set (string input)
 		{
-			_bracket = new BracketExpression();
+            _bracket = new BracketExpression(_context);
 			return _bracket.Set(input, true);
 		}
 		
@@ -67,7 +79,7 @@ namespace YAMP
 				else if (value is MatrixValue)
 					frm = value as MatrixValue;
 				else
-					throw new AssignmentException("Cannot assign non-numeric values to numeric matrices");
+					throw new AssignmentException(Op, "Cannot assign non-numeric values to numeric matrices");
 
 				if(frm.DimensionX != _dimX)
 					throw new DimensionException(frm.DimensionX, _dimX);
@@ -238,9 +250,9 @@ namespace YAMP
 			if(expression is SymbolExpression)
 			{
 				var sym = expression as SymbolExpression;
-				
-				if(sym.IsSymbol && !Tokens.Instance.Variables.ContainsKey(sym.SymbolName))
-					Tokens.Instance.AssignVariable(sym.SymbolName, new MatrixValue(1, 1));
+
+                if (sym.IsSymbol && !_context.Variables.ContainsKey(sym.SymbolName))
+                    _context.AssignVariable(sym.SymbolName, new MatrixValue(1, 1));
 			}
 
 			var left = expression.Interpret(symbols);

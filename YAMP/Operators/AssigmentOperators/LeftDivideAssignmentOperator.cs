@@ -4,13 +4,17 @@ namespace YAMP
 {
     class LeftDivideAssignmentOperator : AssignmentPrefixOperator
     {
-        public LeftDivideAssignmentOperator() : base(new LeftDivideOperator())
+        public LeftDivideAssignmentOperator(ParseContext context) : base(context, new LeftDivideOperator())
         {
         }
 
-        public override Operator Create()
+        public LeftDivideAssignmentOperator() : this(ParseContext.Default)
         {
-            return new LeftDivideAssignmentOperator();
+        }
+
+        public override Operator Create(ParseContext context)
+        {
+            return new LeftDivideAssignmentOperator(context);
         }
     }
 }

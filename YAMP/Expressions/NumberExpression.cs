@@ -13,14 +13,15 @@ namespace YAMP
 		{
 		}
 
-		public NumberExpression (Match match) : this()
+		public NumberExpression (ParseContext context, Match match) : this()
 		{
+            Context = context;
 			mx = match;
 		}
 
-		public override Expression Create(Match match)
+		public override Expression Create(ParseContext context, Match match)
         {
-            return new NumberExpression(match);
+            return new NumberExpression(context, match);
         }
 		
 		public override Value Interpret (Hashtable symbols)
@@ -29,9 +30,9 @@ namespace YAMP
 			var imag = 0.0;
 			
 			if(_input[_input.Length - 1] == 'i')
-				imag = double.Parse(_input.Remove(_input.Length - 1), style, Tokens.NumberFormat);
+				imag = double.Parse(_input.Remove(_input.Length - 1), style, Context.NumberFormat);
 			else
-				real = double.Parse(_input, style, Tokens.NumberFormat);
+                real = double.Parse(_input, style, Context.NumberFormat);
 			
 			return new ScalarValue(real, imag);
 		}

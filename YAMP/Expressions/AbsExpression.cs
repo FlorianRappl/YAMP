@@ -15,9 +15,14 @@ namespace YAMP
 			abs = new AbsFunction();
 		}
 
-        public override Expression Create(Match match)
+        public AbsExpression(ParseContext context) : this()
         {
-            return new AbsExpression();
+            Context = context;
+        }
+
+        public override Expression Create(ParseContext context, Match match)
+        {
+            return new AbsExpression(context);
         }
 		
 		public override Value Interpret (Hashtable symbols)
@@ -40,7 +45,7 @@ namespace YAMP
 				else if(brackets == 0 && input[i] == '|')
 				{
 					_input = sb.ToString();
-					var _tree = new ParseTree(_input);
+					var _tree = new ParseTree(Context, _input);
 					_child = new BracketExpression(_tree); 
 					return input.Substring(i + 1);
 				}

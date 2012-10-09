@@ -15,14 +15,15 @@ namespace YAMP
 		{
 		}
 
-		public SpecialExpression (Match match) : this()
+        public SpecialExpression(ParseContext context, Match match) : this()
 		{
+            Context = context;
 			mx = match;
 		}
 
-		public override Expression Create(Match match)
+		public override Expression Create(ParseContext context, Match match)
         {
-            return new SpecialExpression(match);
+            return new SpecialExpression(context, match);
         }
 		
 		public override Value Interpret (Hashtable symbols)
@@ -30,7 +31,7 @@ namespace YAMP
 			if(SpecialName.Equals(":"))
 				return new RangeValue();
 
-            var variable = Tokens.Instance.GetVariable(SpecialName);
+            var variable = Context.GetVariable(SpecialName);
 
             if (variable != null)
                 return variable;

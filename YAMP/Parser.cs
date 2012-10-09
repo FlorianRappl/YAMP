@@ -27,11 +27,11 @@
 
 using System;
 using System.Text;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
-using System.ComponentModel;
 using System.Reflection;
+using System.Collections;
+using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace YAMP
 {
@@ -42,9 +42,12 @@ namespace YAMP
 	{
 		#region Members
 		
-		Context _expression;
+		QueryContext _expression;
 		BracketExpression _interpreter;
 		ParseTree _tree;
+        ParseContext _context;
+
+        static ParseContext primary;
 		
 		#endregion
 
@@ -56,27 +59,52 @@ namespace YAMP
 
         #region ctor
 
-        private Parser (Context expression)
+        private Parser (QueryContext expression) : this(PrimaryContext, expression)
 		{
-			_expression = expression;
-			_tree = new ParseTree(expression.Input);
-			_interpreter = new BracketExpression(_tree);
 		}
+
+        private Parser(ParseContext context, QueryContext expression)
+        {
+            _expression = expression;
+            _tree = new ParseTree(context, expression.Input);
+            _interpreter = new BracketExpression(_tree);
+            _context = context;
+        }
 
         #endregion
 
         #region Static constructions
 
         /// <summary>
-		/// Creates the parse tree for the given expression.
+		/// Creates the parse tree for the given expression within the root context.
 		/// </summary>
 		/// <param name="input">
 		/// The expression to evaluate.
-		/// </param>
+        /// </param>
+        /// <returns>The parser instance.</returns>
 		public static Parser Parse(string input)
 		{
-			return new Parser(new Context(input));
+			return new Parser(new QueryContext(input));
 		}
+
+        /// <summary>
+        /// Creates the parse tree for the given expression within a specific context.
+        /// </summary>
+        /// <param name="context">
+        /// The context that the parser should use.
+        /// </param>
+        /// <param name="input">
+        /// The expression to evaluate.
+        /// </param>
+        /// <returns>The parser instance.</returns>
+        public static Parser Parse(ParseContext context, string input)
+        {
+            return new Parser(context, new QueryContext(input));
+        }
+		
+		#endregion
+
+        #region Async methods
 
         /// <summary>
         /// Creates the parse tree and evaluates the expression asynchronously (followed by a continuation with the OnExecuted event).
@@ -86,12 +114,43 @@ namespace YAMP
         /// </param>
         public static void ExecuteAsync(string input)
         {
-            var continuation = OnExecuted;
-            
-            if(continuation == null)
-                continuation = (v, e) => {};
+            ExecuteAsync(ParseContext.Default, input);
+        }
 
-            ExecuteAsync(input, null, continuation);
+        /// <summary>
+        /// Creates the parse tree and evaluates the expression asynchronously (followed by a continuation with the OnExecuted event).
+        /// </summary>
+        /// <param name="context">
+        /// The context of the evaluation.
+        /// </param>
+        /// <param name="input">
+        /// The expression to evaluate.
+        /// </param>
+        public static void ExecuteAsync(ParseContext context, string input)
+        {
+            var continuation = OnExecuted;
+
+            if (continuation == null)
+                continuation = (v, e) => { };
+
+            ExecuteAsync(context, input, null, continuation);
+        }
+
+        /// <summary>
+        /// Creates the parse tree and evaluates the expression asynchronously.
+        /// </summary>
+        /// <param name="context">
+        /// The context of the evaluation.
+        /// </param>
+        /// <param name="input">
+        /// The expression to evaluate.
+        /// </param>
+        /// <param name="continuation">
+        /// The continuation action to invoke after the evaluation finished.
+        /// </param>
+        public static void ExecuteAsync(ParseContext context, string input, Action<Value, Exception> continuation)
+        {
+            ExecuteAsync(context, input, null, continuation);
         }
 
         /// <summary>
@@ -105,7 +164,7 @@ namespace YAMP
         /// </param>
         public static void ExecuteAsync(string input, Action<Value, Exception> continuation)
         {
-            ExecuteAsync(input, null, continuation);
+            ExecuteAsync(ParseContext.Default, input, null, continuation);
         }
 
         /// <summary>
@@ -122,9 +181,29 @@ namespace YAMP
         /// </param>
         public static void ExecuteAsync(string input, Hashtable variables, Action<Value, Exception> continuation)
         {
+            ExecuteAsync(ParseContext.Default, input, variables, continuation);
+        }
+
+        /// <summary>
+        /// Creates the parse tree and evaluates the expression asynchronously.
+        /// </summary>
+        /// <param name="context">
+        /// The context of the evaluation.
+        /// </param>
+        /// <param name="input">
+        /// The expression to evaluate.
+        /// </param>
+        /// <param name="variables">
+        /// The variables to consider from external.
+        /// </param>
+        /// <param name="continuation">
+        /// The continuation action to invoke after the evaluation finished.
+        /// </param>
+        public static void ExecuteAsync(ParseContext context, string input, Hashtable variables, Action<Value, Exception> continuation)
+        {
             var worker = new AsyncTask();
             worker.Continuation = continuation;
-            worker.RunWorkerAsync(new object[] { input, variables });
+            worker.RunWorkerAsync(new object[] { context, input, variables });
             worker.DoWork += new DoWorkEventHandler(taskInitialized);
             worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(taskCompleted);
         }
@@ -132,9 +211,10 @@ namespace YAMP
         static void taskInitialized(object sender, DoWorkEventArgs e)
         {
             var parameters = e.Argument as object[];
-            var input = parameters[0] as string;
-            var variables = parameters[1] as Hashtable;
-            var parser = new Parser(new Context(input));
+            var context = parameters[0] as ParseContext;
+            var input = parameters[1] as string;
+            var variables = parameters[2] as Hashtable;
+            var parser = new Parser(context, new QueryContext(input));
             var result = parser.Execute(variables);
             e.Result = result;
         }
@@ -145,36 +225,17 @@ namespace YAMP
             worker.Continuation(e.Result as Value, e.Error);
         }
 
-		/// <summary>
-		/// Load the required functions, operators and expressions (CAN only be performed once).
-		/// </summary>
-		public static void Load()
-		{
-			Tokens.Instance.Touch();
-		}
+        #endregion
 
-		/// <summary>
-		/// Gets the currently set variables.
-		/// </summary>
-		/// <value>
-		/// The variables.
-		/// </value>
-		public static IDictionary<string, Value> Variables
-		{
-			get { return Tokens.Instance.Variables; }
-		}
-		
-		#endregion
-		
-		#region Properties
+        #region Properties
 
-		/// <summary>
+        /// <summary>
 		/// Gets the context of the current parser instance (expression, value, ...).
 		/// </summary>
 		/// <value>
 		/// The current context of this parser instance.
 		/// </value>
-		public Context Context
+		public QueryContext Context
 		{
 			get { return _expression; }
 		}
@@ -189,6 +250,23 @@ namespace YAMP
 		{
 			get { return _tree; }
 		}
+
+        /// <summary>
+        /// Gets the primary context of the parser (not the root context).
+        /// </summary>
+        /// <value>
+        /// The parser's primary context.
+        /// </value>
+        public static ParseContext PrimaryContext
+        {
+            get 
+            {
+                if (primary == null)
+                    return Load();
+
+                return primary; 
+            }
+        }
 		
 		#endregion
 		
@@ -196,7 +274,8 @@ namespace YAMP
 
 		/// <summary>
 		/// Execute the evaluation of this parser instance without any external symbols.
-		/// </summary>
+        /// </summary>
+        /// <returns>The value from the evaluation.</returns>
 		public Value Execute()
 		{
 			return Execute(new Hashtable());
@@ -205,13 +284,14 @@ namespace YAMP
 		/// <summary>
 		/// Execute the evaluation of this parser instance with external symbols.
 		/// </summary>
-		/// <param name='values'>
+		/// <param name="values">
 		/// The values in an Hashtable containing string (name), Value (value) pairs.
 		/// </param>
+        /// <returns>The value from the evaluation.</returns>
 		public Value Execute (Hashtable values)
 		{
 			_expression.Output = _interpreter.Interpret(values);
-			Tokens.Instance.AssignVariable("$", _expression.Output);
+            _context.AssignVariable("$", _expression.Output);
 			
 			if(_expression.IsMuted)
 				return null;
@@ -222,9 +302,10 @@ namespace YAMP
 		/// <summary>
 		/// Execute the evaluation of this parser instance with external symbols.
 		/// </summary>
-		/// <param name='values'>
+		/// <param name="values">
 		/// The values in an anonymous object - containing name - value pairs.
-		/// </param>
+        /// </param>
+        /// <returns>The value from the evaluation.</returns>
 		public Value Execute(object values)
 		{
 			var symbols = new Hashtable();
@@ -245,109 +326,271 @@ namespace YAMP
 		#region Customization
 
 		/// <summary>
-		/// Adds a custom constant to the parser.
+		/// Adds a custom constant to the parser (to the primary context).
 		/// </summary>
 		/// <param name="name">
 		/// The name of the symbol corresponding to the constant.
 		/// </param>
 		/// <param name="constant">
 		/// The value of the constant.
-		/// </param>
-		public static void AddCustomConstant(string name, double constant)
+        /// </param>
+        /// <returns>The default context.</returns>
+        public static ParseContext AddCustomConstant(string name, double constant)
+        {
+            return AddCustomConstant(PrimaryContext, name, constant);
+        }
+
+        /// <summary>
+        /// Adds a custom constant to the parser using a specific context.
+        /// </summary>
+        /// <param name="context">
+        /// The context where this constant should be made available.
+        /// </param>
+        /// <param name="name">
+        /// The name of the symbol corresponding to the constant.
+        /// </param>
+        /// <param name="constant">
+        /// The value of the constant.
+        /// </param>
+        /// <returns>The given context.</returns>
+		public static ParseContext AddCustomConstant(ParseContext context, string name, double constant)
 		{
-			Tokens.Instance.AddConstant(name, constant, true);
+			context.AddConstant(name, constant);
+            return context;
 		}
 
 		/// <summary>
-		/// Adds a custom constant to the parser.
+        /// Adds a custom constant to the parser (to the primary context).
 		/// </summary>
 		/// <param name="name">
 		/// The name of the symbol corresponding to the constant.
 		/// </param>
 		/// <param name="constant">
 		/// The value of the constant.
-		/// </param>
-		public static void AddCustomConstant(string name, Value constant)
+        /// </param>
+        /// <returns>The default context.</returns>
+        public static ParseContext AddCustomConstant(string name, Value constant)
+        {
+            return AddCustomConstant(PrimaryContext, name, constant);
+        }
+
+        /// <summary>
+        /// Adds a custom constant to the parser using a specific context.
+        /// </summary>
+        /// <param name="context">
+        /// The context where this constant should be made available.
+        /// </param>
+        /// <param name="name">
+        /// The name of the symbol corresponding to the constant.
+        /// </param>
+        /// <param name="constant">
+        /// The value of the constant.
+        /// </param>
+        /// <returns>The given context.</returns>
+        public static ParseContext AddCustomConstant(ParseContext context, string name, Value constant)
 		{
-			Tokens.Instance.AddConstant(name, constant, true);
+			context.AddConstant(name, constant);
+            return context;
 		}
 
 		/// <summary>
-		/// Removes a custom constant.
+        /// Removes a custom constant (to the primary context).
 		/// </summary>
 		/// <param name="name">
 		/// The name of the symbol corresponding to the constant that should be removed.
-		/// </param>
-		public static void RemoveCustomConstant(string name)
+        /// </param>
+        /// <returns>The default context.</returns>
+        public static ParseContext RemoveCustomConstant(string name)
+        {
+            return RemoveCustomConstant(PrimaryContext, name);
+        }
+
+        /// <summary>
+        /// Removes a custom constant using a specific context.
+        /// </summary>
+        /// <param name="context">
+        /// The context where this constant should be removed.
+        /// </param>
+        /// <param name="name">
+        /// The name of the symbol corresponding to the constant that should be removed.
+        /// </param>
+        /// <returns>The given context.</returns>
+        public static ParseContext RemoveCustomConstant(ParseContext context, string name)
 		{
-			Tokens.Instance.RemoveConstant(name);
+			context.RemoveConstant(name);
+            return context;
 		}
 
 		/// <summary>
-		/// Adds a custom function to be used by the parser.
+        /// Adds a custom function to be used by the parser (to the primary context).
 		/// </summary>
 		/// <param name="name">
 		/// The name of the symbol corresponding to the function that should be added.
 		/// </param>
 		/// <param name="f">
 		/// The function that fulfills the signature Value f(Value v).
-		/// </param>
-		public static void AddCustomFunction(string name, FunctionDelegate f)
+        /// </param>
+        /// <returns>The default context.</returns>
+        public static ParseContext AddCustomFunction(string name, FunctionDelegate f)
+        {
+            return AddCustomFunction(PrimaryContext, name, f);
+        }
+
+        /// <summary>
+        /// Adds a custom function to be used by the parser using a specific context.
+        /// </summary>
+        /// <param name="context">
+        /// The context where this function should be made available.
+        /// </param>
+        /// <param name="name">
+        /// The name of the symbol corresponding to the function that should be added.
+        /// </param>
+        /// <param name="f">
+        /// The function that fulfills the signature Value f(Value v).
+        /// </param>
+        /// <returns>The given context.</returns>
+        public static ParseContext AddCustomFunction(ParseContext context, string name, FunctionDelegate f)
 		{
-			Tokens.Instance.AddFunction(name, f, true);
+			context.AddFunction(name, new ContainerFunction(name, f));
+            return context;
 		}
 
 		/// <summary>
-		/// Removes a custom function.
+        /// Removes a custom function (to the primary context).
 		/// </summary>
 		/// <param name="name">
 		/// The name of the symbol corresponding to the function that should be removed.
-		/// </param>
-		public static void RemoveCustomFunction(string name)
+        /// </param>
+        /// <returns>The default context.</returns>
+        public static ParseContext RemoveCustomFunction(string name)
+        {
+            return RemoveCustomFunction(PrimaryContext, name);
+        }
+
+        /// <summary>
+        /// Removes a custom function using a specific context.
+        /// </summary>
+        /// <param name="context">
+        /// The context where this function should be removed.
+        /// </param>
+        /// <param name="name">
+        /// The name of the symbol corresponding to the function that should be removed.
+        /// </param>
+        /// <returns>The given context.</returns>
+        public static ParseContext RemoveCustomFunction(ParseContext context, string name)
 		{
-			Tokens.Instance.RemoveFunction(name);
+			context.RemoveFunction(name);
+            return context;
 		}
 
 		/// <summary>
-		/// Adds a variable to be used by the parser.
+        /// Adds a variable to be used by the parser (to the primary context).
 		/// </summary>
 		/// <param name="name">
 		/// The name of the symbol corresponding to the variable that should be added.
 		/// </param>
 		/// <param name="value">
 		/// The value of the variable.
-		/// </param>
-		public static void AddVariable(string name, Value value)
+        /// </param>
+        /// <returns>The default context.</returns>
+        public static ParseContext AddVariable(string name, Value value)
+        {
+            return AddVariable(PrimaryContext, name, value);
+        }
+
+        /// <summary>
+        /// Adds a variable to be used by the parser using a specific context.
+        /// </summary>
+        /// <param name="context">
+        /// The context where the variable should be made available.
+        /// </param>
+        /// <param name="name">
+        /// The name of the symbol corresponding to the variable that should be added.
+        /// </param>
+        /// <param name="value">
+        /// The value of the variable.
+        /// </param>
+        /// <returns>The given context.</returns>
+        public static ParseContext AddVariable(ParseContext context, string name, Value value)
 		{
-			Tokens.Instance.Variables.Add(name, value);
+            context.Variables.Add(name, value);
+            return context;
 		}
 
 		/// <summary>
-		/// Removes a variable from the workspace.
+        /// Removes a variable from the workspace (to the primary context).
 		/// </summary>
 		/// <param name="name">
 		/// The name of the symbol corresponding to the variable that should be removed.
-		/// </param>
-		public static void RemoveVariable(string name)
+        /// </param>
+        /// <returns>The default context.</returns>
+        public static ParseContext RemoveVariable(string name)
+        {
+            return RemoveVariable(PrimaryContext, name);
+        }
+
+        /// <summary>
+        /// Removes a variable from the workspace using a specific context.
+        /// </summary>
+        /// <param name="context">
+        /// The context where the variable should be removed from.
+        /// </param>
+        /// <param name="name">
+        /// The name of the symbol corresponding to the variable that should be removed.
+        /// </param>
+        /// <returns>The given context.</returns>
+        public static ParseContext RemoveVariable(ParseContext context, string name)
 		{
-            if(Tokens.Instance.Variables.ContainsKey(name))
-			    Tokens.Instance.Variables.Remove(name);
+            if(context.Variables.ContainsKey(name))
+                context.Variables.Remove(name);
+
+            return context;
 		}
 
         /// <summary>
-        /// Loads an external library (assembly) that uses IFunction, Operator, ..., 
+        /// Loads an external library (assembly) that uses IFunction, Operator, ..., into the primary context.
         /// </summary>
         /// <param name="assembly">
         /// The assembly to load as a plugin.
         /// </param>
-        public static void LoadPlugin(Assembly assembly)
+        /// <returns>The default context.</returns>
+        public static ParseContext LoadPlugin(Assembly assembly)
         {
-            Tokens.Instance.RegisterAssembly(assembly);
+            return LoadPlugin(PrimaryContext, assembly);
+        }
+
+        /// <summary>
+        /// Loads an external library (assembly) that uses IFunction, Operator, ..., into a specific context.
+        /// </summary>
+        /// <param name="context">
+        /// The context where the new functions and constants should be available.
+        /// </param>
+        /// <param name="assembly">
+        /// The assembly to load as a plugin.
+        /// </param>
+        /// <returns>The given context.</returns>
+        public static ParseContext LoadPlugin(ParseContext context, Assembly assembly)
+        {
+            Tokens.Instance.RegisterAssembly(context, assembly);
+            return context;
+        }
+
+        /// <summary>
+        /// Load the required functions, operators and expressions (CAN only be performed once).
+        /// </summary>
+        public static ParseContext Load()
+        {
+            Tokens.Instance.Touch();
+
+            if(primary == null)
+                primary = new ParseContext(ParseContext.Default);
+
+            return primary;
         }
 		
 		#endregion
 		
-		#region General 
+		#region General
 		
 		public override string ToString ()
 		{

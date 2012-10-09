@@ -50,6 +50,7 @@ namespace YAMP
 		string _input;
 		int _offset;
 		bool _isList;
+        ParseContext _context;
 
 		#endregion
 
@@ -115,25 +116,43 @@ namespace YAMP
 			_expressions = new Expression[] { left, right };
 		}
 
+        public ParseTree(ParseContext context, string input, int offset) : this(context, input, offset, false)
+        {
+        }
+
 		public ParseTree (string input, int offset) : this(input, offset, false)
 		{
 		}
+
+        public ParseTree(ParseContext context, string input) : this(context, input, 0, false)
+        {
+        }
 
 		public ParseTree (string input) : this(input, 0, false)
 		{
 		}
 
+        public ParseTree (ParseContext context, string input, bool isList) : this(context, input, 0, isList)
+        {
+            
+        }
+
 		public ParseTree (string input, bool isList) : this(input, 0, isList)
 		{
 		}
 
-		public ParseTree(string input, int offset, bool isList)
+		public ParseTree(string input, int offset, bool isList) : this(ParseContext.Default, input, offset, isList)
 		{
-			_offset = offset;
-			_input = input;
-			_isList = isList;
-			Parse();
 		}
+
+        public ParseTree(ParseContext context, string input, int offset, bool isList)
+        {
+            _context = context;
+            _offset = offset;
+            _input = input;
+            _isList = isList;
+            Parse();
+        }
 		
 		#endregion
 
@@ -181,7 +200,7 @@ namespace YAMP
 
 				if(takeop)
 				{
-					var op = Tokens.Instance.FindOperator(shadow);
+					var op = Tokens.Instance.FindOperator(_context, shadow);
 
 					if(op.Level >= maxLevel)
 					{
@@ -199,7 +218,7 @@ namespace YAMP
 				}
 				else
 				{
-					var exp = Tokens.Instance.FindExpression(shadow);
+					var exp = Tokens.Instance.FindExpression(_context, shadow);
 					exp.Offset = offset;
 					exps.Add(exp);
 					shadow = exp.Set(shadow);

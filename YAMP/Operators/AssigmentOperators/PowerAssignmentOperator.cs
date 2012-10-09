@@ -4,13 +4,19 @@ namespace YAMP
 {
     class PowerAssignmentOperator : AssignmentPrefixOperator
     {
-        public PowerAssignmentOperator() : base(new PowerOperator())
+        public PowerAssignmentOperator(ParseContext context)
+            : base(context, new PowerOperator())
         {
         }
 
-        public override Operator Create()
+        public PowerAssignmentOperator()
+            : this(ParseContext.Default)
         {
-            return new PowerAssignmentOperator();
+        }
+
+        public override Operator Create(ParseContext context)
+        {
+            return new PowerAssignmentOperator(context);
         }
     }
 }

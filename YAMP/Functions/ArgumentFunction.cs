@@ -11,7 +11,7 @@ namespace YAMP
 	public abstract class ArgumentFunction : StandardFunction
 	{
 		protected Value[] arguments;
-		IDictionary<int, MethodInfo> functions;
+		IDictionary<ParameterInfo[], MethodInfo> functions;
         int _optArg;
         bool _hasOpt;
 
@@ -27,16 +27,13 @@ namespace YAMP
 		{
             _hasOpt = hasArg;
             _optArg = optArg;
-			functions = new Dictionary<int, MethodInfo>();
+			functions = new Dictionary<ParameterInfo[], MethodInfo>();
 			var methods = this.GetType().GetMethods();
 			
 			foreach(var method in methods)
 			{
 				if(method.Name.IsArgumentFunction())
-				{
-					var args = method.GetParameters().Length;
-					functions.Add(args, method);
-				}
+					functions.Add(method.GetParameters(), method);
 			}
 		}
 		
@@ -53,6 +50,7 @@ namespace YAMP
 		Value Execute()
 		{
             var args = arguments.Length;
+            var exception = new ArgumentsException(Name, arguments.Length); 
 
             if (_hasOpt && args >= _optArg)
             {
@@ -71,31 +69,45 @@ namespace YAMP
 
                 arguments[args - 1] = a;
             }
-            
-            if(functions.ContainsKey(args))
-			{
-				var method = functions[args];
 
-                try
+            foreach (var key in functions.Keys)
+            {
+                if (key.Length != args)
+                    continue;
+
+                var method = functions[key];
+
+                if (SignatureFits(method, exception))
                 {
-                    var pis = method.GetParameters();
-
-                    for (int i = 0; i < pis.Length; i++)
+                    try
                     {
-                        if (!pis[i].ParameterType.IsInstanceOfType(arguments[i]))
-                            throw new ArgumentTypeNotSupportedException(name, i, pis[i].ParameterType);
+                        return method.Invoke(this, arguments) as Value;
                     }
-
-                    return method.Invoke(this, arguments) as Value;
-                }
-                catch (Exception ex)
-                {
-                    throw ex.InnerException ?? ex;
+                    catch (Exception ex)
+                    {
+                        throw ex.InnerException ?? ex;
+                    }
                 }
             }
-			
-			throw new ArgumentsException(name, arguments.Length);
+            
+			throw exception;
 		}
+
+        bool SignatureFits(MethodInfo method, Exception exception)
+        {
+            var pis = method.GetParameters();
+
+            for (int i = 0; i < pis.Length; i++)
+            {
+                if (!pis[i].ParameterType.IsInstanceOfType(arguments[i]))
+                {
+                    exception = new ArgumentTypeNotSupportedException(Name, i, pis[i].ParameterType);
+                    return false;
+                }
+            }
+
+            return true;
+        }
 	}
 }
 

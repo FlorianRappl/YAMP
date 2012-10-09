@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace YAMP
 {
     [Description("Saves variables from memory in the filesystem.")]
-	class SaveFunction : ArgumentFunction
+    class SaveFunction : SystemFunction
 	{
         public SaveFunction() : base(2)
         {
@@ -16,8 +16,8 @@ namespace YAMP
         [Example("save(\"myfile.mat\")", "Saves all variables in the file myfile.mat")]
         public StringValue Function(StringValue filename)
 		{
-			Save(filename.Value, Tokens.Instance.Variables);
-			return new StringValue(Tokens.Instance.Variables.Count + " objects saved.");
+            Save(filename.Value, Context.Variables);
+            return new StringValue(Context.Variables.Count + " objects saved.");
 		}
 
         [Description("Saves the specified variables in the file.")]
@@ -32,8 +32,8 @@ namespace YAMP
                 {
                     var name = (arg as StringValue).Value;
 
-                    if (Tokens.Instance.Variables.ContainsKey(name))
-                        workspace.Add(name, Tokens.Instance.Variables[name]);
+                    if (Context.Variables.ContainsKey(name))
+                        workspace.Add(name, Context.Variables[name]);
                 }
             }
 

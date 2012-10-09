@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace YAMP
 {
     [Description("Loads compatible files into YAMP.")]
-	class LoadFunction : ArgumentFunction
+    class LoadFunction : SystemFunction
 	{
         public LoadFunction() : base(2)
         {
@@ -22,7 +22,7 @@ namespace YAMP
 			var v = Load(filename.Value);
 
 			foreach(var key in v.Keys)
-				Tokens.Instance.AssignVariable(key, v[key]);
+				Context.AssignVariable(key, v[key]);
 
 			return new StringValue(v.Count + " objects loaded.");
 		}
@@ -45,7 +45,7 @@ namespace YAMP
 
                     if (v.ContainsKey(name))
                     {
-                        Tokens.Instance.AssignVariable(name, v[name] as Value);
+                        Context.AssignVariable(name, v[name] as Value);
                         count++;
                     }
                 }

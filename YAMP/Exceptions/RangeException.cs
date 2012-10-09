@@ -2,10 +2,12 @@ using System;
 
 namespace YAMP
 {
-	public class RangeException : Exception
+	public class RangeException : YAMPException
 	{
-		public RangeException (string error) : base("Error in range expression: " + error + ".")
+        public RangeException(string error)
+            : base("Error in range expression: {0}.", error)
 		{
+            Symbol = ":";
 		}
 	}
 }

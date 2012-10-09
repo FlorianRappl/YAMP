@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace YAMP
 {
     [Description("Gives access to a stopwatch with milliseconds precision.")]
-    class TimerFunction : ArgumentFunction
+    class TimerFunction : SystemFunction
     {
         static Stopwatch timer = new Stopwatch();
 

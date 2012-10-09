@@ -56,6 +56,11 @@ namespace YAMP
 
         public override string ToString()
         {
+            return ToString(ParseContext.Default);
+        }
+
+        public virtual string ToString(ParseContext context)
+        {
             return string.Empty;
         }
 	}

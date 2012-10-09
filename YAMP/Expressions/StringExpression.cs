@@ -11,7 +11,7 @@ namespace YAMP
 		{
 		}
 
-		public override Expression Create(Match match)
+        public override Expression Create(ParseContext context, Match match)
         {
             return new StringExpression();
         }

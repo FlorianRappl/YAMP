@@ -31,10 +31,15 @@ namespace YAMP
 			_imag = imag;
 		}
 
-		public int IntValue
-		{
-			get { return (int)_real; } 
-		}
+        public int IntValue
+        {
+            get { return (int)_real; }
+        }
+
+        public int ImaginaryIntValue
+        {
+            get { return (int)_imag; }
+        }
 		
 		public double Value 
 		{
@@ -316,16 +321,16 @@ namespace YAMP
         {
             return Math.Atan2(_imag, _real);
         }
-		
-		public override string ToString ()
-		{
-			if(Math.Abs(_imag) < epsilon)
-				return string.Format(Tokens.NumberFormat, "{0}", Math.Abs (Value) < epsilon ? 0.0 : Math.Round(Value, Tokens.Precision));
-			else if(Math.Abs(_real) < epsilon)
-                return string.Format(Tokens.NumberFormat, "{0}i", Math.Round(ImaginaryValue, Tokens.Precision));
 
-            return string.Format(Tokens.NumberFormat, "{0}{2}{1}i", Math.Round(Value, Tokens.Precision), Math.Round(ImaginaryValue, Tokens.Precision), ImaginaryValue < 0.0 ? string.Empty : "+");
-		}
+        public override string ToString(ParseContext context)
+        {
+            if (Math.Abs(_imag) < epsilon)
+                return string.Format(context.NumberFormat, "{0}", Math.Abs(Value) < epsilon ? 0.0 : Math.Round(Value, context.Precision));
+            else if (Math.Abs(_real) < epsilon)
+                return string.Format(context.NumberFormat, "{0}i", Math.Round(ImaginaryValue, context.Precision));
+
+            return string.Format(context.NumberFormat, "{0}{2}{1}i", Math.Round(Value, context.Precision), Math.Round(ImaginaryValue, context.Precision), ImaginaryValue < 0.0 ? string.Empty : "+");
+        }
 		
 		public override bool Equals (object obj)
 		{
@@ -386,79 +391,79 @@ namespace YAMP
             return a * b;
         }
 
-		public static ScalarValue operator <(ScalarValue l, ScalarValue r)
+        public static bool operator <(ScalarValue l, ScalarValue r)
 		{
 			if(l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
 			{
 				if(l._real < r._real)
-					return new ScalarValue(true);
+					return true;
 			}
 			else if(l.abs() < r.abs ())
-				return new ScalarValue(true);
+				return true;
 
-			return new ScalarValue(false);
+			return false;
 		}
-		
-		public static ScalarValue operator >(ScalarValue l, ScalarValue r)
+
+        public static bool operator >(ScalarValue l, ScalarValue r)
 		{
 			if(l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
 			{
 				if(l._real > r._real)
-					return new ScalarValue(true);
+					return true;
 			}
 			else if(l.abs() > r.abs ())
-				return new ScalarValue(true);
+				return true;
 			
-			return new ScalarValue(false);
+			return false;
         }
 
-        public static ScalarValue operator <=(ScalarValue l, ScalarValue r)
+        public static bool operator <=(ScalarValue l, ScalarValue r)
         {
             if (l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
             {
                 if (l._real <= r._real)
-                    return new ScalarValue(true);
+                    return true;
             }
             else if (l.abs() <= r.abs())
-                return new ScalarValue(true);
+                return true;
 
-            return new ScalarValue(false);
+            return false;
         }
 
-        public static ScalarValue operator >=(ScalarValue l, ScalarValue r)
+        public static bool operator >=(ScalarValue l, ScalarValue r)
         {
             if (l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
             {
                 if (l._real >= r._real)
-                    return new ScalarValue(true);
+                    return true;
             }
             else if (l.abs() >= r.abs())
-                return new ScalarValue(true);
+                return true;
 
-            return new ScalarValue(false);
+            return false;
+        }
+
+        public static bool operator ==(ScalarValue l, ScalarValue r)
+        {
+            if (ReferenceEquals(l, r))
+                return true;
+
+            if ((object)l == null || (object)r == null)
+                return false;
+
+            if (Math.Abs(l.ImaginaryValue - r.ImaginaryValue) > epsilon)
+                return false;
+
+            if(Math.Abs(l.Value - r.Value) > epsilon)
+                return false;
+
+            return true;
         }
 		
-		public static ScalarValue operator ==(ScalarValue l, ScalarValue r)
-		{
-			if(Math.Abs (l.ImaginaryValue - r.ImaginaryValue) > epsilon)
-				return new ScalarValue(false);
-
-			if(Math.Abs(l.Value - r.Value) > epsilon)
-				return new ScalarValue(false);
-			
-			return new ScalarValue(true);
-		}
-		
-		public static ScalarValue operator !=(ScalarValue l, ScalarValue r)
-		{
-			if(Math.Abs (l.ImaginaryValue - r.ImaginaryValue) > epsilon)
-				return new ScalarValue(true);
-			
-			if(Math.Abs(l.Value - r.Value) > epsilon)
-				return new ScalarValue(true);
-			
-			return new ScalarValue(false);
-		}
+        public static bool operator !=(ScalarValue l, ScalarValue r)
+        {
+            return !(l == r);
+        }
 
         public static ScalarValue operator *(ScalarValue a, double b)
         {

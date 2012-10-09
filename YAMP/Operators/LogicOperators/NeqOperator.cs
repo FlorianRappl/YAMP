@@ -13,9 +13,9 @@ namespace YAMP
 			return new NeqOperator();
 		}
 
-		public override ScalarValue Compare (ScalarValue left, ScalarValue right)
+		public override ScalarValue Compare (ScalarValue l, ScalarValue r)
 		{
-			return left != right;
+            return new ScalarValue(l != r);
 		}
 	}
 }

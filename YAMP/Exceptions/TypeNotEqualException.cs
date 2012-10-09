@@ -2,11 +2,16 @@ using System;
 
 namespace YAMP
 {
-	public class TypeNotEqualException : Exception
+	public class TypeNotEqualException : YAMPException
 	{
-		public TypeNotEqualException (Value left, Value right) : base("The types must be equal - received: " + left.GetType().Name + ", " + right.GetType().Name + ".")
+		public TypeNotEqualException (Value left, Value right) : base("The types ({0}, {1}) must be equal.", Name(left), Name(right))
 		{
 		}
+
+        static string Name(Value value)
+        {
+            return value.GetType().Name.RemoveValueConvention();
+        }
 	}
 }
 

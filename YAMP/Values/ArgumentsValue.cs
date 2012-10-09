@@ -153,5 +153,15 @@ namespace YAMP
 		}
 
 		#endregion
-	}
+
+        #region Overrides
+
+        public override string ToString(ParseContext context)
+        {
+            //TODO
+            return base.ToString(context);
+        }
+
+        #endregion
+    }
 }

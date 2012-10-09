@@ -7,7 +7,7 @@ namespace YAMP
 {
 	class FunctionExpression : Expression
 	{
-		FunctionDelegate _func;
+		IFunction _func;
 		string _name;
 		BracketExpression _child;
 		
@@ -15,31 +15,32 @@ namespace YAMP
 		{
 		}
 
-		public FunctionExpression (Match match) : this()
+		public FunctionExpression (ParseContext context, Match match) : this()
 		{
+            Context = context;
 			mx = match;
 		}
 
-		public override Expression Create(Match match)
+		public override Expression Create(ParseContext context, Match match)
         {
-            return new FunctionExpression(match);
+            return new FunctionExpression(context, match);
         }
 		
 		public override Value Interpret (Hashtable symbols)
 		{
 			var val = _child.Interpret(symbols);
-			return _func(val);
+			return _func.Perform(Context, val);
 		}
 		
-		public override string Set (string input)
+		public override string Set ( string input)
 		{
 			var sb = new StringBuilder();
             var pos = input.IndexOf('(');
-            var isList = false;
 			_name = input.Substring(0, pos);
 			sb.Append(_name).Append("(");
-			_func = Tokens.Instance.FindFunction(_name, out isList);
-			_child = new BracketExpression();
+            _func = Context.FindFunction(_name);
+            var isList = _func is ArgumentFunction;
+			_child = new BracketExpression(Context);
 			_child.Offset = Offset + pos;
 			input = _child.Set(input.Substring(pos), isList);
 			sb.Append(_child.Input).Append(")");

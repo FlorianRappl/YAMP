@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **0.9.1**. This version is still an incomplete alpha build.
+The current version number is **0.9.5**. This version is still an incomplete alpha build.
 A NuGet package is available [here](http://nuget.org/packages/YAMP). There are a lot of
 tests in the code - since the package aims to be cross platform (created with Mono), no
 particular unit testing framework has been chosen.
@@ -37,6 +37,23 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**0.9.5:**
+- Added a `ParseContext` class that manages the (local and global) contexts
+- Applied the changes to all operators, expressions and functions
+- Improved the waterfall of global to local scope; one can have several independent branches
+- Added the ability to work purely in one context
+- Changed the derivation for each exception to a new class `YAMPException`
+- Included the Mandelbrot set as an example for fractals
+- Added a new abstract base class `SystemFunction` that makes use of the local context
+- Altered the overview of the help
+- Changed the `Tokens` class to only contain `Operator` and `Expression` instances
+- Changed the definition of the `IFunction` interface
+- Included a `ContainerFunction` class that can wrap any functions with the `FunctionDelegate`
+  signature
+- Improved the performance of the parser by another 5%
+- Added more async methods, mainly due to the `ParseContext` specification
+- Added new `Interpolation` base class with `SplineInterpolation` implemention
+
 **0.9.1:**
 - Added the "who()" command to view the current workspace
 - Added a method called `LoadPlugin()` to the Parser - now it should be easily possible

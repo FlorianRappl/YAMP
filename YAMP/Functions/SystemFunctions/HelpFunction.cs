@@ -6,7 +6,7 @@ using System.Reflection;
 namespace YAMP
 {
     [Description("Shows detailled help for all functions.")]
-    class HelpFunction : ArgumentFunction
+    class HelpFunction : SystemFunction
     {
         const string SPACING = "   ";
 
@@ -15,10 +15,10 @@ namespace YAMP
         public StringValue Function()
         {
             var sb = new StringBuilder();
-            var methods = Tokens.Instance.Methods.Select(m => m.GetType().Name.RemoveFunctionConvention().ToLower()).OrderBy(m => m).AsEnumerable();
+            var methods = Context.AllFunctions.Select(m => m.Key).OrderBy(m => m).AsEnumerable();
 
             foreach (var method in methods)
-                sb.AppendLine(method);
+                sb.Append(method).AppendLine(":").AppendLine(GetDescription(Context.FindFunction(method).GetType(), false));
 
             return new StringValue(sb.ToString());
         }
@@ -30,7 +30,7 @@ namespace YAMP
         {
             var sb = new StringBuilder();
             var func = method.Value.ToLower();
-            var element = Tokens.Instance.Methods.Where(m => m.GetType().Name.Equals(func + "Function", StringComparison.InvariantCultureIgnoreCase)).Select(m => m.GetType()).FirstOrDefault();
+            var element = Context.AllFunctions.Where(m => m.Key.Equals(func, StringComparison.InvariantCultureIgnoreCase)).Select(m => m.Value.GetType()).FirstOrDefault();
 
             if (element == null)
                 throw new FunctionNotFoundException(method.Value);
@@ -74,7 +74,7 @@ namespace YAMP
 
         string GetMethodExample(MemberInfo function)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             var objects = function.GetCustomAttributes(typeof(ExampleAttribute), false);
             sb.AppendLine("Example(s):");
             var index = 1;
@@ -97,9 +97,10 @@ namespace YAMP
             return sb.ToString();
         }
 
-        string GetMethodSignature(MethodInfo function)
+        string GetMethodSignature(MethodInfo function, bool heading = true)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
+
             sb.AppendLine("Returns:");
             sb.Append(SPACING).AppendLine(ModifyValueType(function.ReturnType));
             sb.AppendLine("Argument(s):");
@@ -114,11 +115,13 @@ namespace YAMP
             return sb.ToString();
         }
 
-        string GetDescription(MemberInfo element)
+        string GetDescription(MemberInfo element, bool heading = true)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             var objects = element.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            sb.AppendLine("Description:");
+
+            if(heading)
+                sb.AppendLine("Description:");
 
             if (objects.Length == 0)
                 sb.Append(SPACING).AppendLine("No description available.");

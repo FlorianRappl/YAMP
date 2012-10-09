@@ -1,18 +1,22 @@
 using System;
 namespace YAMP
 {
-	public class OperationNotSupportedException : Exception
+	public class OperationNotSupportedException : YAMPException
 	{
 		public OperationNotSupportedException () : base("The operation is not supported.")
 		{
 		}
-		
-		public OperationNotSupportedException (string op) : base("The operation " + op + " is not supported.")
+
+        public OperationNotSupportedException(string op)
+            : base("The operation {0} is not supported.", op)
 		{
+            Symbol = op;
 		}
-		
-		public OperationNotSupportedException (string op, Value reason) : base("The operation " + op + " is not supported with " + reason.ToString() + ".")
+
+        public OperationNotSupportedException(string op, Value reason)
+            : base("The operation {0} is not supported with {1}.", op, reason)
 		{
+            Symbol = op;
 		}
 	}
 }
