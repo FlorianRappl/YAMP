@@ -15,6 +15,7 @@ namespace YAMP
         ParseContext _context;
 
 		static readonly Type mt = typeof(MatrixValue);
+        static readonly Type at = typeof(ArgumentsValue);
 
 		public override string Input
 		{
@@ -64,6 +65,13 @@ namespace YAMP
 
 				return m;
 			}
+            else if(left is ArgumentsValue)
+            {
+                if (_indices.Length != 1)
+                    throw new ArgumentsException("[]", _indices.Length);
+
+                return at.GetProperty("Item", _types).GetValue(left, _indices[0]) as Value;
+            }
 			
 			throw new OperationNotSupportedException("[]", left);
 		}
@@ -92,6 +100,11 @@ namespace YAMP
 
 				return left;
 			}
+            /*
+            else if (left is ArgumentsValue)
+            {
+                at.GetProperty("Item", _types).SetValue(left, value, _indices[0]);
+            }*/
 			
 			throw new OperationNotSupportedException("[]", left);
 		}
@@ -106,17 +119,21 @@ namespace YAMP
 			if(value is StringValue)
 				return (value as StringValue).Length;
 			else if(value is MatrixValue)
-				return (value as MatrixValue).Length;
+                return (value as MatrixValue).Length;
+            else if (value is ArgumentsValue)
+                return (value as ArgumentsValue).Length;
 
 			throw new OperationNotSupportedException("[]", value);
 		}
 		
 		int GetDimX (Value value)
 		{
-			if(value is StringValue)
-				return (value as StringValue).Length;
-			else if(value is MatrixValue)
-				return (value as MatrixValue).DimensionX;
+            if (value is StringValue)
+                return (value as StringValue).Length;
+            else if (value is MatrixValue)
+                return (value as MatrixValue).DimensionX;
+            else if (value is ArgumentsValue)
+                return (value as ArgumentsValue).Length;
 			
 			throw new OperationNotSupportedException("[]", value);
 		}
@@ -126,7 +143,9 @@ namespace YAMP
 			if(value is StringValue)
 				return 1;
 			else if(value is MatrixValue)
-				return (value as MatrixValue).DimensionY;
+                return (value as MatrixValue).DimensionY;
+            else if (value is ArgumentsValue)
+                return 1;
 			
 			throw new OperationNotSupportedException("[]", value);
 		}
@@ -146,7 +165,7 @@ namespace YAMP
 				{
 					var m = _value as MatrixValue;
 
-					if(m.DimensionX == GetDimX (left) && m.DimensionY == GetDimY(left))
+					if(m.DimensionX == GetDimX(left) && m.DimensionY == GetDimY(left))
 					{
 						LogicalSubscripting(m);
 						return;

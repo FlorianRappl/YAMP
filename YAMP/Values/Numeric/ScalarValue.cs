@@ -2,14 +2,24 @@ using System;
 
 namespace YAMP
 {
-	public class ScalarValue : Value
-	{
-		const double epsilon = 1e-12;
-		
-		double _real;
+	public class ScalarValue : NumericValue
+    {
+        #region Constants
+
+        const double epsilon = 1e-12;
+
+        #endregion
+
+        #region Members
+
+        double _real;
 		double _imag;
-		
-		public ScalarValue () : this(0.0, 0.0)
+
+        #endregion
+
+        #region ctors
+
+        public ScalarValue () : this(0.0, 0.0)
 		{
 		}
 
@@ -31,44 +41,86 @@ namespace YAMP
 			_imag = imag;
 		}
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the integer part of the real contribution.
+        /// </summary>
         public int IntValue
         {
             get { return (int)_real; }
         }
 
+        /// <summary>
+        /// Gets the integer part of the imaginary contribution.
+        /// </summary>
         public int ImaginaryIntValue
         {
             get { return (int)_imag; }
         }
 		
+        /// <summary>
+        /// Gets or sets the real part of the scalar.
+        /// </summary>
 		public double Value 
 		{
 			get { return _real; }
 			set { _real = value; }
 		}
 		
+        /// <summary>
+        /// Gets or sets the imaginary part of the scalar.
+        /// </summary>
 		public double ImaginaryValue 
 		{
 			get { return _imag; }
 			set { _imag = value; }
 		}
-		
-		public ScalarValue Clone()
+
+        /// <summary>
+        /// Gets a boolean if the number is real (imaginary part zero).
+        /// </summary>
+        public bool IsReal
+        {
+            get { return Math.Abs(_imag) < epsilon; }
+        }
+
+        /// <summary>
+        /// Gets a boolean if the number if complex (imaginary part not zero).
+        /// </summary>
+        public bool IsComplex
+        {
+            get { return !IsReal; }
+        }
+
+        #endregion
+
+        #region Statics
+
+        static readonly ScalarValue _I = new ScalarValue(0.0, 1.0);
+
+        public static ScalarValue I
+        {
+            get { return _I; }
+        }
+
+        #endregion
+
+        #region Methods
+
+        public ScalarValue Clone()
 		{
 			return new ScalarValue(this);
 		}
 		
-		public static ScalarValue I
-		{
-			get { return new ScalarValue(0.0, 1.0); }
-		}
-		
-		public ScalarValue Abs()
+		public override ScalarValue Abs()
 		{
 			return new ScalarValue(abs());
 		}
 
-        public ScalarValue AbsSquare()
+        public override ScalarValue AbsSquare()
         {
             return new ScalarValue(_real * _real + _imag * _imag);
         }
@@ -78,7 +130,7 @@ namespace YAMP
 			return new ScalarValue(_real, -_imag);
 		}
 		
-		public override Value Add (Value right)
+		public override Value Add(Value right)
 		{
 			if(right is ScalarValue)
 			{
@@ -101,7 +153,7 @@ namespace YAMP
 			throw new OperationNotSupportedException("+", right);
 		}
 		
-		public override Value Subtract (Value right)
+		public override Value Subtract(Value right)
 		{
 			if(right is ScalarValue)
 			{
@@ -125,7 +177,7 @@ namespace YAMP
 			throw new OperationNotSupportedException("-", right);
 		}
 		
-		public override Value Multiply (Value right)
+		public override Value Multiply(Value right)
 		{
 			if(right is ScalarValue)
 			{
@@ -143,7 +195,7 @@ namespace YAMP
 			throw new OperationNotSupportedException("*", right);
 		}
 		
-		public override Value Divide (Value right)
+		public override Value Divide(Value right)
 		{
 			if(right is ScalarValue)
 			{
@@ -162,7 +214,7 @@ namespace YAMP
 			throw new OperationNotSupportedException("/", right);
 		}
 		
-		public override Value Power (Value exponent)
+		public override Value Power(Value exponent)
 		{
             if(exponent is ScalarValue)
 			{
@@ -201,7 +253,7 @@ namespace YAMP
 			throw new OperationNotSupportedException("^", exponent);
 		}
 		
-		public override byte[] Serialize ()
+		public override byte[] Serialize()
 		{
 			var re = BitConverter.GetBytes(_real);
 			var im = BitConverter.GetBytes(_imag);
@@ -211,7 +263,7 @@ namespace YAMP
 			return ov;
 		}
 
-		public override Value Deserialize (byte[] content)
+		public override Value Deserialize(byte[] content)
 		{
 			_real = BitConverter.ToDouble(content, 0);
 			_imag = BitConverter.ToDouble(content, 8);
@@ -259,12 +311,12 @@ namespace YAMP
 			return new ScalarValue(re, im);
 		}
 
-		public ScalarValue IsInt ()
+		public ScalarValue IsInt()
 		{
 			return new ScalarValue((double)IntValue == Value && ImaginaryValue == 0.0);
 		}
 
-		public ScalarValue IsPrime ()
+		public ScalarValue IsPrime()
 		{
             if (IsInt().Value == 1)
             {
@@ -332,7 +384,7 @@ namespace YAMP
             return string.Format(context.NumberFormat, "{0}{2}{1}i", Math.Round(Value, context.Precision), Math.Round(ImaginaryValue, context.Precision), ImaginaryValue < 0.0 ? string.Empty : "+");
         }
 		
-		public override bool Equals (object obj)
+		public override bool Equals(object obj)
 		{
 			if(obj is ScalarValue)
 			{
@@ -346,10 +398,20 @@ namespace YAMP
 			return false;
 		}
 		
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
 			return (_real + _imag).GetHashCode();
         }
+
+        public override void Clear()
+        {
+            this._real = 0.0;
+            this._imag = 0.0;
+        }
+
+        #endregion
+
+        #region Operators
 
         public static ScalarValue operator +(ScalarValue a, ScalarValue b)
         {
@@ -490,11 +552,7 @@ namespace YAMP
             return new ScalarValue(-a._real, -a._imag);
         }
 
-        public void Clear()
-        {
-            this._real = 0.0;
-            this._imag = 0.0;
-        }
+        #endregion
     }
 }
 

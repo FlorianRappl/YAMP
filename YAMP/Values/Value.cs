@@ -19,7 +19,7 @@ namespace YAMP
 		{
 			get
 			{
-				return GetType().Name.Replace("Value", string.Empty);
+				return GetType().Name.RemoveValueConvention();
 			}
 		}
 		
@@ -40,7 +40,7 @@ namespace YAMP
 		internal static Value Deserialize(string name, byte[] content)
 		{
 			name = name + "Value";
-			var types = Assembly.GetCallingAssembly().GetTypes ();
+			var types = Assembly.GetCallingAssembly().GetTypes();
 
 			foreach(var target in types)
 			{

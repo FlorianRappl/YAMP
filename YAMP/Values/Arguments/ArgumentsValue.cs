@@ -106,14 +106,19 @@ namespace YAMP
 		public Value this[int i]
 		{
 			get
-			{
-				return _values[i];
+            {
+                if (i < 1 || i > _values.Count)
+                    throw new ArgumentOutOfRangeException("Access in list out of bounds.");
+
+				return _values[i - 1];
 			}
             set
             {
-                if (i == _values.Count)
+                if(i < 1)
+                    throw new ArgumentOutOfRangeException("Access in list out of bounds.");
+                else if (i == _values.Count + 1)
                     _values.Add(value);
-                else if(i < _values.Count)
+                else if(i <= _values.Count)
                     _values[i] = value;
             }
 		}
@@ -127,9 +132,23 @@ namespace YAMP
 			_values = new List<Value>();
 		}
 
+        public ArgumentsValue(params Value[] values) : this()
+        {
+            foreach (var value in values)
+                _values.Add(value);
+        }
+
 		#endregion
 
-		#region Methods
+        #region Methods
+
+        public Value First()
+        {
+            if (_values.Count > 0)
+                return _values[0];
+
+            return null;
+        }
 
 		ArgumentsValue Append (Value value)
 		{
@@ -140,6 +159,11 @@ namespace YAMP
 
 			return this;
 		}
+
+        public Value[] ToArray()
+        {
+            return _values.ToArray();
+        }
 
 		#endregion
 

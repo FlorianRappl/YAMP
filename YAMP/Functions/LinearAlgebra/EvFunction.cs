@@ -16,7 +16,7 @@ namespace YAMP
                 return ev.GetV();
             }
 
-            throw new OperationNotSupportedException("ev", argument);
+            throw new OperationNotSupportedException(Name, argument);
         }
     }
 }

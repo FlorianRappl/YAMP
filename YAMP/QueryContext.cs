@@ -40,6 +40,7 @@ namespace YAMP
 		string _input;
 		Value _output;
 		bool _isMuted;
+        YAMPException _exception;
 
         #endregion
 
@@ -104,7 +105,7 @@ namespace YAMP
 		public Value Output
 		{
 			get { return _output; }
-			set { _output = value; }
+			internal set { _output = value; }
         }
 
         #endregion

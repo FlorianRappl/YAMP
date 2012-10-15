@@ -90,7 +90,7 @@ namespace YAMPConsole
             //var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
 			
 			// The implementation here... YAMP
-			// 5716 ms ; 398 ms ; 131 ms ; 543 ms
+			// 5716 ms ; 394 ms ; 131 ms ; 543 ms
             Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
 
             //http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
@@ -234,8 +234,10 @@ namespace YAMPConsole
             Test("(-25)^2", 625.0);
             Test("length(help()) > 0", 1.0);
             Test("abs(3+4i)", 5.0);
-            Test("eig(1,2;4,5)[1]", 3.0 - Math.Sqrt(12));
+            Test("eig(1,2;4,5)[1][1]", 3.0 - Math.Sqrt(12));
+            Test("eigval(1,2;4,5)[1]", 3.0 - Math.Sqrt(12));
             Test("abs(ev(1,2;4,5)[1:2])", 1.0);
+            Test("abs(eigvec(1,2;4,5)[1:2])", 1.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}

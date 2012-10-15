@@ -223,6 +223,15 @@ namespace YAMP
             internal set { precision = value; }
         }
 
+        /// <summary>
+        /// Gets the last plot added to the context.
+        /// </summary>
+        public PlotValue LastPlot
+        {
+            get;
+            internal set;
+        }
+
         #endregion
 
         #region Add Methods

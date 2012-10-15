@@ -65,7 +65,7 @@ namespace YAMP
                     arguments[i] = old[i];
 
                 for (; i < length; i++)
-                    a[i - args + 1] = old[i];
+                    a[i - args + 2] = old[i];
 
                 arguments[args - 1] = a;
             }

@@ -4,14 +4,9 @@ namespace YAMP
 {
 	public class TypeNotEqualException : YAMPException
 	{
-		public TypeNotEqualException (Value left, Value right) : base("The types ({0}, {1}) must be equal.", Name(left), Name(right))
+		public TypeNotEqualException (Value left, Value right) : base("The types ({0}, {1}) must be equal.", left.Header, right.Header)
 		{
 		}
-
-        static string Name(Value value)
-        {
-            return value.GetType().Name.RemoveValueConvention();
-        }
 	}
 }
 

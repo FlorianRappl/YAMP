@@ -48,6 +48,23 @@ namespace YAMP
 		{
 			get { return _tree; }
 		}
+
+        public bool IsAssignment 
+        {
+            get
+            {
+                if (_tree.Operator != null)
+                    return _tree.Operator is AssignmentOperator;
+
+                if (_tree.Expressions.Length == 0)
+                    return true;
+
+                if (_tree.Expressions[0] is BracketExpression)
+                    return (_tree.Expressions[0] as BracketExpression).IsAssignment;
+
+                return false;
+            }
+        }
 		
 		public override Value Interpret (Hashtable symbols)
 		{
@@ -114,5 +131,5 @@ namespace YAMP
 			
 			throw new BracketException(Offset, openBrackets[_bracketIndex].ToString(), input);
 		}
-	}
+    }
 }

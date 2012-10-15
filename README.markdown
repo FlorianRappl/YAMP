@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **0.9.5**. This version is still an incomplete alpha build.
+The current version number is **0.9.6**. This version is still an incomplete beta build.
 A NuGet package is available [here](http://nuget.org/packages/YAMP). There are a lot of
 tests in the code - since the package aims to be cross platform (created with Mono), no
 particular unit testing framework has been chosen.
@@ -37,6 +37,16 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**0.9.6:**
+- Added a `PlotValue` type with derived types like `Plot2DValue` etc.
+- Created a function called plot(), which takes one or more arguments
+- Created a special abstract class `PropertyFunction` to derive from
+- Only numeric types will be assigned to the $
+- An assignment to the $ will only happen if there is no user assignment
+- Every property changed in a `PlotValue` instance invokes a callback
+- Functions can return multiple values
+- The last returned `PlotValue` is saved in the corresponding `ParseContext`
+
 **0.9.5:**
 - Added a `ParseContext` class that manages the (local and global) contexts
 - Applied the changes to all operators, expressions and functions

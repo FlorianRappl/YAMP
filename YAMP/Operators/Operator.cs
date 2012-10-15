@@ -91,7 +91,7 @@ namespace YAMP
 
         protected bool IsNumeric(Value value)
         {
-            return value is MatrixValue || value is ScalarValue;
+            return value is NumericValue;
         }
 		
 		public override string ToString ()

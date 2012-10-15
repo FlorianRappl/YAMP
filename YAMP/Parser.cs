@@ -42,7 +42,7 @@ namespace YAMP
 	{
 		#region Members
 		
-		QueryContext _expression;
+		QueryContext _query;
 		BracketExpression _interpreter;
 		ParseTree _tree;
         ParseContext _context;
@@ -65,7 +65,7 @@ namespace YAMP
 
         private Parser(ParseContext context, QueryContext expression)
         {
-            _expression = expression;
+            _query = expression;
             _tree = new ParseTree(context, expression.Input);
             _interpreter = new BracketExpression(_tree);
             _context = context;
@@ -237,7 +237,7 @@ namespace YAMP
 		/// </value>
 		public QueryContext Context
 		{
-			get { return _expression; }
+			get { return _query; }
 		}
 
 		/// <summary>
@@ -290,13 +290,21 @@ namespace YAMP
         /// <returns>The value from the evaluation.</returns>
 		public Value Execute (Hashtable values)
 		{
-			_expression.Output = _interpreter.Interpret(values);
-            _context.AssignVariable("$", _expression.Output);
+            _query.Output = _interpreter.Interpret(values);
+
+            if(!_interpreter.IsAssignment)
+            {
+                if (_query.Output is ArgumentsValue)
+                    _query.Output = (_query.Output as ArgumentsValue).First();
+
+                if(_query.Output is NumericValue)
+                    _context.AssignVariable("$", _query.Output);
+            }
 			
-			if(_expression.IsMuted)
+			if(_query.IsMuted)
 				return null;
 			
-			return _expression.Output;
+			return _query.Output;
 		}
 
 		/// <summary>
@@ -595,7 +603,7 @@ namespace YAMP
 		public override string ToString ()
 		{
 			var sb = new StringBuilder();
-			sb.Append("YAMP [ input = ").Append(_expression.Original).AppendLine(" ]");
+			sb.Append("YAMP [ input = ").Append(_query.Original).AppendLine(" ]");
 			sb.AppendLine("--------------");
 			sb.Append(_interpreter.Tree.ToString());
 			return sb.ToString();
