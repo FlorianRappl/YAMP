@@ -7,11 +7,6 @@ namespace YAMP
 		public AdjungateOperator () : base("'", 100)
 		{
 		}
-
-        public override Operator Create()
-        {
-            return new AdjungateOperator();
-        }
 		
 		public override Value Perform (Value left)
 		{

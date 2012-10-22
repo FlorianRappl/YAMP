@@ -6,7 +6,7 @@ using System.IO;
 
 namespace YAMP
 {
-	public class MatrixValue : NumericValue
+	public class MatrixValue : NumericValue, ISupportsIndex, ISign
     {
         #region Members
 
@@ -66,7 +66,7 @@ namespace YAMP
         public MatrixValue ()
 		{
 			dimX = 0;
-			dimY = 0;
+			dimY = 1;
 			capacityX = 32;
 			capacityY = 32;
 			_values = new ScalarValue[capacityX, capacityY];
@@ -131,6 +131,22 @@ namespace YAMP
         #endregion
 
         #region Methods
+
+        public Value ChangeSign()
+        {
+            var m = Clone();
+
+            for (var i = 1; i <= DimensionX; i++)
+            {
+                for (var j = 1; j <= DimensionY; j++)
+                {
+                    m[j, i].Value = -m[j, i].Value;
+                    m[j, i].ImaginaryValue = -m[j, i].ImaginaryValue;
+                }
+            }
+
+            return m;
+        }
 
         public override void Clear()
         {
@@ -767,6 +783,55 @@ namespace YAMP
         public static bool operator !=(MatrixValue l, MatrixValue r)
         {
             return !(l == r);
+        }
+
+        #endregion
+
+        #region ISupportsIndex
+
+        public int GetDimension(int dimension)
+        {
+            if (dimension == 0)
+                return DimensionY;
+            else if (dimension == 1)
+                return DimensionX;
+
+            return 1;
+        }
+
+        public int Dimensions
+        {
+            get
+            {
+                return 2;
+            }
+        }
+
+        public Value Get(int[] indices)
+        {
+            if (indices.Length == 1)
+                return this[indices[0]];
+
+            return this[indices[0], indices[1]];
+        }
+
+        public void Set(int[] indices, Value value)
+        {
+            if (!(value is ScalarValue))
+                throw new OperationNotSupportedException("Index", value);
+
+            if (indices.Length == 1)
+                this[indices[0]] = value as ScalarValue;
+            else
+                this[indices[0], indices[1]] = value as ScalarValue;
+        }
+
+        public ISupportsIndex Create(int[] dimensions)
+        {
+            if (dimensions.Length == 1)
+                return new MatrixValue(dimensions[0], 1);
+
+            return new MatrixValue(dimensions[0], dimensions[1]);
         }
 
         #endregion

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
-	public class ArgumentsValue : Value
+	public class ArgumentsValue : Value, ISupportsIndex
 	{
 		#region Members
 
@@ -184,6 +184,41 @@ namespace YAMP
         {
             //TODO
             return base.ToString(context);
+        }
+
+        #endregion
+
+        #region Implementation of ISupportsIndex
+
+        public int GetDimension(int dimension)
+        {
+            if (dimension == 0)
+                return Length;
+
+            return 1;
+        }
+
+        public int Dimensions
+        {
+            get
+            {
+                return 1;
+            }
+        }
+
+        public Value Get(int[] indices)
+        {
+            return this[indices[0]];
+        }
+
+        public void Set(int[] indices, Value value)
+        {
+            this[indices[0]] = value;
+        }
+
+        public ISupportsIndex Create(int[] dimensions)
+        {
+            return new ArgumentsValue();
         }
 
         #endregion

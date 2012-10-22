@@ -8,11 +8,6 @@ namespace YAMP
 		{
 		}
 
-        public override Operator Create()
-        {
-            return new DotDivideOperator();
-        }
-
 		public override ScalarValue Operation (ScalarValue left, ScalarValue right)
 		{
 			return left.Divide(right) as ScalarValue;

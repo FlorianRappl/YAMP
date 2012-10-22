@@ -3,7 +3,7 @@ using System.Text;
 
 namespace YAMP
 {
-	public class StringValue : Value
+	public class StringValue : Value, ISupportsIndex
 	{
 		#region Members
 
@@ -92,6 +92,38 @@ namespace YAMP
 		}
 
 		#endregion
-	}
+
+        #region Implementation of ISupportsIndex
+
+        public int Dimensions
+        {
+            get { return 1; }
+        }
+
+        public int GetDimension(int dimension)
+        {
+            if (dimension == 0)
+                return Length;
+
+            return 1;
+        }
+
+        public Value Get(int[] indices)
+        {
+            return new StringValue(_value[indices[0] - 1].ToString());
+        }
+
+        public void Set(int[] indices, Value value)
+        {
+            _value = _value.Remove(indices[0] - 1, 1).Insert(indices[0] - 1, value.ToString());
+        }
+
+        public ISupportsIndex Create(int[] dimensions)
+        {
+            return new StringValue();
+        }
+
+        #endregion
+    }
 }
 

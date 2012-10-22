@@ -20,11 +20,6 @@ namespace YAMP
         {
         }
 
-        public override Operator Create()
-        {
-            return Create(ParseContext.Default);
-        }
-
         public override Operator Create(ParseContext context)
         {
             return new AssignmentOperator(context);
@@ -45,16 +40,16 @@ namespace YAMP
 		{
 			if (left is SymbolExpression)
                 return Assign(left as SymbolExpression, value);
-			else if(left is BracketExpression)
+			else if(left is TreeExpression)
 			{
-				var bracket = left as BracketExpression;
-				
-				if(bracket.Tree.Operator == null)
-					return Assign(bracket.Tree.Expressions[0], value, symbols);
-				else if(bracket.Tree.Operator is IndexOperator)
+                var tree = left as TreeExpression;
+
+                if (tree.Tree.Operator == null)
+                    return Assign(tree.Tree.Expressions[0], value, symbols);
+				else if(tree.Tree.Operator is IndexOperator)
 				{
-					var ix = bracket.Tree.Operator as IndexOperator;
-					return ix.Handle(bracket.Tree.Expressions[0], value, symbols);
+                    var ix = tree.Tree.Operator as IndexOperator;
+                    return ix.Handle(tree.Tree.Expressions[0], value, symbols);
 				}
 				else
 					throw new AssignmentException(Op);

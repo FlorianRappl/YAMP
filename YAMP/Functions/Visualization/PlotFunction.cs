@@ -14,8 +14,7 @@ namespace YAMP
         public Plot2DValue Function(MatrixValue m, MatrixValue n)
         {
             var plot = new Plot2DValue();
-            plot.AddPoints(m);
-            plot.AddPoints(n);
+            plot.AddPoints(m, n);
             return plot;
         }
     }

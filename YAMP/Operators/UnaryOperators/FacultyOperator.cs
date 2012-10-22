@@ -9,11 +9,6 @@ namespace YAMP
 		public FacultyOperator () : base("!", 1000)
 		{
 		}
-
-        public override Operator Create()
-        {
-            return new FacultyOperator();
-        }
 		
 		public override Value Perform (Value left)
 		{

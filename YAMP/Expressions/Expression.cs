@@ -11,7 +11,13 @@ namespace YAMP
 		string _pattern;
         protected string _input;
 		protected Match mx;
-		int _offset;
+        int _offset;
+
+        public Expression(string pattern)
+        {
+            DefaultOperator = string.Empty;
+            _pattern = pattern;
+        }
 
 		internal string Pattern
 		{
@@ -34,12 +40,9 @@ namespace YAMP
 			get { return _input; }
 		}
 
+        public string DefaultOperator { get; set; }
+
         public ParseContext Context { get; protected set; }
-		
-		public Expression (string pattern)
-		{
-			_pattern = pattern;
-		}
 		
 		public Value Interpret()
 		{
@@ -72,8 +75,8 @@ namespace YAMP
 		
 		public override string ToString ()
 		{
-			return string.Format ("{0} [ ExpressionType = {1} ]", _input, GetType().Name.Replace("Expression", string.Empty));
+			return string.Format ("[ Expression : {0} ]", _input);
 		}
-	}
+    }
 }
 

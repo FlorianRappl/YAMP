@@ -37,32 +37,18 @@ namespace YAMP
     /// </summary>
 	public class ParseTree
 	{
-		#region Constants
-
-		const string SPACING = "  ";
-
-		#endregion
-
 		#region Members
 		
 		Operator _operator;
 		Expression[] _expressions;
 		string _input;
 		int _offset;
-		bool _isList;
         ParseContext _context;
+        TreeExpression _parent;
 
 		#endregion
 
 		#region Properties
-
-        /// <summary>
-        /// Gets the context of the parse tree.
-        /// </summary>
-		public bool IsList
-		{
-			get { return _isList; }
-		}
 
         /// <summary>
         /// Gets the operator used for this parse tree (can be null).
@@ -75,7 +61,7 @@ namespace YAMP
 			}
 			set
 			{
-				_operator = value;
+                _operator = value;
 			}
 		}
 		
@@ -90,67 +76,74 @@ namespace YAMP
 			}
 			set
 			{
-				_expressions = value;
+                _expressions = value;
 			}
 		}
+
+        /// <summary>
+        /// Gets a value if the last output was actually saved in a variable.
+        /// </summary>
+        public bool IsAssignment
+        {
+            get
+            {
+                if (Operator != null)
+                    return Operator is AssignmentOperator;
+
+                if (Expressions.Length != 1)
+                    return false;
+
+                if (Expressions[0] is TreeExpression)
+                    return (Expressions[0] as TreeExpression).Tree.IsAssignment;
+
+                return false;
+            }
+        }
 
 		#endregion
 
 		#region ctor
 		
-		public ParseTree(Operator op, Expression[] expressions)
+		public ParseTree(Operator op, Expression[] exps)
 		{
-			_operator = op;
-			_expressions = expressions;
+            _operator = op;
+            _expressions = exps;
 		}
 		
-		public ParseTree(Operator op, Expression expression)
-		{
-			_operator = op;
-			_expressions = new Expression[] { expression };
+		public ParseTree(Operator op, Expression exp)
+        {
+            _operator = op;
+            _expressions = new Expression[]{ exp };
 		}
 		
 		public ParseTree(Operator op, Expression left, Expression right)
-		{
-			_operator = op;
-			_expressions = new Expression[] { left, right };
-		}
-
-        public ParseTree(ParseContext context, string input, int offset) : this(context, input, offset, false)
         {
-        }
-
-		public ParseTree (string input, int offset) : this(input, offset, false)
-		{
+            _operator = op;
+            _expressions = new Expression[] { left, right };
 		}
 
-        public ParseTree(ParseContext context, string input) : this(context, input, 0, false)
+		public ParseTree(string input, int offset = 0)
         {
-        }
-
-		public ParseTree (string input) : this(input, 0, false)
-		{
+            _context = ParseContext.Default;
+            _offset = offset;
+            _input = input;
+            Parse();
 		}
 
-        public ParseTree (ParseContext context, string input, bool isList) : this(context, input, 0, isList)
-        {
-            
-        }
-
-		public ParseTree (string input, bool isList) : this(input, 0, isList)
-		{
-		}
-
-		public ParseTree(string input, int offset, bool isList) : this(ParseContext.Default, input, offset, isList)
-		{
-		}
-
-        public ParseTree(ParseContext context, string input, int offset, bool isList)
+        public ParseTree(ParseContext context, string input, int offset = 0)
         {
             _context = context;
             _offset = offset;
             _input = input;
-            _isList = isList;
+            Parse();
+        }
+
+        internal ParseTree(ParseContext context, string input, int offset, TreeExpression parent)
+        {
+            _parent = parent;
+            _context = context;
+            _offset = offset;
+            _input = input;
             Parse();
         }
 		
@@ -159,116 +152,114 @@ namespace YAMP
         #region Methods
 
         void Parse()
-		{			
-			BracketExpression bracket = null;
-			var ops = new List<Operator>();
-			var exps = new List<Expression>();
-			var shadow = _input;
+        {
+            var operators = new Stack<Operator>();
+            var expressions = new Stack<Expression>();
 			var takeop = false;
 			var maxLevel = -100;
-			var maxIndex = 0;
-			var expIndex = 0;
-			var tmpExp = 0;
             var offset = _offset;
-
-            if (_input.Length == 0)
-            {
-                _expressions = new Expression[] { new EmptyExpression() };
-                return;
-            }
+            var shadow = _input;
 
 			while(shadow.Length > 0)
-			{
-				if(shadow[0] == ' ')
-				{
-					offset++;
-					shadow = shadow.Substring(1);
-					continue;
-				}
-
-				if(shadow.Length > 1)
-				{
-					var key = new string(new char[] { shadow[0], shadow[1] });
-
-					if(Tokens.Instance.Sanatizers.ContainsKey(key))
-					{
-						offset++;
-						shadow = Tokens.Instance.Sanatizers[key] + shadow.Substring(2);
-						continue;
-					}
-				}
+            {
+                if (Tokens.Instance.Transform(_context, _parent, ref shadow))
+                {
+                    offset++;
+                    continue;
+                }
 
 				if(takeop)
 				{
-					var op = Tokens.Instance.FindOperator(_context, shadow);
+					var op = Tokens.Instance.FindOperator(_context, _parent, shadow);
 
-					if(op.Level >= maxLevel)
-					{
-						maxLevel = op.Level;
-						maxIndex
-							= ops.Count;
-						expIndex = exps.Count;
-					}
+                    if (!op.ExpectExpression)
+                        expressions.Push(new TreeExpression(op, expressions.Pop()));
+                    else
+                    {
+                        if (op.Level >= maxLevel)
+                            maxLevel = op.Level;
+                        else
+                        {
+                            while(true)
+                            {
+                                var right = expressions.Pop();
+                                var left = expressions.Pop();
+                                expressions.Push(new TreeExpression(operators.Pop(), left, right));
 
-					op.IsList = _isList;
-					ops.Add(op);
+                                if (operators.Count == 0 || operators.Peek().Level <= op.Level)
+                                {
+                                    maxLevel = op.Level;
+                                    break;
+                                }
+                            }
+                        }
+
+                        takeop = false;
+                        operators.Push(op);
+                    }
+
 					shadow = op.Set(shadow);
 					offset += op.Input.Length;
-					takeop = !op.ExpectExpression;
 				}
 				else
 				{
 					var exp = Tokens.Instance.FindExpression(_context, shadow);
 					exp.Offset = offset;
-					exps.Add(exp);
+                    expressions.Push(exp);
 					shadow = exp.Set(shadow);
 					offset += exp.Input.Length;
 					takeop = true;
 				}
             }
 
-            expIndex--;
-
-			while(ops.Count > 1)
+            while(operators.Count > 1)
             {
-				if(ops[maxIndex].ExpectExpression)
-				{
-					tmpExp = expIndex + 1;
-					bracket = new BracketExpression(new ParseTree(ops[maxIndex], exps[expIndex], exps[tmpExp]));
-					exps.RemoveAt(tmpExp);
-				}
-				else
-				{
-					bracket = new BracketExpression(new ParseTree(ops[maxIndex], exps[expIndex]));
-				}
+                var right = expressions.Pop();
+                var left = expressions.Pop();
+                expressions.Push(new TreeExpression(operators.Pop(), left, right));
+            }
 
-				exps.RemoveAt(expIndex);
-				exps.Insert(expIndex, bracket);
-				ops.RemoveAt(maxIndex);
-				tmpExp = 1;
-				expIndex = 0;
-				maxIndex = 0;
-				maxLevel = ops[0].Level;
-
-				for(var i = 1; i < ops.Count; i++)
-				{	
-					if(maxLevel <= ops[i].Level)
-					{
-						expIndex = tmpExp;
-						maxIndex = i;
-						maxLevel = ops[i].Level;
-                    }
-
-                    if (ops[i].ExpectExpression)
-                        tmpExp++;
-				}
-			}
-
-			_expressions = exps.ToArray();
-			
-			if(ops.Count == 1)
-				_operator = ops[0];
+            if (operators.Count == 1)
+            {
+                Operator = operators.Pop();
+                var right = expressions.Pop();
+                var left = expressions.Pop();
+                _expressions = new Expression[] { left, right };
+            }
+            else if (expressions.Count == 1)
+            {
+                _expressions = new Expression[] { expressions.Pop() };
+            }
 		}
+
+        internal Value Interpret(Hashtable symbols)
+        {
+            if (Operator != null)
+                return Operator.Evaluate(Expressions, symbols);
+            else if (Expressions.Length == 0)
+                return null;
+
+            return Expressions[0].Interpret(symbols);
+        }
+		
+		public override string ToString()
+		{
+            if (Expressions.Length == 0)
+                return string.Empty;
+
+			var sb = new StringBuilder();
+			sb.Append(PrintExpression(Expressions[0]));
+			
+			if(Operator != null)
+			{
+				sb.Append("+").AppendLine(Operator.ToString());
+				
+				if(Expressions.Length == 2)
+					sb.Append(PrintExpression(Expressions[1]));
+			}
+			
+			return sb.ToString();
+        }
 
         string PrintExpression(Expression exp)
         {
@@ -276,25 +267,9 @@ namespace YAMP
             var sb = new StringBuilder();
 
             foreach (var line in lines)
-                sb.Append(SPACING).AppendLine(line);
+                sb.Append("+").AppendLine(line);
 
             return sb.ToString();
-        }
-		
-		public override string ToString ()
-		{
-			var sb = new StringBuilder();
-			sb.Append(PrintExpression(Expressions[0]));
-			
-			if(Operator != null)
-			{
-				sb.Append(SPACING).AppendLine(Operator.ToString());
-				
-				if(Expressions.Length == 2)
-					sb.Append(PrintExpression(Expressions[1]));
-			}
-			
-			return sb.ToString();
         }
 
         #endregion

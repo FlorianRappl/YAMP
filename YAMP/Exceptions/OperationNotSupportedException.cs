@@ -18,6 +18,12 @@ namespace YAMP
 		{
             Symbol = op;
 		}
+
+        public OperationNotSupportedException(string op, string reason)
+            : base("The operation {0} is not supported {1}.", op, reason)
+        {
+            Symbol = op;
+        }
 	}
 }
 

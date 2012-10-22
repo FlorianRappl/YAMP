@@ -7,11 +7,6 @@ namespace YAMP
 		public TransposeOperator () : base(".'", 100)
 		{
 		}
-
-        public override Operator Create()
-        {
-            return new TransposeOperator();
-        }
 		
 		public override Value Perform (Value left)
 		{

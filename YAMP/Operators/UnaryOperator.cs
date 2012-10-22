@@ -17,11 +17,11 @@ namespace YAMP
             return Perform(value);
         }
 		
-		public override Value Evaluate (Expression[] expressions, Hashtable symbols)
-		{
-			if(expressions.Length != 1)
-				throw new ArgumentsException(Op, expressions.Length);
-			
+		public override Value Evaluate(Expression[] expressions, Hashtable symbols)
+        {
+            if (expressions.Length != 1)
+                throw new ArgumentsException(Op, 1);
+
 			return Handle(expressions[0], symbols);
 		}
 	}

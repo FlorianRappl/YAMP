@@ -5,7 +5,7 @@ namespace YAMP
 {
     public abstract class BinaryOperator : Operator
 	{
-		public BinaryOperator (string op, int level) : base(op, level)
+		public BinaryOperator(string op, int level) : base(op, level)
 		{
 		}
 		
@@ -18,13 +18,12 @@ namespace YAMP
             return Perform(l, r);
         }
 		
-		public override Value Evaluate (Expression[] expressions, Hashtable symbols)
+		public override Value Evaluate(Expression[] expressions, Hashtable symbols)
 		{
-			if(expressions.Length != 2)
-				throw new ArgumentsException(Op, expressions.Length);
-			
+            if (expressions.Length != 2)
+				throw new ArgumentsException(Op, 2);
+
 			return Handle(expressions[0], expressions[1], symbols);
 		}
 	}
 }
-

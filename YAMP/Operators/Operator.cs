@@ -11,7 +11,7 @@ namespace YAMP
         string _op;
 		int _level;
 		bool _expect;
-		bool _isList;
+        Type _dependency;
 
         #endregion
 
@@ -27,6 +27,7 @@ namespace YAMP
 		
 		public Operator (string op, int level, bool expect)
 		{
+            _dependency = typeof(TreeExpression);
 			_op = op;
 			_level = level;
 			_expect = expect;
@@ -36,31 +37,45 @@ namespace YAMP
 
         #region Properties
 
-        public bool IsList
-		{
-			get { return _isList; }
-			set { _isList = value; }
-		}
-
+        /// <summary>
+        /// Gets the input passed to this operator.
+        /// </summary>
 		public virtual string Input
 		{
 			get { return _op; }
 		}
 		
+        /// <summary>
+        /// Gets the operator's string.
+        /// </summary>
 		public string Op
 		{
 			get { return _op; }
 		}
 		
+        /// <summary>
+        /// Gets the level of the operator.
+        /// </summary>
 		public int Level
 		{
 			get { return _level; }
 		}
 
+        /// <summary>
+        /// Gets a value if the operator expects an expression.
+        /// </summary>
 		public bool ExpectExpression
 		{
 			get { return _expect; }
 		}
+
+        /// <summary>
+        /// Gets the dependency for this operator.
+        /// </summary>
+        public Type Dependency
+        {
+            get { return _dependency; }
+        }
 
         #endregion
 
@@ -68,21 +83,38 @@ namespace YAMP
 
         public virtual string Set(string input)
 		{
-			return input.Substring(_op.Length);
-		}
+            if (input.Length < _op.Length)
+                return input;
 
-        public abstract Operator Create();
+            for(var i = 0; i < _op.Length; i++)
+            {
+                if (input[i] != _op[i])
+                    return input;
+            }
+
+            return input.Substring(_op.Length);
+		}
 
         public virtual Operator Create(ParseContext context)
         {
-            return Create();
+            return this;
+        }
+
+        public virtual Operator Create(ParseContext context, Expression premise)
+        {
+            return Create(context);
+        }
+
+        protected void SetDependency(Type dependency)
+        {
+            _dependency = dependency;
         }
 		
 		public abstract Value Evaluate(Expression[] expressions, Hashtable symbols);
 
 		#region IRegisterToken implementation
 		
-		public void RegisterToken ()
+		public virtual void RegisterToken()
 		{
 			Tokens.Instance.AddOperator(_op, this);
 		}
@@ -94,12 +126,11 @@ namespace YAMP
             return value is NumericValue;
         }
 		
-		public override string ToString ()
+		public override string ToString()
 		{
-			return string.Format ("{0} [ Operator: Level = {1} ]", _op, _level);
+			return string.Format ("[ Operator   : {0} ]", _op);
         }
 
         #endregion
     }
 }
-

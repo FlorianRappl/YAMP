@@ -13,15 +13,44 @@ namespace YAMP
                 return;
 
             if (m.DimensionX == 1)
-                AddValues(m, (i, M) => (double)i, (i, M) => M[i, 1].Value);
+            {
+                var x = new RangeValue(1.0, (double)m.DimensionY, 1.0);
+                AddValues(x, m);
+            }
             else
             {
+                var x = m.SubMatrix(0, m.DimensionY, 0, 1);
+
                 for (var k = 2; k <= m.DimensionX; k++)
-                    AddValues(m, (i, M) => M[i, 1].Value, (i, M) => M[i, k].Value);
+                {
+                    var y = m.SubMatrix(0, m.DimensionY, k - 1, 1);
+                    AddValues(x, y);
+                }
             }
         }
 
-        void AddValues(MatrixValue m, Func<int, MatrixValue, double> getX, Func<int, MatrixValue, double> getY)
+        public void AddPoints(MatrixValue x, MatrixValue y)
+        {
+            if (x.DimensionX > 1 && x.DimensionY > 1)
+            {
+                AddPoints(x);
+                AddPoints(y);
+                return;
+            }
+
+            if(y.DimensionY == 1 && y.DimensionX > 1)
+                y = y.Transpose();
+
+            var dim = Math.Min(x.Length, y.DimensionY);
+
+            for (var k = 1; k <= y.DimensionX; k++)
+            {
+                var values = y.SubMatrix(0, dim, k - 1, 1);
+                AddValues(x, values);
+            }
+        }
+
+        void AddValues(MatrixValue _x, MatrixValue _y)
         {
             var p = new Points<PointPair>();
             var xmin = double.MaxValue;
@@ -29,10 +58,10 @@ namespace YAMP
             var ymin = double.MaxValue;
             var ymax = double.MinValue;
 
-            for (var i = 1; i <= m.DimensionY; i++)
+            for (var i = 1; i <= _x.Length; i++)
             {
-                var x = getX(i, m);
-                var y = getY(i, m);
+                var x = _x[i].Value;
+                var y = _y[i].Value;
 
                 p.Add(new PointPair
                 {

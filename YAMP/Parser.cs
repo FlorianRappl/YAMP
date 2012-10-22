@@ -43,9 +43,6 @@ namespace YAMP
 		#region Members
 		
 		QueryContext _query;
-		BracketExpression _interpreter;
-		ParseTree _tree;
-        ParseContext _context;
 
         static ParseContext primary;
 		
@@ -53,22 +50,17 @@ namespace YAMP
 
         #region static Events
 
-        public static event Action<Value, Exception> OnExecuted;
+        public static event Action<QueryContext, Exception> OnExecuted;
 
         #endregion
 
         #region ctor
 
-        private Parser (QueryContext expression) : this(PrimaryContext, expression)
-		{
-		}
-
-        private Parser(ParseContext context, QueryContext expression)
+        private Parser(ParseContext context, QueryContext query)
         {
-            _query = expression;
-            _tree = new ParseTree(context, expression.Input);
-            _interpreter = new BracketExpression(_tree);
-            _context = context;
+            _query = query;
+            query.Context = context;
+            query.Interpreter = new ParseTree(context, query.Input);
         }
 
         #endregion
@@ -84,7 +76,7 @@ namespace YAMP
         /// <returns>The parser instance.</returns>
 		public static Parser Parse(string input)
 		{
-			return new Parser(new QueryContext(input));
+			return new Parser(PrimaryContext, new QueryContext(input));
 		}
 
         /// <summary>
@@ -148,7 +140,7 @@ namespace YAMP
         /// <param name="continuation">
         /// The continuation action to invoke after the evaluation finished.
         /// </param>
-        public static void ExecuteAsync(ParseContext context, string input, Action<Value, Exception> continuation)
+        public static void ExecuteAsync(ParseContext context, string input, Action<QueryContext, Exception> continuation)
         {
             ExecuteAsync(context, input, null, continuation);
         }
@@ -162,7 +154,7 @@ namespace YAMP
         /// <param name="continuation">
         /// The continuation action to invoke after the evaluation finished.
         /// </param>
-        public static void ExecuteAsync(string input, Action<Value, Exception> continuation)
+        public static void ExecuteAsync(string input, Action<QueryContext, Exception> continuation)
         {
             ExecuteAsync(ParseContext.Default, input, null, continuation);
         }
@@ -179,7 +171,7 @@ namespace YAMP
         /// <param name="continuation">
         /// The continuation action to invoke after the evaluation finished.
         /// </param>
-        public static void ExecuteAsync(string input, Hashtable variables, Action<Value, Exception> continuation)
+        public static void ExecuteAsync(string input, Hashtable variables, Action<QueryContext, Exception> continuation)
         {
             ExecuteAsync(ParseContext.Default, input, variables, continuation);
         }
@@ -199,7 +191,7 @@ namespace YAMP
         /// <param name="continuation">
         /// The continuation action to invoke after the evaluation finished.
         /// </param>
-        public static void ExecuteAsync(ParseContext context, string input, Hashtable variables, Action<Value, Exception> continuation)
+        public static void ExecuteAsync(ParseContext context, string input, Hashtable variables, Action<QueryContext, Exception> continuation)
         {
             var worker = new AsyncTask();
             worker.Continuation = continuation;
@@ -215,14 +207,14 @@ namespace YAMP
             var input = parameters[1] as string;
             var variables = parameters[2] as Hashtable;
             var parser = new Parser(context, new QueryContext(input));
-            var result = parser.Execute(variables);
-            e.Result = result;
+            parser.Execute(variables);
+            e.Result = parser.Context;
         }
 
         static void taskCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             var worker = sender as AsyncTask;
-            worker.Continuation(e.Result as Value, e.Error);
+            worker.Continuation(e.Result as QueryContext, e.Error);
         }
 
         #endregion
@@ -238,17 +230,6 @@ namespace YAMP
 		public QueryContext Context
 		{
 			get { return _query; }
-		}
-
-		/// <summary>
-		/// Gets the expression tree.
-		/// </summary>
-		/// <value>
-		/// The generated expression tree.
-		/// </value>
-		public ParseTree Tree
-		{
-			get { return _tree; }
 		}
 
         /// <summary>
@@ -290,20 +271,7 @@ namespace YAMP
         /// <returns>The value from the evaluation.</returns>
 		public Value Execute (Hashtable values)
 		{
-            _query.Output = _interpreter.Interpret(values);
-
-            if(!_interpreter.IsAssignment)
-            {
-                if (_query.Output is ArgumentsValue)
-                    _query.Output = (_query.Output as ArgumentsValue).First();
-
-                if(_query.Output is NumericValue)
-                    _context.AssignVariable("$", _query.Output);
-            }
-			
-			if(_query.IsMuted)
-				return null;
-			
+            _query.Interpret(values);			
 			return _query.Output;
 		}
 
@@ -602,11 +570,12 @@ namespace YAMP
 		
 		public override string ToString ()
 		{
-			var sb = new StringBuilder();
-			sb.Append("YAMP [ input = ").Append(_query.Original).AppendLine(" ]");
-			sb.AppendLine("--------------");
-			sb.Append(_interpreter.Tree.ToString());
-			return sb.ToString();
+            var sb = new StringBuilder();
+            sb.Append("YAMP == VERSION ").Append(Assembly.GetExecutingAssembly().GetName().Version).AppendLine(" ==");
+            //sb.Append("YAMP [ input = ").Append(_query.Original).AppendLine(" ]");
+            //sb.AppendLine("--------------");
+            sb.Append(_query);
+            return sb.ToString();
 		}
 		
 		#endregion

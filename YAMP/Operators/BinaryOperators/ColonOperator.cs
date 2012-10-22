@@ -1,24 +1,30 @@
 using System;
+using System.Collections.Generic;
 
 namespace YAMP
 {
 	class ColonOperator : BinaryOperator
-	{
+    {
+        static protected List<ColonOperator> operators = new List<ColonOperator>();
+
 		public ColonOperator () : base(";", 1)
 		{
 		}
 
-        public override Operator Create()
+        public override Value Perform(Value left, Value right)
         {
-            return new ColonOperator();
+            return left;
         }
-		
-		public override Value Perform (Value left, Value right)
-		{
-			if(left is MatrixValue || left is ScalarValue)
-				return MatrixValue.Create(left).AddRow(right);
-			
-			throw new OperationNotSupportedException(";", left);
-		}
+
+        public override Operator Create(ParseContext context, Expression premise)
+        {
+            foreach (var op in operators)
+            {
+                if (op.Dependency.IsInstanceOfType(premise))
+                    return op.Create(context);
+            }
+
+            throw new OperationNotSupportedException(Op, "in this context");
+        }
 	}
 }

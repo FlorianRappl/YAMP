@@ -26,6 +26,7 @@
 */
 
 using System;
+using System.Collections;
 
 namespace YAMP
 {
@@ -38,8 +39,6 @@ namespace YAMP
 
         string _original;
 		string _input;
-		Value _output;
-		bool _isMuted;
         YAMPException _exception;
 
         #endregion
@@ -53,7 +52,6 @@ namespace YAMP
 		public QueryContext (string input)
 		{
 			Input = input;
-			Output = Value.Empty;
 		}
 
         #endregion
@@ -71,25 +69,16 @@ namespace YAMP
 				_original = value;
 
 				if(value == null)
-					_input = string.Empty;
-				else
-				{
-					_input = value;
-                    
-                    //Assign and use if we should really output the result
-					if(_isMuted = _input.EndsWith(";"))
-                        _input = _input.Substring(0, _input.Length - 1);
-				}
+					value = string.Empty;
+
+				_input = value;
 			}
 		}
 
         /// <summary>
         /// Gets a boolean indicating whether the result should be printed.
         /// </summary>
-		public bool IsMuted
-		{
-			get { return _isMuted; }
-		}
+        public bool IsMuted { get; internal set; }
 		
         /// <summary>
         /// Gets the original passed input.
@@ -100,12 +89,44 @@ namespace YAMP
 		}
 		
         /// <summary>
-        /// Gets the result.
+        /// Gets the result of the query.
         /// </summary>
-		public Value Output
-		{
-			get { return _output; }
-			internal set { _output = value; }
+        public Value Output { get; internal set; }
+
+        /// <summary>
+        /// Gets the context used for this query.
+        /// </summary>
+        public ParseContext Context { get; internal set; }
+
+        /// <summary>
+        /// Gets the interpreter generated for this query.
+        /// </summary>
+        public ParseTree Interpreter { get; internal set; }
+
+        #endregion
+
+        #region Methods
+
+        internal void Interpret(Hashtable values)
+        {
+            if (Interpreter.Expressions.Length > 0)
+            {
+                Output = Interpreter.Interpret(values);
+
+                if (!Interpreter.IsAssignment)
+                {
+                    if (Output is ArgumentsValue)
+                        Output = (Output as ArgumentsValue).First();
+
+                    if (Output is NumericValue)
+                        Context.AssignVariable("$", Output);
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            return Interpreter.ToString();
         }
 
         #endregion

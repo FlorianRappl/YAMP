@@ -11,11 +11,6 @@ namespace YAMP
 		public RangeOperator () : base(":", 200)
 		{
 		}
-
-        public override Operator Create()
-        {
-            return new RangeOperator();
-        }
 		
 		public override Value Perform (Value left, Value right)
 		{

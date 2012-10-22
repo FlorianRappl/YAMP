@@ -7,11 +7,6 @@ namespace YAMP
 		public GtEqOperator () : base(">=")
 		{
 		}
-		
-		public override Operator Create ()
-		{
-            return new GtEqOperator();
-		}
 
 		public override ScalarValue Compare (ScalarValue left, ScalarValue right)
 		{

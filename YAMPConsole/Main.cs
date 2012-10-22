@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace YAMPConsole
 {
@@ -34,11 +35,78 @@ namespace YAMPConsole
 
 			YAMP.Parser.AddCustomFunction("G", v => new YAMP.ScalarValue((v as YAMP.ScalarValue).Value * Math.PI) );
 			YAMP.Parser.AddCustomConstant("R", 2.53);
+
+            //var history = new List<string>();
 			
 			while(true)
-			{
-				Console.Write(">> ");
-				query = System.Console.ReadLine();
+            {
+                Console.Write(">> ");
+
+                /*var historyIndex = history.Count;
+                var position = 0;
+                query = string.Empty;
+                var cursorLeft = Console.CursorLeft;
+                var cursorTop = Console.CursorTop;
+
+                do
+                {
+                    var key = Console.ReadKey(true);
+
+                    if (key.Key == ConsoleKey.Enter)
+                    {
+                        if (key.Modifiers == ConsoleModifiers.Shift)
+                            query = query.Insert(position++, "\n");
+                        else
+                            break;
+                    }
+                    else if (key.Key == ConsoleKey.Tab)
+                    {
+                        query = query.Insert(position++, "\t");
+                    }
+                    else if (key.Key == ConsoleKey.Backspace)
+                    {
+                        if (position > 0)
+                            query = query.Remove(--position, 1);
+                    }
+                    else if (key.Key == ConsoleKey.UpArrow)
+                    {
+                        if (historyIndex > 0)
+                        {
+                            historyIndex--;
+                            query = history[historyIndex];
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        if (historyIndex < history.Count)
+                        {
+                            historyIndex++;
+                            query = historyIndex == history.Count ? string.Empty : history[historyIndex];
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.RightArrow)
+                    {
+                        if(position < query.Length)
+                            position++;
+                    }
+                    else if (key.Key == ConsoleKey.LeftArrow)
+                    {
+                        if (position > 0)
+                            position--;
+                    }
+                    else
+                    {
+                        query = query.Insert(position++, key.KeyChar.ToString());
+                    }
+
+                    Console.SetCursorPosition(cursorLeft, cursorTop);
+                    Console.Write(query);
+                }
+                while (true);
+
+                Console.WriteLine();
+                history.Add(query);*/
+				query = Console.ReadLine();
 
                 if (query.Equals("exit"))
                     break;
@@ -47,8 +115,13 @@ namespace YAMPConsole
                     try
                     {
                         var parser = YAMP.Parser.Parse(query);
-                        Console.WriteLine(parser.Execute());
-						Console.WriteLine(parser);
+                        var value = parser.Execute();
+
+                        if (value != null)
+                        {
+                            Console.WriteLine(value);
+                            Console.Write(parser);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -90,7 +163,7 @@ namespace YAMPConsole
             //var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
 			
 			// The implementation here... YAMP
-			// 5716 ms ; 394 ms ; 131 ms ; 543 ms
+			// 4818 ms ; 373 ms ; 120 ms ; 543 ms
             Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
 
             //http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
@@ -176,6 +249,8 @@ namespace YAMPConsole
 
 		static void Tests()
 		{
+            Test("-pi", -Math.PI);
+            Test("-2+3", 1.0);
 			Test("2.2", 2.2);
 			Test(".2+4-4+.2", 0.4);
 			Test("3/3+1*4-5", 0.0);
@@ -204,40 +279,42 @@ namespace YAMPConsole
 			Test("x^2-3*x/4", 0.75, 0.0);
 			Test("2^2^2^2", 65536.0);
 			Test("2-(3*5)^2+7/(2-8)*2", -225.0-1.0/3.0);
-			Test("|(2,3,1)-(1,3,1)|", 1.0);
-			Test("|(2^2,2+3,-2,-2)|", 7.0);
+			Test("|[2,3,1]-[1,3,1]|", 1.0);
+			Test("|[2^2,2+3,-2,-2]|", 7.0);
 			Test("|4*(2i-5)/3i|", 4.0 * Math.Sqrt(29.0) / 3.0);
-			Test("|(3,2,1)*(1;2;3)|", 10.0);
-			Test("|(1;2;3)|-|(1,2,3)|", 0.0);
+			Test("|[3,2,1]*[1;2;3]|", 10.0);
+			Test("|[1;2;3]|-|[1,2,3]|", 0.0);
             Test("|(2+3i)^2|", 12.999999999999998);
             Test("|1^(i+5)|", 1.0);
             Test("|1^(i+5)|", 1.0);
             Test("|(5+8i)^(i+1)|", 3.4284942595728127);
             Test("|(2+3i)/(1+8i)|", 0.447213595499958);
-            Test("|2*(1,2;1,2)|", 0.0);
-            Test("|max(1,5,7,9,8+5i)|", Math.Sqrt(89.0));
-            Test("|(2,1;3,5)-(2,1;3,5)'|", 4.0);
-			Test("(2,1,0)*(5;2;1)", 12.0);
-			Test("det((1;2)*(2,1))", 0.0);
+            Test("|2*[1,2;1,2]|", 0.0);
+            Test("|max([1,5,7,9,8+5i])|", Math.Sqrt(89.0));
+            Test("|[2,1;3,5]-[2,1;3,5]'|", 4.0);
+			Test("[2,1,0]*[5;2;1]", 12.0);
+			Test("det([1;2]*[2,1])", 0.0);
 			Test("X=(Y=5)+2", 7.0);
 			Test("Y", 5.0);
-			Test("(1,2,3;4,5,6;7,8,9)[2,3]", 6.0);
+			Test("[1,2,3;4,5,6;7,8,9](2,3)", 6.0);
             Test("|cos(1+i)|", 1.2934544550420957);
             Test("|arccos(0.83373002513-0.988897705i)|", 1.4142135618741407);
-			Test("|(x=(1,2,3;4,5,6;7,8,9))[:,1]|", Math.Sqrt(66.0));
+			Test("|(x=[1,2,3;4,5,6;7,8,9])(:,1)|", Math.Sqrt(66.0));
 			Test("17>12", 1.0);
 			Test("7<-1.5", 0.0);
-			Test("|(1,2,3,4,5,6,7) < 5|", 2.0);
+			Test("|[1,2,3,4,5,6,7] < 5|", 2.0);
 			Test("2+i==2-i", 0.0);
 			Test("3-i~=4", 1.0);
-			Test("abs((1,2,3;4,5,6;7,8,9)[1,:])", Math.Sqrt(14.0));
+			Test("abs([1,2,3;4,5,6;7,8,9](1,:))", Math.Sqrt(14.0));
             Test("(-25)^2", 625.0);
             Test("length(help()) > 0", 1.0);
             Test("abs(3+4i)", 5.0);
-            Test("eig(1,2;4,5)[1][1]", 3.0 - Math.Sqrt(12));
-            Test("eigval(1,2;4,5)[1]", 3.0 - Math.Sqrt(12));
-            Test("abs(ev(1,2;4,5)[1:2])", 1.0);
-            Test("abs(eigvec(1,2;4,5)[1:2])", 1.0);
+            Test("eig([1,2;4,5])(1)(1)", 3.0 - Math.Sqrt(12));
+            Test("eigval([1,2;4,5])(1)", 3.0 - Math.Sqrt(12));
+            Test("abs(ev([1,2;4,5])(1:2))", 1.0);
+            Test("abs(eigvec([1,2;4,5])(1:2))", 1.0);
+            Test("|[2 3 4]|", Math.Sqrt(29.0));
+            Test("[2 3 4\n1 2 3](2, 2)", 2.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}

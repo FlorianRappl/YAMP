@@ -8,12 +8,7 @@ namespace YAMP
 		{
 		}
 
-		public override Operator Create ()
-		{
-			return new LtOperator();
-		}
-
-		public override ScalarValue Compare (ScalarValue left, ScalarValue right)
+		public override ScalarValue Compare(ScalarValue left, ScalarValue right)
 		{
 			return new ScalarValue(left < right);
 		}

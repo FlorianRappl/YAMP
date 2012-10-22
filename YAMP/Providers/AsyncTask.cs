@@ -5,6 +5,6 @@ namespace YAMP
 {
     class AsyncTask : BackgroundWorker
     {
-        public Action<Value, Exception> Continuation { get; set; }
+        public Action<QueryContext, Exception> Continuation { get; set; }
     }
 }

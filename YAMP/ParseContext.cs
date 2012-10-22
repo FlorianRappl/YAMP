@@ -481,7 +481,7 @@ namespace YAMP
         /// The function that should be invoked after the Value has been computed.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext RunAsync(string query, Action<Value, Exception> continuation)
+        public ParseContext RunAsync(string query, Action<QueryContext, Exception> continuation)
         {
             Parser.ExecuteAsync(this, query, continuation);
             return this;
@@ -500,7 +500,7 @@ namespace YAMP
         /// The function that should be invoked after the Value has been computed.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext RunAsync(string query, Hashtable variables, Action<Value, Exception> continuation)
+        public ParseContext RunAsync(string query, Hashtable variables, Action<QueryContext, Exception> continuation)
         {
             Parser.ExecuteAsync(this, query, variables, continuation);
             return this;

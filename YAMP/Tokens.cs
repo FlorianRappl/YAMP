@@ -43,7 +43,7 @@ namespace YAMP
 
         IDictionary<string, Operator> operators;
         IDictionary<Regex, Expression> expressions;
-		IDictionary<string, string> sanatizers;
+        IDictionary<char, Transform> transforms;
 		
 		#endregion
 
@@ -53,19 +53,7 @@ namespace YAMP
 		{
             operators = new Dictionary<string, Operator>();
             expressions = new Dictionary<Regex, Expression>();
-			sanatizers = new Dictionary<string, string>();
-		}
-		
-		#endregion
-		
-		#region Properties
-
-        /// <summary>
-        /// Gets the available sanatizers.
-        /// </summary>
-		public IDictionary<string, string> Sanatizers
-		{
-			get { return sanatizers; }
+            transforms = new Dictionary<char, Transform>();
 		}
 		
 		#endregion
@@ -76,17 +64,6 @@ namespace YAMP
 		{
 			var assembly = Assembly.GetExecutingAssembly();
             RegisterAssembly(ParseContext.Default, assembly);
-
-			sanatizers.Add("++", "+");
-			sanatizers.Add("--", "+");
-			sanatizers.Add("+-", "-");
-			sanatizers.Add("-+", "-");
-			sanatizers.Add("//", "*");
-			sanatizers.Add("**", "*");
-			sanatizers.Add("^*", "^");
-			sanatizers.Add("*^", "^");
-			sanatizers.Add("*/", "/");
-			sanatizers.Add("/*", "/");
 		}
 
         /// <summary>
@@ -140,8 +117,13 @@ namespace YAMP
         }
 		
 		#endregion
-		
-		#region Add elements
+
+        #region Add elements
+
+        public void AddTransform(char trigger, Transform transform)
+        {
+            transforms.Add(trigger, transform);
+        }
 		
 		public void AddOperator(string pattern, Operator op)
 		{
@@ -150,20 +132,23 @@ namespace YAMP
 
         public void AddExpression(string pattern, Expression exp)
         {
-            expressions.Add(new Regex("^" + pattern), exp);
+            expressions.Add(new Regex("^" + pattern, RegexOptions.Singleline), exp);
         }
 		
 		#endregion
 
         #region Find elements
 
-		public Operator FindOperator(ParseContext context, string input)
+		public Operator FindOperator(ParseContext context, Expression premise, string input)
 		{
 			var maxop = string.Empty;
 			var notfound = true;
 
 			foreach(var op in operators.Keys)
-			{
+            {
+                if (op.Length > input.Length)
+                    continue;
+
 				if(op.Length <= maxop.Length)
 					continue;
 
@@ -173,15 +158,33 @@ namespace YAMP
 					if(notfound = (input[i] != op[i]))
 						break;
 
-				if(notfound == false)
-					maxop = op;
+                if (notfound == false)
+                    maxop = op;
 			}
 
-			if(maxop.Length == 0)
-				throw new ParseException(input);
+            if (maxop.Length == 0)
+            {
+                if (premise != null)
+                    maxop = premise.DefaultOperator;
 
-			return operators[maxop].Create(context);
+                if(maxop.Length == 0)
+                    throw new ParseException(input);
+            }
+
+			return operators[maxop].Create(context, premise);
 		}
+
+        public Operator FindOperatorWithoutException(ParseContext context, Expression premise, string input)
+        {
+            try
+            {
+                return FindOperator(context, premise, input);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 		
 		public Expression FindExpression(ParseContext context, string input)
 		{
@@ -194,15 +197,53 @@ namespace YAMP
 				if(m.Success)
 					return expressions[rx].Create(context, m);
 			}
-			
-			throw new ExpressionNotFoundException(input);
+
+            throw new ExpressionNotFoundException(input);
 		}
+
+        public Expression FindExpressionWithoutException(ParseContext context, string input)
+        {
+            try
+            {
+                return FindExpression(context, input);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 		
 		#endregion
-		
-		#region Singleton
-		
-		static Tokens _instance;
+
+        #region Transform
+
+        public bool Transform(ParseContext context, Expression premise, ref string input)
+        {
+            var key = input[0];
+
+            if (transforms.ContainsKey(key))
+            {
+                var transform = transforms[key];
+
+                if (transform.WillTransform(premise))
+                {
+                    input = input.Substring(1);
+
+                    if (input.Length > 0)
+                        input = transforms[key].Modify(context, input, premise);
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Singleton
+
+        static Tokens _instance;
 		
 		public static Tokens Instance
 		{
@@ -228,5 +269,5 @@ namespace YAMP
 		}
 		
 		#endregion
-	}
+    }
 }

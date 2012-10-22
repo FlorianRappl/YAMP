@@ -7,11 +7,6 @@ namespace YAMP
 		public RightDivideOperator () : base("/", 20)
 		{
 		}
-
-        public override Operator Create()
-        {
-            return new RightDivideOperator();
-        }
 		
 		public override Value Perform (Value left, Value right)
 		{

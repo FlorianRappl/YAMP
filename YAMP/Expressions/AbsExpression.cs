@@ -5,9 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace YAMP
 {
-	class AbsExpression : Expression
+	class AbsExpression : TreeExpression
 	{
-		BracketExpression _child;
 		AbsFunction abs;
 		
 		public AbsExpression () : base(@"\|.*\|")
@@ -25,13 +24,17 @@ namespace YAMP
             return new AbsExpression(context);
         }
 		
-		public override Value Interpret (Hashtable symbols)
+		public override Value Interpret(Hashtable symbols)
 		{
-			var value = _child.Interpret(symbols);
-			return abs.Perform(value);
+			return abs.Perform(base.Interpret(symbols));
 		}
+
+        public override void RegisterToken()
+        {
+            Tokens.Instance.AddExpression(Pattern, this);
+        }
 		
-		public override string Set (string input)
+		public override string Set(string input)
 		{		
 			var brackets = 0;
 			var sb = new StringBuilder();
@@ -45,8 +48,7 @@ namespace YAMP
 				else if(brackets == 0 && input[i] == '|')
 				{
 					_input = sb.ToString();
-					var _tree = new ParseTree(Context, _input);
-					_child = new BracketExpression(_tree); 
+					Tree = new ParseTree(Context, _input); 
 					return input.Substring(i + 1);
 				}
 
@@ -58,7 +60,7 @@ namespace YAMP
 		
 		public override string ToString ()
 		{
-			return "| | [ ExpressionType = Abs ]\n" + _child.ToString();
+			return "| | [ ExpressionType = Abs ]\n" + Tree.ToString();
 		}
 	}
 }

@@ -8,11 +8,6 @@ namespace YAMP
         {
         }
 
-        public override Operator Create()
-        {
-            return new DotMultiplyOperator();
-        }
-
         public override ScalarValue Operation(ScalarValue left, ScalarValue right)
         {
             return left.Multiply(right) as ScalarValue;
