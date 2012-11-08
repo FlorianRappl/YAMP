@@ -5,19 +5,17 @@ namespace YAMP
 {
     class PlusAssignmentOperator : AssignmentPrefixOperator
     {
-        public PlusAssignmentOperator(ParseContext context)
-            : base(context, new PlusOperator())
+        public PlusAssignmentOperator(ParseContext context) : base(context, new PlusOperator())
         {
         }
 
-        public PlusAssignmentOperator()
-            : this(ParseContext.Default)
+        public PlusAssignmentOperator() : this(ParseContext.Default)
         {
         }
 
-        public override Operator Create(ParseContext context)
+        public override Operator Create(QueryContext query)
         {
-            return new PlusAssignmentOperator(context);
+            return new PlusAssignmentOperator(query.Context);
         }
     }
 }

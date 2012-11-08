@@ -12,7 +12,7 @@ namespace YAMP
 
         public char Trigger { get; private set; }
 
-        public abstract string Modify(ParseContext context, string original, Expression premise);
+        public abstract string Modify(QueryContext context, string original, Expression premise);
 
         public virtual void RegisterToken()
         {

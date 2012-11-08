@@ -20,19 +20,18 @@ namespace YAMP
             _changeSign = false;
         }
 
-        public UnaryExpression(ParseContext context)
-            : this()
+        public UnaryExpression(QueryContext query) : this()
         {
-            Context = context;
+            Query = query;
         }
 
         #endregion
 
         #region Methods
 
-        public override Expression Create(ParseContext context, Match match)
+        public override Expression Create(QueryContext query, Match match)
         {
-            return new UnaryExpression(context);
+            return new UnaryExpression(query);
         }
 
         public override Value Interpret(Hashtable symbols)
@@ -71,7 +70,7 @@ namespace YAMP
                 throw new ParseException(Offset + index - 1, input);
 
             var rest = input.Substring(index);
-            _child = Tokens.Instance.FindExpression(Context, rest);
+            _child = Tokens.Instance.FindExpression(Query, rest);
             _child.Offset = Offset + index;
             var delivery = _child.Set(rest);
             _input = input.Substring(0, index) + _child.Input;

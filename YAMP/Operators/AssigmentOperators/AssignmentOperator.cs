@@ -20,9 +20,9 @@ namespace YAMP
         {
         }
 
-        public override Operator Create(ParseContext context)
+        public override Operator Create(QueryContext query)
         {
-            return new AssignmentOperator(context);
+            return new AssignmentOperator(query.Context);
         }
 
         public override Value Handle(Expression left, Expression right, Hashtable symbols)

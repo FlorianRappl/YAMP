@@ -5,19 +5,19 @@ namespace YAMP
 {
     class MatrixBracketExpression : BracketExpression
     {
-        public MatrixBracketExpression() : this(ParseContext.Default)
+        public MatrixBracketExpression() : base(@"\[.*\]", '[', ']')
         {
         }
 
-        public MatrixBracketExpression(ParseContext context) : base(@"\[.*\]", '[', ']')
+        public MatrixBracketExpression(QueryContext query) : this()
         {
             DefaultOperator = ",";
-            Context = context;
+            Query = query;
         }
 
-        public override Expression Create(ParseContext context, Match match)
+        public override Expression Create(QueryContext query, Match match)
         {
-            return new MatrixBracketExpression(context);
+            return new MatrixBracketExpression(query);
         }
 
         public override Value CreateDefaultValue()

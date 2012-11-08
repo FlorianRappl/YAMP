@@ -39,7 +39,6 @@ namespace YAMP
 
         string _original;
 		string _input;
-        YAMPException _exception;
 
         #endregion
 
@@ -118,8 +117,7 @@ namespace YAMP
                     if (Output is ArgumentsValue)
                         Output = (Output as ArgumentsValue).First();
 
-                    if (Output is NumericValue)
-                        Context.AssignVariable("$", Output);
+                    Context.AssignVariable("$", Output);
                 }
             }
         }

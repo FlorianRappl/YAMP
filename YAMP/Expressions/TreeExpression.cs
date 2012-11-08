@@ -14,21 +14,17 @@ namespace YAMP
 
         #region ctor
 
-        public TreeExpression(ParseContext context) : base("")
+        public TreeExpression(QueryContext query) : base("")
         {
-            Context = context;
+            Query = query;
         }
 
-        public TreeExpression() : this(ParseContext.Default)
-        {
-        }
-
-        public TreeExpression(Operator op, Expression exp) : this(ParseContext.Default)
+        public TreeExpression(Operator op, Expression exp) : base("")
         {
             _tree = new ParseTree(op, exp);
         }
 
-        public TreeExpression(Operator op, Expression left, Expression right) : this(ParseContext.Default)
+        public TreeExpression(Operator op, Expression left, Expression right) : base("")
         {
             _tree = new ParseTree(op, left, right);
         }
@@ -60,9 +56,9 @@ namespace YAMP
         /// <param name="context">The context of the created tree expression.</param>
         /// <param name="match">The match that corresponds to this tree expression.</param>
         /// <returns>The created three expression.</returns>
-        public override Expression Create(ParseContext context, Match match)
+        public override Expression Create(QueryContext query, Match match)
         {
-            return new TreeExpression(context);
+            return new TreeExpression(query);
         }
 
         /// <summary>
@@ -78,13 +74,8 @@ namespace YAMP
         public override string Set(string input)
         {
             _input = input;
-            _tree = new ParseTree(Context, _input, Offset, this);
+            _tree = new ParseTree(Query, _input, Offset, this);
             return string.Empty;
-        }
-
-        public override void RegisterToken()
-        {
-            //Does not register this expression.
         }
 
         public override string ToString()

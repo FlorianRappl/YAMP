@@ -12,9 +12,9 @@ namespace YAMP
         {
         }
 
-        public override Operator Create(ParseContext context)
+        public override Operator Create(QueryContext query)
         {
-            return new LeftDivideAssignmentOperator(context);
+            return new LeftDivideAssignmentOperator(query.Context);
         }
     }
 }

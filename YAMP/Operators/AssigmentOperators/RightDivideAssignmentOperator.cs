@@ -4,8 +4,7 @@ namespace YAMP
 {
     class RightDivideAssignmentOperator : AssignmentPrefixOperator
     {
-        public RightDivideAssignmentOperator(ParseContext context)
-            : base(context, new RightDivideOperator())
+        public RightDivideAssignmentOperator(ParseContext context) : base(context, new RightDivideOperator())
         {
         }
 
@@ -13,9 +12,9 @@ namespace YAMP
         {
         }
 
-        public override Operator Create(ParseContext context)
+        public override Operator Create(QueryContext query)
         {
-            return new RightDivideAssignmentOperator(context);
+            return new RightDivideAssignmentOperator(query.Context);
         }
     }
 }

@@ -1,4 +1,31 @@
-﻿using System;
+﻿/*
+    Copyright (c) 2012, Florian Rappl.
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+          notice, this list of conditions and the following disclaimer in the
+          documentation and/or other materials provided with the distribution.
+        * Neither the name of the YAMP team nor the names of its contributors
+          may be used to endorse or promote products derived from this
+          software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+using System;
 using System.Collections.Generic;
 
 namespace YAMP
@@ -14,16 +41,17 @@ namespace YAMP
 
             if (m.DimensionX == 1)
             {
-                var x = new RangeValue(1.0, (double)m.DimensionY, 1.0);
-                AddValues(x, m);
+                var x = Generate(1.0, 1.0, m.DimensionY);
+                var y = ConvertY(m, 0, m.DimensionY, 0);
+                AddValues(x, y);
             }
             else
             {
-                var x = m.SubMatrix(0, m.DimensionY, 0, 1);
+                var x = ConvertY(m, 0, m.DimensionY, 0);
 
                 for (var k = 2; k <= m.DimensionX; k++)
                 {
-                    var y = m.SubMatrix(0, m.DimensionY, k - 1, 1);
+                    var y = ConvertY(m, 0, m.DimensionY, k - 1);
                     AddValues(x, y);
                 }
             }
@@ -35,22 +63,22 @@ namespace YAMP
             {
                 AddPoints(x);
                 AddPoints(y);
-                return;
             }
-
-            if(y.DimensionY == 1 && y.DimensionX > 1)
-                y = y.Transpose();
-
-            var dim = Math.Min(x.Length, y.DimensionY);
-
-            for (var k = 1; k <= y.DimensionX; k++)
+            else
             {
-                var values = y.SubMatrix(0, dim, k - 1, 1);
-                AddValues(x, values);
+                var transpose = y.DimensionY == 1 && y.DimensionX > 1;
+                var dim = Math.Min(x.Length, transpose ? y.DimensionX : y.DimensionY);
+                var _x = Convert(x, 0, dim);
+
+                for (var k = 1; k <= y.DimensionX; k++)
+                {
+                    var _y = transpose ? ConvertX(y, 0, dim, k - 1) : ConvertY(y, 0, dim, k - 1);
+                    AddValues(_x, _y);
+                }
             }
         }
 
-        void AddValues(MatrixValue _x, MatrixValue _y)
+        void AddValues(double[] _x, double[] _y)
         {
             var p = new Points<PointPair>();
             var xmin = double.MaxValue;
@@ -58,10 +86,10 @@ namespace YAMP
             var ymin = double.MaxValue;
             var ymax = double.MinValue;
 
-            for (var i = 1; i <= _x.Length; i++)
+            for (var i = 0; i < _x.Length; i++)
             {
-                var x = _x[i].Value;
-                var y = _y[i].Value;
+                var x = _x[i];
+                var y = _y[i];
 
                 p.Add(new PointPair
                 {

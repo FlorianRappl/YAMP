@@ -54,7 +54,7 @@ namespace YAMP
                     _input = input.Substring(1, i - 1);
 
                     if(_input.Length > 0)
-                        Tree = new ParseTree(Context, _input, Offset, this);
+                        Tree = new ParseTree(Query, _input, Offset, this);
 
                     return input.Substring(i + 1);
                 }
@@ -62,10 +62,5 @@ namespace YAMP
 
             throw new BracketException(Offset, _openBracket.ToString(), input);
 		}
-
-        public override void RegisterToken()
-        {
-            Tokens.Instance.AddExpression(Pattern, this);
-        }
     }
 }

@@ -43,62 +43,8 @@ namespace YAMP
 		Expression[] _expressions;
 		string _input;
 		int _offset;
-        ParseContext _context;
+        QueryContext _query;
         TreeExpression _parent;
-
-		#endregion
-
-		#region Properties
-
-        /// <summary>
-        /// Gets the operator used for this parse tree (can be null).
-        /// </summary>
-		public Operator Operator
-		{
-			get
-			{
-				return _operator;
-			}
-			set
-			{
-                _operator = value;
-			}
-		}
-		
-        /// <summary>
-        /// Gets the array with all found expressions in the parse tree.
-        /// </summary>
-		public Expression[] Expressions
-		{
-			get
-			{
-				return _expressions;
-			}
-			set
-			{
-                _expressions = value;
-			}
-		}
-
-        /// <summary>
-        /// Gets a value if the last output was actually saved in a variable.
-        /// </summary>
-        public bool IsAssignment
-        {
-            get
-            {
-                if (Operator != null)
-                    return Operator is AssignmentOperator;
-
-                if (Expressions.Length != 1)
-                    return false;
-
-                if (Expressions[0] is TreeExpression)
-                    return (Expressions[0] as TreeExpression).Tree.IsAssignment;
-
-                return false;
-            }
-        }
 
 		#endregion
 
@@ -122,32 +68,78 @@ namespace YAMP
             _expressions = new Expression[] { left, right };
 		}
 
-		public ParseTree(string input, int offset = 0)
+        public ParseTree(QueryContext query, string input, int offset = 0)
         {
-            _context = ParseContext.Default;
-            _offset = offset;
-            _input = input;
-            Parse();
-		}
-
-        public ParseTree(ParseContext context, string input, int offset = 0)
-        {
-            _context = context;
+            _query = query;
             _offset = offset;
             _input = input;
             Parse();
         }
 
-        internal ParseTree(ParseContext context, string input, int offset, TreeExpression parent)
+        internal ParseTree(QueryContext query, string input, int offset, TreeExpression parent)
         {
             _parent = parent;
-            _context = context;
+            _query = query;
             _offset = offset;
             _input = input;
             Parse();
         }
-		
-		#endregion
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the operator used for this parse tree (can be null).
+        /// </summary>
+        public Operator Operator
+        {
+            get
+            {
+                return _operator;
+            }
+            set
+            {
+                _operator = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the array with all found expressions in the parse tree.
+        /// </summary>
+        public Expression[] Expressions
+        {
+            get
+            {
+                return _expressions;
+            }
+            set
+            {
+                _expressions = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value if the last output was actually saved in a variable.
+        /// </summary>
+        public bool IsAssignment
+        {
+            get
+            {
+                if (Operator != null)
+                    return Operator is AssignmentOperator;
+
+                if (Expressions.Length != 1)
+                    return false;
+
+                if (Expressions[0] is TreeExpression)
+                    return (Expressions[0] as TreeExpression).Tree.IsAssignment;
+
+                return false;
+            }
+        }
+
+        #endregion
 
         #region Methods
 
@@ -162,7 +154,7 @@ namespace YAMP
 
 			while(shadow.Length > 0)
             {
-                if (Tokens.Instance.Transform(_context, _parent, ref shadow))
+                if (Tokens.Instance.Transform(_query, _parent, ref shadow))
                 {
                     offset++;
                     continue;
@@ -170,17 +162,17 @@ namespace YAMP
 
 				if(takeop)
 				{
-					var op = Tokens.Instance.FindOperator(_context, _parent, shadow);
+					var op = Tokens.Instance.FindOperator(_query, _parent, shadow);
 
                     if (!op.ExpectExpression)
                         expressions.Push(new TreeExpression(op, expressions.Pop()));
                     else
                     {
-                        if (op.Level >= maxLevel)
+                        if (op.Level >= (op.IsRightToLeft ? maxLevel : maxLevel + 1))
                             maxLevel = op.Level;
                         else
                         {
-                            while(true)
+                            while (true)
                             {
                                 var right = expressions.Pop();
                                 var left = expressions.Pop();
@@ -203,7 +195,7 @@ namespace YAMP
 				}
 				else
 				{
-					var exp = Tokens.Instance.FindExpression(_context, shadow);
+                    var exp = Tokens.Instance.FindExpression(_query, shadow);
 					exp.Offset = offset;
                     expressions.Push(exp);
 					shadow = exp.Set(shadow);
@@ -211,6 +203,9 @@ namespace YAMP
 					takeop = true;
 				}
             }
+
+            if(operators.Count != expressions.Count - 1)
+                throw new ExpressionNotFoundException(_input.Substring(_input.Length < 5 ? 0 : _input.Length - 5));
 
             while(operators.Count > 1)
             {

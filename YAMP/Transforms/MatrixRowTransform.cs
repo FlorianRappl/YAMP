@@ -9,7 +9,7 @@ namespace YAMP
             NewLineTransform.RegisterSpecificType(typeof(MatrixBracketExpression), this);
         }
 
-        public override string Modify(ParseContext context, string original, Expression premise)
+        public override string Modify(QueryContext context, string original, Expression premise)
         {
             if (original.Length > 0)
                 return ";" + original;

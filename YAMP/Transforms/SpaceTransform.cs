@@ -9,7 +9,7 @@ namespace YAMP
         {
         }
 
-        public override string Modify(ParseContext context, string original, Expression premise)
+        public override string Modify(QueryContext context, string original, Expression premise)
         {
             var index = 0;
 

@@ -60,7 +60,7 @@ namespace YAMP
         {
             _query = query;
             query.Context = context;
-            query.Interpreter = new ParseTree(context, query.Input);
+            query.Interpreter = new ParseTree(query, query.Input);
         }
 
         #endregion
@@ -269,9 +269,9 @@ namespace YAMP
 		/// The values in an Hashtable containing string (name), Value (value) pairs.
 		/// </param>
         /// <returns>The value from the evaluation.</returns>
-		public Value Execute (Hashtable values)
+		public Value Execute(Hashtable values)
 		{
-            _query.Interpret(values);			
+            _query.Interpret(values);
 			return _query.Output;
 		}
 

@@ -10,6 +10,7 @@ namespace YAMP
 
 		public RangeOperator () : base(":", 200)
 		{
+            IsRightToLeft = true;
 		}
 		
 		public override Value Perform (Value left, Value right)

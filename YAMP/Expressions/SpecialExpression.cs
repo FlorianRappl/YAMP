@@ -15,15 +15,15 @@ namespace YAMP
 		{
 		}
 
-        public SpecialExpression(ParseContext context, Match match) : this()
+        public SpecialExpression(QueryContext query, Match match) : this()
 		{
-            Context = context;
+            Query = query;
 			mx = match;
 		}
 
-		public override Expression Create(ParseContext context, Match match)
+		public override Expression Create(QueryContext query, Match match)
         {
-            return new SpecialExpression(context, match);
+            return new SpecialExpression(query, match);
         }
 		
 		public override Value Interpret (Hashtable symbols)

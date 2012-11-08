@@ -15,15 +15,15 @@ namespace YAMP
 		{
 		}
 
-		public FunctionExpression(ParseContext context, Match match) : this()
+		public FunctionExpression(QueryContext query, Match match) : this()
 		{
-            Context = context;
+            Query = query;
 			mx = match;
 		}
 
-		public override Expression Create(ParseContext context, Match match)
+		public override Expression Create(QueryContext query, Match match)
         {
-            return new FunctionExpression(context, match);
+            return new FunctionExpression(query, match);
         }
 		
 		public override Value Interpret(Hashtable symbols)
@@ -39,7 +39,7 @@ namespace YAMP
 			_name = input.Substring(0, pos);
 			sb.Append(_name).Append("(");
             _func = Context.FindFunction(_name);
-            _child = new ArgumentsBracketExpression(Context);
+            _child = new ArgumentsBracketExpression(Query);
 			_child.Offset = Offset + pos;
 			input = _child.Set(input.Substring(pos));
 			sb.Append(_child.Input).Append(")");

@@ -8,7 +8,7 @@ namespace YAMP
     class IndexOperator : UnaryOperator
     {
         ArgumentsBracketExpression _content;
-        ParseContext _context;
+        QueryContext _query;
         _Function _indexer;
 
         public override string Input
@@ -21,22 +21,21 @@ namespace YAMP
 
         public IndexOperator() : base("(", 1000)
         {
-            _context = ParseContext.Default;
         }
 
-        public IndexOperator(ParseContext context) : base("(", 1000)
+        public IndexOperator(QueryContext query) : base("(", 1000)
         {
-            _context = context;
+            _query = query;
         }
 
-        public override Operator Create(ParseContext context)
+        public override Operator Create(QueryContext query)
         {
-            return new IndexOperator(context);
+            return new IndexOperator(query);
         }
 
         public override string Set(string input)
         {
-            _content = new ArgumentsBracketExpression(_context);
+            _content = new ArgumentsBracketExpression(_query);
             return _content.Set(input);
         }
 
@@ -60,17 +59,28 @@ namespace YAMP
 
         public Value Handle(Expression expression, Value value, Hashtable symbols)
         {
-            if (expression is SymbolExpression)
+            var isSymbol = expression is SymbolExpression;
+            var symbolName = string.Empty;
+            var context = _query.Context;
+
+            if (isSymbol)
             {
                 var sym = expression as SymbolExpression;
+                symbolName = sym.SymbolName;
+                isSymbol = sym.IsSymbol;
 
-                if (sym.IsSymbol && !_context.Variables.ContainsKey(sym.SymbolName))
-                    _context.AssignVariable(sym.SymbolName, new MatrixValue());
+                if (isSymbol && !context.Variables.ContainsKey(sym.SymbolName))
+                    context.AssignVariable(sym.SymbolName, new MatrixValue());
             }
 
             var left = expression.Interpret(symbols);
             SetIndexer(left, symbols);
-            return Perform(left, value);
+            var ret = Perform(left, value);
+
+            if (isSymbol)
+                context.AssignVariable(symbolName, ret);
+
+            return ret;
         }
 
         public override string ToString()

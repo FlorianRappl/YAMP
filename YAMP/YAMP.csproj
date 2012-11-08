@@ -100,8 +100,18 @@
     <Compile Include="Functions\SystemFunctions\TimerFunction.cs" />
     <Compile Include="Functions\SystemFunctions\WhoFunction.cs" />
     <Compile Include="Functions\VisualizationFunction.cs" />
+    <Compile Include="Functions\Visualization\Helpers\YScaleFunction.cs" />
+    <Compile Include="Functions\Visualization\Helpers\SetDataFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\TitleFunction.cs" />
+    <Compile Include="Functions\Visualization\Helpers\XLabelFunction.cs" />
+    <Compile Include="Functions\Visualization\Helpers\XRangeFunction.cs" />
+    <Compile Include="Functions\Visualization\Helpers\XScaleFunction.cs" />
+    <Compile Include="Functions\Visualization\Helpers\YLabelFunction.cs" />
+    <Compile Include="Functions\Visualization\Helpers\YRangeFunction.cs" />
+    <Compile Include="Functions\Visualization\LogLogFunction.cs" />
     <Compile Include="Functions\Visualization\PlotFunction.cs" />
+    <Compile Include="Functions\Visualization\SemiLogXFunction.cs" />
+    <Compile Include="Functions\Visualization\SemiLogYFunction.cs" />
     <Compile Include="Interfaces\IConstants.cs" />
     <Compile Include="Interfaces\ISign.cs" />
     <Compile Include="Interfaces\ISupportsIndex.cs" />
@@ -158,7 +168,7 @@
     <Compile Include="Functions\Trigonometric\CothFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\DetFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\EyeFunction.cs" />
-    <Compile Include="Functions\StandardFunctions\FacultyFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\FactorialFunction.cs" />
     <Compile Include="Functions\StandardFunctions\GammaFunction.cs" />
     <Compile Include="Functions\StandardFunctions\MaxFunction.cs" />
     <Compile Include="Functions\StandardFunctions\MinFunction.cs" />
@@ -171,7 +181,9 @@
     <Compile Include="Functions\ArgumentFunctions\ZerosFunction.cs" />
     <Compile Include="ParseContext.cs" />
     <Compile Include="Parser.cs" />
-    <Compile Include="Providers\PropertyEventArgs.cs" />
+    <Compile Include="Providers\MatrixIndex.cs" />
+    <Compile Include="Providers\PlotEventArgs.cs" />
+    <Compile Include="Providers\VariableEventArgs.cs" />
     <Compile Include="Providers\ReadOnlyDictionary.cs" />
     <Compile Include="QueryContext.cs" />
     <Compile Include="Expressions\Expression.cs" />
@@ -220,7 +232,7 @@
     <Compile Include="Expressions\AbsExpression.cs" />
     <Compile Include="Functions\StandardFunctions\SqrtFunction.cs" />
     <Compile Include="Providers\Constants.cs" />
-    <Compile Include="Operators\UnaryOperators\FacultyOperator.cs" />
+    <Compile Include="Operators\UnaryOperators\FactorialOperator.cs" />
     <Compile Include="Operators\BinaryOperators\CommaOperator.cs" />
     <Compile Include="Functions\FunctionDelegate.cs" />
     <Compile Include="Functions\StandardFunctions\LnFunction.cs" />

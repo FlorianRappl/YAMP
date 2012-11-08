@@ -7,11 +7,17 @@ using System.Text.RegularExpressions;
 namespace YAMP
 {
 	public abstract class Expression : IRegisterToken
-	{	
-		string _pattern;
+    {
+        #region Members
+
+        string _pattern;
         protected string _input;
 		protected Match mx;
         int _offset;
+
+        #endregion
+
+        #region ctor
 
         public Expression(string pattern)
         {
@@ -19,7 +25,11 @@ namespace YAMP
             _pattern = pattern;
         }
 
-		internal string Pattern
+        #endregion
+
+        #region Properties
+
+        internal string Pattern
 		{
 			get { return _pattern; }
 		}
@@ -42,21 +52,22 @@ namespace YAMP
 
         public string DefaultOperator { get; set; }
 
-        public ParseContext Context { get; protected set; }
-		
-		public Value Interpret()
+        public ParseContext Context { get { return Query.Context; } }
+
+        public QueryContext Query { get; protected set; }
+
+        #endregion
+
+        #region Methods
+
+        public Value Interpret()
 		{
 			return Interpret(new Hashtable());
 		}
 		
 		public abstract Value Interpret(Hashtable symbols);
 
-        public virtual Expression Create(Match match)
-        {
-            return Create(ParseContext.Default, match);
-        }
-
-        public abstract Expression Create(ParseContext context, Match match);
+        public abstract Expression Create(QueryContext query, Match match);
 
         public virtual string Set(string input)
 		{
@@ -76,7 +87,9 @@ namespace YAMP
 		public override string ToString ()
 		{
 			return string.Format ("[ Expression : {0} ]", _input);
-		}
+        }
+
+        #endregion
     }
 }
 

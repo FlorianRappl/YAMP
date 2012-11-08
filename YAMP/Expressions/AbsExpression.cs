@@ -14,25 +14,20 @@ namespace YAMP
 			abs = new AbsFunction();
 		}
 
-        public AbsExpression(ParseContext context) : this()
+        public AbsExpression(QueryContext query) : this()
         {
-            Context = context;
+            Query = query;
         }
 
-        public override Expression Create(ParseContext context, Match match)
+        public override Expression Create(QueryContext query, Match match)
         {
-            return new AbsExpression(context);
+            return new AbsExpression(query);
         }
 		
 		public override Value Interpret(Hashtable symbols)
 		{
 			return abs.Perform(base.Interpret(symbols));
 		}
-
-        public override void RegisterToken()
-        {
-            Tokens.Instance.AddExpression(Pattern, this);
-        }
 		
 		public override string Set(string input)
 		{		
@@ -48,7 +43,7 @@ namespace YAMP
 				else if(brackets == 0 && input[i] == '|')
 				{
 					_input = sb.ToString();
-					Tree = new ParseTree(Context, _input); 
+					Tree = new ParseTree(Query, _input); 
 					return input.Substring(i + 1);
 				}
 

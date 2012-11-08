@@ -13,15 +13,15 @@ namespace YAMP
 		{
 		}
 
-		public NumberExpression (ParseContext context, Match match) : this()
+		public NumberExpression (QueryContext query, Match match) : this()
 		{
-            Context = context;
+            Query = query;
 			mx = match;
 		}
 
-		public override Expression Create(ParseContext context, Match match)
+		public override Expression Create(QueryContext query, Match match)
         {
-            return new NumberExpression(context, match);
+            return new NumberExpression(query, match);
         }
 		
 		public override Value Interpret (Hashtable symbols)

@@ -1,3 +1,30 @@
+/*
+    Copyright (c) 2012, Florian Rappl.
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+          notice, this list of conditions and the following disclaimer in the
+          documentation and/or other materials provided with the distribution.
+        * Neither the name of the YAMP team nor the names of its contributors
+          may be used to endorse or promote products derived from this
+          software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 using System;
 using System.Text;
 using System.Collections;
@@ -10,11 +37,9 @@ namespace YAMP
     {
         #region Members
 
-        ScalarValue[,] _values;
+        IDictionary<MatrixIndex, ScalarValue> _values;
 		
-		int capacityX;
         int dimX;
-        int capacityY;
         int dimY;
 
         #endregion
@@ -23,27 +48,29 @@ namespace YAMP
 
         public int DimensionX
 		{
-			get { return dimX; }
+			get { return dimX;  }
+            protected set { dimX = value; }
 		}
 		
 		public int DimensionY
 		{
-			get { return dimY; }
+            get { return dimY; }
+            protected set { dimY = value; }
 		}
 		
 		public int Length
 		{
-			get { return dimY * dimX; }
+            get { return DimensionX * DimensionY; }
 		}
 
         public bool IsSymmetric
         {
             get
             {
-                if(DimensionX != DimensionY)
+                if(dimX != dimY)
                     return false;
 
-                for (var i = 1; i <= DimensionX; i++)
+                for (var i = 1; i <= dimX; i++)
                 {
                     for (var j = 1; j < i; j++)
                     {
@@ -59,34 +86,50 @@ namespace YAMP
             }
         }
 
+        public bool IsComplex
+        {
+            get
+            {
+                for (var i = 1; i <= dimY; i++)
+                {
+                    for (var j = 1; j < dimX; j++)
+                    {
+                        if (this[i, j].IsComplex)
+                            return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         #endregion
 
         #region ctors
 
         public MatrixValue ()
 		{
-			dimX = 0;
-			dimY = 1;
-			capacityX = 32;
-			capacityY = 32;
-			_values = new ScalarValue[capacityX, capacityY];
-			
-			for(int i = 0; i < capacityX; i++)
-				for(int j = 0; j < capacityY; j++)
-					_values[i, j] = new ScalarValue();
+            _values = new Dictionary<MatrixIndex, ScalarValue>();
 		}
 		
 		public MatrixValue(int rows, int cols) : this()
 		{
-			if(rows > 0 && cols > 0)
-				this[rows, cols] = new ScalarValue();
+            dimX = cols;
+            dimY = rows;
 		}
 
         public MatrixValue(double[][] values, int rows, int cols) : this(rows, cols)
         {
             for (var j = 0; j < rows; j++)
+            {
                 for (var i = 0; i < cols; i++)
-                    _values[i, j].Value = values[j][i];
+                {
+                    if (values[j][i] == 0.0)
+                        continue;
+
+                    this[j + 1, i + 1] = new ScalarValue(values[j][i]);
+                }
+            }
         }
 
         #endregion
@@ -132,16 +175,16 @@ namespace YAMP
 
         #region Methods
 
-        public Value ChangeSign()
+        public virtual Value ChangeSign()
         {
-            var m = Clone();
+            var m = new MatrixValue(DimensionY, DimensionX);
 
             for (var i = 1; i <= DimensionX; i++)
             {
                 for (var j = 1; j <= DimensionY; j++)
                 {
-                    m[j, i].Value = -m[j, i].Value;
-                    m[j, i].ImaginaryValue = -m[j, i].ImaginaryValue;
+                    m[j, i].Value = -this[j, i].Value;
+                    m[j, i].ImaginaryValue = -this[j, i].ImaginaryValue;
                 }
             }
 
@@ -155,10 +198,13 @@ namespace YAMP
                     this[j, i].Clear();
         }
 
-        public MatrixValue Clone()
+        public virtual MatrixValue Clone()
         {
             var m = new MatrixValue();
-			m._values = _values.Clone() as ScalarValue[,];
+
+            foreach (var entry in _values)
+                m._values.Add(entry.Key, entry.Value.Clone());
+
 			m.dimX = dimX;
 			m.dimY = dimY;
             return m;
@@ -511,19 +557,25 @@ namespace YAMP
             var m = new MatrixValue(dimX, dimY);
 
             for (var i = 1; i <= DimensionY; i++)
+            {
                 for (var j = 1; j <= DimensionX; j++)
                     m[j, i] = this[i, j].Conjugate();
+            }
 
             return m;
         }
 
         public MatrixValue Transpose()
         {
-            var m = new MatrixValue(dimX, dimY);
+            var m = Clone();
 
-            for (var i = 1; i <= DimensionY; i++)
-                for (var j = 1; j <= DimensionX; j++)
-                    m[j, i] = this[i, j];
+            foreach (var pair in _values)
+            {
+                var index = pair.Key;
+                var temp = index.Row;
+                index.Row = index.Column;
+                index.Column = temp;
+            }
 
             return m;
         }
@@ -533,7 +585,7 @@ namespace YAMP
             var sum = 0.0;
 
             foreach (var p in _values)
-                sum += (p.Value * p.Value + p.ImaginaryValue * p.ImaginaryValue);
+                sum += (p.Value.Value * p.Value.Value + p.Value.ImaginaryValue * p.Value.ImaginaryValue);
 
             return new ScalarValue(Math.Sqrt(sum));
         }
@@ -544,7 +596,10 @@ namespace YAMP
             var n = Math.Min(DimensionX, DimensionY);
 
             for (var i = 1; i <= n; i++)
-                sum = sum + this[i, i];
+            {
+                sum.Value += this[i, i].Value;
+                sum.ImaginaryValue += this[i, i].ImaginaryValue;
+            }
 
             return sum;
         }
@@ -619,7 +674,7 @@ namespace YAMP
                 array[j] = new double[DimensionX];
 
                 for (var i = 0; i < DimensionX; i++)
-                    array[j][i] = _values[i, j].Value;
+                    array[j][i] = this[j + 1, i + 1].Value;
             }
 
             return array;
@@ -647,75 +702,62 @@ namespace YAMP
             return X;
         }
 
-        void Resize()
-        {
-            int newX = capacityX;
-            int newY = capacityY;
-
-            if (DimensionX > newX)
-                newX = DimensionX * 2;
-
-            if (DimensionY > newY)
-                newY = DimensionY * 2;
-
-            var tmp = new ScalarValue[newX, newY];
-
-            for (int i = 0; i < newX; i++)
-            {
-                for (int j = 0; j < newY; j++)
-                {
-                    if (i < capacityX && j < capacityY)
-                        tmp[i, j] = _values[i, j];
-                    else
-                        tmp[i, j] = new ScalarValue();
-                }
-            }
-
-            _values = tmp;
-            capacityX = newX;
-            capacityY = newY;
-        }
-
         #endregion
 
         #region Indexers
 
-        public ScalarValue this[int j, int i]
+        public virtual ScalarValue this[int j, int i]
 		{
 			get
 			{
-				if(i > DimensionX || i < 1 || j > DimensionY || j < 1)
+                if (i > dimX || i < 1 || j > dimY || j < 1)
 					throw new ArgumentOutOfRangeException("Access in Matrix out of bounds.");
-									
-				return _values[i - 1, j - 1];
+
+                var index = new MatrixIndex();
+                index.Column = i;
+                index.Row = j;
+			    
+                if(_values.ContainsKey(index))
+                    return _values[index];
+
+                return new ScalarValue();
 			}
 			set
 			{
 				if(i < 1 || j < 1)
 					throw new ArgumentOutOfRangeException("Access in Matrix out of bounds.");
-				
-				if(i > DimensionX)
+
+                if (i > dimX)
 					dimX = i;
-				
-				if(j > DimensionY)
+
+                if (j > dimY)
 					dimY = j;
-				
-				if(DimensionX > capacityX || DimensionY > capacityY)
-					Resize();
-									
-				_values[i - 1, j - 1] = value;
+
+                var index = new MatrixIndex();
+                index.Column = i;
+                index.Row = j;
+
+                if (value.IsZero)
+                {
+                    if (_values.ContainsKey(index))
+                        _values.Remove(index);
+                }
+                else if (_values.ContainsKey(index))
+                    _values[index] = value;
+                else
+                    _values.Add(index, value);
 			}
 		}
 		
-		public ScalarValue this[int i]
+		public virtual ScalarValue this[int i]
 		{
 			get
 			{
 				if(i > Length || i < 1)
 					throw new ArgumentOutOfRangeException("Access in Matrix out of bounds.");
-				
-				var row = (i - 1) % DimensionY + 1;
-				var col = (i - 1) / DimensionY + 1;
+
+                var row = (i - 1) % dimY + 1;
+                var col = (i - 1) / dimY + 1;
 				return this[row, col];
 			}
 			set
@@ -723,11 +765,24 @@ namespace YAMP
 				if(i < 1)
 					throw new ArgumentOutOfRangeException("Access in Matrix out of bounds.");
 
-                var row = (i - 1) % DimensionY + 1;
-                var col = (i - 1) / DimensionY + 1;
+                if (dimY == 0)
+                    dimY = 1;
+
+                var row = (i - 1) % dimY + 1;
+                var col = (i - 1) / dimY + 1;
 				this[row, col] = value;
 			}
 		}
+
+        protected bool ContainsIndex(MatrixIndex index)
+        {
+            return _values.ContainsKey(index);
+        }
+
+        protected ScalarValue GetIndex(MatrixIndex index)
+        {
+            return _values[index];
+        }
 
         #endregion
 

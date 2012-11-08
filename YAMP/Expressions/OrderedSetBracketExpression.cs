@@ -5,18 +5,18 @@ namespace YAMP
 {
     class OrderedSetBracketExpression : BracketExpression
     {
-        public OrderedSetBracketExpression() : this(ParseContext.Default)
+        public OrderedSetBracketExpression() : base(@"\{.*\}", '{', '}')
         {
         }
 
-        public OrderedSetBracketExpression(ParseContext context) : base(@"\{.*\}", '{', '}')
+        public OrderedSetBracketExpression(QueryContext query) : this()
         {
-            Context = context;
+            Query = query;
         }
 
-        public override Expression Create(ParseContext context, Match match)
+        public override Expression Create(QueryContext query, Match match)
         {
-            return new OrderedSetBracketExpression(context);
+            return new OrderedSetBracketExpression(query);
         }
 
         public override Value CreateDefaultValue()

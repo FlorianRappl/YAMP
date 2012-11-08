@@ -16,12 +16,12 @@ namespace YAMP
             return left;
         }
 
-        public override Operator Create(ParseContext context, Expression premise)
+        public override Operator Create(QueryContext query, Expression premise)
         {
             foreach (var op in operators)
             {
                 if (op.Dependency.IsInstanceOfType(premise))
-                    return op.Create(context);
+                    return op.Create(query);
             }
 
             throw new OperationNotSupportedException(Op, "in this context");

@@ -9,8 +9,6 @@ namespace YAMP
         #region Members
 
         string _op;
-		int _level;
-		bool _expect;
         Type _dependency;
 
         #endregion
@@ -29,8 +27,8 @@ namespace YAMP
 		{
             _dependency = typeof(TreeExpression);
 			_op = op;
-			_level = level;
-			_expect = expect;
+			Level = level;
+            ExpectExpression = expect;
 		}
 
         #endregion
@@ -57,16 +55,18 @@ namespace YAMP
         /// Gets the level of the operator.
         /// </summary>
 		public int Level
-		{
-			get { return _level; }
+        {
+            get;
+            private set;
 		}
 
         /// <summary>
         /// Gets a value if the operator expects an expression.
         /// </summary>
 		public bool ExpectExpression
-		{
-			get { return _expect; }
+        {
+            get;
+            private set;
 		}
 
         /// <summary>
@@ -75,6 +75,15 @@ namespace YAMP
         public Type Dependency
         {
             get { return _dependency; }
+        }
+
+        /// <summary>
+        /// Gets if the operator has to be executed from right to left for chained scenarios.
+        /// </summary>
+        public bool IsRightToLeft
+        {
+            get;
+            protected set;
         }
 
         #endregion
@@ -95,14 +104,14 @@ namespace YAMP
             return input.Substring(_op.Length);
 		}
 
-        public virtual Operator Create(ParseContext context)
+        public virtual Operator Create(QueryContext query)
         {
             return this;
         }
 
-        public virtual Operator Create(ParseContext context, Expression premise)
+        public virtual Operator Create(QueryContext query, Expression premise)
         {
-            return Create(context);
+            return Create(query);
         }
 
         protected void SetDependency(Type dependency)

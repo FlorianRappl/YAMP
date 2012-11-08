@@ -152,9 +152,9 @@ namespace YAMPConsole
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
-            var lines = new string[0];
+            //var lines = new string[0];
 			// This is Benchmark #1
-            //var lines = File.ReadAllLines(BMK_FILE);
+            var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
             //var lines = MakeTenK("2-3*5+7/2-8*2");
 			// This is Benchmark #3
@@ -163,27 +163,27 @@ namespace YAMPConsole
             //var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
 			
 			// The implementation here... YAMP
-			// 4818 ms ; 373 ms ; 120 ms ; 543 ms
+			// 4814 ms ; 239 ms ; 95 ms ; 413 ms
             Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
 
             //http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
-            // 1611 ms ; 167 ms ; 81 ms ; 177 ms
+            // 2092 ms ; 108 ms ; 75 ms ; 155 ms
             Benchmark("LLMathParser", lines, query => e.Evaluate(query, new char[0], new double[0]));
 			
 			//http://www.codeproject.com/Articles/11164/Math-Parser
-            // 372847 ms ; 4795 ms ; 3385 ms ; 14508 ms
+            // 372847 ms ; 3631 ms ; 2385 ms ; 11508 ms
 			Benchmark("MathParser", lines, query => a.Evaluate(query));
 			
 			//http://www.codeproject.com/Tips/381509/Math-Parser-NET-Csharp
-			// FAILED ; 563 ms ; 136 ms ; 850 ms
+			// FAILED ; 417 ms ; 100 ms ; 647 ms
 			Benchmark("MathParserTK", lines, query => b.Parse(query, false));
 			
 			//http://www.codeproject.com/Articles/274093/Math-Parser-NET
-			// FAILED ; 5122 ms ; 5194 ms ; 5444 ms
+			// FAILED ; 3763 ms ; 3511 ms ; 3827 ms
 			Benchmark("MathParserNet", lines, query => c.Simplify(query));
 
             //http://www.codeproject.com/Articles/23061/MathParser-Math-Formula-Parser
-            // FAILED ; 147 ms ; 54 ms ; FAILED
+            // FAILED ; 161 ms ; 37 ms ; FAILED
             Benchmark("MathFormulaParser", lines, query => d.Calculate(query));
 		}
 
@@ -249,6 +249,8 @@ namespace YAMPConsole
 
 		static void Tests()
 		{
+            Test("2-3-4", -5.0);
+            Test("(10^6*27)/8/1024", (27000000.0 / 8.0) / 1024.0);
             Test("-pi", -Math.PI);
             Test("-2+3", 1.0);
 			Test("2.2", 2.2);
@@ -315,6 +317,8 @@ namespace YAMPConsole
             Test("abs(eigvec([1,2;4,5])(1:2))", 1.0);
             Test("|[2 3 4]|", Math.Sqrt(29.0));
             Test("[2 3 4\n1 2 3](2, 2)", 2.0);
+            Test(" [2 2 * 2 - 2^3 4](1, 2) ", -4.0);
+            Test("sum([0:10, 2^(0:2:20), 2^(1:2:21)](:,1))", 55.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}
@@ -394,5 +398,5 @@ namespace YAMPConsole
 		}
 
 #endif
-	}
+    }
 }

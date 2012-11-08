@@ -88,7 +88,12 @@ namespace YAMP
                     continue;
 
                 if (type.GetInterface(ir) != null)
-                    (type.GetConstructor(Type.EmptyTypes).Invoke(null) as IRegisterToken).RegisterToken();
+                {
+                    var ctor = type.GetConstructor(Type.EmptyTypes);
+
+                    if(ctor != null)
+                        (ctor.Invoke(null) as IRegisterToken).RegisterToken();
+                }
 
                 if (type.GetInterface(fu) != null)
                 {
@@ -139,7 +144,7 @@ namespace YAMP
 
         #region Find elements
 
-		public Operator FindOperator(ParseContext context, Expression premise, string input)
+        public Operator FindOperator(QueryContext context, Expression premise, string input)
 		{
 			var maxop = string.Empty;
 			var notfound = true;
@@ -174,7 +179,7 @@ namespace YAMP
 			return operators[maxop].Create(context, premise);
 		}
 
-        public Operator FindOperatorWithoutException(ParseContext context, Expression premise, string input)
+        public Operator FindOperatorWithoutException(QueryContext context, Expression premise, string input)
         {
             try
             {
@@ -186,7 +191,7 @@ namespace YAMP
             }
         }
 		
-		public Expression FindExpression(ParseContext context, string input)
+		public Expression FindExpression(QueryContext context, string input)
 		{
 			Match m = null;
 
@@ -201,7 +206,7 @@ namespace YAMP
             throw new ExpressionNotFoundException(input);
 		}
 
-        public Expression FindExpressionWithoutException(ParseContext context, string input)
+        public Expression FindExpressionWithoutException(QueryContext context, string input)
         {
             try
             {
@@ -217,7 +222,7 @@ namespace YAMP
 
         #region Transform
 
-        public bool Transform(ParseContext context, Expression premise, ref string input)
+        public bool Transform(QueryContext context, Expression premise, ref string input)
         {
             var key = input[0];
 
@@ -228,9 +233,7 @@ namespace YAMP
                 if (transform.WillTransform(premise))
                 {
                     input = input.Substring(1);
-
-                    if (input.Length > 0)
-                        input = transforms[key].Modify(context, input, premise);
+                    input = transforms[key].Modify(context, input, premise);
 
                     return true;
                 }

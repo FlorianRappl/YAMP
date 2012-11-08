@@ -2,9 +2,9 @@
 
 namespace YAMP
 {
-    class TitleFunction : PropertyFunction<StringValue>
+    class XLabelFunction : PropertyFunction<StringValue>
     {
-        public TitleFunction() : base("Title")
+        public XLabelFunction() : base("XLabel")
         {
         }
 

@@ -46,6 +46,15 @@ namespace YAMP
         IFormatProvider numFormat;
         int? precision = 5;
         bool isReadOnly;
+        PlotValue lastPlot;
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler<VariableEventArgs> OnVariableChanged;
+        public event EventHandler<PlotEventArgs> OnPlotChanged;
+        public event EventHandler<PlotEventArgs> OnPlotCreated;
 
         #endregion
 
@@ -228,8 +237,15 @@ namespace YAMP
         /// </summary>
         public PlotValue LastPlot
         {
-            get;
-            internal set;
+            get { return lastPlot; }
+            internal set
+            {
+                if (value == lastPlot)
+                    return;
+
+                lastPlot = value;
+                RaisePlotCreated(value);
+            }
         }
 
         #endregion
@@ -401,9 +417,15 @@ namespace YAMP
                 else
                     variables.Add(name, value);
             }
-            else if (variables.ContainsKey(name))
-                variables.Remove(name);
+            else
+            {
+                if (variables.ContainsKey(name))
+                    variables.Remove(name);
+                else if (parent != null)
+                    parent.AssignVariable(name, value);
+            }
 
+            RaiseVariableChanged(name, value);
             return this;
         }
 
@@ -436,10 +458,11 @@ namespace YAMP
         /// The input to parse and execute.
         /// </param>
         /// <returns>The current context.</returns>
-        public Value Run(string query)
+        public QueryContext Run(string query)
         {
             var parser = Parser.Parse(this, query);
-            return parser.Execute();
+            parser.Execute();
+            return parser.Context;
         }
 
         /// <summary>
@@ -452,10 +475,11 @@ namespace YAMP
         /// The volatile variables to consider.
         /// </param>
         /// <returns>The current context.</returns>
-        public Value Run(string query, Hashtable variables)
+        public QueryContext Run(string query, Hashtable variables)
         {
             var parser = Parser.Parse(this, query);
-            return parser.Execute(variables);
+            parser.Execute(variables);
+            return parser.Context;
         }
 
         /// <summary>
@@ -504,6 +528,37 @@ namespace YAMP
         {
             Parser.ExecuteAsync(this, query, variables, continuation);
             return this;
+        }
+
+        #endregion
+
+        #region Event Methods
+
+        internal void RaiseVariableChanged(string name, Value value)
+        {
+            if (OnVariableChanged != null)
+            {
+                var args = new VariableEventArgs(name, value);
+                OnVariableChanged(this, args);
+            }
+        }
+
+        internal void RaisePlotChanged(PlotValue plot, string property)
+        {
+            if (OnPlotChanged != null)
+            {
+                var args = new PlotEventArgs(plot, property);
+                OnPlotChanged(this, args);
+            }
+        }
+
+        internal void RaisePlotCreated(PlotValue plot)
+        {
+            if (OnPlotCreated != null)
+            {
+                var args = new PlotEventArgs(plot, string.Empty);
+                OnPlotCreated(this, args);
+            }
         }
 
         #endregion

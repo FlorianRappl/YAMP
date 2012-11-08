@@ -37,6 +37,20 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**0.9.7:**
+- Changed the syntax to agree with MATLAB (e.g. matrices can only be defined in [])
+- Improved the `ParseContext` with events
+- Now returns the `QueryContext` in most cases to give the programmer more control
+- Included several plot functions like `PlotFunction` (for 2D plotting)
+- Renamed the `FactoryFunction` to `FactorialFunction` (corrected)
+- Spaces and new lines can be used within the matrix environment (i.e. within []) to
+  mark new columns and new rows
+- Included new expressions and new exceptions
+- Improved the speed of the parser by another 10%
+- Rewrote the matrix internally to work better for sparse matrices and be more flexible
+- Rewrote the range internally to only set user changed values explicitly
+- Added more unit tests
+
 **0.9.6:**
 - Added a `PlotValue` type with derived types like `Plot2DValue` etc.
 - Created a function called plot(), which takes one or more arguments

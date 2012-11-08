@@ -5,18 +5,18 @@ namespace YAMP
 {
     class ArgumentsBracketExpression : BracketExpression
     {
-        public ArgumentsBracketExpression() : this(ParseContext.Default)
+        public ArgumentsBracketExpression() : base(@"\(.*\)", '(', ')')
         {
         }
 
-        public ArgumentsBracketExpression(ParseContext context) : base(@"\(.*\)", '(', ')')
+        public ArgumentsBracketExpression(QueryContext query) : this()
         {
-            Context = context;
+            Query = query;
         }
 
-        public override Expression Create(ParseContext context, Match match)
+        public override Expression Create(QueryContext query, Match match)
         {
-            return new ArgumentsBracketExpression(context);
+            return new ArgumentsBracketExpression(query);
         }
 
         public override Value CreateDefaultValue()

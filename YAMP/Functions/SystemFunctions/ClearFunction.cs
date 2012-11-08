@@ -13,8 +13,14 @@ namespace YAMP
         [ExampleAttribute("clear()")]
         public StringValue Function()
         {
-            var count = Context.Variables.Count;
-            Context.Variables.Clear();
+            var count = 0;
+
+            foreach (var name in Context.AllVariables.Keys)
+            {
+                Context.AssignVariable(name, null);
+                count++;
+            }
+
             return new StringValue(count + " objects cleared.");
         }
 
@@ -24,6 +30,7 @@ namespace YAMP
         public StringValue Function(ArgumentsValue args)
         {
             var count = 0;
+            var allVariables = Context.AllVariables.Keys;
 
             foreach (var arg in args.Values)
             {
@@ -31,9 +38,9 @@ namespace YAMP
                 {
                     var name = (arg as StringValue).Value;
 
-                    if (Context.Variables.ContainsKey(name))
+                    if (allVariables.Contains(name))
                     {
-                        Context.Variables.Remove(name);
+                        Context.AssignVariable(name, null);
                         count++;
                     }
                 }

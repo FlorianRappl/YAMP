@@ -14,9 +14,9 @@ namespace YAMP
 		{
 		}
 
-		public SymbolExpression(ParseContext context, Match match) : this()
+        public SymbolExpression(QueryContext query, Match match) : this()
 		{
-            Context = context;
+            Query = query;
 		    mx = match;
         }
 
@@ -35,9 +35,9 @@ namespace YAMP
             fx = new Regex("^" + pattern);
         }
 
-        public override Expression Create(ParseContext context, Match match)
+        public override Expression Create(QueryContext query, Match match)
         {
-            return new SymbolExpression(context, match);
+            return new SymbolExpression(query, match);
         }
 		
 		public override Value Interpret(Hashtable symbols)
@@ -74,7 +74,7 @@ namespace YAMP
 
                 if (Context.GetVariable(name) == null)
                 {
-                    func = new FunctionExpression(Context, m);
+                    func = new FunctionExpression(Query, m);
                     input = func.Set(input);
                     _input = func.Input;
                     return input;
