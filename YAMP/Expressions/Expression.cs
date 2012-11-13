@@ -62,10 +62,10 @@ namespace YAMP
 
         public Value Interpret()
 		{
-			return Interpret(new Hashtable());
+            return Interpret(new Dictionary<string, object>());
 		}
 		
-		public abstract Value Interpret(Hashtable symbols);
+		public abstract Value Interpret(Dictionary<string, object> symbols);
 
         public abstract Expression Create(QueryContext query, Match match);
 

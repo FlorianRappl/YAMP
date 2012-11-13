@@ -57,7 +57,7 @@ namespace YAMP
 			return new RangeValue(start, end, step);
 		}
 
-		public override Value Handle (Expression left, Expression right, Hashtable symbols)
+		public override Value Handle (Expression left, Expression right, Dictionary<string, object> symbols)
 		{
 			var l = left.Interpret(symbols);
 			var r = new StringValue(END) as Value;

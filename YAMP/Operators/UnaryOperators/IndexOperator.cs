@@ -50,14 +50,14 @@ namespace YAMP
             return left;
         }
 
-        public override Value Handle(Expression expression, Hashtable symbols)
+        public override Value Handle(Expression expression, Dictionary<string, object> symbols)
         {
             var left = expression.Interpret(symbols);
             SetIndexer(left, symbols);
             return Perform(left);
         }
 
-        public Value Handle(Expression expression, Value value, Hashtable symbols)
+        public Value Handle(Expression expression, Value value, Dictionary<string, object> symbols)
         {
             var isSymbol = expression is SymbolExpression;
             var symbolName = string.Empty;
@@ -88,7 +88,7 @@ namespace YAMP
             return base.ToString() + Environment.NewLine + _content.ToString();
         }
 
-        void SetIndexer(Value left, Hashtable symbols)
+        void SetIndexer(Value left, Dictionary<string, object> symbols)
         {
             _indexer = new _Function(left);
             _indexer.Perform(_content.Interpret(symbols));
