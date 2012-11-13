@@ -27,7 +27,7 @@ namespace YAMP
 
         public abstract Value CreateDefaultValue();
 
-        public override Value Interpret(Hashtable symbols)
+        public override Value Interpret(Dictionary<string, object> symbols)
         {
             if (Tree == null)
                 return CreateDefaultValue();

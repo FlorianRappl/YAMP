@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace YAMP
 {
@@ -12,7 +13,7 @@ namespace YAMP
             _child = child;
         }
 
-        public override Value Handle(Expression left, Expression right, Hashtable symbols)
+        public override Value Handle(Expression left, Expression right, Dictionary<string, object> symbols)
         {
             var bottom = _child.Handle(left, right, symbols);
             return Assign(left, bottom, symbols);

@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace YAMP
 {
@@ -106,7 +107,7 @@ namespace YAMP
 
         #region Methods
 
-        internal void Interpret(Hashtable values)
+        internal void Interpret(Dictionary<string, object> values)
         {
             if (Interpreter.Expressions.Length > 0)
             {

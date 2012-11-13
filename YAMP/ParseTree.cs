@@ -227,7 +227,7 @@ namespace YAMP
             }
 		}
 
-        internal Value Interpret(Hashtable symbols)
+        internal Value Interpret(Dictionary<string, object> symbols)
         {
             if (Operator != null)
                 return Operator.Evaluate(Expressions, symbols);

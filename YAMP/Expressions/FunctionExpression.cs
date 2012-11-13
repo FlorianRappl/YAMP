@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 using System.Text.RegularExpressions;
@@ -26,7 +27,7 @@ namespace YAMP
             return new FunctionExpression(query, match);
         }
 		
-		public override Value Interpret(Hashtable symbols)
+		public override Value Interpret(Dictionary<string, object> symbols)
 		{
 			var val = _child.Interpret(symbols);
 			return _func.Perform(Context, val);

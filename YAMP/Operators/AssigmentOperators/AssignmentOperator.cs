@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace YAMP
 {
@@ -25,7 +26,7 @@ namespace YAMP
             return new AssignmentOperator(query.Context);
         }
 
-        public override Value Handle(Expression left, Expression right, Hashtable symbols)
+        public override Value Handle(Expression left, Expression right, Dictionary<string, object> symbols)
         {
             var bottom = right.Interpret(symbols);
 			return Assign(left, bottom, symbols);
@@ -35,8 +36,8 @@ namespace YAMP
 		{
 			return right;
 		}
-		
-		protected Value Assign(Expression left, Value value, Hashtable symbols)
+
+        protected Value Assign(Expression left, Value value, Dictionary<string, object> symbols)
 		{
 			if (left is SymbolExpression)
                 return Assign(left as SymbolExpression, value);

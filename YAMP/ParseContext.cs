@@ -475,7 +475,7 @@ namespace YAMP
         /// The volatile variables to consider.
         /// </param>
         /// <returns>The current context.</returns>
-        public QueryContext Run(string query, Hashtable variables)
+        public QueryContext Run(string query, Dictionary<string, object> variables)
         {
             var parser = Parser.Parse(this, query);
             parser.Execute(variables);
@@ -524,7 +524,7 @@ namespace YAMP
         /// The function that should be invoked after the Value has been computed.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext RunAsync(string query, Hashtable variables, Action<QueryContext, Exception> continuation)
+        public ParseContext RunAsync(string query, Dictionary<string, object> variables, Action<QueryContext, Exception> continuation)
         {
             Parser.ExecuteAsync(this, query, variables, continuation);
             return this;

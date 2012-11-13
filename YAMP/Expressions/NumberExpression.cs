@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Collections;
 using System.Text.RegularExpressions;
@@ -24,7 +25,7 @@ namespace YAMP
             return new NumberExpression(query, match);
         }
 		
-		public override Value Interpret (Hashtable symbols)
+		public override Value Interpret (Dictionary<string, object> symbols)
 		{
 			var real = 0.0;
 			var imag = 0.0;

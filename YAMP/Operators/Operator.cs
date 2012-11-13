@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 
@@ -119,7 +120,7 @@ namespace YAMP
             _dependency = dependency;
         }
 		
-		public abstract Value Evaluate(Expression[] expressions, Hashtable symbols);
+		public abstract Value Evaluate(Expression[] expressions, Dictionary<string, object> symbols);
 
 		#region IRegisterToken implementation
 		

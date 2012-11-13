@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Collections;
 
@@ -66,7 +67,7 @@ namespace YAMP
         /// </summary>
         /// <param name="symbols">The symbols to consider.</param>
         /// <returns>The value of this tree expression.</returns>
-        public override Value Interpret(Hashtable symbols)
+        public override Value Interpret(Dictionary<string, object> symbols)
         {
             return Tree.Interpret(symbols);
         }

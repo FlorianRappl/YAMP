@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace YAMP
@@ -26,7 +27,7 @@ namespace YAMP
             return new SpecialExpression(query, match);
         }
 		
-		public override Value Interpret (Hashtable symbols)
+		public override Value Interpret (Dictionary<string, object> symbols)
 		{
 			if(SpecialName.Equals(":"))
 				return new RangeValue();
