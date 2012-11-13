@@ -171,7 +171,7 @@ namespace YAMP
         /// <param name="continuation">
         /// The continuation action to invoke after the evaluation finished.
         /// </param>
-        public static void ExecuteAsync(string input, Hashtable variables, Action<QueryContext, Exception> continuation)
+        public static void ExecuteAsync(string input, Dictionary<string, object> variables, Action<QueryContext, Exception> continuation)
         {
             ExecuteAsync(ParseContext.Default, input, variables, continuation);
         }
@@ -191,7 +191,7 @@ namespace YAMP
         /// <param name="continuation">
         /// The continuation action to invoke after the evaluation finished.
         /// </param>
-        public static void ExecuteAsync(ParseContext context, string input, Hashtable variables, Action<QueryContext, Exception> continuation)
+        public static void ExecuteAsync(ParseContext context, string input, Dictionary<string, object> variables, Action<QueryContext, Exception> continuation)
         {
             var worker = new AsyncTask();
             worker.Continuation = continuation;
@@ -205,7 +205,7 @@ namespace YAMP
             var parameters = e.Argument as object[];
             var context = parameters[0] as ParseContext;
             var input = parameters[1] as string;
-            var variables = parameters[2] as Hashtable;
+            var variables = parameters[2] as Dictionary<string, object>;
             var parser = new Parser(context, new QueryContext(input));
             parser.Execute(variables);
             e.Result = parser.Context;
@@ -259,17 +259,17 @@ namespace YAMP
         /// <returns>The value from the evaluation.</returns>
 		public Value Execute()
 		{
-			return Execute(new Hashtable());
+            return Execute(new Dictionary<string, object>());
 		}
 
-		/// <summary>
-		/// Execute the evaluation of this parser instance with external symbols.
-		/// </summary>
-		/// <param name="values">
-		/// The values in an Hashtable containing string (name), Value (value) pairs.
-		/// </param>
-        /// <returns>The value from the evaluation.</returns>
-		public Value Execute(Hashtable values)
+	    /// <summary>
+	    /// Execute the evaluation of this parser instance with external symbols.
+	    /// </summary>
+	    /// <param name="values">
+	    /// The values in an Hashtable containing string (name), Value (value) pairs.
+	    /// </param>
+	    /// <returns>The value from the evaluation.</returns>
+	    public Value Execute(Dictionary<string, object> values)
 		{
             _query.Interpret(values);
 			return _query.Output;
@@ -284,7 +284,7 @@ namespace YAMP
         /// <returns>The value from the evaluation.</returns>
 		public Value Execute(object values)
 		{
-			var symbols = new Hashtable();
+            var symbols = new Dictionary<string, object>();
 			
 			if(values != null)
 			{

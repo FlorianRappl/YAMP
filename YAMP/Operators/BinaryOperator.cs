@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace YAMP
 {
@@ -11,14 +12,14 @@ namespace YAMP
 		
 		public abstract Value Perform(Value left, Value right);
 
-        public virtual Value Handle(Expression left, Expression right, Hashtable symbols)
+        public virtual Value Handle(Expression left, Expression right, Dictionary<string, object> symbols)
         {
             var l = left.Interpret(symbols);
             var r = right.Interpret(symbols);
             return Perform(l, r);
         }
 		
-		public override Value Evaluate(Expression[] expressions, Hashtable symbols)
+		public override Value Evaluate(Expression[] expressions, Dictionary<string, object> symbols)
 		{
             if (expressions.Length != 2)
 				throw new ArgumentsException(Op, 2);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace YAMP
@@ -34,7 +35,7 @@ namespace YAMP
             return new UnaryExpression(query);
         }
 
-        public override Value Interpret(Hashtable symbols)
+        public override Value Interpret(Dictionary<string, object> symbols)
         {
             var birth = _child.Interpret(symbols);
 

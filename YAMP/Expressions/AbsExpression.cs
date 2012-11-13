@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 using System.Text.RegularExpressions;
@@ -24,7 +25,7 @@ namespace YAMP
             return new AbsExpression(query);
         }
 		
-		public override Value Interpret(Hashtable symbols)
+		public override Value Interpret(Dictionary<string, object> symbols)
 		{
 			return abs.Perform(base.Interpret(symbols));
 		}
