@@ -15,15 +15,15 @@ namespace YAMP
 			abs = new AbsFunction();
 		}
 
-        public AbsExpression(QueryContext query) : this()
-        {
-            Query = query;
-        }
+		public AbsExpression(QueryContext query) : this()
+		{
+			Query = query;
+		}
 
-        public override Expression Create(QueryContext query, Match match)
-        {
-            return new AbsExpression(query);
-        }
+		public override Expression Create(QueryContext query, Match match)
+		{
+			return new AbsExpression(query);
+		}
 		
 		public override Value Interpret(Dictionary<string, object> symbols)
 		{
