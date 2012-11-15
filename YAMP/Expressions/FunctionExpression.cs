@@ -8,26 +8,36 @@ namespace YAMP
 {
 	class FunctionExpression : Expression
 	{
+		#region Members
+
 		string _name;
 		BracketExpression _child;
-        IFunction _func;
-		
+		IFunction _func;
+
+		#endregion
+
+		#region ctors
+
 		public FunctionExpression() : base(@"[A-Za-z]+[A-Za-z0-9_]*\(.*\)")
 		{
 		}
 
 		public FunctionExpression(QueryContext query, Match match) : this()
 		{
-            Query = query;
+			Query = query;
 			mx = match;
 		}
 
+		#endregion
+
+		#region Methods
+
 		public override Expression Create(QueryContext query, Match match)
-        {
-            return new FunctionExpression(query, match);
-        }
-		
-		public override Value Interpret(Dictionary<string, object> symbols)
+		{
+			return new FunctionExpression(query, match);
+		}
+
+		public override Value Interpret(Dictionary<string, Value> symbols)
 		{
 			var val = _child.Interpret(symbols);
 			return _func.Perform(Context, val);
@@ -36,11 +46,13 @@ namespace YAMP
 		public override string Set(string input)
 		{
 			var sb = new StringBuilder();
-            var pos = input.IndexOf('(');
+			var pos = input.IndexOf('(');
 			_name = input.Substring(0, pos);
 			sb.Append(_name).Append("(");
-            _func = Context.FindFunction(_name);
-            _child = new ArgumentsBracketExpression(Query);
+			//_func = Context.FindVariableFunction(_name);
+			//if(_func == null)
+			_func = Context.FindFunction(_name);
+			_child = new ArgumentsBracketExpression(Query);
 			_child.Offset = Offset + pos;
 			input = _child.Set(input.Substring(pos));
 			sb.Append(_child.Input).Append(")");
@@ -60,6 +72,8 @@ namespace YAMP
 		{
 			SymbolExpression.SetFunctionPattern(Pattern);
 		}
+
+		#endregion
 	}
 }
 

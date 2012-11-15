@@ -2,6 +2,7 @@
 
 namespace YAMP
 {
+	[Kind(PopularKinds.Plot)]
     class XRangeFunction : PropertyFunction<MatrixValue>
     {
         public XRangeFunction()

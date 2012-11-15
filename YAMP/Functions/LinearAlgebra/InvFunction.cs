@@ -2,22 +2,22 @@ using System;
 
 namespace YAMP
 {
-    [Description("Inverts the given matrix.")]
-	class InvFunction : StandardFunction
+	[Description("Inverts the given matrix.")]
+	[Kind(PopularKinds.Function)]
+	class InvFunction : ArgumentFunction
 	{
-        [Description("Tries to find the inverse of the matrix, i.e. inv(A)=A^-1.")]
-        [Example("inv(0,2;1,0)", "Inverts the matrix (0,2;1,0), resulting in (0,1;0.5,0).")]
-		public override Value Perform (Value argument)
+		[Description("Finds the inverse of a given number.")]
+		[Example("inv(5)", "Inverts the number 5, resulting in 0.2.")]
+		public ScalarValue Function(ScalarValue argument)
 		{
-			if(argument is ScalarValue)
-				return 1.0 / (argument as ScalarValue);
-			else if (argument is MatrixValue)
-			{
-				var m = argument as MatrixValue;
-				return m.Inverse();
-			}
+			return 1.0 / argument;
+		}
 
-			throw new OperationNotSupportedException("inv", argument);
+		[Description("Tries to find the inverse of the matrix, i.e. inv(A)=A^-1.")]
+		[Example("inv([0,2;1,0])", "Inverts the matrix [0,2;1,0], resulting in [0,1;0.5,0].")]
+		public MatrixValue Function(MatrixValue argument)
+		{
+			return argument.Inverse();
 		}
 	}
 }

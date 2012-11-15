@@ -5,10 +5,11 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
-    [Description("Saves variables from memory in the filesystem.")]
+	[Description("Saves variables from memory in the filesystem.")]
+	[Kind(PopularKinds.System)]
     class SaveFunction : SystemFunction
 	{
-        public SaveFunction() : base(2)
+        public SaveFunction()
         {
         }
 
@@ -22,6 +23,7 @@ namespace YAMP
 
         [Description("Saves the specified variables in the file.")]
         [Example("save(\"myfile.mat\", \"x\", \"y\")", "Saves the variables x and y in the file myfile.mat")]
+		[Arguments(1)]
         public StringValue Function(StringValue filename, ArgumentsValue args)
         {
             var workspace = new Dictionary<string, Value>();

@@ -16,16 +16,16 @@ namespace YAMP
 
 		public NumberExpression (QueryContext query, Match match) : this()
 		{
-            Query = query;
+			Query = query;
 			mx = match;
 		}
 
 		public override Expression Create(QueryContext query, Match match)
-        {
-            return new NumberExpression(query, match);
-        }
-		
-		public override Value Interpret (Dictionary<string, object> symbols)
+		{
+			return new NumberExpression(query, match);
+		}
+
+		public override Value Interpret(Dictionary<string, Value> symbols)
 		{
 			var real = 0.0;
 			var imag = 0.0;
@@ -33,7 +33,7 @@ namespace YAMP
 			if(_input[_input.Length - 1] == 'i')
 				imag = double.Parse(_input.Remove(_input.Length - 1), style, Context.NumberFormat);
 			else
-                real = double.Parse(_input, style, Context.NumberFormat);
+				real = double.Parse(_input, style, Context.NumberFormat);
 			
 			return new ScalarValue(real, imag);
 		}

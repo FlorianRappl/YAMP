@@ -2,10 +2,10 @@
 
 namespace YAMP
 {
+	[Kind(PopularKinds.Plot)]
     class YRangeFunction : PropertyFunction<MatrixValue>
     {
-        public YRangeFunction()
-            : base("YRange")
+        public YRangeFunction() : base("YRange")
         {
         }
 

@@ -3,7 +3,8 @@ using YAMP.Numerics;
 
 namespace YAMP
 {
-    [Description("Uses the conjugate gradient algorithm to solve a linear system of equations.")]
+	[Description("Uses the conjugate gradient algorithm to solve a linear system of equations.")]
+	[Kind(PopularKinds.Function)]
     class CGFunction : ArgumentFunction
     {
         [Description("Computes the solution vector x for a given matrix A and a source vector b.")]

@@ -2,6 +2,7 @@
 
 namespace YAMP
 {
+	[Kind(PopularKinds.Plot)]
     class YLabelFunction : PropertyFunction<StringValue>
     {
         public YLabelFunction(): base("YLabel")

@@ -10,7 +10,7 @@ namespace YAMP
 
 		public RangeOperator () : base(":", 200)
 		{
-            IsRightToLeft = true;
+			IsRightToLeft = true;
 		}
 		
 		public override Value Perform (Value left, Value right)
@@ -57,7 +57,7 @@ namespace YAMP
 			return new RangeValue(start, end, step);
 		}
 
-		public override Value Handle (Expression left, Expression right, Dictionary<string, object> symbols)
+		public override Value Handle(Expression left, Expression right, Dictionary<string, Value> symbols)
 		{
 			var l = left.Interpret(symbols);
 			var r = new StringValue(END) as Value;
@@ -65,7 +65,7 @@ namespace YAMP
 			if(!(right is SymbolExpression) || !((right as SymbolExpression).SymbolName.Equals(END)))
 				r = right.Interpret(symbols);
 
-   			return Perform(l, r);
+			return Perform(l, r);
 		}
 	}
 }

@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("Represents the round function to round up or down to the nearest integer.")]
+	[Description("Represents the round function to round up or down to the nearest integer.")]
+	[Kind(PopularKinds.Function)]
     class RoundFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

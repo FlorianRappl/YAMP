@@ -1,28 +1,28 @@
 /*
-    Copyright (c) 2012, Florian Rappl.
-    All rights reserved.
+	Copyright (c) 2012, Florian Rappl.
+	All rights reserved.
 
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-        * Redistributions of source code must retain the above copyright
-          notice, this list of conditions and the following disclaimer.
-        * Redistributions in binary form must reproduce the above copyright
-          notice, this list of conditions and the following disclaimer in the
-          documentation and/or other materials provided with the distribution.
-        * Neither the name of the YAMP team nor the names of its contributors
-          may be used to endorse or promote products derived from this
-          software without specific prior written permission.
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+		* Redistributions of source code must retain the above copyright
+		  notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright
+		  notice, this list of conditions and the following disclaimer in the
+		  documentation and/or other materials provided with the distribution.
+		* Neither the name of the YAMP team nor the names of its contributors
+		  may be used to endorse or promote products derived from this
+		  software without specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-    DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
@@ -34,26 +34,24 @@ using System.Reflection;
 
 namespace YAMP
 {
-    /// <summary>
-    /// Provides internal access to the tokens and handles the token registration and variable assignment.
-    /// </summary>
+	/// <summary>
+	/// Provides internal access to the tokens and handles the token registration and variable assignment.
+	/// </summary>
 	class Tokens
 	{
 		#region Members
 
-        IDictionary<string, Operator> operators;
-        IDictionary<Regex, Expression> expressions;
-        IDictionary<char, Transform> transforms;
+		IDictionary<string, Operator> operators;
+		IDictionary<Regex, Expression> expressions;
 		
 		#endregion
 
-        #region ctor
+		#region ctor
 
-        Tokens ()
+		Tokens ()
 		{
-            operators = new Dictionary<string, Operator>();
-            expressions = new Dictionary<Regex, Expression>();
-            transforms = new Dictionary<char, Transform>();
+			operators = new Dictionary<string, Operator>();
+			expressions = new Dictionary<Regex, Expression>();
 		}
 		
 		#endregion
@@ -63,190 +61,198 @@ namespace YAMP
 		void RegisterTokens()
 		{
 			var assembly = Assembly.GetExecutingAssembly();
-            RegisterAssembly(ParseContext.Default, assembly);
+			RegisterAssembly(ParseContext.Default, assembly);
 		}
 
-        /// <summary>
-        /// Registers the IFunction, IConstant and IRegisterToken token classes at the specified context.
-        /// </summary>
-        /// <param name="context">
-        /// The context where the IFunction and IConstant instances will be placed.
-        /// </param>
-        /// <param name="assembly">
-        /// The assembly to load.
-        /// </param>
-        public void RegisterAssembly(ParseContext context, Assembly assembly)
-        {
-            var types = assembly.GetTypes();
-            var ir = typeof(IRegisterToken).Name;
-            var fu = typeof(IFunction).Name;
-            var ct = typeof(IConstants).Name;
+		/// <summary>
+		/// Registers the IFunction, IConstant and IRegisterToken token classes at the specified context.
+		/// </summary>
+		/// <param name="context">
+		/// The context where the IFunction and IConstant instances will be placed.
+		/// </param>
+		/// <param name="assembly">
+		/// The assembly to load.
+		/// </param>
+		public void RegisterAssembly(ParseContext context, Assembly assembly)
+		{
+			var types = assembly.GetTypes();
+			var ir = typeof(IRegisterToken).Name;
+			var fu = typeof(IFunction).Name;
+			var ct = typeof(IConstants).Name;
 
-            foreach (var type in types)
-            {
-                if (type.IsAbstract)
-                    continue;
+			foreach (var type in types)
+			{
+				if (type.IsAbstract)
+					continue;
 
-                if (type.GetInterface(ir) != null)
-                {
-                    var ctor = type.GetConstructor(Type.EmptyTypes);
+				if (type.GetInterface(ir) != null)
+				{
+					var ctor = type.GetConstructor(Type.EmptyTypes);
 
-                    if(ctor != null)
-                        (ctor.Invoke(null) as IRegisterToken).RegisterToken();
-                }
+					if(ctor != null)
+						(ctor.Invoke(null) as IRegisterToken).RegisterToken();
+				}
 
-                if (type.GetInterface(fu) != null)
-                {
-                    var constructor = type.GetConstructor(Type.EmptyTypes);
+				if (type.GetInterface(fu) != null)
+				{
+					var ctor = type.GetConstructor(Type.EmptyTypes);
 
-                    if(constructor != null)
-                    {
-                        var name = type.Name.RemoveFunctionConvention().ToLower();
-                        var method = constructor.Invoke(null) as IFunction;
-                        context.AddFunction(name, method);
-                    }
-                }
+					if(ctor != null)
+					{
+						var name = type.Name.RemoveFunctionConvention().ToLower();
+						var method = ctor.Invoke(null) as IFunction;
+						context.AddFunction(name, method);
+					}
+				}
 
-                if (type.GetInterface(ct) != null)
-                {
-                    var props = type.GetProperties();
-                    var mycst = type.GetConstructor(Type.EmptyTypes).Invoke(null);
+				if (type.GetInterface(ct) != null)
+				{
+					var ctor = type.GetConstructor(Type.EmptyTypes);
 
-                    foreach (var prop in props)
-                    {
-                        if (prop.PropertyType.IsSubclassOf(typeof(Value)))
-                            context.AddConstant(prop.Name, prop.GetValue(mycst, null) as Value);
-                    }
-                }
-            }
-        }
+					if (ctor != null)
+					{
+						var instc = ctor.Invoke(null) as IConstants;
+						context.AddConstant(instc.Name, instc);
+					}
+				}
+			}
+		}
 		
 		#endregion
 
-        #region Add elements
-
-        public void AddTransform(char trigger, Transform transform)
-        {
-            transforms.Add(trigger, transform);
-        }
+		#region Add elements
 		
 		public void AddOperator(string pattern, Operator op)
 		{
 			operators.Add(pattern, op);
 		}
 
-        public void AddExpression(string pattern, Expression exp)
-        {
-            expressions.Add(new Regex("^" + pattern, RegexOptions.Singleline), exp);
-        }
+		public void AddExpression(string pattern, Expression exp)
+		{
+			expressions.Add(new Regex("^" + pattern, RegexOptions.Singleline), exp);
+		}
 		
 		#endregion
 
-        #region Find elements
+		#region Find elements
 
-        public Operator FindOperator(QueryContext context, Expression premise, string input)
+		/// <summary>
+		/// Finds the closest matching operator in a given dictionary of expressions and returns null when nothing is found.
+		/// </summary>
+		/// <param name="expressions">The pool of operators passed in a dictionary.</param>
+		/// <param name="context">The query's context.</param>
+		/// <param name="input">The current input.</param>
+		/// <returns>Operator that matches the beginning of the input string or null.</returns>
+		public static Operator FindOperator(IDictionary<string, Operator> operators, QueryContext context, string input)
 		{
 			var maxop = string.Empty;
 			var notfound = true;
 
-			foreach(var op in operators.Keys)
-            {
-                if (op.Length > input.Length)
-                    continue;
+			foreach (var op in operators.Keys)
+			{
+				if (op.Length > input.Length)
+					continue;
 
-				if(op.Length <= maxop.Length)
+				if (op.Length <= maxop.Length)
 					continue;
 
 				notfound = false;
 
-				for(var i = 0; i < op.Length; i++)
-					if(notfound = (input[i] != op[i]))
+				for (var i = 0; i < op.Length; i++)
+					if (notfound = (input[i] != op[i]))
 						break;
 
-                if (notfound == false)
-                    maxop = op;
+				if (notfound == false)
+					maxop = op;
 			}
 
-            if (maxop.Length == 0)
-            {
-                if (premise != null)
-                    maxop = premise.DefaultOperator;
+			if (maxop.Length == 0)
+				return null;
 
-                if(maxop.Length == 0)
-                    throw new ParseException(input);
-            }
-
-			return operators[maxop].Create(context, premise);
+			return operators[maxop].Create(context);
 		}
 
-        public Operator FindOperatorWithoutException(QueryContext context, Expression premise, string input)
-        {
-            try
-            {
-                return FindOperator(context, premise, input);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-		
-		public Expression FindExpression(QueryContext context, string input)
+		/// <summary>
+		/// Finds the closest matching operator in the available pool and returns null when nothing is found.
+		/// </summary>
+		/// <param name="context">The query's context.</param>
+		/// <param name="input">The current input.</param>
+		/// <returns>Operator that matches the beginning of the input string or null.</returns>
+		public static Operator FindAvailableOperator(QueryContext context, string input)
+		{
+			return FindOperator(Instance.operators, context, input);
+		}
+
+		/// <summary>
+		/// Finds the closest matching operator and throws and exception when nothing is found.
+		/// </summary>
+		/// <param name="context">The query's context.</param>
+		/// <param name="input">The current input.</param>
+		/// <returns>Operator that matches the beginning of the input string.</returns>
+		public Operator FindOperator(QueryContext context, string input)
+		{
+			var op = FindOperator(operators, context, input);
+
+			if (op == null)
+				throw new ParseException(input);
+
+			return op;
+		}
+
+		/// <summary>
+		/// Finds the closest matching expression in a given dictionary of expressions and returns null when nothing is found.
+		/// </summary>
+		/// <param name="expressions">The pool of expressions passed in a dictionary.</param>
+		/// <param name="context">The query's context.</param>
+		/// <param name="input">The current input.</param>
+		/// <returns>Expression that matches the beginning of the input string or null.</returns>
+		public static Expression FindExpression(IDictionary<Regex, Expression> expressions, QueryContext context, string input)
 		{
 			Match m = null;
 
-			foreach(var rx in expressions.Keys)
+			foreach (var rx in expressions.Keys)
 			{
 				m = rx.Match(input);
 
-				if(m.Success)
+				if (m.Success)
 					return expressions[rx].Create(context, m);
 			}
 
-            throw new ExpressionNotFoundException(input);
+			return null;
 		}
 
-        public Expression FindExpressionWithoutException(QueryContext context, string input)
-        {
-            try
-            {
-                return FindExpression(context, input);
-            }
-            catch
-            {
-                return null;
-            }
-        }
+		/// <summary>
+		/// Finds the closest matching expression in the available pool and returns null when nothing is found.
+		/// </summary>
+		/// <param name="context">The query's context.</param>
+		/// <param name="input">The current input.</param>
+		/// <returns>Expression that matches the beginning of the input string or null.</returns>
+		public static Expression FindAvailableExpression(QueryContext context, string input)
+		{
+			return FindExpression(Instance.expressions, context, input);
+		}
+		
+		/// <summary>
+		/// Finds the closest matching expression and throws and exception when nothing is found.
+		/// </summary>
+		/// <param name="context">The query's context.</param>
+		/// <param name="input">The current input.</param>
+		/// <returns>Expression that matches the beginning of the input string.</returns>
+		public Expression FindExpression(QueryContext context, string input)
+		{
+			var exp = FindExpression(expressions, context, input);
+
+			if(exp == null)
+				throw new ExpressionNotFoundException(input);
+
+			return exp;
+		}
 		
 		#endregion
 
-        #region Transform
+		#region Singleton
 
-        public bool Transform(QueryContext context, Expression premise, ref string input)
-        {
-            var key = input[0];
-
-            if (transforms.ContainsKey(key))
-            {
-                var transform = transforms[key];
-
-                if (transform.WillTransform(premise))
-                {
-                    input = input.Substring(1);
-                    input = transforms[key].Modify(context, input, premise);
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        #endregion
-
-        #region Singleton
-
-        static Tokens _instance;
+		static Tokens _instance;
 		
 		public static Tokens Instance
 		{
@@ -255,7 +261,7 @@ namespace YAMP
 				if(_instance == null)
 				{
 					_instance = new Tokens();
-                    _instance.RegisterTokens();
+					_instance.RegisterTokens();
 				}
 				
 				return _instance;
@@ -272,5 +278,5 @@ namespace YAMP
 		}
 		
 		#endregion
-    }
+	}
 }

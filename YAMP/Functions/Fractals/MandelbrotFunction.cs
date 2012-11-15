@@ -3,7 +3,8 @@ using YAMP.Numerics;
 
 namespace YAMP
 {
-    [Description("Calculates values within the Mandelbrot fractal.")]
+	[Description("Calculates values within the Mandelbrot fractal.")]
+	[Kind(PopularKinds.Function)]
     class MandelbrotFunction : ArgumentFunction
     {
         [Description("Calculates a point in the Mandelbrot fractal.")]

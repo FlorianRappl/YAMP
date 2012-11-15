@@ -56,6 +56,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Attributes\ArgumentsAttribute.cs" />
+    <Compile Include="Attributes\KindAttribute.cs" />
+    <Compile Include="Constants\AlphaConstant.cs" />
+    <Compile Include="Constants\BaseConstant.cs" />
+    <Compile Include="Constants\ContainerConstant.cs" />
+    <Compile Include="Constants\DeltaConstant.cs" />
+    <Compile Include="Constants\EConstant.cs" />
+    <Compile Include="Constants\GammaConstant.cs" />
+    <Compile Include="Constants\IConstant.cs" />
+    <Compile Include="Constants\PhiConstant.cs" />
+    <Compile Include="Constants\PiConstant.cs" />
     <Compile Include="Exceptions\ArgumentException.cs" />
     <Compile Include="Exceptions\ArgumentsException.cs" />
     <Compile Include="Exceptions\ArgumentTypeNotSupportedException.cs" />
@@ -64,13 +75,15 @@
     <Compile Include="Exceptions\YAMPException.cs" />
     <Compile Include="Expressions\ArgumentsBracketExpression.cs" />
     <Compile Include="Expressions\MatrixBracketExpression.cs" />
-    <Compile Include="Expressions\OrderedSetBracketExpression.cs" />
     <Compile Include="Expressions\TreeExpression.cs" />
     <Compile Include="Expressions\UnaryExpression.cs" />
     <Compile Include="Functions\ArgumentFunctions\SimpsFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\TrapzFunction.cs" />
     <Compile Include="Functions\ContainerFunction.cs" />
     <Compile Include="Functions\Fractals\MandelbrotFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\ModFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\ProductFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\SleepFunction.cs" />
     <Compile Include="Functions\SystemFunctions\TypeFunction.cs" />
     <Compile Include="Functions\SystemFunctions\_Function.cs" />
     <Compile Include="Functions\LinearAlgebra\CGFunction.cs" />
@@ -110,11 +123,21 @@
     <Compile Include="Functions\Visualization\Helpers\YRangeFunction.cs" />
     <Compile Include="Functions\Visualization\LogLogFunction.cs" />
     <Compile Include="Functions\Visualization\PlotFunction.cs" />
+    <Compile Include="Functions\Visualization\PolarFunction.cs" />
     <Compile Include="Functions\Visualization\SemiLogXFunction.cs" />
     <Compile Include="Functions\Visualization\SemiLogYFunction.cs" />
+    <Compile Include="Help\Documentation.cs" />
+    <Compile Include="Help\HelpEntry.cs" />
+    <Compile Include="Help\HelpExample.cs" />
+    <Compile Include="Help\HelpFunctionSection.cs" />
+    <Compile Include="Help\HelpFunctionUsage.cs" />
+    <Compile Include="Help\HelpSection.cs" />
+    <Compile Include="Help\HelpTopic.cs" />
     <Compile Include="Interfaces\IConstants.cs" />
+    <Compile Include="Interfaces\IIsIndex.cs" />
+    <Compile Include="Interfaces\IPointSeries.cs" />
     <Compile Include="Interfaces\ISign.cs" />
-    <Compile Include="Interfaces\ISupportsIndex.cs" />
+    <Compile Include="Interfaces\IHasIndex.cs" />
     <Compile Include="Numerics\Decompositions\CholeskyDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\DirectSolver.cs" />
     <Compile Include="Numerics\Integration\Integrator.cs" />
@@ -143,6 +166,7 @@
     <Compile Include="Operators\BinaryOperators\ArgumentsSeperatorOperator.cs" />
     <Compile Include="Operators\BinaryOperators\MatrixColumnOperator.cs" />
     <Compile Include="Operators\BinaryOperators\MatrixRowOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\ModuloOperator.cs" />
     <Compile Include="Operators\LogicOperators\LtEqOperator.cs" />
     <Compile Include="Operators\LogicOperators\GtEqOperator.cs" />
     <Compile Include="Operators\UnaryOperators\AdjungateOperator.cs" />
@@ -179,29 +203,33 @@
     <Compile Include="Functions\Trigonometric\TanFunction.cs" />
     <Compile Include="Functions\Trigonometric\TanhFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\ZerosFunction.cs" />
+    <Compile Include="Operators\UnaryOperators\StatementOperator.cs" />
     <Compile Include="ParseContext.cs" />
     <Compile Include="Parser.cs" />
-    <Compile Include="Providers\MatrixIndex.cs" />
+    <Compile Include="Parsers\ArgumentsParseTree.cs" />
+    <Compile Include="Parsers\MatrixParseTree.cs" />
+    <Compile Include="Parsers\RootParseTree.cs" />
+    <Compile Include="Providers\Index\MatrixIndex.cs" />
+    <Compile Include="Providers\Index\MultipleIndex.cs" />
     <Compile Include="Providers\PlotEventArgs.cs" />
     <Compile Include="Providers\VariableEventArgs.cs" />
     <Compile Include="Providers\ReadOnlyDictionary.cs" />
+    <Compile Include="Providers\Index\VectorIndex.cs" />
+    <Compile Include="Providers\YParameters.cs" />
     <Compile Include="QueryContext.cs" />
     <Compile Include="Expressions\Expression.cs" />
     <Compile Include="Providers\AsyncTask.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Providers\ConventionExtensions.cs" />
-    <Compile Include="Providers\DescriptionAttribute.cs" />
-    <Compile Include="Providers\ExampleAttribute.cs" />
-    <Compile Include="Transforms\ColonTransform.cs" />
-    <Compile Include="Transforms\MatrixRowTransform.cs" />
-    <Compile Include="Transforms\NewLineTransform.cs" />
-    <Compile Include="Transforms\SpaceTransform.cs" />
-    <Compile Include="Transforms\Transform.cs" />
+    <Compile Include="Attributes\DescriptionAttribute.cs" />
+    <Compile Include="Attributes\ExampleAttribute.cs" />
     <Compile Include="Values\Numeric\NumericValue.cs" />
     <Compile Include="Values\Plots\Plot2DValue.cs" />
     <Compile Include="Values\Plots\Plot3DValue.cs" />
     <Compile Include="Values\Plots\PlotValue.cs" />
+    <Compile Include="Values\Plots\Points.cs" />
+    <Compile Include="Values\Plots\PointSymbol.cs" />
     <Compile Include="Values\Value.cs" />
     <Compile Include="Values\Numeric\ScalarValue.cs" />
     <Compile Include="Exceptions\DimensionException.cs" />
@@ -220,7 +248,7 @@
     <Compile Include="Exceptions\OperationNotSupportedException.cs" />
     <Compile Include="Interfaces\IRegisterToken.cs" />
     <Compile Include="Operators\BinaryOperators\MinusOperator.cs" />
-    <Compile Include="ParseTree.cs" />
+    <Compile Include="Parsers\ParseTree.cs" />
     <Compile Include="Interfaces\IFunction.cs" />
     <Compile Include="Functions\StandardFunctions\CeilFunction.cs" />
     <Compile Include="Exceptions\FunctionNotFoundException.cs" />
@@ -231,14 +259,11 @@
     <Compile Include="Functions\StandardFunctions\AbsFunction.cs" />
     <Compile Include="Expressions\AbsExpression.cs" />
     <Compile Include="Functions\StandardFunctions\SqrtFunction.cs" />
-    <Compile Include="Providers\Constants.cs" />
     <Compile Include="Operators\UnaryOperators\FactorialOperator.cs" />
-    <Compile Include="Operators\BinaryOperators\CommaOperator.cs" />
     <Compile Include="Functions\FunctionDelegate.cs" />
     <Compile Include="Functions\StandardFunctions\LnFunction.cs" />
     <Compile Include="Functions\StandardFunctions\LogFunction.cs" />
     <Compile Include="Values\Numeric\MatrixValue.cs" />
-    <Compile Include="Operators\BinaryOperators\ColonOperator.cs" />
     <Compile Include="Operators\UnaryOperators\TransposeOperator.cs" />
     <Compile Include="Operators\AssigmentOperators\AssignmentOperator.cs" />
     <Compile Include="Exceptions\AssignmentException.cs" />
@@ -267,6 +292,7 @@
     <Compile Include="Operators\LogicOperators\NeqOperator.cs" />
     <Compile Include="Operators\LogicOperators\EqOperator.cs" />
     <Compile Include="Operators\LogicOperator.cs" />
+    <Compile Include="Exceptions\WrongArgumentsException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

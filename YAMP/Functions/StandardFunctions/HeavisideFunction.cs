@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("Represents the heaviside step function.")]
+	[Description("Represents the heaviside step function.")]
+	[Kind(PopularKinds.Function)]
     class HeavisideFunction : StandardFunction
     {
         [Description("Returns 0 for values smaller or equal to 0, else 1.")]

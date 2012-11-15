@@ -2,139 +2,79 @@
 using System.Text;
 using System.Linq;
 using System.Reflection;
+using YAMP.Help;
 
 namespace YAMP
 {
-    [Description("Shows detailled help for all functions.")]
+	[Description("Shows detailled help for various topics.")]
+	[Kind(PopularKinds.System)]
     class HelpFunction : SystemFunction
     {
         const string SPACING = "   ";
 
-        [Description("Shows a list of all out-of-the-box provided functions.")]
-        [Example("help()", "Lists all functions.")]
+        [Description("Shows a list of all out-of-the-box provided help topics.")]
+        [Example("help()", "Lists all available help topics.")]
         public StringValue Function()
         {
             var sb = new StringBuilder();
-            var methods = Context.AllFunctions.Select(m => m.Key).OrderBy(m => m).AsEnumerable();
+			var list = Documentation.Overview(Context);
 
-            foreach (var method in methods)
-                sb.Append(method).AppendLine(":").AppendLine(GetDescription(Context.FindFunction(method).GetType(), false));
+			foreach(var entry in list)
+			{
+				sb.Append(" ").AppendLine(entry.Kind).AppendLine("--------------");
+
+				foreach (var item in entry)
+					sb.Append("--> ").AppendLine(item.Name);
+
+				sb.AppendLine();
+			}
 
             return new StringValue(sb.ToString());
         }
 
-        [Description("Shows detailled help for a specific function.")]
+        [Description("Shows detailled help for a specific topic.")]
         [Example("help(\"help\")", "You already typed that in!")]
         [Example("help(\"sin\")", "Shows the detailled help for the sinus function.")]
-        public StringValue Function(StringValue method)
+        public StringValue Function(StringValue topic)
         {
-            var sb = new StringBuilder();
-            var func = method.Value.ToLower();
-            var element = Context.AllFunctions.Where(m => m.Key.Equals(func, StringComparison.InvariantCultureIgnoreCase)).Select(m => m.Value.GetType()).FirstOrDefault();
+			var docu = Documentation.Create(Context);
 
-            if (element == null)
-                throw new FunctionNotFoundException(method.Value);
+			if (docu.ContainsEntry(topic.Value))
+			{
+				var entry = docu.Get(topic.Value);
+				var sb = new StringBuilder();
 
-            sb.AppendLine(GetDescription(element));
-            var functions = element.GetMethods();
+				sb.Append(" ").AppendLine(entry.Name).AppendLine("--------------");
 
-            foreach (var function in functions)
-            {
-                if (element.IsSubclassOf(typeof(ArgumentFunction)))
-                {
-                    if (function.Name.IsArgumentFunction())
-                    {
-                        sb.AppendLine("Usage:");
-                        sb.Append(SPACING).Append(func).Append("(");
-                        var length = function.GetParameters().Length;
-                        var s = new string[length];
+				sb.AppendLine().AppendLine("Description:").Append("\t").AppendLine(entry.Description);
 
-                        for (var i = 0; i < length; )
-                            s[i] = "x" + (++i);
+				if (entry is HelpFunctionSection)
+				{
+					var fe = entry as HelpFunctionSection;
 
-                        sb.Append(string.Join(",", s));
-                        sb.AppendLine(")");
-                        sb.Append(GetDescription(function));
-                        sb.Append(GetMethodSignature(function));
-                        sb.AppendLine(GetMethodExample(function));
-                    }
-                }
-                else if(function.Name.Equals("Perform"))
-                {
-                    sb.AppendLine("Usage:");
-                    sb.Append(SPACING).Append(func).AppendLine("(x)");
-                    sb.Append(GetDescription(function));
-                    sb.Append(GetMethodSignature(function));
-                    sb.AppendLine(GetMethodExample(function));
-                }
-            }
+					foreach (var usage in fe.Usages)
+					{
+						var i = 1;
+						sb.AppendLine();
+						sb.AppendLine("** Usage **").Append("\t").AppendLine(usage.Usage);
+						sb.AppendLine("** Description **").Append("\t").AppendLine(usage.Description);
+						sb.AppendLine("** Arguments **").Append("\t").AppendLine(string.Join(", ", usage.Arguments.ToArray()));
+						sb.AppendLine("** Returns **").Append("\t").AppendLine(usage.Returns);
 
-            return new StringValue(sb.ToString());
-        }
+						foreach(var example in usage.Examples)
+						{
+							sb.AppendFormat(" ({0}) Example:", i).AppendLine();
+							sb.Append("\t").Append("-> Call: ").AppendLine(example.Example);
+							sb.Append("\t").Append("-> Description: ").AppendLine(example.Description);
+							i++;
+						}
+					}
+				}
 
-        string GetMethodExample(MemberInfo function)
-        {
-            var sb = new StringBuilder();
-            var objects = function.GetCustomAttributes(typeof(ExampleAttribute), false);
-            sb.AppendLine("Example(s):");
-            var index = 1;
-
-            if (objects.Length == 0)
-                sb.Append(SPACING).AppendLine("No example available.");
-
-            foreach (ExampleAttribute attribute in objects)
-            {
-                sb.Append(SPACING).Append(index++).AppendLine(", example:");
-                sb.Append(SPACING).Append(SPACING).AppendLine(attribute.Example);
-
-                if (!string.IsNullOrEmpty(attribute.Description))
-                {
-                    sb.Append(SPACING).Append(SPACING).AppendLine("Description:");
-                    sb.Append(SPACING).Append(SPACING).AppendLine(attribute.Description);
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        string GetMethodSignature(MethodInfo function, bool heading = true)
-        {
-            var sb = new StringBuilder();
-
-            sb.AppendLine("Returns:");
-            sb.Append(SPACING).AppendLine(ModifyValueType(function.ReturnType));
-            sb.AppendLine("Argument(s):");
-            var args = function.GetParameters();
-
-            if (args.Length == 0)
-                sb.Append(SPACING).AppendLine("No arguments required.");
-            
-            foreach (var arg in args)
-                sb.Append(SPACING).AppendLine(ModifyValueType(arg.ParameterType));
-
-            return sb.ToString();
-        }
-
-        string GetDescription(MemberInfo element, bool heading = true)
-        {
-            var sb = new StringBuilder();
-            var objects = element.GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-            if(heading)
-                sb.AppendLine("Description:");
-
-            if (objects.Length == 0)
-                sb.Append(SPACING).AppendLine("No description available.");
-            else
-                foreach (DescriptionAttribute attribute in objects)
-                    sb.Append(SPACING).AppendLine(attribute.Description);
-
-            return sb.ToString();
-        }
-
-        string ModifyValueType(Type type)
-        {
-            return type.Name.RemoveValueConvention();
+				return new StringValue(sb.ToString());
+			}
+			else
+				return new StringValue(string.Format("The specified entry was not found. Did you mean {0}?", docu.ClosestEntry(topic.Value)));
         }
     }
 }

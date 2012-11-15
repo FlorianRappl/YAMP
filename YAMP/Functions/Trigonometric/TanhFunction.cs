@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("The standard tanh(x) function, which is sinh(x) / cosh(x).")]
+	[Description("The standard tanh(x) function, which is sinh(x) / cosh(x).")]
+	[Kind(PopularKinds.Function)]
     class TanhFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("Generates a matrix with only ones.")]
+	[Description("Generates a matrix with only ones.")]
+	[Kind(PopularKinds.Function)]
     class OnesFunction : ArgumentFunction
     {
         [Description("Generates a 1x1 matrix.")]

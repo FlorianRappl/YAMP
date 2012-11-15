@@ -2,27 +2,26 @@
 
 namespace YAMP
 {
-    class MatrixRowOperator : ColonOperator
-    {
-        public MatrixRowOperator()
-        {
-            SetDependency(typeof(MatrixBracketExpression));
-        }
+	class MatrixRowOperator : BinaryOperator
+	{
+		public MatrixRowOperator() : base(";", 1)
+		{
+		}
 
-        public override Value Perform(Value left, Value right)
-        {
-            if (!(left is NumericValue))
-                throw new OperationNotSupportedException(";", left);
+		public override Value Perform(Value left, Value right)
+		{
+			if (!(left is NumericValue))
+				throw new OperationNotSupportedException(";", left);
 
-            if (!(right is NumericValue))
-                throw new OperationNotSupportedException(";", right);
+			if (!(right is NumericValue))
+				throw new OperationNotSupportedException(";", right);
 
-            return MatrixValue.Create(left).AddRow(right);
-        }
+			return MatrixValue.Create(left).AddRow(right);
+		}
 
-        public override void RegisterToken()
-        {
-            operators.Add(this);
-        }  
-    }
+		public override void RegisterToken()
+		{
+			MatrixParseTree.Register(this);
+		}  
+	}
 }

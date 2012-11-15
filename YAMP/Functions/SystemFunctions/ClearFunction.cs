@@ -2,10 +2,11 @@
 
 namespace YAMP
 {
-    [Description("Deletes variables from memory.")]
+	[Description("Deletes variables from memory.")]
+	[Kind(PopularKinds.System)]
     class ClearFunction : SystemFunction
     {
-        public ClearFunction() : base(1)
+        public ClearFunction()
         {
         }
 
@@ -27,6 +28,7 @@ namespace YAMP
         [Description("Clears the specified variables given with their names as strings.")]
         [ExampleAttribute("clear(\"x\")", "Deletes the variable x.")]
         [ExampleAttribute("clear(\"x\", \"y\", \"z\")", "Deletes the variables x, y and z.")]
+		[Arguments(0)]
         public StringValue Function(ArgumentsValue args)
         {
             var count = 0;

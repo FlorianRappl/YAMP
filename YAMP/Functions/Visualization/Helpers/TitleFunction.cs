@@ -2,6 +2,7 @@
 
 namespace YAMP
 {
+	[Kind(PopularKinds.Plot)]
     class TitleFunction : PropertyFunction<StringValue>
     {
         public TitleFunction() : base("Title")

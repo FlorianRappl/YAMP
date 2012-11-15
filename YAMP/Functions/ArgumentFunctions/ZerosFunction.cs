@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("Generates a matrix with only zeros.")]
+	[Description("Generates a matrix with only zeros.")]
+	[Kind(PopularKinds.Function)]
     class ZerosFunction : ArgumentFunction
     {
         [Description("Generates a 1x1 matrix.")]

@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("The inverse of the sin(x) function.")]
+	[Description("The inverse of the sin(x) function.")]
+	[Kind(PopularKinds.Function)]
     class ArcsinFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

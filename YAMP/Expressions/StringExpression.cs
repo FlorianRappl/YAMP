@@ -12,12 +12,12 @@ namespace YAMP
 		{
 		}
 
-        public override Expression Create(QueryContext query, Match match)
-        {
-            return new StringExpression();
-        }
-		
-		public override Value Interpret (Dictionary<string, object> symbols)
+		public override Expression Create(QueryContext query, Match match)
+		{
+			return new StringExpression();
+		}
+
+		public override Value Interpret(Dictionary<string, Value> symbols)
 		{
 			return new StringValue(_input);
 		}

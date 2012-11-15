@@ -7,29 +7,28 @@ using System.Text.RegularExpressions;
 namespace YAMP
 {
 	public abstract class Expression : IRegisterToken
-    {
-        #region Members
+	{
+		#region Members
 
-        string _pattern;
-        protected string _input;
+		string _pattern;
+		protected string _input;
 		protected Match mx;
-        int _offset;
+		int _offset;
 
-        #endregion
+		#endregion
 
-        #region ctor
+		#region ctor
 
-        public Expression(string pattern)
-        {
-            DefaultOperator = string.Empty;
-            _pattern = pattern;
-        }
+		public Expression(string pattern)
+		{
+			_pattern = pattern;
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        internal string Pattern
+		internal string Pattern
 		{
 			get { return _pattern; }
 		}
@@ -50,46 +49,40 @@ namespace YAMP
 			get { return _input; }
 		}
 
-        public string DefaultOperator { get; set; }
+		public ParseContext Context { get { return Query.Context; } }
 
-        public ParseContext Context { get { return Query.Context; } }
+		public QueryContext Query { get; protected set; }
 
-        public QueryContext Query { get; protected set; }
+		#endregion
 
-        #endregion
+		#region Methods
 
-        #region Methods
-
-        public Value Interpret()
+		public Value Interpret()
 		{
-            return Interpret(new Dictionary<string, object>());
+			return Interpret(new Dictionary<string, Value>());
 		}
 		
-		public abstract Value Interpret(Dictionary<string, object> symbols);
+		public abstract Value Interpret(Dictionary<string, Value> symbols);
 
-        public abstract Expression Create(QueryContext query, Match match);
+		public abstract Expression Create(QueryContext query, Match match);
 
-        public virtual string Set(string input)
+		public virtual string Set(string input)
 		{
 			_input = mx.Value;
 			return input.Substring(_input.Length);
 		}
-
-		#region IRegisterToken implementation
 		
 		public virtual void RegisterToken ()
 		{
 			Tokens.Instance.AddExpression(_pattern, this);
 		}
-		
-		#endregion
-		
+
 		public override string ToString ()
 		{
 			return string.Format ("[ Expression : {0} ]", _input);
-        }
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }
 
