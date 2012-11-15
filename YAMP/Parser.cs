@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace YAMP
 {
@@ -191,12 +192,28 @@ namespace YAMP
 		/// </param>
 		public static void ExecuteAsync(ParseContext context, string input, Dictionary<string, object> variables, Action<QueryContext, Exception> continuation)
 		{
+#if PORTABLE
+		    System.Threading.Tasks.Task.Factory.StartNew<QueryContext>(taskInitialized, new object[] { context, input, variables })
+		        .ContinueWith(task => continuation(task.Result, task.Exception));
+		}
+
+        static QueryContext taskInitialized(object state)
+        {
+            var parameters = state as object[];
+            var context = parameters[0] as ParseContext;
+            var input = parameters[1] as string;
+            var variables = parameters[2] as Dictionary<string, object>;
+            var parser = new Parser(context, new QueryContext(input));
+            parser.Execute(variables);
+            return parser.Context;
+        }
+#else
 			var worker = new AsyncTask();
 			worker.Continuation = continuation;
 			worker.RunWorkerAsync(new object[] { context, input, variables });
 			worker.DoWork += new DoWorkEventHandler(taskInitialized);
 			worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(taskCompleted);
-		}
+        }
 
 		static void taskInitialized(object sender, DoWorkEventArgs e)
 		{
@@ -214,12 +231,13 @@ namespace YAMP
 			var worker = sender as AsyncTask;
 			worker.Continuation(e.Result as QueryContext, e.Error);
 		}
+#endif
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
+        /// <summary>
 		/// Gets the context of the current parser instance (expression, value, ...).
 		/// </summary>
 		/// <value>
@@ -584,12 +602,18 @@ namespace YAMP
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
-			sb.Append("YAMP == VERSION ").Append(Assembly.GetExecutingAssembly().GetName().Version).AppendLine(" ==");
+			sb.Append("YAMP == VERSION ").Append(GetVersion(Assembly.GetExecutingAssembly().FullName)).AppendLine(" ==");
 			//sb.Append("YAMP [ input = ").Append(_query.Original).AppendLine(" ]");
 			//sb.AppendLine("--------------");
 			sb.Append(_query);
 			return sb.ToString();
 		}
+
+        private static string GetVersion(string fullAssemblyName)
+        {
+            var match = Regex.Match(fullAssemblyName, @"\d{1,}.\d{1,}.\d{1,}.\d{1,}");
+            return match.Success ? match.Value : String.Empty;
+        }
 
 		#endregion
 	}

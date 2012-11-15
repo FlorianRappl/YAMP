@@ -105,7 +105,7 @@ namespace YAMP
 			{
 				if (v is StringValue)
 				{
-					s.Symbol = (PointSymbol)TypeDescriptor.GetConverter(typeof(PointSymbol)).ConvertFromString((v as StringValue).Value);
+                    s.Symbol = (PointSymbol)Enum.Parse(typeof(PointSymbol), (v as StringValue).Value, false);
 					return null;
 				}
 

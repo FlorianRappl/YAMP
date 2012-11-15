@@ -68,52 +68,52 @@ namespace YAMP
 
 		public override byte[] Serialize ()
 		{
-			var ms = new System.IO.MemoryStream();
-			var len = BitConverter.GetBytes(_values.Count);
-			ms.Write(len, 0, len.Length);
+		    byte[] content;
+            using (var ms = new System.IO.MemoryStream())
+            {
+                var len = BitConverter.GetBytes(_values.Count);
+                ms.Write(len, 0, len.Length);
 
-			foreach(var value in _values)
-			{
-				var idx = Encoding.ASCII.GetBytes(value.Header);
-				len = BitConverter.GetBytes(idx.Length);
-				ms.Write(len, 0, len.Length);
-				ms.Write(idx, 0, idx.Length);
-				var entry = value.Serialize();
-				len = BitConverter.GetBytes(entry.Length);
-				ms.Write(len, 0, len.Length);
-				ms.Write(entry, 0, entry.Length);
-			}
+                foreach (var value in _values)
+                {
+                    var idx = Encoding.UTF8.GetBytes(value.Header);
+                    len = BitConverter.GetBytes(idx.Length);
+                    ms.Write(len, 0, len.Length);
+                    ms.Write(idx, 0, idx.Length);
+                    var entry = value.Serialize();
+                    len = BitConverter.GetBytes(entry.Length);
+                    ms.Write(len, 0, len.Length);
+                    ms.Write(entry, 0, entry.Length);
+                }
 
-			var content = ms.ToArray();
-			ms.Close();
-			ms.Dispose();
-			return content;
+                content = ms.ToArray();
+            }
+		    return content;
 		}
 
 		public override Value Deserialize (byte[] content)
 		{
-			var ms = new System.IO.MemoryStream(content);
-			var buffer = new byte[4];
-			ms.Read(buffer, 0, buffer.Length);
-			var count = BitConverter.ToInt32 (buffer, 0);
+            using (var ms = new System.IO.MemoryStream(content))
+            {
+                var buffer = new byte[4];
+                ms.Read(buffer, 0, buffer.Length);
+                var count = BitConverter.ToInt32(buffer, 0);
 
-			for(var i = 0; i < count; i++)
-			{
-				ms.Read(buffer, 0, buffer.Length);
-				var length = BitConverter.ToInt32 (buffer, 0);
-				var stringBuffer = new byte[length];
-				ms.Read(stringBuffer, 0, stringBuffer.Length);
-				var name = Encoding.ASCII.GetString(stringBuffer);
-				ms.Read(buffer, 0, buffer.Length);
-				length = BitConverter.ToInt32 (buffer, 0);
-				var contentBuffer = new byte[length];
-				ms.Read(contentBuffer, 0, contentBuffer.Length);
-				_values.Add(Value.Deserialize(name, contentBuffer));
-			}
-
-			ms.Close();
-			ms.Dispose();
-			return this;
+                for (var i = 0; i < count; i++)
+                {
+                    ms.Read(buffer, 0, buffer.Length);
+                    var length = BitConverter.ToInt32(buffer, 0);
+                    var stringBuffer = new byte[length];
+                    ms.Read(stringBuffer, 0, stringBuffer.Length);
+                    var name = Encoding.UTF8.GetString(stringBuffer, 0, stringBuffer.Length);
+                    ms.Read(buffer, 0, buffer.Length);
+                    length = BitConverter.ToInt32(buffer, 0);
+                    var contentBuffer = new byte[length];
+                    ms.Read(contentBuffer, 0, contentBuffer.Length);
+                    _values.Add(Deserialize(name, contentBuffer));
+                }
+            }
+		    return this;
 		}
 
 		#endregion

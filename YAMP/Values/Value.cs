@@ -73,7 +73,7 @@ namespace YAMP
 			{
 				if(target.Name.Equals(name))
 				{
-					var value = target.GetConstructor(Type.EmptyTypes).Invoke(null) as Value;
+                    var value = target.GetConstructor(new Type[0]).Invoke(null) as Value;
 					return value.Deserialize(content);
 				}
 			}
