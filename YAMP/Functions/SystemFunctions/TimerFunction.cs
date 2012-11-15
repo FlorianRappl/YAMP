@@ -1,18 +1,24 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace YAMP
 {
 	[Description("Gives access to a stopwatch with milliseconds precision.")]
 	[Kind(PopularKinds.System)]
-	class TimerFunction : SystemFunction
+	public class TimerFunction : SystemFunction
 	{
-		static Stopwatch timer = new Stopwatch();
+	    private int _startMilliSecs;
+	    private int _elapsedMilliSecs;
+	    private bool _isRunning;
+
+        public TimerFunction()
+        {
+            Reset();
+        }
 
 		[Description("Outputs the current value of the stopwatch in milliseconds.")]
 		public ScalarValue Function()
 		{
-			return new ScalarValue(timer.ElapsedMilliseconds);
+			return new ScalarValue(_elapsedMilliSecs);
 		}
 
 		[Description("Controls the stopwatch and outputs the current value of the stopwatch in milliseconds.")]
@@ -24,13 +30,13 @@ namespace YAMP
 			switch (a.IntValue)
 			{
 				case -1:
-					timer.Reset();
-					goto case 0;
+					Reset();
+					break;
 				case 0:
-					timer.Stop();
+					Stop();
 					break;
 				case 1:
-					timer.Start();
+					Start();
 					break;
 			}
 
@@ -46,17 +52,38 @@ namespace YAMP
 			switch (a.Value.ToLower())
 			{
 				case "reset":
-					timer.Reset();
-					goto case "stop";
+					Reset();
+					break;
 				case "stop":
-					timer.Stop();
+					Stop();
 					break;
 				case "start":
-					timer.Start();
+					Start();
 					break;
 			}
 
 			return Function();
 		}
+
+        private void Reset()
+        {
+            _elapsedMilliSecs = 0;
+            _isRunning = false;
+            _startMilliSecs = 0;
+        }
+
+        private void Stop()
+        {
+            if (!_isRunning) return;
+            _elapsedMilliSecs += Environment.TickCount - _startMilliSecs;
+            _isRunning = false;
+        }
+
+        private void Start()
+        {
+            if (_isRunning) return;
+            _startMilliSecs = Environment.TickCount;
+            _isRunning = true;
+        }
 	}
 }
