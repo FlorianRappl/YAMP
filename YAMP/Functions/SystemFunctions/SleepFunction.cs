@@ -6,17 +6,17 @@ namespace YAMP
 	[Kind(PopularKinds.System)]
 	class SleepFunction : SystemFunction
 	{
-	    private readonly StringValue _start = new StringValue("start");
-        private readonly StringValue _stop = new StringValue("stop");
+	    private static readonly StringValue Start = new StringValue("start");
+        private static readonly StringValue Stop = new StringValue("stop");
 
 		[Description("Sets the computation thread on idle for the proposed time in milliseconds (ms).")]
 		[Example("sleep(150)", "Sleeps for 150ms and outputs the real waiting time in ms.")]
 		public ScalarValue Function(ScalarValue a)
 		{
 			var sw = new TimerFunction();
-			sw.Function(_start);
+			sw.Function(Start);
 		    using (var blocking = new ManualResetEvent(false)) blocking.WaitOne(a.IntValue);
-			sw.Function(_stop);
+			sw.Function(Stop);
 			return new ScalarValue(sw.Function());
 		}
 	}
