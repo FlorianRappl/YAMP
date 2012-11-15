@@ -3,6 +3,7 @@
 namespace YAMP
 {
     [Description("A custom function defined by you.")]
+	[Kind(PopularKinds.Function)]
     class ContainerFunction : IFunction
     {
         string name;

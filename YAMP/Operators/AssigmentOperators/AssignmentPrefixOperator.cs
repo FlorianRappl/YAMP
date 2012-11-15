@@ -13,7 +13,7 @@ namespace YAMP
             _child = child;
         }
 
-        public override Value Handle(Expression left, Expression right, Dictionary<string, object> symbols)
+        public override Value Handle(Expression left, Expression right, Dictionary<string, Value> symbols)
         {
             var bottom = _child.Handle(left, right, symbols);
             return Assign(left, bottom, symbols);

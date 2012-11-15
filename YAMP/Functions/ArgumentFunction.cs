@@ -8,33 +8,39 @@ namespace YAMP
     /// <summary>
     /// The abstract base class used for all argument functions. (provide all functions with the name function).
     /// </summary>
-	public abstract class ArgumentFunction : StandardFunction
+	public abstract class ArgumentFunction : StandardFunction, IComparer<YParameters>
 	{
-		protected Value[] arguments;
-		IDictionary<ParameterInfo[], MethodInfo> functions;
-        int _optArg;
-        bool _hasOpt;
+		#region Members
 
-        public ArgumentFunction() : this(0, false)
-        {
-        }
+		Value[] arguments;
+		IDictionary<YParameters, MethodInfo> functions;
 
-        public ArgumentFunction(int optArg) : this(optArg, true)
-        {
-        }
-		
-		ArgumentFunction (int optArg, bool hasArg)
+		#endregion
+
+		#region ctor
+
+		public ArgumentFunction ()
 		{
-            _hasOpt = hasArg;
-            _optArg = optArg;
-			functions = new Dictionary<ParameterInfo[], MethodInfo>();
+			functions = new SortedDictionary<YParameters, MethodInfo>(this);
 			var methods = this.GetType().GetMethods();
 			
 			foreach(var method in methods)
 			{
-				if(method.Name.IsArgumentFunction())
-					functions.Add(method.GetParameters(), method);
+				if (method.Name.IsArgumentFunction())
+				{
+					var yp = new YParameters(method.GetParameters(), method);
+					functions.Add(yp, method);
+				}
 			}
+		}
+
+		#endregion
+
+		#region Methods
+
+		public int Compare(YParameters x, YParameters y)
+		{
+			return 100 * (y.Length - x.Length) + Math.Sign(y.Weight - x.Weight);
 		}
 		
 		public override Value Perform (Value argument)
@@ -50,64 +56,90 @@ namespace YAMP
 		Value Execute()
 		{
             var args = arguments.Length;
-            var exception = new ArgumentsException(Name, arguments.Length); 
+            var exception = new ArgumentsException(Name, arguments.Length);
 
-            if (_hasOpt && args >= _optArg)
-            {
-                var i = 0;
-                var length = arguments.Length;
-                var old = arguments;
-                var a = new ArgumentsValue();
-                arguments = new Value[_optArg];
-                args = _optArg;
+			foreach(var key in functions.Keys)
+			{
+				if (args < key.MinimumArguments || args > key.MaximumArguments)
+					continue;
 
-                for (; i < args - 1; i++)
-                    arguments[i] = old[i];
+				var f = functions[key];
 
-                for (; i < length; i++)
-                    a[i - args + 2] = old[i];
-
-                arguments[args - 1] = a;
-            }
-
-            foreach (var key in functions.Keys)
-            {
-                if (key.Length != args)
-                    continue;
-
-                var method = functions[key];
-
-                if (SignatureFits(method, exception))
-                {
-                    try
-                    {
-                        return method.Invoke(this, arguments) as Value;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex.InnerException ?? ex;
-                    }
-                }
-            }
+				if(BuildArguments(key, exception))
+				{
+					try
+					{
+						return f.Invoke(this, arguments) as Value;
+					}
+					catch (Exception ex)
+					{
+						throw ex.InnerException ?? ex;
+					}
+				}
+			}
             
 			throw exception;
 		}
 
-        bool SignatureFits(MethodInfo method, Exception exception)
-        {
-            var pis = method.GetParameters();
+		bool BuildArguments(YParameters yp, Exception exception)
+		{
+			var attrs = yp.OptionalArguments;
+			var success = true;
+			var values = new List<Value>();
 
-            for (int i = 0; i < pis.Length; i++)
-            {
-                if (!pis[i].ParameterType.IsInstanceOfType(arguments[i]))
-                {
-                    exception = new ArgumentTypeNotSupportedException(Name, i, pis[i].ParameterType);
-                    return false;
-                }
-            }
+			for (var i = 0; i < arguments.Length; i++)
+			{
+				var opt = false;
 
-            return true;
-        }
+				for (var j = 0; j < attrs.Length; j++)
+				{
+					var attr = attrs[j];
+
+					if (attr.Index == i)
+					{
+						var rest = arguments.Length - i;
+
+						if (rest >= attr.MinimumArguments)
+						{
+							var av = new ArgumentsValue();
+							var pt = Math.Min(attr.MaximumArguments / attr.StepArguments, rest / attr.StepArguments);
+
+							for (var k = 0; k < pt; k++)
+							{
+								for (var l = 0; l < attr.StepArguments; l++)
+								{
+									av.Insert(arguments[i++]);
+								}
+							}
+
+							values.Add(av);
+							opt = true;
+						}
+					}
+				}
+
+				if (!opt)
+				{
+					var idx = values.Count;
+
+					if (!yp.ParameterTypes[idx].IsInstanceOfType(arguments[idx]))
+					{
+						exception = new ArgumentTypeNotSupportedException(Name, idx, yp.ParameterTypes[idx]);
+						success = false;
+						break;
+					}
+
+					values.Add(arguments[i]);
+				}
+			}
+
+			if(success)
+				arguments = values.ToArray();
+
+			return success;
+		}
+
+		#endregion
 	}
 }
 

@@ -4,40 +4,51 @@ using System.Collections.Generic;
 namespace YAMP
 {
     class _Function : ArgumentFunction
-    {
-        ISupportsIndex _variable;
-        int[] _dimensions;
-        int[][] _indices;
-        int N;
+	{
+		#region Members
 
-        public _Function(Value variable) : base(1)
+		IHasIndex _variable;
+        int[] _targetDimensions;
+        IIsIndex[] _indices;
+		int N;
+
+		#endregion
+
+		#region ctor
+
+		public _Function(Value variable)
         {
-            if (!(variable is ISupportsIndex))
+            if (!(variable is IHasIndex))
                 throw new OperationNotSupportedException("Index", variable);
 
             N = 1;
-            _variable = variable as ISupportsIndex;
-        }
+            _variable = variable as IHasIndex;
+		}
 
-        public void Set(Value source)
+		#endregion
+
+		#region Methods
+
+		public void Set(Value source)
         {
-            if (source is ISupportsIndex)
-            {
-                var src = source as ISupportsIndex;
-                var I = new int[] { 1 };
-                var i = 0;
+			if (source is IHasIndex)
+			{
+				var src = source as IHasIndex;
+				var I = new VectorIndex { Entry = 1 };
+				var i = 0;
 
-                while (i < N)
-                {
-                    _variable.Set(_indices[i], src.Get(I));
-                    I[0]++;
-                    i++;
-                }
-            }
-            else if (_indices.Length == 1)
-                _variable.Set(_indices[0], source);
-            else
-                throw new OperationNotSupportedException("Index", source);
+				while (i < N)
+				{
+					_variable.Set(_indices[i], src.Get(I));
+					I.Entry++;
+					i++;
+				}
+			}
+			else
+			{
+				for (var i = 0; i < N; i++)
+					_variable.Set(_indices[i], source);
+			}
         }
 
         public Value Get()
@@ -45,23 +56,26 @@ namespace YAMP
             if (N == 1)
                 return _variable.Get(_indices[0]);
 
-            var m = _variable.Create(_dimensions);
+            var m = _variable.Create(_targetDimensions);
 
-            var I = new int[] { 1 };
+			var I = new VectorIndex { Entry = 1 };
             var i = 0;
 
             while (i < N)
             {
                 m.Set(I, _variable.Get(_indices[i]));
-                I[0]++;
+				I.Entry++;
                 i++;
             }
 
             return m as Value;
         }
 
+		[Arguments(0)]
         public Value Function(ArgumentsValue arguments)
-        {
+		{
+			var _sourceDimensions = _variable.Dimensions;
+
             if (IsLogicalSubscripting(arguments))
             {
                 LogicalSubscripting(arguments[1]);
@@ -69,29 +83,54 @@ namespace YAMP
             else if(arguments.Length > 0)
             {
                 var args = new List<int[]>();
-                var i = 0;
                 var dimensions = new List<int>();
+				var argvals = arguments.Values;
 
-                foreach (var arg in arguments.Values)
-                {
-                    var r = BuildIndices(arg, i++);
+				if (argvals.Length > _sourceDimensions.Length)
+					throw new ArgumentsException("Index", _sourceDimensions.Length + 1);
+
+				for (var j = 0; j < argvals.Length; j++)
+				{
+					var arg = argvals[j];
+					var dim = _sourceDimensions[j];
+
+					if (argvals.Length == 1)
+						dim = _variable.Length;
+
+                    var r = BuildIndices(arg, dim);
                     N = N * r.Length;
                     dimensions.Add(r.Length);
                     args.Add(r);
                 }
 
-                _dimensions = dimensions.ToArray();
-                _indices = new int[N][];
-                var t = new List<int>();
+                _targetDimensions = dimensions.ToArray();
+                _indices = new IIsIndex[N];
                 var I = CreateIndexArray(args.Count);
-                i = 0;
+                var i = 0;
 
                 while (i < N)
                 {
-                    t.Clear();
+					if (args.Count == 1)
+					{
+						_indices[i] = new VectorIndex { Entry = args[0][I[0] - 1] };
+					}
+					else if (args.Count == 2)
+					{
+						_indices[i] = new MatrixIndex
+						{
+							Row = args[0][I[0] - 1],
+							Column = args[1][I[1] - 1]
+						};
+					}
+					else
+					{
+						var t = new List<int>();
 
-                    for (var j = 0; j < args.Count; j++)
-                        t.Add(args[j][I[j] - 1]);
+						for (var j = 0; j < args.Count; j++)
+							t.Add(args[j][I[j] - 1]);
+
+						_indices[i] = new MultipleIndex { Indices = t.ToArray() };
+					}
 
                     int k = 0;
 
@@ -106,8 +145,6 @@ namespace YAMP
                         k++;
                     }
                     while (k < args.Count);
-
-                    _indices[i] = t.ToArray();
                     i++;
                 }
             }
@@ -125,7 +162,7 @@ namespace YAMP
             return array;
         }
 
-        int[] BuildIndices(Value arg, int dim)
+        int[] BuildIndices(Value arg, int length)
         {
             if (!(arg is NumericValue))
                 throw new OperationNotSupportedException("Index", arg);
@@ -138,7 +175,7 @@ namespace YAMP
             {
                 var r = arg as RangeValue;
                 var step = (int)r.Step;
-                var maxLength = r.All ? _variable.GetDimension(dim) : (int)r.End;
+				var maxLength = r.All ? length : (int)r.End;
 
                 for(var j = (int)r.Start; j <= maxLength; j += step)
                     z.Add(j);
@@ -175,16 +212,28 @@ namespace YAMP
         void LogicalSubscripting(Value v)
         {
             var m = v as MatrixValue;
-            var idx = new List<int[]>();
+            var idx = new List<IIsIndex>();
 
             for (var i = 1; i <= m.DimensionX; i++)
+			{
                 for (var j = 1; j <= m.DimensionY; j++)
-                    if (m[j, i].Value != 0.0)
-                        idx.Add(new int[] { j, i });
+				{
+					if (m[j, i].Value != 0.0)
+					{
+						idx.Add(new MatrixIndex
+						{
+							Row = j,
+							Column = i
+						});
+					}
+				}
+			}
 
             N = idx.Count;
-            _dimensions = new int[] { 1, idx.Count };
+            _targetDimensions = new int[] { 1, idx.Count };
             _indices = idx.ToArray();
-        }
+		}
+
+		#endregion
     }
 }

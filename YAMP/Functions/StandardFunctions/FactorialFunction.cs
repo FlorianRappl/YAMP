@@ -2,13 +2,14 @@ using System;
 
 namespace YAMP
 {
-    [Description("Represents the factorial function, which is used for the ! operator and integer expressions.")]
+	[Description("Represents the factorial function, which is used for the ! operator and integer expressions.")]
+	[Kind(PopularKinds.Function)]
 	class FactorialFunction : StandardFunction
 	{
-        protected override ScalarValue GetValue(ScalarValue value)
-        {
-            return value.Factorial();
-        }
+		protected override ScalarValue GetValue(ScalarValue value)
+		{
+			return value.Factorial();
+		}
 	}
 }
 

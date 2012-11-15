@@ -3,15 +3,25 @@
 namespace YAMP
 {
     abstract class PropertyFunction<T> : SystemFunction where T : Value
-    {
-        string _propertyName;
+	{
+		#region Members
 
-        public PropertyFunction(string propertyName)
+		string _propertyName;
+
+		#endregion
+
+		#region ctor
+
+		public PropertyFunction(string propertyName)
         {
             _propertyName = propertyName;
         }
 
-        protected abstract object GetValue(T parameter);
+		#endregion
+
+		#region Methods
+
+		protected abstract object GetValue(T parameter);
         protected abstract T GetValue(object original);
 
         [Description("Sets the property of a given plot value.")]
@@ -43,6 +53,8 @@ namespace YAMP
         {
             var value = plot.GetType().GetProperty(_propertyName).GetValue(plot, null);
             return GetValue(value);
-        }
+		}
+
+		#endregion
     }
 }

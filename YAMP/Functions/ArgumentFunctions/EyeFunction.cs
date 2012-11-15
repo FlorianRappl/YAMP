@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("Generates an identity matrix.")]
+	[Description("Generates an identity matrix.")]
+	[Kind(PopularKinds.Function)]
     class EyeFunction : ArgumentFunction
     {
         [Description("Generates the 1x1 matrix.")]

@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("Represents the sign function.")]
+	[Description("Represents the sign function.")]
+	[Kind(PopularKinds.Function)]
     class SignFunction : StandardFunction
     {
         [Description("Returns -1 for values smaller than 0, +1 for values greater than zero, else 0.")]

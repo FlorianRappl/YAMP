@@ -35,7 +35,7 @@ namespace YAMP
             return new UnaryExpression(query);
         }
 
-        public override Value Interpret(Dictionary<string, object> symbols)
+        public override Value Interpret(Dictionary<string, Value> symbols)
         {
             var birth = _child.Interpret(symbols);
 

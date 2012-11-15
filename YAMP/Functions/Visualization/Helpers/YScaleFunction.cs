@@ -2,6 +2,7 @@
 
 namespace YAMP
 {
+	[Kind(PopularKinds.Plot)]
     class YScaleFunction : PropertyFunction<ScalarValue>
     {
         public YScaleFunction() : base("IsLogY")

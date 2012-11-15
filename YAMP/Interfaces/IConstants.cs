@@ -7,5 +7,8 @@ namespace YAMP
     /// </summary>
     public interface IConstants
     {
+		string Name { get; }
+
+		Value Value { get; }
     }
 }

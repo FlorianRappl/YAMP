@@ -2,27 +2,26 @@
 
 namespace YAMP
 {
-    class MatrixColumnOperator : CommaOperator
-    {
-        public MatrixColumnOperator()
-        {
-            SetDependency(typeof(MatrixBracketExpression));
-        }
+	class MatrixColumnOperator : BinaryOperator
+	{
+		public MatrixColumnOperator() : base(",", 2)
+		{
+		}
 
-        public override Value Perform(Value left, Value right)
-        {
-            if (!(left is NumericValue))
-                throw new OperationNotSupportedException(",", left);
+		public override Value Perform(Value left, Value right)
+		{
+			if (!(left is NumericValue))
+				throw new OperationNotSupportedException(",", left);
 
-            if (!(right is NumericValue))
-                throw new OperationNotSupportedException(",", right);
+			if (!(right is NumericValue))
+				throw new OperationNotSupportedException(",", right);
 
-            return MatrixValue.Create(left).AddColumn(right);
-        }
+			return MatrixValue.Create(left).AddColumn(right);
+		}
 
-        public override void RegisterToken()
-        {
-            operators.Add(this);
-        }        
-    }
+		public override void RegisterToken()
+		{
+			MatrixParseTree.Register(this);
+		}        
+	}
 }

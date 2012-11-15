@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("The standard cosh(x) function.")]
+	[Description("The standard cosh(x) function.")]
+	[Kind(PopularKinds.Function)]
     class CoshFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

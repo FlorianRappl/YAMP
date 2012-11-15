@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("The inverse of the sinh(x) function.")]
+	[Description("The inverse of the sinh(x) function.")]
+	[Kind(PopularKinds.Function)]
     class ArsinhFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

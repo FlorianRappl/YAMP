@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("The inverse of the tanh(x) function, which is sinh(x) / cosh(x).")]
+	[Description("The inverse of the tanh(x) function, which is sinh(x) / cosh(x).")]
+	[Kind(PopularKinds.Function)]
     class ArtanhFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

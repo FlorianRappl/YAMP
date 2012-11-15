@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **0.9.6**. This version is still an incomplete beta build.
+The current version number is **1.0.0**. This version is still an incomplete beta build.
 A NuGet package is available [here](http://nuget.org/packages/YAMP). There are a lot of
 tests in the code - since the package aims to be cross platform (created with Mono), no
 particular unit testing framework has been chosen.
@@ -37,6 +37,24 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**1.0.0:**
+- Improved the `load()` function (decides now if the source is text or binary)
+- Removed the transforms, but kept the advantages
+- Introduced new attributes for the kind of function / class and optional arguments.
+- Added the modulo operator (%) and a `mod()` function
+- Added a `product()` function, which works like the `sum()` function
+- Extended the documentation and included some documentation on the constants
+- Changed the way that constants are being built (now similar to functions)
+- Improved the index operator (logical subscripting is now much better)
+- Included various plot functions and helpers (including `polar()`, `semilogx()`, `semilogy()`
+  and `loglog()`)
+- Now a completely object oriented help is available
+- Added the possibility of constructing own `ParseTree` derivatives
+- Fixed a bug concerning multiple spaces
+- Can handle function overloads and multiple optional arguments for `ArgumentFunction` types
+- Replaced all calls that contain a `Hashtable` with strongly typed `Dictionary<string, Value>`
+- Un-nested the enum `PointSymbol` and the class `Points` for more convenience
+
 **0.9.7:**
 - Changed the syntax to agree with MATLAB (e.g. matrices can only be defined in [])
 - Improved the `ParseContext` with events

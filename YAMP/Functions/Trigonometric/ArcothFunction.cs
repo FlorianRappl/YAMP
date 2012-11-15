@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("The inverse of the coth(x) function, which is cosh(x) / sinh(x).")]
+	[Description("The inverse of the coth(x) function, which is cosh(x) / sinh(x).")]
+	[Kind(PopularKinds.Function)]
     class ArcothFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

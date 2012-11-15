@@ -6,7 +6,7 @@ namespace YAMP
 	{
 		public PowerOperator () : base("^", 100)
 		{
-            IsRightToLeft = true;
+			IsRightToLeft = true;
 		}
 		
 		public override Value Perform (Value left, Value right)

@@ -7,10 +7,10 @@ namespace YAMP
 		{
 		}
 
-        public SymbolException(string symbol)
-            : base("The symbol {0} could not been resolved.", symbol)
+		public SymbolException(string symbol)
+			: base("The symbol {0} could not been resolved.", symbol)
 		{
-            Symbol = symbol;
+			Symbol = symbol;
 		}
 	}
 }

@@ -36,5 +36,5 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCopyright("(c) Florian Rappl, rsi Software, 2012.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.9.7.*")]
+[assembly: AssemblyVersion("1.0.0.*")]
 

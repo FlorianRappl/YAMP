@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("The inverse of the cos(x) function.")]
+	[Description("The inverse of the cos(x) function.")]
+	[Kind(PopularKinds.Function)]
     class ArccosFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

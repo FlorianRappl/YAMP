@@ -370,9 +370,11 @@ namespace YAMP
 
                 var sqrt = (int)Math.Sqrt(Value);
 
-                for (var i = 3; i < sqrt; i += 2)
-                    if (k % i == 0)
-                        return new ScalarValue(false);
+				for (var i = 3; i <= sqrt; i += 2)
+				{
+					if (k % i == 0)
+						return new ScalarValue(false);
+				}
 
                 return new ScalarValue(true);
             }

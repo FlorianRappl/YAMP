@@ -41,7 +41,7 @@ namespace YAMP
 
         IDictionary<string, Value> variables;
         IDictionary<string, IFunction> functions;
-        IDictionary<string, Value> constants;
+        IDictionary<string, IConstants> constants;
         ParseContext parent;
         IFormatProvider numFormat;
         int? precision = 5;
@@ -78,7 +78,7 @@ namespace YAMP
             isReadOnly = false;
             variables = new Dictionary<string, Value>();
             functions = new Dictionary<string, IFunction>();
-            constants = new Dictionary<string, Value>();
+            constants = new Dictionary<string, IConstants>();
             this.parent = parent;
 
             if (parent == null)
@@ -120,7 +120,7 @@ namespace YAMP
         /// <summary>
         /// Gets the constants that are present in the local context.
         /// </summary>
-        public IDictionary<string, Value> Constants
+        public IDictionary<string, IConstants> Constants
         {
             get { return constants; }
         }
@@ -128,11 +128,11 @@ namespace YAMP
         /// <summary>
         /// Gets all constants that are currently available in the workspace.
         /// </summary>
-        public IDictionary<string, Value> AllConstants
+		public IDictionary<string, IConstants> AllConstants
         {
             get
             {
-                var consts = new Dictionary<string, Value>(constants);
+				var consts = new Dictionary<string, IConstants>(constants);
                 var top = parent;
 
                 while (top != null)
@@ -259,26 +259,10 @@ namespace YAMP
         /// The name of the constant.
         /// </param>
         /// <param name="constant">
-        /// The double value of the constant.
+        /// The class instance of the constant.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext AddConstant(string name, double constant)
-        {
-            AddConstant(name, new ScalarValue(constant));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a constant to the context.
-        /// </summary>
-        /// <param name="name">
-        /// The name of the constant.
-        /// </param>
-        /// <param name="constant">
-        /// The YAMP value of the constant.
-        /// </param>
-        /// <returns>The current context.</returns>
-        public ParseContext AddConstant(string name, Value constant)
+        public ParseContext AddConstant(string name, IConstants constant)
         {
             var lname = name.ToLower();
 
@@ -361,7 +345,7 @@ namespace YAMP
         /// The symbolic name to retrieve.
         /// </param>
         /// <returns>The value of the constant.</returns>
-        public Value FindConstants(string name)
+        public IConstants FindConstants(string name)
         {
             var lname = name.ToLower();
 

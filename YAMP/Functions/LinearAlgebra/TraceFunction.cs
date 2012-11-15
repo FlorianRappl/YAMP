@@ -2,19 +2,22 @@
 
 namespace YAMP
 {
-    [Description("Performs the trace operation on the given matrix.")]
-    class TraceFunction : StandardFunction
-    {
-        [Description("Sums all elements on the diagonal.")]
-        [Example("trace(1,2;3,4)", "Results in the value 5.")]
-        public override Value Perform(Value argument)
-        {
-            if (argument is MatrixValue)
-                return (argument as MatrixValue).Trace();
-            else if (argument is ScalarValue)
-                return argument as ScalarValue;
+	[Description("Performs the trace operation on the given matrix.")]
+	[Kind(PopularKinds.Function)]
+	class TraceFunction : ArgumentFunction
+	{
+		[Description("Sums all elements on the diagonal.")]
+		[Example("trace([1,2;3,4])", "Results in the value 5.")]
+		public ScalarValue Function(MatrixValue argument)
+		{
+			return argument.Trace();
+		}
 
-            throw new OperationNotSupportedException("trace", argument);
-        }
-    }
+		[Description("The trace of a 1x1 matrix is the element itself.")]
+		[Example("trace(10)", "Results in the value 10.")]
+		public ScalarValue Function(ScalarValue argument)
+		{
+			return argument;
+		}
+	}
 }

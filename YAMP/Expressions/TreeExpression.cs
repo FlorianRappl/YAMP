@@ -67,7 +67,7 @@ namespace YAMP
         /// </summary>
         /// <param name="symbols">The symbols to consider.</param>
         /// <returns>The value of this tree expression.</returns>
-        public override Value Interpret(Dictionary<string, object> symbols)
+        public override Value Interpret(Dictionary<string, Value> symbols)
         {
             return Tree.Interpret(symbols);
         }
@@ -75,7 +75,7 @@ namespace YAMP
         public override string Set(string input)
         {
             _input = input;
-            _tree = new ParseTree(Query, _input, Offset, this);
+            _tree = new ParseTree(Query, _input, Offset);
             return string.Empty;
         }
 

@@ -2,7 +2,8 @@
 
 namespace YAMP
 {
-    [Description("The standard coth(x) function, which is cosh(x) / sinh(x).")]
+	[Description("The standard coth(x) function, which is cosh(x) / sinh(x).")]
+	[Kind(PopularKinds.Function)]
     class CothFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

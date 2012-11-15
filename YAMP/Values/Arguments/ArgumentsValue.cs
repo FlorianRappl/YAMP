@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
-	public class ArgumentsValue : Value, ISupportsIndex
+	public class ArgumentsValue : Value, IHasIndex
 	{
 		#region Members
 
@@ -192,6 +192,11 @@ namespace YAMP
             return _values.ToArray();
         }
 
+		public void Insert(Value value)
+		{
+			_values.Add(value);
+		}
+
 		#endregion
 
 		#region Static
@@ -215,39 +220,31 @@ namespace YAMP
 
         #endregion
 
-        #region Implementation of ISupportsIndex
+        #region Index
 
-        public int GetDimension(int dimension)
-        {
-            if (dimension == 0)
-                return Length;
-
-            return 1;
-        }
-
-        public int Dimensions
+        public int[] Dimensions
         {
             get
             {
-                return 1;
+                return new int[] { Length };
             }
         }
 
-        public Value Get(int[] indices)
+		public IHasIndex Create(int[] _dimensions)
+		{
+			return new ArgumentsValue();
+		}
+
+        public Value Get(IIsIndex index)
         {
-            return this[indices[0]];
+			return this[((VectorIndex)index).Entry];
         }
 
-        public void Set(int[] indices, Value value)
+		public void Set(IIsIndex index, Value value)
         {
-            this[indices[0]] = value;
-        }
-
-        public ISupportsIndex Create(int[] dimensions)
-        {
-            return new ArgumentsValue();
+			this[((VectorIndex)index).Entry] = value;
         }
 
         #endregion
-    }
+	}
 }

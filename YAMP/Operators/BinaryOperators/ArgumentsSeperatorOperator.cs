@@ -2,21 +2,20 @@
 
 namespace YAMP
 {
-    class ArgumentsSeperatorOperator : CommaOperator
-    {
-        public ArgumentsSeperatorOperator()
-        {
-            SetDependency(typeof(ArgumentsBracketExpression));
-        }
+	class ArgumentsSeperatorOperator : BinaryOperator
+	{
+		public ArgumentsSeperatorOperator() : base(",", 2)
+		{
+		}
 
-        public override Value Perform(Value left, Value right)
-        {
-            return ArgumentsValue.Create(left, right);
-        }
+		public override Value Perform(Value left, Value right)
+		{
+			return ArgumentsValue.Create(left, right);
+		}
 
-        public override void RegisterToken()
-        {
-            operators.Add(this);
-        }
-    }
+		public override void RegisterToken()
+		{
+			ArgumentsParseTree.Register(this);
+		}
+	}
 }

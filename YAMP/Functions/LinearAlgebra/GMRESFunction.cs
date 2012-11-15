@@ -3,7 +3,8 @@ using YAMP.Numerics;
 
 namespace YAMP
 {
-    [Description("Uses the GMRES / GMRES(k) algorithm to solve a linear system of equations.")]
+	[Description("Uses the GMRES / GMRES(k) algorithm to solve a linear system of equations.")]
+	[Kind(PopularKinds.Function)]
     class GMRESFunction : ArgumentFunction
     {
         [Description("Computes the solution vector x for a given matrix A and a source vector b.")]

@@ -5,7 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace YAMP
 {
-    [Description("Lists the available variables.")]
+	[Description("Lists the available variables.")]
+	[Kind(PopularKinds.System)]
     class WhoFunction : SystemFunction
     {
         [Description("Lists all variables from the current workspace.")]

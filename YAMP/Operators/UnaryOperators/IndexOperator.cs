@@ -6,29 +6,43 @@ using System.Collections.Generic;
 namespace YAMP
 {
     class IndexOperator : UnaryOperator
-    {
-        ArgumentsBracketExpression _content;
+	{
+		#region Members
+
+		ArgumentsBracketExpression _content;
         QueryContext _query;
-        _Function _indexer;
+		_Function _indexer;
 
-        public override string Input
-        {
-            get
-            {
-                return _content.Input;
-            }
-        }
+		#endregion
 
-        public IndexOperator() : base("(", 1000)
+		#region ctor
+
+		public IndexOperator() : base("(", 1000)
         {
         }
 
         public IndexOperator(QueryContext query) : base("(", 1000)
         {
             _query = query;
-        }
+		}
 
-        public override Operator Create(QueryContext query)
+		#endregion
+
+		#region Properties
+
+		public override string Input
+		{
+			get
+			{
+				return _content.Input;
+			}
+		}
+
+		#endregion
+
+		#region Methods
+
+		public override Operator Create(QueryContext query)
         {
             return new IndexOperator(query);
         }
@@ -50,14 +64,14 @@ namespace YAMP
             return left;
         }
 
-        public override Value Handle(Expression expression, Dictionary<string, object> symbols)
+        public override Value Handle(Expression expression, Dictionary<string, Value> symbols)
         {
             var left = expression.Interpret(symbols);
             SetIndexer(left, symbols);
             return Perform(left);
         }
 
-        public Value Handle(Expression expression, Value value, Dictionary<string, object> symbols)
+        public Value Handle(Expression expression, Value value, Dictionary<string, Value> symbols)
         {
             var isSymbol = expression is SymbolExpression;
             var symbolName = string.Empty;
@@ -88,10 +102,12 @@ namespace YAMP
             return base.ToString() + Environment.NewLine + _content.ToString();
         }
 
-        void SetIndexer(Value left, Dictionary<string, object> symbols)
+        void SetIndexer(Value left, Dictionary<string, Value> symbols)
         {
             _indexer = new _Function(left);
             _indexer.Perform(_content.Interpret(symbols));
-        }
+		}
+
+		#endregion
     }
 }

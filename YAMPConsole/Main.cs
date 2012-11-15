@@ -36,104 +36,104 @@ namespace YAMPConsole
 			YAMP.Parser.AddCustomFunction("G", v => new YAMP.ScalarValue((v as YAMP.ScalarValue).Value * Math.PI) );
 			YAMP.Parser.AddCustomConstant("R", 2.53);
 
-            //var history = new List<string>();
+			//var history = new List<string>();
 			
 			while(true)
-            {
-                Console.Write(">> ");
+			{
+				Console.Write(">> ");
 
-                /*var historyIndex = history.Count;
-                var position = 0;
-                query = string.Empty;
-                var cursorLeft = Console.CursorLeft;
-                var cursorTop = Console.CursorTop;
+				/*var historyIndex = history.Count;
+				var position = 0;
+				query = string.Empty;
+				var cursorLeft = Console.CursorLeft;
+				var cursorTop = Console.CursorTop;
 
-                do
-                {
-                    var key = Console.ReadKey(true);
+				do
+				{
+					var key = Console.ReadKey(true);
 
-                    if (key.Key == ConsoleKey.Enter)
-                    {
-                        if (key.Modifiers == ConsoleModifiers.Shift)
-                            query = query.Insert(position++, "\n");
-                        else
-                            break;
-                    }
-                    else if (key.Key == ConsoleKey.Tab)
-                    {
-                        query = query.Insert(position++, "\t");
-                    }
-                    else if (key.Key == ConsoleKey.Backspace)
-                    {
-                        if (position > 0)
-                            query = query.Remove(--position, 1);
-                    }
-                    else if (key.Key == ConsoleKey.UpArrow)
-                    {
-                        if (historyIndex > 0)
-                        {
-                            historyIndex--;
-                            query = history[historyIndex];
-                        }
-                    }
-                    else if (key.Key == ConsoleKey.DownArrow)
-                    {
-                        if (historyIndex < history.Count)
-                        {
-                            historyIndex++;
-                            query = historyIndex == history.Count ? string.Empty : history[historyIndex];
-                        }
-                    }
-                    else if (key.Key == ConsoleKey.RightArrow)
-                    {
-                        if(position < query.Length)
-                            position++;
-                    }
-                    else if (key.Key == ConsoleKey.LeftArrow)
-                    {
-                        if (position > 0)
-                            position--;
-                    }
-                    else
-                    {
-                        query = query.Insert(position++, key.KeyChar.ToString());
-                    }
+					if (key.Key == ConsoleKey.Enter)
+					{
+						if (key.Modifiers == ConsoleModifiers.Shift)
+							query = query.Insert(position++, "\n");
+						else
+							break;
+					}
+					else if (key.Key == ConsoleKey.Tab)
+					{
+						query = query.Insert(position++, "\t");
+					}
+					else if (key.Key == ConsoleKey.Backspace)
+					{
+						if (position > 0)
+							query = query.Remove(--position, 1);
+					}
+					else if (key.Key == ConsoleKey.UpArrow)
+					{
+						if (historyIndex > 0)
+						{
+							historyIndex--;
+							query = history[historyIndex];
+						}
+					}
+					else if (key.Key == ConsoleKey.DownArrow)
+					{
+						if (historyIndex < history.Count)
+						{
+							historyIndex++;
+							query = historyIndex == history.Count ? string.Empty : history[historyIndex];
+						}
+					}
+					else if (key.Key == ConsoleKey.RightArrow)
+					{
+						if(position < query.Length)
+							position++;
+					}
+					else if (key.Key == ConsoleKey.LeftArrow)
+					{
+						if (position > 0)
+							position--;
+					}
+					else
+					{
+						query = query.Insert(position++, key.KeyChar.ToString());
+					}
 
-                    Console.SetCursorPosition(cursorLeft, cursorTop);
-                    Console.Write(query);
-                }
-                while (true);
+					Console.SetCursorPosition(cursorLeft, cursorTop);
+					Console.Write(query);
+				}
+				while (true);
 
-                Console.WriteLine();
-                history.Add(query);*/
+				Console.WriteLine();
+				history.Add(query);*/
 				query = Console.ReadLine();
 
-                if (query.Equals("exit"))
-                    break;
-                else
-                {
-                    try
-                    {
-                        var parser = YAMP.Parser.Parse(query);
-                        var value = parser.Execute();
+				if (query.Equals("exit"))
+					break;
+				else
+				{
+					try
+					{
+						var parser = YAMP.Parser.Parse(query);
+						var value = parser.Execute();
 
-                        if (value != null)
-                        {
-                            Console.WriteLine(value);
-                            Console.Write(parser);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-            }
+						if (value != null)
+						{
+							Console.WriteLine(value);
+							Console.Write(parser);
+						}
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine(ex.Message);
+					}
+				}
+			}
 #else
 			Console.WriteLine("RELEASE MODE");
 #endif
 
-        }
+		}
 
 #if BENCHMARKS
 
@@ -146,32 +146,32 @@ namespace YAMPConsole
 			var a = new MathParser.Parser();
 			var b = new MathParserTK_NET.MathParserTK();
 			var c = new MathParserNet.Parser();
-            var d = new MathFunctions.MathParser();
-            var e = new MathParserDataStructures.MathObj();
+			var d = new MathFunctions.MathParser();
+			var e = new MathParserDataStructures.MathObj();
 			
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
-            //var lines = new string[0];
+			var lines = new string[0];
 			// This is Benchmark #1
-            var lines = File.ReadAllLines(BMK_FILE);
+			//var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
-            //var lines = MakeTenK("2-3*5+7/2-8*2");
+			//var lines = MakeTenK("2-3*5+7/2-8*2");
 			// This is Benchmark #3
-            //var lines = MakeTenK("2+3");
+			//var lines = MakeTenK("2+3");
 			// This is Benchmark #4
-            //var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
+			//var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
 			
 			// The implementation here... YAMP
-			// 4814 ms ; 239 ms ; 95 ms ; 413 ms
-            Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
+			// 4814 ms ; 252 ms ; 95 ms ; 413 ms
+			Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
 
-            //http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
-            // 2092 ms ; 108 ms ; 75 ms ; 155 ms
-            Benchmark("LLMathParser", lines, query => e.Evaluate(query, new char[0], new double[0]));
+			//http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
+			// 2092 ms ; 108 ms ; 75 ms ; 155 ms
+			Benchmark("LLMathParser", lines, query => e.Evaluate(query, new char[0], new double[0]));
 			
 			//http://www.codeproject.com/Articles/11164/Math-Parser
-            // 372847 ms ; 3631 ms ; 2385 ms ; 11508 ms
+			// 372847 ms ; 3631 ms ; 2385 ms ; 11508 ms
 			Benchmark("MathParser", lines, query => a.Evaluate(query));
 			
 			//http://www.codeproject.com/Tips/381509/Math-Parser-NET-Csharp
@@ -182,9 +182,9 @@ namespace YAMPConsole
 			// FAILED ; 3763 ms ; 3511 ms ; 3827 ms
 			Benchmark("MathParserNet", lines, query => c.Simplify(query));
 
-            //http://www.codeproject.com/Articles/23061/MathParser-Math-Formula-Parser
-            // FAILED ; 161 ms ; 37 ms ; FAILED
-            Benchmark("MathFormulaParser", lines, query => d.Calculate(query));
+			//http://www.codeproject.com/Articles/23061/MathParser-Math-Formula-Parser
+			// FAILED ; 161 ms ; 37 ms ; FAILED
+			Benchmark("MathFormulaParser", lines, query => d.Calculate(query));
 		}
 
 		static string[] MakeTenK(string s)
@@ -228,7 +228,7 @@ namespace YAMPConsole
 				{
 					length = r.Next(2, 14);
 					fs.Write(r.Next(-100, 100));
-					         
+							 
 					for(var j = 0; j < length; j++)
 					{
 						fs.Write(operators[r.Next(0, operators.Length)]);
@@ -244,15 +244,15 @@ namespace YAMPConsole
 		}
 
 #endif
-		
+
 #if DEBUG
 
 		static void Tests()
 		{
-            Test("2-3-4", -5.0);
-            Test("(10^6*27)/8/1024", (27000000.0 / 8.0) / 1024.0);
-            Test("-pi", -Math.PI);
-            Test("-2+3", 1.0);
+			Test("2-3-4", -5.0);
+			Test("(10^6*27)/8/1024", (27000000.0 / 8.0) / 1024.0);
+			Test("-pi", -Math.PI);
+			Test("-2+3", 1.0);
 			Test("2.2", 2.2);
 			Test(".2+4-4+.2", 0.4);
 			Test("3/3+1*4-5", 0.0);
@@ -286,21 +286,21 @@ namespace YAMPConsole
 			Test("|4*(2i-5)/3i|", 4.0 * Math.Sqrt(29.0) / 3.0);
 			Test("|[3,2,1]*[1;2;3]|", 10.0);
 			Test("|[1;2;3]|-|[1,2,3]|", 0.0);
-            Test("|(2+3i)^2|", 12.999999999999998);
-            Test("|1^(i+5)|", 1.0);
-            Test("|1^(i+5)|", 1.0);
-            Test("|(5+8i)^(i+1)|", 3.4284942595728127);
-            Test("|(2+3i)/(1+8i)|", 0.447213595499958);
-            Test("|2*[1,2;1,2]|", 0.0);
-            Test("|max([1,5,7,9,8+5i])|", Math.Sqrt(89.0));
-            Test("|[2,1;3,5]-[2,1;3,5]'|", 4.0);
+			Test("|(2+3i)^2|", 12.999999999999998);
+			Test("|1^(i+5)|", 1.0);
+			Test("|1^(i+5)|", 1.0);
+			Test("|(5+8i)^(i+1)|", 3.4284942595728127);
+			Test("|(2+3i)/(1+8i)|", 0.447213595499958);
+			Test("|2*[1,2;1,2]|", 0.0);
+			Test("|max([1,5,7,9,8+5i])|", Math.Sqrt(89.0));
+			Test("|[2,1;3,5]-[2,1;3,5]'|", 4.0);
 			Test("[2,1,0]*[5;2;1]", 12.0);
 			Test("det([1;2]*[2,1])", 0.0);
 			Test("X=(Y=5)+2", 7.0);
 			Test("Y", 5.0);
 			Test("[1,2,3;4,5,6;7,8,9](2,3)", 6.0);
-            Test("|cos(1+i)|", 1.2934544550420957);
-            Test("|arccos(0.83373002513-0.988897705i)|", 1.4142135618741407);
+			Test("|cos(1+i)|", 1.2934544550420957);
+			Test("|arccos(0.83373002513-0.988897705i)|", 1.4142135618741407);
 			Test("|(x=[1,2,3;4,5,6;7,8,9])(:,1)|", Math.Sqrt(66.0));
 			Test("17>12", 1.0);
 			Test("7<-1.5", 0.0);
@@ -308,17 +308,17 @@ namespace YAMPConsole
 			Test("2+i==2-i", 0.0);
 			Test("3-i~=4", 1.0);
 			Test("abs([1,2,3;4,5,6;7,8,9](1,:))", Math.Sqrt(14.0));
-            Test("(-25)^2", 625.0);
-            Test("length(help()) > 0", 1.0);
-            Test("abs(3+4i)", 5.0);
-            Test("eig([1,2;4,5])(1)(1)", 3.0 - Math.Sqrt(12));
-            Test("eigval([1,2;4,5])(1)", 3.0 - Math.Sqrt(12));
-            Test("abs(ev([1,2;4,5])(1:2))", 1.0);
-            Test("abs(eigvec([1,2;4,5])(1:2))", 1.0);
-            Test("|[2 3 4]|", Math.Sqrt(29.0));
-            Test("[2 3 4\n1 2 3](2, 2)", 2.0);
-            Test(" [2 2 * 2 - 2^3 4](1, 2) ", -4.0);
-            Test("sum([0:10, 2^(0:2:20), 2^(1:2:21)](:,1))", 55.0);
+			Test("(-25)^2", 625.0);
+			Test("length(help()) > 0", 1.0);
+			Test("abs(3+4i)", 5.0);
+			Test("eig([1,2;4,5])(1)(1)", 3.0 - Math.Sqrt(12));
+			Test("eigval([1,2;4,5])(1)", 3.0 - Math.Sqrt(12));
+			Test("abs(ev([1,2;4,5])(1:2))", 1.0);
+			Test("abs(eigvec([1,2;4,5])(1:2))", 1.0);
+			Test("|[2 3 4]|", Math.Sqrt(29.0));
+			Test("[2 3 4\n1 2 3](2, 2)", 2.0);
+			Test(" [2 2 * 2 - 2^3 4](1, 2) ", -4.0);
+			Test("sum([0:10, 2^(0:2:20), 2^(1:2:21)](:,1))", 55.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}
@@ -398,5 +398,5 @@ namespace YAMPConsole
 		}
 
 #endif
-    }
+	}
 }

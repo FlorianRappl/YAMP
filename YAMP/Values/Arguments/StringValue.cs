@@ -30,7 +30,7 @@ using System.Text;
 
 namespace YAMP
 {
-	public class StringValue : Value, ISupportsIndex
+	public class StringValue : Value, IHasIndex
 	{
 		#region Members
 
@@ -120,37 +120,30 @@ namespace YAMP
 
 		#endregion
 
-        #region Implementation of ISupportsIndex
+        #region Index
 
-        public int Dimensions
+        public int[] Dimensions
         {
-            get { return 1; }
+            get { return new int[] { Length }; }
         }
 
-        public int GetDimension(int dimension)
-        {
-            if (dimension == 0)
-                return Length;
+		public IHasIndex Create(int[] _dimensions)
+		{
+			return new StringValue();
+		}
 
-            return 1;
+        public Value Get(IIsIndex index)
+        {
+            return new StringValue(_value[((VectorIndex)index).Entry - 1].ToString());
         }
 
-        public Value Get(int[] indices)
+		public void Set(IIsIndex index, Value value)
         {
-            return new StringValue(_value[indices[0] - 1].ToString());
-        }
-
-        public void Set(int[] indices, Value value)
-        {
-            _value = _value.Remove(indices[0] - 1, 1).Insert(indices[0] - 1, value.ToString());
-        }
-
-        public ISupportsIndex Create(int[] dimensions)
-        {
-            return new StringValue();
+			var idx = ((VectorIndex)index).Entry - 1;
+            _value = _value.Remove(idx, 1).Insert(idx, value.ToString());
         }
 
         #endregion
-    }
+	}
 }
 

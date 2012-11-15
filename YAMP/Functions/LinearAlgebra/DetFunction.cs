@@ -2,20 +2,22 @@ using System;
 
 namespace YAMP
 {
-    [Description("Calculates the determinant of the given matrix.")]
-	class DetFunction : StandardFunction
+	[Description("Calculates the determinant of the given matrix.")]
+	[Kind(PopularKinds.Function)]
+	class DetFunction : ArgumentFunction
 	{
-        [Description("Uses the best algorithm to compute the determinant.")]
-        [Example("det(1,3;-1,0)", "Computes the determinant of the matrix (1,3;-1,0); returns 3.")]
-		public override Value Perform (Value argument)
+		[Description("Uses the best algorithm to compute the determinant.")]
+		[Example("det([1,3;-1,0])", "Computes the determinant of the matrix [1,3;-1,0]; returns 3.")]
+		public ScalarValue Function(MatrixValue argument)
 		{
-			if(argument is MatrixValue)
-				return (argument as MatrixValue).Det();
-			else if(argument is ScalarValue)
-				return argument;
-			
-			
-			throw new OperationNotSupportedException("det", argument); 
+			return argument.Det();
+		}
+
+		[Description("Returns the argument.")]
+		[Example("det(5)", "The determinant of a 1x1 matrix is the argument itself.")]
+		public ScalarValue Function(ScalarValue argument)
+		{
+			return argument;
 		}
 	}
 }
