@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Gives access to a stopwatch with milliseconds precision.")]
 	[Kind(PopularKinds.System)]
-	public class TimerFunction : SystemFunction
+	class TimerFunction : SystemFunction
 	{
 	    private int _startMilliSecs;
 	    private int _elapsedMilliSecs;
