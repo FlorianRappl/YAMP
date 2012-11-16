@@ -58,6 +58,24 @@ namespace YAMP.Help
 
 		#region Members
 
+		public IEnumerable<HelpSection> Sections
+		{
+			get
+			{
+				return topics.SelectMany(m => m).Select(
+					m => Get(m.Name)
+				).OrderBy(m => m.Name).AsEnumerable();
+			}
+		}
+
+		public IEnumerable<HelpTopic> Topics
+		{
+			get
+			{
+				return topics.OrderBy(m => m.Kind).AsEnumerable();
+			}
+		}
+
 		public bool ContainsTopic(string topic)
 		{
 			foreach (var tp in topics)
@@ -118,13 +136,27 @@ namespace YAMP.Help
 				var help = new HelpFunctionSection();
 				help.Name = topic.Name;
 				help.Description = GetDescription(to);
+				help.Topic = topic.Topic.Kind;
 				var functions = to.GetMethods();
 
 				foreach (var function in functions)
 				{
 					if ((argf && function.Name.Equals("Function")) || function.Name.Equals("Perform"))
 					{
-						help.Usages.Add(GetUsage(help.Name, function));
+						var isextern = true;
+						var parameters = function.GetParameters();
+
+						foreach (var parameter in parameters)
+						{
+							if (!parameter.ParameterType.IsSubclassOf(typeof(Value)))
+							{
+								isextern = false;
+								break;
+							}
+						}
+
+						if(isextern)
+							help.Usages.Add(GetUsage(help.Name, function));
 					}
 				}
 
@@ -135,6 +167,7 @@ namespace YAMP.Help
 				var help = new HelpSection();
 				help.Name = topic.Name;
 				help.Description = GetDescription(to);
+				help.Topic = topic.Topic.Kind;
 				return help;
 			}
 		}
@@ -160,12 +193,14 @@ namespace YAMP.Help
 			{
 				if (topic.Kind.Equals(kind))
 				{
+					entry.Topic = topic;
 					topic.Add(entry);
 					return;
 				}
 			}
 
 			var ht = new HelpTopic(kind);
+			entry.Topic = ht;
 			ht.Add(entry);
 			topics.Add(ht);
 		}

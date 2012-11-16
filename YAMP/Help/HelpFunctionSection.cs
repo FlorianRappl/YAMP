@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace YAMP.Help
 {
-	class HelpFunctionSection : HelpSection
+	public class HelpFunctionSection : HelpSection
 	{
 		public HelpFunctionSection()
 		{

@@ -5,11 +5,13 @@ namespace YAMP
 	public enum PointSymbol
 	{
 		None = 0,
-		Square = 1,
-		Circle = 2,
-		TrianglePointDown = 3,
-		TrianglePointUp = 4,
-		Diamond = 5,
-		Star = 6,
+		Circle = 1,
+		Square = 2,
+		Diamond = 3,
+		Triangle = 4,
+		Cross = 5,
+		Plus = 6,
+		Star = 7,
+		Custom = 8,
 	}
 }

@@ -7,5 +7,7 @@ namespace YAMP.Help
 		public string Name { get; set; }
 
 		public object Instance { get; set; }
+
+		public HelpTopic Topic { get; set; }
 	}
 }

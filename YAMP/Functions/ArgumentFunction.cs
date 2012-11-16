@@ -133,8 +133,13 @@ namespace YAMP
 				}
 			}
 
-			if(success)
+			if (success)
+			{
+				while (values.Count < yp.ParameterTypes.Length)
+					values.Add(new ArgumentsValue());
+
 				arguments = values.ToArray();
+			}
 
 			return success;
 		}

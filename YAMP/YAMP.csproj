@@ -63,7 +63,7 @@
     <Compile Include="Constants\ContainerConstant.cs" />
     <Compile Include="Constants\DeltaConstant.cs" />
     <Compile Include="Constants\EConstant.cs" />
-    <Compile Include="Constants\GammaConstant.cs" />
+    <Compile Include="Constants\Gamma1Constant.cs" />
     <Compile Include="Constants\IConstant.cs" />
     <Compile Include="Constants\PhiConstant.cs" />
     <Compile Include="Constants\PiConstant.cs" />
