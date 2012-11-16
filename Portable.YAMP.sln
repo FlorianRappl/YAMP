@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMPConsole", "YAMPConsole\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portable.YAMP", "YAMP\Portable.YAMP.csproj", "{A63FB450-11A4-4F93-A9C6-D07E16268B3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SL.YAMP", "SL.YAMP\SL.YAMP.csproj", "{501AAC48-EE02-43A9-B9DF-3FB2838E6101}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Benchmarks|Any CPU = Benchmarks|Any CPU
@@ -49,6 +51,14 @@ Global
 		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{501AAC48-EE02-43A9-B9DF-3FB2838E6101}.Benchmarks|Any CPU.ActiveCfg = Release|Any CPU
+		{501AAC48-EE02-43A9-B9DF-3FB2838E6101}.Benchmarks|Any CPU.Build.0 = Release|Any CPU
+		{501AAC48-EE02-43A9-B9DF-3FB2838E6101}.Console|Any CPU.ActiveCfg = Release|Any CPU
+		{501AAC48-EE02-43A9-B9DF-3FB2838E6101}.Console|Any CPU.Build.0 = Release|Any CPU
+		{501AAC48-EE02-43A9-B9DF-3FB2838E6101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{501AAC48-EE02-43A9-B9DF-3FB2838E6101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{501AAC48-EE02-43A9-B9DF-3FB2838E6101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{501AAC48-EE02-43A9-B9DF-3FB2838E6101}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
