@@ -115,7 +115,7 @@ namespace YAMP
 
 				available.Add(prop.Name);
 
-				if (prop.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+				if (prop.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
 				{
 					object content = null;
 					var possible = new List<string>();

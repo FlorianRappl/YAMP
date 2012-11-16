@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 
 namespace YAMP
 {
@@ -9,12 +11,12 @@ namespace YAMP
 			Converter = w =>
 			{
 				var str = (w as StringValue).Value;
-				var possibilites = Enum.GetNames(enumType);
+			    var possibilites = enumType.GetFields(BindingFlags.Public | BindingFlags.Static).Select(fi => fi.Name).ToArray();
 
 				foreach (var possibility in possibilites)
 				{
-					if(possibility.Equals(str, StringComparison.InvariantCultureIgnoreCase))
-						return Enum.Parse(enumType, possibility);
+					if(possibility.Equals(str, StringComparison.OrdinalIgnoreCase))
+						return Enum.Parse(enumType, possibility, false);
 				}
 
 				throw new ArgumentValueException(str, possibilites);
