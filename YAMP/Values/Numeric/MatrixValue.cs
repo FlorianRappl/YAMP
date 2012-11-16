@@ -438,25 +438,26 @@ namespace YAMP
 		
 		public override byte[] Serialize()
 		{
-			var ms = new MemoryStream();
-			var dy = BitConverter.GetBytes(dimY);
-			ms.Write(dy, 0, dy.Length);
-			var dx = BitConverter.GetBytes(dimX);
-			ms.Write(dx, 0, dx.Length);
+		    byte[] content;
+		    using (var ms = new MemoryStream())
+		    {
+		        var dy = BitConverter.GetBytes(dimY);
+		        ms.Write(dy, 0, dy.Length);
+		        var dx = BitConverter.GetBytes(dimX);
+		        ms.Write(dx, 0, dx.Length);
 
-			for(var i = 1; i <= dimX; i++)
-			{
-				for(var j = 1; j <= dimY; j++)
-				{
-					var buffer = this[j, i].Serialize();
-					ms.Write(buffer, 0, buffer.Length);
-				}
-			}
+		        for (var i = 1; i <= dimX; i++)
+		        {
+		            for (var j = 1; j <= dimY; j++)
+		            {
+		                var buffer = this[j, i].Serialize();
+		                ms.Write(buffer, 0, buffer.Length);
+		            }
+		        }
 
-			var content = ms.ToArray();
-			ms.Close();
-			ms.Dispose();
-			return content;
+		        content = ms.ToArray();
+		    }
+		    return content;
 		}
 
 		public override Value Deserialize(byte[] content)

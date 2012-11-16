@@ -87,7 +87,7 @@ namespace YAMP.Help
 					list.Add(ti.Name);
 
 			if (list.Contains(term))
-				return list.Find(t => t.ToLower() == term);
+				return list.FirstOrDefault(t => t.ToLower() == term);
 			else
 			{
 				var counter = new int[list.Count];
@@ -102,7 +102,7 @@ namespace YAMP.Help
 				}
 
 				var min = counter.Min();
-				var index = counter.ToList().FindIndex(t => t == min);
+				var index = counter.ToList().IndexOf(min);
 				return list[index];
 			}
 		}

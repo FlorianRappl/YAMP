@@ -26,6 +26,7 @@
 */
 
 using System;
+using System.Linq;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
@@ -85,17 +86,19 @@ namespace YAMP
 				if (type.IsAbstract)
 					continue;
 
-				if (type.GetInterface(ir) != null)
+			    var interfaces = type.GetInterfaces();
+
+				if (interfaces.Any(iface => iface.Name.Equals(ir)))
 				{
-					var ctor = type.GetConstructor(Type.EmptyTypes);
+                    var ctor = type.GetConstructor(new Type[0]);
 
 					if(ctor != null)
 						(ctor.Invoke(null) as IRegisterToken).RegisterToken();
 				}
 
-				if (type.GetInterface(fu) != null)
+                if (interfaces.Any(iface => iface.Name.Equals(fu)))
 				{
-					var ctor = type.GetConstructor(Type.EmptyTypes);
+                    var ctor = type.GetConstructor(new Type[0]);
 
 					if(ctor != null)
 					{
@@ -105,9 +108,9 @@ namespace YAMP
 					}
 				}
 
-				if (type.GetInterface(ct) != null)
+                if (interfaces.Any(iface => iface.Name.Equals(ct)))
 				{
-					var ctor = type.GetConstructor(Type.EmptyTypes);
+                    var ctor = type.GetConstructor(new Type[0]);
 
 					if (ctor != null)
 					{
