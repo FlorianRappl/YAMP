@@ -44,6 +44,7 @@
     <Compile Include="Attributes\DescriptionAttribute.cs" />
     <Compile Include="Attributes\ExampleAttribute.cs" />
     <Compile Include="Attributes\KindAttribute.cs" />
+    <Compile Include="Attributes\ValueConverterAttribute.cs" />
     <Compile Include="Constants\AlphaConstant.cs" />
     <Compile Include="Constants\BaseConstant.cs" />
     <Compile Include="Constants\ContainerConstant.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Exceptions\ArgumentException.cs" />
     <Compile Include="Exceptions\ArgumentsException.cs" />
     <Compile Include="Exceptions\ArgumentTypeNotSupportedException.cs" />
+    <Compile Include="Exceptions\ArgumentValueException.cs" />
     <Compile Include="Exceptions\AssignmentException.cs" />
     <Compile Include="Exceptions\BracketException.cs" />
     <Compile Include="Exceptions\DimensionException.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="Exceptions\MatrixFormatException.cs" />
     <Compile Include="Exceptions\OperationNotSupportedException.cs" />
     <Compile Include="Exceptions\ParseException.cs" />
+    <Compile Include="Exceptions\PropertyNotFoundException.cs" />
     <Compile Include="Exceptions\RangeException.cs" />
     <Compile Include="Exceptions\SymbolException.cs" />
     <Compile Include="Exceptions\TypeNotEqualException.cs" />
@@ -160,14 +163,12 @@
     <Compile Include="Functions\Trigonometric\TanFunction.cs" />
     <Compile Include="Functions\Trigonometric\TanhFunction.cs" />
     <Compile Include="Functions\VisualizationFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\SetDataFunction.cs" />
+    <Compile Include="Functions\Visualization\Helpers\SetFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\TitleFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\XLabelFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\XRangeFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\XScaleFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\YLabelFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\YRangeFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\YScaleFunction.cs" />
     <Compile Include="Functions\Visualization\LogLogFunction.cs" />
     <Compile Include="Functions\Visualization\PlotFunction.cs" />
     <Compile Include="Functions\Visualization\PolarFunction.cs" />
@@ -266,11 +267,13 @@
     <Compile Include="Values\Numeric\NumericValue.cs" />
     <Compile Include="Values\Numeric\RangeValue.cs" />
     <Compile Include="Values\Numeric\ScalarValue.cs" />
+    <Compile Include="Values\Plots\LegendPosition.cs" />
     <Compile Include="Values\Plots\Plot2DValue.cs" />
     <Compile Include="Values\Plots\Plot3DValue.cs" />
     <Compile Include="Values\Plots\PlotValue.cs" />
     <Compile Include="Values\Plots\Points.cs" />
     <Compile Include="Values\Plots\PointSymbol.cs" />
+    <Compile Include="Values\Plots\PolarPlotValue.cs" />
     <Compile Include="Values\Value.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
