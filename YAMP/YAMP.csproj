@@ -58,6 +58,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Attributes\ArgumentsAttribute.cs" />
     <Compile Include="Attributes\KindAttribute.cs" />
+    <Compile Include="Attributes\ValueConverterAttribute.cs" />
     <Compile Include="Constants\AlphaConstant.cs" />
     <Compile Include="Constants\BaseConstant.cs" />
     <Compile Include="Constants\ContainerConstant.cs" />
@@ -70,8 +71,10 @@
     <Compile Include="Exceptions\ArgumentException.cs" />
     <Compile Include="Exceptions\ArgumentsException.cs" />
     <Compile Include="Exceptions\ArgumentTypeNotSupportedException.cs" />
+    <Compile Include="Exceptions\ArgumentValueException.cs" />
     <Compile Include="Exceptions\ExpressionNotFoundException.cs" />
     <Compile Include="Exceptions\MatrixFormatException.cs" />
+    <Compile Include="Exceptions\PropertyNotFoundException.cs" />
     <Compile Include="Exceptions\YAMPException.cs" />
     <Compile Include="Expressions\ArgumentsBracketExpression.cs" />
     <Compile Include="Expressions\MatrixBracketExpression.cs" />
@@ -113,12 +116,10 @@
     <Compile Include="Functions\SystemFunctions\TimerFunction.cs" />
     <Compile Include="Functions\SystemFunctions\WhoFunction.cs" />
     <Compile Include="Functions\VisualizationFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\YScaleFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\SetDataFunction.cs" />
+    <Compile Include="Functions\Visualization\Helpers\SetFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\TitleFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\XLabelFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\XRangeFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\XScaleFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\YLabelFunction.cs" />
     <Compile Include="Functions\Visualization\Helpers\YRangeFunction.cs" />
     <Compile Include="Functions\Visualization\LogLogFunction.cs" />
@@ -218,18 +219,17 @@
     <Compile Include="Providers\YParameters.cs" />
     <Compile Include="QueryContext.cs" />
     <Compile Include="Expressions\Expression.cs" />
-    <Compile Include="Providers\AsyncTask.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Providers\ConventionExtensions.cs" />
     <Compile Include="Attributes\DescriptionAttribute.cs" />
     <Compile Include="Attributes\ExampleAttribute.cs" />
     <Compile Include="Values\Numeric\NumericValue.cs" />
+    <Compile Include="Values\Plots\LegendPosition.cs" />
     <Compile Include="Values\Plots\Plot2DValue.cs" />
     <Compile Include="Values\Plots\Plot3DValue.cs" />
     <Compile Include="Values\Plots\PlotValue.cs" />
     <Compile Include="Values\Plots\Points.cs" />
     <Compile Include="Values\Plots\PointSymbol.cs" />
+    <Compile Include="Values\Plots\PolarPlotValue.cs" />
     <Compile Include="Values\Value.cs" />
     <Compile Include="Values\Numeric\ScalarValue.cs" />
     <Compile Include="Exceptions\DimensionException.cs" />

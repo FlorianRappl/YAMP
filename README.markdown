@@ -20,10 +20,10 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **1.0.0**. This version is still an incomplete beta build.
-A NuGet package is available [here](http://nuget.org/packages/YAMP). There are a lot of
-tests in the code - since the package aims to be cross platform (created with Mono), no
-particular unit testing framework has been chosen.
+The current version number is **1.0.1**. A NuGet package (current version 1.0.0) is
+available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code -
+since the package aims to be cross platform (created with Mono), no particular unit testing
+framework has been chosen.
 
 The console project (provided in the solution) gives you instant access to benchmarks, 
 tests and your own trials. Parse equations as you want to. In the current release
@@ -37,6 +37,19 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**1.0.1:**
+- Removed the `setData()` method to adjust plot series values
+- Added the `set()` method to set arbitrary plot properties and series
+- The `set()` function includes possibilities to specify various series at once
+- Improved the documentation
+- Latest merge included to improve the portability of the library
+- Removed all Async functions - async. calls have to be done externally
+- Added new attributes to declare properties of `Plot` values modifyable
+- Changed the name of the `gamma` constant to `gamma1` (since this is the value of `Gamma(1)`)
+- Added several new exceptions
+- Added some missing help declarations
+- Added a lot of new properties to the various `Plot` derivatives
+
 **1.0.0:**
 - Improved the `load()` function (decides now if the source is text or binary)
 - Removed the transforms, but kept the advantages

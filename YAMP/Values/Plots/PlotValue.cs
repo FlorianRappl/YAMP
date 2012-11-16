@@ -49,7 +49,7 @@ namespace YAMP
 
 		#region Properties
 
-		public int Count { get { return points.Count; } }
+		public override int Count { get { return points.Count; } }
 
 		public Points<T> this[int index]
 		{
@@ -82,94 +82,78 @@ namespace YAMP
 
 	public abstract class PlotValue : Value
 	{
-		#region Members
-
-		string title;
-		string xlabel;
-		string ylabel;
-		double minx;
-		double maxx;
-		double miny;
-		double maxy;
-
-		#endregion
-
 		#region ctor
 
 		public PlotValue()
 		{
 			Title = string.Empty;
+			ShowLegend = true;
+			LegendBackground = "white";
+			LegendLineColor = "black";
+			LegendLineWidth = 1.0;
+			LegendPosition = YAMP.LegendPosition.RightTop;
 			XLabel = "x";
 			YLabel = "y";
+			Gridlines = false;
+			MinorGridlines = false;
 		}
 
 		#endregion
 
 		#region Properties
 
-		public bool IsLogX
+		public virtual int Count { get { return 0; } }
+
+		[ScalarToBooleanConverter]
+		public bool Gridlines
 		{
 			get;
-			internal set;
+			set;
 		}
 
-		public bool IsLogY
+		[ScalarToBooleanConverter]
+		public bool MinorGridlines
 		{
 			get;
-			internal set;
+			set;
 		}
 
-		public bool IsPolar
+		[StringToStringConverter]
+		public string Title
 		{
 			get;
-			internal set;
+			set;
 		}
 
-		public string Title 
+		[StringToStringConverter]
+		public string XLabel
 		{
-			get { return title; }
-			set
-			{
-				title = value;
-			}
+			get;
+			set;
 		}
 
-		public string XLabel 
+		[StringToStringConverter]
+		public string YLabel
 		{
-			get { return xlabel; }
-			set
-			{
-				xlabel = value;
-			}
+			get;
+			set;
 		}
 
-		public string YLabel 
+		[ScalarToDoubleConverter]
+		public double MinX
 		{
-			get { return ylabel; }
-			set
-			{
-				ylabel = value;
-			}
+			get;
+			set;
 		}
 
-		public double MinX 
+		[ScalarToDoubleConverter]
+		public double MaxX
 		{
-			get { return minx; }
-			set
-			{
-				minx = value;
-			}
+			get;
+			set;
 		}
 
-		public double MaxX 
-		{
-			get { return maxx; }
-			set
-			{
-				maxx = value;
-			}
-		}
-
+		[MatrixToDoubleArrayConverter]
 		public double[] XRange
 		{
 			get { return new double[] { MinX, MaxX }; }
@@ -180,24 +164,21 @@ namespace YAMP
 			}
 		}
 
-		public double MinY 
+		[ScalarToDoubleConverter]
+		public double MinY
 		{
-			get { return miny; }
-			set
-			{
-				miny = value;
-			}
+			get;
+			set;
 		}
 
-		public double MaxY 
+		[ScalarToDoubleConverter]
+		public double MaxY
 		{
-			get { return maxy; }
-			set
-			{
-				maxy = value;
-			}
+			get;
+			set;
 		}
 
+		[MatrixToDoubleArrayConverter]
 		public double[] YRange
 		{
 			get { return new double[] { MinY, MaxY }; }
@@ -206,6 +187,41 @@ namespace YAMP
 				MinY = value[0];
 				MaxY = value[1];
 			}
+		}
+
+		[ScalarToBooleanConverter]
+		public bool ShowLegend
+		{
+			get;
+			set;
+		}
+
+		[StringToEnumConverter(typeof(LegendPosition))]
+		public LegendPosition LegendPosition
+		{
+			get;
+			set;
+		}
+
+		[StringToStringConverter]
+		public string LegendBackground
+		{
+			get;
+			set;
+		}
+
+		[StringToStringConverter]
+		public string LegendLineColor
+		{
+			get;
+			set;
+		}
+
+		[ScalarToDoubleConverter]
+		public double LegendLineWidth
+		{
+			get;
+			set;
 		}
 
 		public static string[] ColorPalette { get { return colorPalette; } }

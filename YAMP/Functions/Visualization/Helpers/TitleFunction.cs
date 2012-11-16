@@ -3,6 +3,7 @@
 namespace YAMP
 {
 	[Kind(PopularKinds.Plot)]
+	[Description("Gets or sets the value of the title of a plot.")]
     class TitleFunction : PropertyFunction<StringValue>
     {
         public TitleFunction() : base("Title")

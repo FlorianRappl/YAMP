@@ -105,7 +105,7 @@ namespace YAMP
         void SetIndexer(Value left, Dictionary<string, Value> symbols)
         {
             _indexer = new _Function(left);
-            _indexer.Perform(_content.Interpret(symbols));
+			_indexer.Perform(_content.Interpret(symbols));
 		}
 
 		#endregion

@@ -30,6 +30,18 @@ namespace YAMP
 
 		#endregion
 
+		#region Properties
+
+		public int Length
+		{
+			get
+			{
+				return arguments.Length;
+			}
+		}
+
+		#endregion
+
 		#region Methods
 
 		public int Compare(YParameters x, YParameters y)

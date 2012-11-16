@@ -3,6 +3,7 @@
 namespace YAMP
 {
 	[Kind(PopularKinds.Plot)]
+	[Description("Gets or sets the value for the xlabel (title of the x-axis) of a plot.")]
     class XLabelFunction : PropertyFunction<StringValue>
     {
         public XLabelFunction() : base("XLabel")
