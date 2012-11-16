@@ -47,12 +47,6 @@ namespace YAMP
 
 		#endregion
 
-		#region static Events
-
-		public static event Action<QueryContext, Exception> OnExecuted;
-
-		#endregion
-
 		#region ctor
 
 		private Parser(ParseContext context, QueryContext query)
@@ -95,7 +89,14 @@ namespace YAMP
 
 		#endregion
 
-		#region Async methods
+#if ASYNC
+        #region static Events
+
+        public static event Action<QueryContext, Exception> OnExecuted;
+
+        #endregion
+
+        #region Async methods
 
 		/// <summary>
 		/// Creates the parse tree and evaluates the expression asynchronously (followed by a continuation with the OnExecuted event).
@@ -192,22 +193,6 @@ namespace YAMP
 		/// </param>
 		public static void ExecuteAsync(ParseContext context, string input, Dictionary<string, object> variables, Action<QueryContext, Exception> continuation)
 		{
-#if PORTABLE
-		    System.Threading.Tasks.Task.Factory.StartNew<QueryContext>(taskInitialized, new object[] { context, input, variables })
-		        .ContinueWith(task => continuation(task.Result, task.Exception));
-		}
-
-        static QueryContext taskInitialized(object state)
-        {
-            var parameters = state as object[];
-            var context = parameters[0] as ParseContext;
-            var input = parameters[1] as string;
-            var variables = parameters[2] as Dictionary<string, object>;
-            var parser = new Parser(context, new QueryContext(input));
-            parser.Execute(variables);
-            return parser.Context;
-        }
-#else
 			var worker = new AsyncTask();
 			worker.Continuation = continuation;
 			worker.RunWorkerAsync(new object[] { context, input, variables });
@@ -231,9 +216,9 @@ namespace YAMP
 			var worker = sender as AsyncTask;
 			worker.Continuation(e.Result as QueryContext, e.Error);
 		}
-#endif
 
         #endregion
+#endif
 
         #region Properties
 

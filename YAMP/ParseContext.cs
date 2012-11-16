@@ -466,6 +466,7 @@ namespace YAMP
             return parser.Context;
         }
 
+#if ASYNC
         /// <summary>
         /// Runs a query asynchronously within the current context.
         /// </summary>
@@ -513,6 +514,7 @@ namespace YAMP
             Parser.ExecuteAsync(this, query, variables, continuation);
             return this;
         }
+#endif
 
         #endregion
 
