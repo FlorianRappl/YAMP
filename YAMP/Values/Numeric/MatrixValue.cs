@@ -439,6 +439,7 @@ namespace YAMP
 		public override byte[] Serialize()
 		{
 		    byte[] content;
+
 		    using (var ms = new MemoryStream())
 		    {
 		        var dy = BitConverter.GetBytes(dimY);
@@ -457,6 +458,7 @@ namespace YAMP
 
 		        content = ms.ToArray();
 		    }
+
 		    return content;
 		}
 

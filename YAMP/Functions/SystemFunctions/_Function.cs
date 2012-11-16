@@ -71,7 +71,7 @@ namespace YAMP
             return m as Value;
         }
 
-		[Arguments(0)]
+		[Arguments(0, 1)]
         public Value Function(ArgumentsValue arguments)
 		{
 			var _sourceDimensions = _variable.Dimensions;

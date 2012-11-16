@@ -90,7 +90,7 @@ namespace YAMP
 
 				if (interfaces.Any(iface => iface.Name.Equals(ir)))
 				{
-                    var ctor = type.GetConstructor(new Type[0]);
+					var ctor = type.GetConstructor(Value.EmptyTypes);
 
 					if(ctor != null)
 						(ctor.Invoke(null) as IRegisterToken).RegisterToken();
@@ -98,7 +98,7 @@ namespace YAMP
 
                 if (interfaces.Any(iface => iface.Name.Equals(fu)))
 				{
-                    var ctor = type.GetConstructor(new Type[0]);
+					var ctor = type.GetConstructor(Value.EmptyTypes);
 
 					if(ctor != null)
 					{
@@ -110,7 +110,7 @@ namespace YAMP
 
                 if (interfaces.Any(iface => iface.Name.Equals(ct)))
 				{
-                    var ctor = type.GetConstructor(new Type[0]);
+					var ctor = type.GetConstructor(Value.EmptyTypes);
 
 					if (ctor != null)
 					{

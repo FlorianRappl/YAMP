@@ -12,46 +12,45 @@ namespace YAMP
 			ShowLabel = false;
 			LineWidth = 1.0;
 			Lines = false;
-			Nodes = true;
 			Symbol = PointSymbol.Circle;
 		}
 
-		public bool Nodes
-		{
-			get;
-			set;
-		}
-
+		[ScalarToBooleanConverter]
 		public bool Lines
 		{
 			get;
 			set;
 		}
 
+		[ScalarToDoubleConverter]
 		public double LineWidth
 		{
 			get;
 			set;
 		}
 
+		[StringToEnumConverter(typeof(PointSymbol))]
 		public PointSymbol Symbol
 		{
 			get;
 			set;
 		}
 
+		[ScalarToBooleanConverter]
 		public bool ShowLabel
 		{
 			get;
 			set;
 		}
 
+		[StringToStringConverter]
 		public string Color
 		{
 			get;
 			set;
 		}
 
+		[StringToStringConverter]
 		public string Label
 		{
 			get;

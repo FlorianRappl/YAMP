@@ -466,54 +466,6 @@ namespace YAMP
             return parser.Context;
         }
 
-        /// <summary>
-        /// Runs a query asynchronously within the current context.
-        /// </summary>
-        /// <param name="query">
-        /// The input to parse and execute.
-        /// </param>
-        /// <returns>The current context.</returns>
-        public ParseContext RunAsync(string query)
-        {
-            Parser.ExecuteAsync(this, query);
-            return this;
-        }
-
-        /// <summary>
-        /// Runs a query asynchronously within the current context.
-        /// </summary>
-        /// <param name="query">
-        /// The input to parse and execute.
-        /// </param>
-        /// <param name="continuation">
-        /// The function that should be invoked after the Value has been computed.
-        /// </param>
-        /// <returns>The current context.</returns>
-        public ParseContext RunAsync(string query, Action<QueryContext, Exception> continuation)
-        {
-            Parser.ExecuteAsync(this, query, continuation);
-            return this;
-        }
-
-        /// <summary>
-        /// Runs a query asynchronously within the current context.
-        /// </summary>
-        /// <param name="query">
-        /// The input to parse and execute.
-        /// </param>
-        /// <param name="variables">
-        /// The volatile variables to consider.
-        /// </param>
-        /// <param name="continuation">
-        /// The function that should be invoked after the Value has been computed.
-        /// </param>
-        /// <returns>The current context.</returns>
-        public ParseContext RunAsync(string query, Dictionary<string, object> variables, Action<QueryContext, Exception> continuation)
-        {
-            Parser.ExecuteAsync(this, query, variables, continuation);
-            return this;
-        }
-
         #endregion
 
         #region Event Methods

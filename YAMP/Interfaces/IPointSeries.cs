@@ -4,8 +4,6 @@ namespace YAMP
 {
 	public interface IPointSeries
 	{
-		bool Nodes { get; set; }
-
 		bool Lines { get; set; }
 
 		double LineWidth { get; set; }

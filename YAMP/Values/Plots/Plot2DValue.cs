@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
-    public class Plot2DValue : PlotValue<YAMP.Plot2DValue.PointPair>
+    public class Plot2DValue : PlotValue<Plot2DValue.PointPair>
     {
         #region Methods
 
@@ -125,7 +125,25 @@ namespace YAMP
             AddValues(p);
         }
 
-        #endregion
+		#endregion
+
+		#region Properties
+
+		[ScalarToBooleanConverter]
+		public bool IsLogX
+		{
+			get;
+			internal set;
+		}
+
+		[ScalarToBooleanConverter]
+		public bool IsLogY
+		{
+			get;
+			internal set;
+		}
+
+		#endregion
 
         #region Nested types
 

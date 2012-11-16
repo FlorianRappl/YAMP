@@ -3,6 +3,7 @@
 namespace YAMP
 {
 	[Kind(PopularKinds.Plot)]
+	[Description("Gets or sets the value for the yrange [min, max] of the y-axis of a plot.")]
     class YRangeFunction : PropertyFunction<MatrixValue>
     {
         public YRangeFunction() : base("YRange")

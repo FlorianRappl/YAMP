@@ -56,11 +56,6 @@ namespace YAMP
 		#endregion
 
 		#region Methods
-
-		public Value Interpret()
-		{
-			return Interpret(new Dictionary<string, Value>());
-		}
 		
 		public abstract Value Interpret(Dictionary<string, Value> symbols);
 
