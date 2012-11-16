@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 
@@ -13,7 +13,7 @@ namespace YAMP
 		#region Members
 
 		Value[] arguments;
-		IDictionary<YParameters, MethodInfo> functions;
+		readonly KeyValuePair<YParameters, MethodInfo>[] functions;
 
 		#endregion
 
@@ -21,17 +21,11 @@ namespace YAMP
 
 		public ArgumentFunction ()
 		{
-			functions = new SortedDictionary<YParameters, MethodInfo>(this);
-			var methods = this.GetType().GetMethods();
-			
-			foreach(var method in methods)
-			{
-				if (method.Name.IsArgumentFunction())
-				{
-					var yp = new YParameters(method.GetParameters(), method);
-					functions.Add(yp, method);
-				}
-			}
+		    functions = (from method in GetType().GetMethods()
+		                 where method.Name.IsArgumentFunction()
+		                 select
+		                     new KeyValuePair<YParameters, MethodInfo>(new YParameters(method.GetParameters(), method), method))
+		        .OrderBy(kv => kv.Key, this).ToArray();
 		}
 
 		#endregion
@@ -58,12 +52,13 @@ namespace YAMP
             var args = arguments.Length;
             var exception = new ArgumentsException(Name, arguments.Length);
 
-			foreach(var key in functions.Keys)
+			foreach(var kv in functions)
 			{
+			    var key = kv.Key;
 				if (args < key.MinimumArguments || args > key.MaximumArguments)
 					continue;
 
-				var f = functions[key];
+				var f = kv.Value;
 
 				if(BuildArguments(key, exception))
 				{
