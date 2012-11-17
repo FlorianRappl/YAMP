@@ -4,7 +4,7 @@ namespace YAMP
 {
 	class PlusOperator : BinaryOperator
 	{
-		public PlusOperator () : base("+", 4)
+		public PlusOperator () : base("+", 5)
 		{
 		}
 		

@@ -32,6 +32,35 @@ namespace YAMP
 {
 	public class PolarPlotValue : PlotValue<PolarPlotValue.PointPair>
 	{
+		#region ctor
+
+		public PolarPlotValue()
+		{
+			FractionSymbol = "π";
+			FractionUnit = Math.PI;
+			Gridlines = true;
+		}
+
+		#endregion
+
+		#region Properties
+
+		[StringToStringConverter]
+		public string FractionSymbol
+		{
+			get;
+			set;
+		}
+
+		[ScalarToDoubleConverter]
+		public double FractionUnit
+		{
+			get;
+			set;
+		}
+
+		#endregion
+
 		#region Methods
 
 		public override void AddPoints(MatrixValue m)
@@ -111,24 +140,6 @@ namespace YAMP
 				MaxY = ymax;
 
 			AddValues(p);
-		}
-
-		#endregion
-
-		#region Properties
-
-		[StringToStringConverter]
-		public string FractionSymbol
-		{
-			get;
-			set;
-		}
-
-		[ScalarToDoubleConverter]
-		public double FractionUnit
-		{
-			get;
-			set;
 		}
 
 		#endregion
