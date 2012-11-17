@@ -47,12 +47,6 @@ namespace YAMP
 
 		#endregion
 
-		#region static Events
-
-		public static event Action<QueryContext, Exception> OnExecuted;
-
-		#endregion
-
 		#region ctor
 
 		private Parser(ParseContext context, QueryContext query)
