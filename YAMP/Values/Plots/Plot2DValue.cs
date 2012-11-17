@@ -31,7 +31,35 @@ using System.Collections.Generic;
 namespace YAMP
 {
     public class Plot2DValue : PlotValue<Plot2DValue.PointPair>
-    {
+	{
+		#region ctor
+
+		public Plot2DValue()
+		{
+			IsLogX = false;
+			IsLogY = false;
+		}
+
+		#endregion
+
+		#region Properties
+
+		[ScalarToBooleanConverter]
+		public bool IsLogX
+		{
+			get;
+			set;
+		}
+
+		[ScalarToBooleanConverter]
+		public bool IsLogY
+		{
+			get;
+			set;
+		}
+
+		#endregion
+
         #region Methods
 
         public override void AddPoints(MatrixValue m)
@@ -124,24 +152,6 @@ namespace YAMP
 
             AddValues(p);
         }
-
-		#endregion
-
-		#region Properties
-
-		[ScalarToBooleanConverter]
-		public bool IsLogX
-		{
-			get;
-			internal set;
-		}
-
-		[ScalarToBooleanConverter]
-		public bool IsLogY
-		{
-			get;
-			internal set;
-		}
 
 		#endregion
 

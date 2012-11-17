@@ -319,6 +319,9 @@ namespace YAMPConsole
 			Test("[2 3 4\n1 2 3](2, 2)", 2.0);
 			Test(" [2 2 * 2 - 2^3 4](1, 2) ", -4.0);
 			Test("sum([0:10, 2^(0:2:20), 2^(1:2:21)](:,1))", 55.0);
+			Test("length(-pi/4:0.1:pi/4)", 16.0);
+			Test("polar(-pi/4:0.1:pi/4, [sin(-pi/4:0.1:pi/4), cos(-pi/4:0.1:pi/4), tan(-pi/4:0.1:pi/4)])", 3);
+			Test("plot([0:10, 2^(0:2:20), 2^(1:2:21)])", 2);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}
@@ -353,6 +356,15 @@ namespace YAMPConsole
 			var value = parser.Execute(new { x });
 			Console.WriteLine("with x = {2};\n{0}\n-> correct: {1}", value, result, x);
 			return Assert(value, result);
+		}
+
+		static bool Test(string query, int series)
+		{
+			var parser = YAMP.Parser.Parse(query);
+			Console.WriteLine("Testing: {0} = ...", query);
+			var value = (YAMP.PlotValue)parser.Execute();
+			Console.WriteLine("{0}\n-> correct: {1}", value.Count, series);
+			return Assert(value.Count, series);
 		}
 		
 		static bool Test(string query, double result)

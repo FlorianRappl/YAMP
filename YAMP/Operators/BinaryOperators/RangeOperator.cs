@@ -8,7 +8,7 @@ namespace YAMP
 	{
 		const string END = "end";
 
-		public RangeOperator () : base(":", 200)
+		public RangeOperator () : base(":", 3)
 		{
 			IsRightToLeft = true;
 		}
