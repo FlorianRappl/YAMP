@@ -183,8 +183,7 @@ namespace YAMP
 			{
 				for (var j = 1; j <= DimensionY; j++)
 				{
-					m[j, i].Value = -this[j, i].Value;
-					m[j, i].ImaginaryValue = -this[j, i].ImaginaryValue;
+					m[j, i] = (ScalarValue)this[j, i].ChangeSign();
 				}
 			}
 
@@ -446,14 +445,17 @@ namespace YAMP
 		        ms.Write(dy, 0, dy.Length);
 		        var dx = BitConverter.GetBytes(dimX);
 		        ms.Write(dx, 0, dx.Length);
+				var count = BitConverter.GetBytes(_values.Count);
+				ms.Write(count, 0, count.Length);
 
-		        for (var i = 1; i <= dimX; i++)
+		        foreach(var entry in _values)
 		        {
-		            for (var j = 1; j <= dimY; j++)
-		            {
-		                var buffer = this[j, i].Serialize();
-		                ms.Write(buffer, 0, buffer.Length);
-		            }
+					var j = BitConverter.GetBytes(entry.Key.Row);
+					var i = BitConverter.GetBytes(entry.Key.Column);
+					var buffer = entry.Value.Serialize();
+					ms.Write(j, 0, j.Length);
+					ms.Write(i, 0, i.Length);
+					ms.Write(buffer, 0, buffer.Length);
 		        }
 
 		        content = ms.ToArray();
@@ -464,19 +466,24 @@ namespace YAMP
 
 		public override Value Deserialize(byte[] content)
 		{
-			var dy = BitConverter.ToInt32 (content, 0);
-			var dx = BitConverter.ToInt32 (content, 4);
-			var pos = 8;
+			dimY = BitConverter.ToInt32 (content, 0);
+			dimX = BitConverter.ToInt32(content, 4);
+			var count = BitConverter.ToInt32(content, 8);
+			var pos = 12;
 
-			for(var i = 1; i <= dx; i++)
+			for(var i = 0; i < count; i++)
 			{
-				for(var j = 1; j <= dy; j++)
+				var row = BitConverter.ToInt32(content, pos);
+				var col = BitConverter.ToInt32(content, pos + 4);
+				var re = BitConverter.ToDouble(content, pos + 8);
+				var im = BitConverter.ToDouble(content, pos + 16);
+				_values.Add(new MatrixIndex
 				{
-					var re = BitConverter.ToDouble(content, pos);
-					var im = BitConverter.ToDouble(content, pos + 8);
-					this[j, i] = new ScalarValue(re, im);
-					pos += 16;
-				}
+					Column = col,
+					Row = row
+				}, new ScalarValue(re, im));
+
+				pos += 24;
 			}
 
 			return this;
@@ -571,6 +578,8 @@ namespace YAMP
 		public MatrixValue Transpose()
 		{
 			var m = Clone();
+			m.DimensionX = DimensionY;
+			m.DimensionY = DimensionX;
 
 			foreach (var pair in _values)
 			{
@@ -587,8 +596,9 @@ namespace YAMP
 		{
 			var sum = 0.0;
 
-			foreach (var p in _values)
-				sum += (p.Value.Value * p.Value.Value + p.Value.ImaginaryValue * p.Value.ImaginaryValue);
+			for (var i = 1; i <= DimensionX; i++)
+				for (var j = 1; j <= DimensionY; j++)
+					sum += this[j, i].AbsSquare().Value;
 
 			return new ScalarValue(Math.Sqrt(sum));
 		}

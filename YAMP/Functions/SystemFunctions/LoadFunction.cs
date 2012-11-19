@@ -57,7 +57,7 @@ namespace YAMP
 
         [Description("Loads specified variables found in the file.")]
         [Example("load(\"myfile.mat\", \"x\", \"y\", \"z\")", "Opens the file myfile.mat and reads out variables that have been named x, y and z.")]
-		[Arguments(1)]
+		[Arguments(1, 1)]
         public StringValue Function(StringValue filename, ArgumentsValue args)
         {
             if (!File.Exists(filename.Value))

@@ -27,9 +27,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace YAMP
 {
+	[Serializable]
 	public abstract class PlotValue<T> : PlotValue
 	{
 		#region Members
@@ -40,9 +44,14 @@ namespace YAMP
 
 		#region ctor
 
-		public PlotValue ()
+		public PlotValue()
 		{
 			points = new List<Points<T>>();
+		}
+
+		public PlotValue(SerializationInfo info, StreamingContext ctxt) : base(info, ctxt)
+		{
+			points = (List<Points<T>>)info.GetValue("Points", typeof(List<Points<T>>));
 		}
 
 		#endregion
@@ -78,10 +87,26 @@ namespace YAMP
 		}
 
 		#endregion
+
+		#region Serialization
+
+		public override void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			info.AddValue("Points", points);
+		}
+
+		#endregion
 	}
 
+	[Serializable]
 	public abstract class PlotValue : Value
 	{
+		#region Events
+
+		public event EventHandler<PlotEventArgs> OnPlotChanged;
+
+		#endregion
+
 		#region ctor
 
 		public PlotValue()
@@ -96,6 +121,24 @@ namespace YAMP
 			YLabel = "y";
 			Gridlines = false;
 			MinorGridlines = false;
+		}
+
+		public PlotValue(SerializationInfo info, StreamingContext ctxt)
+		{
+			Title = (string)info.GetValue("Title", typeof(string));
+			ShowLegend = (bool)info.GetValue("ShowLegend", typeof(bool));
+			LegendBackground = (string)info.GetValue("LegendBackground", typeof(string));
+			LegendLineColor = (string)info.GetValue("LegendLineColor", typeof(string));
+			LegendLineWidth = (double)info.GetValue("LegendLineWidth", typeof(double));
+			LegendPosition = (LegendPosition)info.GetValue("LegendPosition", typeof(LegendPosition));
+			XLabel = (string)info.GetValue("XLabel", typeof(string));
+			YLabel = (string)info.GetValue("YLabel", typeof(string));
+			Gridlines = (bool)info.GetValue("Gridlines", typeof(bool));
+			MinorGridlines = (bool)info.GetValue("MinorGridlines", typeof(bool));
+			MinX = (double)info.GetValue("MinX", typeof(double));
+			MaxX = (double)info.GetValue("MaxX", typeof(double));
+			MinY = (double)info.GetValue("MinY", typeof(double));
+			MaxY = (double)info.GetValue("MaxY", typeof(double));
 		}
 
 		#endregion
@@ -230,7 +273,21 @@ namespace YAMP
 
 		#region Methods
 
+		internal void RaisePlotChanged(string property)
+		{
+			if (OnPlotChanged != null)
+			{
+				var args = new PlotEventArgs(this, property);
+				OnPlotChanged(this, args);
+			}
+		}
+
 		public abstract void AddPoints(MatrixValue m);
+
+		public void Update()
+		{
+			RaisePlotChanged("Data");
+		}
 
 		public void SetXRange(double min, double max)
 		{
@@ -372,14 +429,49 @@ namespace YAMP
 			throw new OperationNotSupportedException("^", this);
 		}
 
-		public override byte[] Serialize()
+		#endregion 
+
+		#region Serialization
+
+		protected static object BinaryDeserialize(byte[] content)
 		{
-			return new byte[0];
+			using (var stream = new MemoryStream(content))
+			{
+				var bformatter = new BinaryFormatter();
+				return bformatter.Deserialize(stream);
+			}
 		}
 
-		public override Value Deserialize(byte[] content)
+		public override byte[] Serialize()
 		{
-			return Value.Empty;
+			byte[] content;
+
+			using (var stream = new MemoryStream())
+			{
+				var bformatter = new BinaryFormatter();
+				bformatter.Serialize(stream, this);
+				content = stream.ToArray();
+			}
+
+			return content;
+		}
+
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			info.AddValue("Title", Title);
+			info.AddValue("ShowLegend", ShowLegend);
+			info.AddValue("LegendBackground", LegendBackground);
+			info.AddValue("LegendLineColor", LegendLineColor);
+			info.AddValue("LegendLineWidth", LegendLineWidth);
+			info.AddValue("LegendPosition", LegendPosition);
+			info.AddValue("XLabel", XLabel);
+			info.AddValue("YLabel", YLabel);
+			info.AddValue("Gridlines", Gridlines);
+			info.AddValue("MinorGridlines", MinorGridlines);
+			info.AddValue("MinX", MinX);
+			info.AddValue("MaxX", MaxX);
+			info.AddValue("MinY", MinY);
+			info.AddValue("MaxY", MaxY);
 		}
 
 		#endregion

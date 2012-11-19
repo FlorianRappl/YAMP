@@ -2,7 +2,7 @@
 
 namespace YAMP
 {
-    abstract class SystemFunction : ArgumentFunction
+    public abstract class SystemFunction : ArgumentFunction
     {
         public SystemFunction() : base()
         {

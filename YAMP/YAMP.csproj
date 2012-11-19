@@ -77,6 +77,7 @@
     <Compile Include="Exceptions\PropertyNotFoundException.cs" />
     <Compile Include="Exceptions\YAMPException.cs" />
     <Compile Include="Expressions\ArgumentsBracketExpression.cs" />
+    <Compile Include="Exceptions\EscapeSequenceNotDetectedException.cs" />
     <Compile Include="Expressions\MatrixBracketExpression.cs" />
     <Compile Include="Expressions\TreeExpression.cs" />
     <Compile Include="Expressions\UnaryExpression.cs" />
@@ -85,7 +86,11 @@
     <Compile Include="Functions\ContainerFunction.cs" />
     <Compile Include="Functions\Fractals\MandelbrotFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\ModFunction.cs" />
+    <Compile Include="Functions\Numerics\DiffFunction.cs" />
+    <Compile Include="Functions\Numerics\IntFunction.cs" />
     <Compile Include="Functions\StandardFunctions\ProductFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\LsFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\PwdFunction.cs" />
     <Compile Include="Functions\SystemFunctions\SleepFunction.cs" />
     <Compile Include="Functions\SystemFunctions\TypeFunction.cs" />
     <Compile Include="Functions\SystemFunctions\_Function.cs" />

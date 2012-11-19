@@ -27,9 +27,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace YAMP
 {
+	[Serializable]
     public class Plot3DValue : PlotValue<YAMP.Plot3DValue.PointTriple>
     {
         #region Members
@@ -39,6 +41,20 @@ namespace YAMP
         double maxz;
 
         #endregion
+
+		public Plot3DValue()
+		{
+		}
+
+		public Plot3DValue(SerializationInfo info, StreamingContext ctxt) : base(info, ctxt)
+		{
+			IsLogX = (bool)info.GetValue("IsLogX", typeof(bool));
+			IsLogY = (bool)info.GetValue("IsLogY", typeof(bool));
+			IsLogZ = (bool)info.GetValue("IsLogZ", typeof(bool));
+			ZLabel = (string)info.GetValue("XLabel", typeof(string));
+			MinZ = (double)info.GetValue("MinY", typeof(double));
+			MaxZ = (double)info.GetValue("MaxY", typeof(double));
+		}
 
         #region Properties
 
@@ -189,6 +205,7 @@ namespace YAMP
 
         #region Nested Type
 
+		[Serializable]
         public struct PointTriple
         {
             public double X;
@@ -196,6 +213,31 @@ namespace YAMP
             public double Z;
         }
 
-        #endregion
+		#endregion
+
+		#region Serialization
+
+		public override Value Deserialize(byte[] content)
+		{
+			var o = BinaryDeserialize(content) as Plot3DValue;
+
+			if (o == null)
+				return Value.Empty;
+
+			return o;
+		}
+
+		public override void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			base.GetObjectData(info, ctxt);
+			info.AddValue("ZLabel", ZLabel);
+			info.AddValue("MinZ", MinX);
+			info.AddValue("MaxZ", MaxX);
+			info.AddValue("IsLogX", IsLogX);
+			info.AddValue("IsLogY", IsLogY);
+			info.AddValue("IsLogZ", IsLogZ);
+		}
+
+		#endregion
     }
 }

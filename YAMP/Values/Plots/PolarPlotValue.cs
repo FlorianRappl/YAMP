@@ -27,9 +27,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace YAMP
 {
+	[Serializable]
 	public class PolarPlotValue : PlotValue<PolarPlotValue.PointPair>
 	{
 		#region ctor
@@ -39,6 +41,12 @@ namespace YAMP
 			FractionSymbol = "π";
 			FractionUnit = Math.PI;
 			Gridlines = true;
+		}
+
+		public PolarPlotValue(SerializationInfo info, StreamingContext ctxt) : base(info, ctxt)
+		{
+			FractionSymbol = (string)info.GetValue("FractionSymbol", typeof(string));
+			FractionUnit = (double)info.GetValue("FractionUnit", typeof(double));
 		}
 
 		#endregion
@@ -146,10 +154,32 @@ namespace YAMP
 
 		#region Nested types
 
+		[Serializable]
 		public struct PointPair
 		{
 			public double Angle;
 			public double Magnitude;
+		}
+
+		#endregion
+
+		#region Serialization
+
+		public override Value Deserialize(byte[] content)
+		{
+			var o = BinaryDeserialize(content) as PolarPlotValue;
+
+			if (o == null)
+				return Value.Empty;
+
+			return o;
+		}
+
+		public override void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			base.GetObjectData(info, ctxt);
+			info.AddValue("FractionSymbol", FractionSymbol);
+			info.AddValue("FractionUnit", FractionUnit);
 		}
 
 		#endregion

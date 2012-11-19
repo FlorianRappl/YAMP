@@ -23,8 +23,7 @@ namespace YAMP
 		{
 		    functions = (from method in GetType().GetMethods()
 		                 where method.Name.IsArgumentFunction()
-		                 select
-		                     new KeyValuePair<YParameters, MethodInfo>(new YParameters(method.GetParameters(), method), method))
+		                 select new KeyValuePair<YParameters, MethodInfo>(new YParameters(method.GetParameters(), method), method))
 		        .OrderBy(kv => kv.Key, this).ToArray();
 		}
 
@@ -48,6 +47,21 @@ namespace YAMP
 		{
 			return 100 * (y.Length - x.Length) + Math.Sign(y.Weight - x.Weight);
 		}
+
+		public bool CanExecute(int args)
+		{
+			foreach (var kv in functions)
+			{
+				var key = kv.Key;
+
+				if (args < key.MinimumArguments || args > key.MaximumArguments)
+					continue;
+
+				return true;
+			}
+
+			return false;
+		}
 		
 		public override Value Perform (Value argument)
 		{
@@ -67,6 +81,7 @@ namespace YAMP
 			foreach(var kv in functions)
 			{
 			    var key = kv.Key;
+
 				if (args < key.MinimumArguments || args > key.MaximumArguments)
 					continue;
 

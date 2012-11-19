@@ -322,6 +322,10 @@ namespace YAMPConsole
 			Test("length(-pi/4:0.1:pi/4)", 16.0);
 			Test("polar(-pi/4:0.1:pi/4, [sin(-pi/4:0.1:pi/4), cos(-pi/4:0.1:pi/4), tan(-pi/4:0.1:pi/4)])", 3);
 			Test("plot([0:10, 2^(0:2:20), 2^(1:2:21)])", 2);
+			Test("|1:1:3|", Math.Sqrt(1 + 4 + 9));
+			Test("|[1,2,3]|", Math.Sqrt(1 + 4 + 9));
+			Test("|[1;2;3]|", Math.Sqrt(1 + 4 + 9));
+			Test("-sin([1,2,3])(2)", -Math.Sin(2));
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}

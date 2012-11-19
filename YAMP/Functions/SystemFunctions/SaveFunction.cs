@@ -45,7 +45,7 @@ namespace YAMP
 
 		static void Save(string filename, IDictionary<string, Value> workspace)
 		{
-			using(var fs = File.Create (filename))
+			using(var fs = File.Create(filename))
 			{
 				foreach(string variable in workspace.Keys)
 				{

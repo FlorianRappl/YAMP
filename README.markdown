@@ -49,6 +49,10 @@ Version history
 - Added several new exceptions
 - Added some missing help declarations
 - Added a lot of new properties to the various `Plot` derivatives
+- Fixed some bugs regarding `Range` and `Matrix` types
+- Added improved serialization (for `Plot` derivatives, `Matrix` and `Range` values)
+- Added new tests and fixed a misbehavior for the unary minus operator regarding matrices
+- Added new functions `ls()` and `pwd()` for directory information
 
 **1.0.0:**
 - Improved the `load()` function (decides now if the source is text or binary)

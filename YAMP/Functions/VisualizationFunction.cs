@@ -2,7 +2,7 @@
 
 namespace YAMP
 {
-    abstract class VisualizationFunction : SystemFunction
+    public abstract class VisualizationFunction : SystemFunction
     {
         public override Value Perform(Value argument)
         {

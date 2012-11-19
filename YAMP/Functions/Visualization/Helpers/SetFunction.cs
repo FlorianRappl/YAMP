@@ -20,7 +20,7 @@ namespace YAMP
 		{
 			var propertyName = property.Value;
 			AlterProperty(plot, propertyName, newValue);
-			Context.RaisePlotChanged(plot, propertyName);
+			plot.RaisePlotChanged(propertyName);
 			return newValue;
 		}
 
@@ -61,7 +61,7 @@ namespace YAMP
 				}
 			}
 
-			Context.RaisePlotChanged(plot, "Series");
+			plot.RaisePlotChanged("Series");
 			return newValue;
 		}
 

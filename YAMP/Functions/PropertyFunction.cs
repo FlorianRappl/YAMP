@@ -29,7 +29,7 @@ namespace YAMP
         public Value Function(PlotValue plot, T parameter)
         {
             plot.GetType().GetProperty(_propertyName).SetValue(plot, GetValue(parameter), null);
-            Context.RaisePlotChanged(plot, _propertyName);
+            plot.RaisePlotChanged(_propertyName);
             return plot;
         }
 
