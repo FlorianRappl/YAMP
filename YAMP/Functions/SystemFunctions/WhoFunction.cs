@@ -36,5 +36,31 @@ namespace YAMP
 
             return new StringValue(sb.ToString());
         }
+
+		[Description("Lists variables from the current workspace using a filter.")]
+		[Example("who(\"a*\", \"x\")", "Lists all variables, which start with a small 'a' and the variable x.")]
+		[Example("who(\"x?b\", \"a\", \"b\")", "Lists the variables a and b, as well as all variables, which contain 3 letters, starting with a small x, ending with a small b and any letter in between.")]
+		[Arguments(0, 2)]
+		public StringValue Function(ArgumentsValue filter)
+		{
+			var values = filter.Values;
+			int index = 0;
+			var sb = new StringBuilder();
+
+			foreach(var value in values)
+			{
+				index++;
+
+				if(value is StringValue)
+				{
+					var str = value as StringValue;
+					sb.Append(Function(str));
+				}
+				else
+					throw new ArgumentException(Name, index, "String", value.Header);
+			}
+
+			return new StringValue(sb.ToString());
+		}
     }
 }

@@ -14,7 +14,7 @@ namespace YAMP
 		/// <param name="min">The minimum number of arguments that need to be specified.</param>
 		/// <param name="max">The maximum number of arguments that will be delegated to this container.</param>
 		/// <param name="delta">The chunks of arguments to include, i.e. 2 is always an even number of arguments.</param>
-		public ArgumentsAttribute(int index, int min = 0, int max = int.MaxValue, int delta = 1)
+		public ArgumentsAttribute(int index, int min = 1, int max = int.MaxValue, int delta = 1)
         {
 			MinimumArguments = min < 0 ? 0 : min;
 			MaximumArguments = max < MinimumArguments ? MinimumArguments : max;

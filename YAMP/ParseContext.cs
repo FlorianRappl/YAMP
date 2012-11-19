@@ -53,7 +53,6 @@ namespace YAMP
         #region Events
 
         public event EventHandler<VariableEventArgs> OnVariableChanged;
-        public event EventHandler<PlotEventArgs> OnPlotChanged;
         public event EventHandler<PlotEventArgs> OnPlotCreated;
 
         #endregion
@@ -476,15 +475,6 @@ namespace YAMP
             {
                 var args = new VariableEventArgs(name, value);
                 OnVariableChanged(this, args);
-            }
-        }
-
-        internal void RaisePlotChanged(PlotValue plot, string property)
-        {
-            if (OnPlotChanged != null)
-            {
-                var args = new PlotEventArgs(plot, property);
-                OnPlotChanged(this, args);
             }
         }
 

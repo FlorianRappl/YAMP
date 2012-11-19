@@ -27,9 +27,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace YAMP
 {
+	[Serializable]
     public class Plot2DValue : PlotValue<Plot2DValue.PointPair>
 	{
 		#region ctor
@@ -38,6 +42,13 @@ namespace YAMP
 		{
 			IsLogX = false;
 			IsLogY = false;
+		}
+
+		public Plot2DValue(SerializationInfo info, StreamingContext ctxt) : base(info, ctxt)
+		{
+			IsLogX = (bool)info.GetValue("IsLogX", typeof(bool));
+			IsLogY = (bool)info.GetValue("IsLogY", typeof(bool));
+
 		}
 
 		#endregion
@@ -157,12 +168,34 @@ namespace YAMP
 
         #region Nested types
 
+		[Serializable]
         public struct PointPair
         {
             public double X;
             public double Y;
         }
 
-        #endregion
+		#endregion
+
+		#region Serialization
+
+		public override Value Deserialize(byte[] content)
+		{
+			var o = BinaryDeserialize(content) as Plot2DValue;
+
+			if (o == null)
+				return Value.Empty;
+
+			return o;
+		}
+
+		public override void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			base.GetObjectData(info, ctxt);
+			info.AddValue("IsLogX", IsLogX);
+			info.AddValue("IsLogY", IsLogY);
+		}
+
+		#endregion
     }
 }

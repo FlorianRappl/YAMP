@@ -30,6 +30,7 @@ using System.Reflection;
 
 namespace YAMP
 {
+	[Serializable]
 	public abstract class Value
 	{
 		static readonly Value _empty = new ScalarValue();

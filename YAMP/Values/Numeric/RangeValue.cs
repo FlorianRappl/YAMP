@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace YAMP
 {
@@ -120,6 +121,40 @@ namespace YAMP
                 base[j, i] = value;
             }
         }
+
+		public override byte[] Serialize()
+		{
+			var content = base.Serialize();
+
+			using (var ms = new MemoryStream())
+			{
+				ms.Write(content, 0, content.Length);
+
+				var start = BitConverter.GetBytes(Start);
+				var end = BitConverter.GetBytes(End);
+				var step = BitConverter.GetBytes(Step);
+				var all = BitConverter.GetBytes(All);
+
+				ms.Write(start, 0, start.Length);
+				ms.Write(end, 0, end.Length);
+				ms.Write(step, 0, step.Length);
+				ms.Write(all, 0, all.Length);
+
+				content = ms.ToArray();
+			}
+
+			return content;
+		}
+
+		public override Value Deserialize(byte[] content)
+		{
+			base.Deserialize(content);
+			Start = BitConverter.ToDouble(content, content.Length - 25);
+			End = BitConverter.ToDouble(content, content.Length - 17);
+			Step = BitConverter.ToDouble(content, content.Length - 9);
+			All = BitConverter.ToBoolean(content, content.Length - 1);
+			return this;
+		}
 
         #endregion
     }
