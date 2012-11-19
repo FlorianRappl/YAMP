@@ -104,6 +104,9 @@
     <Compile Include="Parsers\LambdaParseTree.cs" />
     <Compile Include="Parsers\ParseTreeCollection.cs" />
     <Compile Include="Parsers\StatementParseTree.cs" />
+    <Compile Include="Portability\BinaryFormatter.cs" />
+    <Compile Include="Portability\SerializableAttribute.cs" />
+    <Compile Include="Attributes\ValueConverterAttribute.cs" />
     <Compile Include="Constants\AlphaConstant.cs" />
     <Compile Include="Constants\BaseConstant.cs" />
     <Compile Include="Constants\ContainerConstant.cs" />
@@ -299,6 +302,8 @@
     <Compile Include="Parsers\ArgumentsParseTree.cs" />
     <Compile Include="Parsers\MatrixParseTree.cs" />
     <Compile Include="Parsers\ParseTree.cs" />
+    <Compile Include="Parsers\RootParseTree.cs" />
+    <Compile Include="Portability\SerializationInfo.cs" />
     <Compile Include="Providers\ConventionExtensions.cs" />
     <Compile Include="Providers\Deserializer.cs" />
     <Compile Include="Providers\MatrixIndex.cs" />
