@@ -88,7 +88,6 @@ namespace YAMP
 
         public void Dispose()
         {
-            stream.Close();
             stream.Dispose();
         }
     }

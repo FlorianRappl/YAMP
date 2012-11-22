@@ -49,7 +49,7 @@ namespace YAMP
             var length = BitConverter.ToInt32(buffer, 0);
             buffer = new byte[length];
             stream.Read(buffer, 0, buffer.Length);
-            return Encoding.Unicode.GetString(buffer);
+            return Encoding.Unicode.GetString(buffer, 0, buffer.Length);
         }
 
         public ScalarValue GetScalar()
@@ -77,7 +77,6 @@ namespace YAMP
 
         public void Dispose()
         {
-            stream.Close();
             stream.Dispose();
         }
     }
