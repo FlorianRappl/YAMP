@@ -37,6 +37,26 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**1.1.0:**
+- Removed the functions `title()`, `xlabel()`, ... to focus on the more general `set()`
+- Added the ability to write so called lambda expressions, i.e. functions in the code
+- Changed the random number generator to the Mersenne Twister MT19937
+- Added a function `diag()` to create diagonal matrices
+- Added a function `sort()` to sort vectors in matrices
+- Fixed some bugs regarding the SVD, Mandelbrot and other functions
+- Added a function to talk to the SVD, called `svd()`
+- Added the possibility to have multiple output arguments over `ArgumentValue`
+- Improved the possibility to have multiple statements
+- Added new tests and improved the test console application
+- Added a new class for serializing and one for deserializing (helpers)
+- Improved the documention and added a new `ReturnsAttribute` attribute (mult. outputs)
+- Added a new type called `FunctionValue`, which stores lambda expressions
+- Added a function `gcd()` to determine the greatest common divisor
+- Added several new random distributions along with the new random generator
+- Improved the way that indices work in YAMP - values can now act as functions as well
+- Added new constants `deg`, `g` and `omega`.
+- Moved the converter attributes to a different namespace
+
 **1.0.1:**
 - Removed the `setData()` method to adjust plot series values
 - Added the `set()` method to set arbitrary plot properties and series

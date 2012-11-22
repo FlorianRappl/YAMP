@@ -18,7 +18,7 @@ namespace YAMP
             if (op != null)
                 return op;
 
-            return new StatementOperator();
+            return new TerminateOperator(Query);
         }
     }
 }

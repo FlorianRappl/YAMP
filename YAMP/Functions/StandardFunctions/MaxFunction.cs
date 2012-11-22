@@ -7,9 +7,6 @@ namespace YAMP
 	[Kind(PopularKinds.Function)]
 	class MaxFunction : StandardFunction
 	{
-		[Description("Evaluates the vector(s) and outputs the maximum scalar(s) in the vector(s).")]
-		[Example("max([1,2,3,4,5,6,7,-1])", "Finds the maximum in the vector, which is 7 in this case.")]
-		[Example("max([1,2;3,4;5,6;7,-1])", "Finds the maximums of the vectors (of the matrix), which are 7 and 6 in this case.")]
 		public override Value Perform(Value argument)
 		{
 			if (argument is ScalarValue)
@@ -18,22 +15,28 @@ namespace YAMP
 			{
 				var m = argument as MatrixValue;
 
-				if(m.DimensionX == 1)
+				if (m.DimensionX == 1)
 					return GetVectorMax(m.GetColumnVector(1));
-				else if(m.DimensionY == 1)
+				else if (m.DimensionY == 1)
 					return GetVectorMax(m.GetRowVector(1));
-				else
-				{
-					var M = new MatrixValue(1, m.DimensionX);
-					
-					for(var i = 1; i <= m.DimensionX; i++)
-						M[1, i] = GetVectorMax(m.GetColumnVector(i));
-					
-					return M;
-				}
+				
+				return Function(m);
 			}
 
 			throw new OperationNotSupportedException("max", argument);
+		}
+
+		[Description("Evaluates the vector(s) and outputs the maximum scalar(s) in the vector(s).")]
+		[Example("max([1,2,3,4,5,6,7,-1])", "Finds the maximum in the vector, which is 7 in this case.")]
+		[Example("max([1,2;3,4;5,6;7,-1])", "Finds the maximums of the vectors (of the matrix), which are 7 and 6 in this case.")]
+		public override MatrixValue Function(MatrixValue m)
+		{
+			var M = new MatrixValue(1, m.DimensionX);
+
+			for (var i = 1; i <= m.DimensionX; i++)
+				M[1, i] = GetVectorMax(m.GetColumnVector(i));
+
+			return M;
 		}
 		
 		ScalarValue GetVectorMax(MatrixValue vec)

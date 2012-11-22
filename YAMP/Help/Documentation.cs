@@ -132,7 +132,6 @@ namespace YAMP.Help
 
 			if (topic.Instance is IFunction)
 			{
-				var argf = to.IsSubclassOf(typeof(ArgumentFunction));
 				var help = new HelpFunctionSection();
 				help.Name = topic.Name;
 				help.Description = GetDescription(to);
@@ -141,7 +140,7 @@ namespace YAMP.Help
 
 				foreach (var function in functions)
 				{
-					if ((argf && function.Name.Equals("Function")) || function.Name.Equals("Perform"))
+					if (function.Name.Equals("Function"))
 					{
 						var isextern = true;
 						var parameters = function.GetParameters();

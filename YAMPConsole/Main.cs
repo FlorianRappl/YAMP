@@ -334,6 +334,9 @@ namespace YAMPConsole
 			Test("|[1,2,3]|", Math.Sqrt(1 + 4 + 9));
 			Test("|[1;2;3]|", Math.Sqrt(1 + 4 + 9));
 			Test("-sin([1,2,3])(2)", -Math.Sin(2));
+			Test("f = @x => x.^2; f(2)", 4.0);
+			Test("f = @(x, y) => x*y'; f([1,2,3],[1,2,3])", 14.0);
+			Test("[a,b,c]=12.0;b", 12.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}

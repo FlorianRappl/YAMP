@@ -1,4 +1,4 @@
-/*
+﻿/*
     Copyright (c) 2012, Florian Rappl.
     All rights reserved.
 
@@ -26,51 +26,34 @@
 */
 
 using System;
-using System.Collections.Generic;
 
 namespace YAMP
 {
-    /// <summary>
-    /// The abstract base class used for all standard functions.
-    /// </summary>
-    public abstract class StandardFunction : BaseFunction
-    {
-        public override Value Perform(Value argument)
+	/// <summary>
+	/// The abstract base class for StandardFunctions and ArgumentFunctions
+	/// </summary>
+	public abstract class BaseFunction : IFunction
+	{
+        string name;
+
+		public BaseFunction()
         {
-            if (argument is ScalarValue)
-                return GetValue(argument as ScalarValue);
-            else if (argument is MatrixValue)
-            {
-                var A = argument as MatrixValue;
-                var M = new MatrixValue(A.DimensionY, A.DimensionX);
-
-                for (var j = 1; j <= A.DimensionY; j++)
-                    for (var i = 1; i <= A.DimensionX; i++)
-                        M[j, i] = GetValue(A[j, i]);
-
-                return M;
-            }
-            else if (argument is ArgumentsValue)
-                throw new ArgumentsException(Name, (argument as ArgumentsValue).Length);
-
-            throw new OperationNotSupportedException(Name, argument);
+            name = GetType().Name.RemoveFunctionConvention().ToLower();
         }
 
-        protected virtual ScalarValue GetValue(ScalarValue value)
+        public string Name
         {
-            return value;
-		}
+            get
+            {
+                return name;
+            }
+        }
 
-		[Description("Computes the value and returns the result.")]
-		public virtual ScalarValue Function(ScalarValue x)
-		{
-			return x;
-		}
+		public abstract Value Perform(Value argument);
 
-		[Description("Computes the value of each entry of the given matrix and returns a matrix with the same dimension.")]
-		public virtual MatrixValue Function(MatrixValue x)
+		public virtual Value Perform(ParseContext context, Value argument)
 		{
-			return x;
+			return Perform(argument);
 		}
-    }
+	}
 }

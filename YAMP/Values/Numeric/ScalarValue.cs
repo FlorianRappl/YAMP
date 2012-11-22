@@ -148,6 +148,11 @@ namespace YAMP
 
         #region Methods
 
+		public ScalarValue Square()
+		{
+			return this * this;
+		}
+
         public ScalarValue Clone()
 		{
 			return new ScalarValue(this);

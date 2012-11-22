@@ -29,13 +29,13 @@ namespace YAMP
         }
 
         /// <summary>
-        /// Gets or sets the example.
+        /// Gets the example.
         /// </summary>
-        public string Example { get; set; }
+        public string Example { get; private set; }
 
         /// <summary>
-        /// Gets or sets the description of the example.
+        /// Gets the description of the example.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; private set; }
     }
 }

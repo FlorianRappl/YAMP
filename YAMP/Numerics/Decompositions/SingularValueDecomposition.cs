@@ -116,7 +116,6 @@ namespace YAMP.Numerics
 
                     // Place the k-th row of A into e for the
                     // subsequent calculation of the row transformation.
-
                     e[j] = A[k][j];
                 }
 
@@ -177,7 +176,6 @@ namespace YAMP.Numerics
                     {
                         // Place the transformation in V for subsequent
                         // back multiplication.
-
                         for (int i = k + 1; i < n; i++)
                             V[i][k] = e[i];
                     }
@@ -563,10 +561,10 @@ namespace YAMP.Numerics
         {
             get
             {
-                var X = new MatrixValue(n, n);
+                var X = new MatrixValue(m, n);
 
-                for (int i = 1; i <= n; i++)
-                    X[i, i].Value = s[i - 1];
+                for (int i = 1; i <= m; i++)
+                    X[i, i] = new ScalarValue(s[i - 1]);
 
                 return X;
             }
@@ -582,7 +580,7 @@ namespace YAMP.Numerics
         /// <returns>U</returns>
         public virtual MatrixValue GetU()
         {
-            return new MatrixValue(U, m, Math.Min(m + 1, n));
+            return new MatrixValue(U, m, m);
         }
 
         /// <summary>

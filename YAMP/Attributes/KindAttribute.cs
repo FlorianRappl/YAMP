@@ -25,9 +25,9 @@ namespace YAMP
 		}
 
         /// <summary>
-        /// Gets or sets the kind.
+        /// Gets the kind.
         /// </summary>
-        public string Kind { get; set; }
+        public string Kind { get; private set; }
 	}
 
 	public enum PopularKinds

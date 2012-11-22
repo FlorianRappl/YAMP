@@ -62,7 +62,7 @@ namespace YAMP
 				}
 			}
 
-			plot.RaisePlotChanged("Series");
+			plot.UpdateProperties();
 			return newValue;
 		}
 
