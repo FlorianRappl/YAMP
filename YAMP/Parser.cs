@@ -53,7 +53,7 @@ namespace YAMP
 		{
 			_query = query;
 			query.Context = context;
-			query.Interpreter = new RootParseTree(query, query.Input);
+            query.Statements.AddStatement(query.Input);
 		}
 
 		#endregion
@@ -90,6 +90,19 @@ namespace YAMP
 		#endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets the version of the YAMP parser.
+        /// </summary>
+        public static string Version
+        {
+            get
+            {
+                var fullAssemblyName = Assembly.GetExecutingAssembly().FullName;
+                var match = Regex.Match(fullAssemblyName, @"\d{1,}.\d{1,}.\d{1,}.\d{1,}");
+                return match.Success ? match.Value : String.Empty;
+            }
+        }
 
         /// <summary>
 		/// Gets the context of the current parser instance (expression, value, ...).
@@ -455,19 +468,8 @@ namespace YAMP
 
 		public override string ToString()
 		{
-			var sb = new StringBuilder();
-			sb.Append("YAMP == VERSION ").Append(GetVersion(Assembly.GetExecutingAssembly().FullName)).AppendLine(" ==");
-			//sb.Append("YAMP [ input = ").Append(_query.Original).AppendLine(" ]");
-			//sb.AppendLine("--------------");
-			sb.Append(_query);
-			return sb.ToString();
+			return _query.ToString();
 		}
-
-        private static string GetVersion(string fullAssemblyName)
-        {
-            var match = Regex.Match(fullAssemblyName, @"\d{1,}.\d{1,}.\d{1,}.\d{1,}");
-            return match.Success ? match.Value : String.Empty;
-        }
 
 		#endregion
 	}

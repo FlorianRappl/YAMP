@@ -47,25 +47,63 @@ namespace YAMP
 
 				if (tree.Tree.Operator == null)
 					return Assign(tree.Tree.Expressions[0], value, symbols);
-				else if(tree.Tree.Operator is IndexOperator)
+				else if(tree.Tree.Operator is ArgsOperator)
 				{
-					var ix = tree.Tree.Operator as IndexOperator;
+					var ix = (ArgsOperator)tree.Tree.Operator;
 					return ix.Handle(tree.Tree.Expressions[0], value, symbols);
 				}
-				else
-					throw new AssignmentException(Op);
+                else if (tree.Tree.IsSymbolList)
+                {
+                    var vars = GetSymbols(tree.Tree);
+                    return HandleMultipleOutputs(value, vars);
+                }
+                else
+                    throw new AssignmentException(Op);
 			}
 			
 			return value;
 		}
 
+        Value HandleMultipleOutputs(Value value, SymbolExpression[] vars)
+        {
+
+            if (value is ArgumentsValue)
+            {
+                var av = (ArgumentsValue)value;
+                var l = Math.Min(vars.Length, av.Length);
+
+                for (var i = 0; i != l; i++)
+                    Assign(vars[i], av.Values[i]);
+
+                return av;
+            }
+            else
+            {
+                foreach (var sym in vars)
+                    Assign(sym, value);
+
+                return value;
+            }
+        }
+
+        SymbolExpression[] GetSymbols(ParseTree tree)
+        {
+            var list = new List<SymbolExpression>();
+
+            foreach (var expression in tree.Expressions)
+            {
+                if (expression is TreeExpression)
+                    list.AddRange(GetSymbols(((TreeExpression)expression).Tree));
+                else if (expression is SymbolExpression)
+                    list.Add((SymbolExpression)expression);
+            }
+
+            return list.ToArray();
+        }
+
 		Value Assign(SymbolExpression left, Value value)
 		{
-			if(left.IsSymbol)
-				_context.AssignVariable(left.SymbolName, value);
-			else
-				throw new AssignmentException(Op);
-			
+			_context.AssignVariable(left.SymbolName, value);
 			return value;
 		}
 	}

@@ -27,12 +27,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.IO;
+using YAMP.Converter;
 
 namespace YAMP
 {
-	[Serializable]
-    public class Plot3DValue : PlotValue<YAMP.Plot3DValue.PointTriple>
+    public sealed class Plot3DValue : PlotValue
     {
         #region Members
 
@@ -42,23 +42,17 @@ namespace YAMP
 
         #endregion
 
-		public Plot3DValue()
+        #region ctor
+
+        public Plot3DValue()
 		{
 		}
 
-		public Plot3DValue(SerializationInfo info, StreamingContext ctxt) : base(info, ctxt)
-		{
-			IsLogX = (bool)info.GetValue("IsLogX", typeof(bool));
-			IsLogY = (bool)info.GetValue("IsLogY", typeof(bool));
-			IsLogZ = (bool)info.GetValue("IsLogZ", typeof(bool));
-			ZLabel = (string)info.GetValue("XLabel", typeof(string));
-			MinZ = (double)info.GetValue("MinY", typeof(double));
-			MaxZ = (double)info.GetValue("MaxY", typeof(double));
-		}
+        #endregion
 
         #region Properties
 
-		[ScalarToBooleanConverter]
+        [ScalarToBooleanConverter]
 		public bool IsLogX
 		{
 			get;
@@ -132,15 +126,86 @@ namespace YAMP
 
         public override void AddPoints(MatrixValue m)
         {
-            if (m.DimensionY == 0 || m.DimensionX != 3)
+            if (m.DimensionY == 0 || m.DimensionX == 0)
                 return;
 
-            AddValues(m);
+            if (m.IsVector)
+            {
+                return;
+            }
+            else if (m.DimensionX <= m.DimensionY && m.DimensionX == 3)
+            {
+                var x = ConvertY(m, 0, m.DimensionY, 0);
+                var y = ConvertY(m, 0, m.DimensionY, 1);
+                var z = ConvertY(m, 0, m.DimensionY, 2);
+                AddValues(x, y, z);
+            }
+            else if(m.DimensionX > m.DimensionY && m.DimensionY == 3)
+            {
+                var x = ConvertX(m, 0, m.DimensionX, 0);
+                var y = ConvertX(m, 0, m.DimensionX, 1);
+                var z = ConvertX(m, 0, m.DimensionX, 2);
+                AddValues(x, y, z);
+            }
         }
 
-        void AddValues(MatrixValue m)
+        public void AddPoints(MatrixValue x, params MatrixValue[] zs)
+        {
+            double[] vx = null;
+            double[] vy = null;
+            double[] vz = null;
+
+            if (x.IsVector)
+            {
+                if (zs.Length < 2)
+                    return;
+
+                vx = Convert(x, 0, x.Length);
+            }
+            else
+            {
+                AddPoints(x);
+
+                foreach(MatrixValue z in zs)
+                    AddPoints(z);
+
+                return;
+            }
+
+
+            for(int i = 0; i < zs.Length; i++)
+            {
+                if (zs[i].IsVector)
+                {
+                    if (vy == null)
+                        vy = Convert(zs[i], 0, zs[i].Length);
+                    else
+                    {
+                        vz = Convert(zs[i], 0, zs[i].Length);
+                        AddValues(vx, vy, vz);
+                        vx = null;
+                        vz = null;
+                    }
+                }
+                else if (zs[i].DimensionX <= zs[i].DimensionY && zs[i].DimensionX == 2)
+                {
+                    vy = ConvertY(zs[i], 0, zs[i].DimensionY, 0);
+                    vz = ConvertY(zs[i], 0, zs[i].DimensionY, 1);
+                    AddValues(vx, vy, vz);
+                }
+                else if (zs[i].DimensionX > zs[i].DimensionY && zs[i].DimensionY == 2)
+                {
+                    vy = ConvertX(zs[i], 0, zs[i].DimensionX, 0);
+                    vz = ConvertX(zs[i], 0, zs[i].DimensionX, 1);
+                    AddValues(vx, vy, vz);
+                }
+            }
+        }
+
+        void AddValues(double[] _x, double[] _y, double[] _z)
         {
             var p = new Points<PointTriple>();
+            var length = Math.Min(_x.Length, Math.Min(_y.Length, _z.Length));
             var xmin = double.MaxValue;
             var xmax = double.MinValue;
             var ymin = double.MaxValue;
@@ -148,11 +213,11 @@ namespace YAMP
             var zmin = double.MaxValue;
             var zmax = double.MinValue;
 
-            for (var i = 1; i <= m.DimensionY; i++)
+            for (var i = 0; i < length; i++)
             {
-                var x = m[i, 1].Value;
-                var y = m[i, 2].Value;
-                var z = m[i, 3].Value;
+                var x = _x[i];
+                var y = _y[i];
+                var z = _z[i];
 
                 p.Add(new PointTriple
                 {
@@ -198,14 +263,13 @@ namespace YAMP
             if (Count == 0 || zmax > MaxZ)
                 MaxZ = zmax;
 
-            AddValues(p);
+            AddSeries(p);
         }
 
         #endregion
 
         #region Nested Type
 
-		[Serializable]
         public struct PointTriple
         {
             public double X;
@@ -217,27 +281,97 @@ namespace YAMP
 
 		#region Serialization
 
-		public override Value Deserialize(byte[] content)
-		{
-			var o = BinaryDeserialize(content) as Plot3DValue;
+        public override byte[] Serialize()
+        {
+            using (var s = Serializer.Create())
+            {
+                Serialize(s);
+                s.Serialize(MinZ);
+                s.Serialize(MaxZ);
+                s.Serialize(ZLabel);
+                s.Serialize(IsLogX);
+                s.Serialize(IsLogY);
+                s.Serialize(IsLogZ);
+                s.Serialize(Count);
 
-			if (o == null)
-				return Value.Empty;
+                for (var i = 0; i < Count; i++)
+                {
+                    var points = this[i];
+                    points.Serialize(s);
+                    s.Serialize(points.Count);
 
-			return o;
-		}
+                    for (int j = 0; j < points.Count; j++)
+                    {
+                        s.Serialize(points[j].X);
+                        s.Serialize(points[j].Y);
+                        s.Serialize(points[j].Z);
+                    }
+                }
 
-		public override void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-		{
-			base.GetObjectData(info, ctxt);
-			info.AddValue("ZLabel", ZLabel);
-			info.AddValue("MinZ", MinX);
-			info.AddValue("MaxZ", MaxX);
-			info.AddValue("IsLogX", IsLogX);
-			info.AddValue("IsLogY", IsLogY);
-			info.AddValue("IsLogZ", IsLogZ);
-		}
+                return s.Value;
+            }
+        }
 
-		#endregion
+        public override Value Deserialize(byte[] content)
+        {
+            using (var ds = Deserializer.Create(content))
+            {
+                Deserialize(ds);
+                MinZ = ds.GetDouble();
+                MaxZ = ds.GetDouble();
+                ZLabel = ds.GetString();
+                IsLogX = ds.GetBoolean();
+                IsLogY = ds.GetBoolean();
+                IsLogZ = ds.GetBoolean();
+                var length = ds.GetInt();
+
+                for (var i = 0; i < length; i++)
+                {
+                    var points = new Points<PointTriple>();
+                    points.Deserialize(ds);
+                    var count = ds.GetInt();
+
+                    for (int j = 0; j < count; j++)
+                    {
+                        var x = ds.GetDouble();
+                        var y = ds.GetDouble();
+                        var z = ds.GetDouble();
+
+                        points.Add(new PointTriple
+                        {
+                            X = x,
+                            Y = y,
+                            Z = z
+                        });
+                    }
+
+                    AddSeries(points);
+                }
+            }
+
+            return this;
+        }
+
+        #endregion
+
+        #region Index
+
+        public Points<PointTriple> this[int index]
+        {
+            get
+            {
+                return base.GetSeries(index) as Points<PointTriple>;
+            }
+        }
+
+        public PointTriple this[int index, int point]
+        {
+            get
+            {
+                return this[index][point];
+            }
+        }
+
+        #endregion
     }
 }

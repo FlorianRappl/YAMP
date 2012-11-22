@@ -42,6 +42,7 @@ namespace YAMP
 		Expression[] _expressions;
 		string _input;
 		int _offset;
+        int _final;
 		QueryContext _query;
 		char _lastSkip;
 
@@ -86,7 +87,38 @@ namespace YAMP
 
 		#endregion
 
-		#region Properties
+        #region Properties
+
+        /// <summary>
+        /// Gets a value indicating if the parse tree consists only of symbols that 
+        /// are seperated by columns (commas).
+        /// </summary>
+        public bool IsSymbolList
+        {
+            get
+            {
+                if (Expressions == null)
+                    return false;
+
+                if (Operator != null && !(Operator is MatrixColumnOperator))
+                    return false;
+
+                foreach (var expression in Expressions)
+                {
+                    if (expression is TreeExpression)
+                    {
+                        if (((TreeExpression)expression).Tree.IsSymbolList)
+                            continue;
+                    }
+                    else if (expression is SymbolExpression)
+                        continue;
+
+                    return false;
+                }
+
+                return true;
+            }
+        }
 
 		/// <summary>
 		/// Gets the operator used for this parse tree (can be null).
@@ -128,11 +160,11 @@ namespace YAMP
 				if (Operator != null)
 					return Operator is AssignmentOperator;
 
-				if (Expressions.Length != 1)
+				if (Expressions == null || Expressions.Length != 1)
 					return false;
 
 				if (Expressions[0] is TreeExpression)
-					return (Expressions[0] as TreeExpression).Tree.IsAssignment;
+                    return ((TreeExpression)Expressions[0]).Tree.IsAssignment;
 
 				return false;
 			}
@@ -165,6 +197,31 @@ namespace YAMP
 			get { return _lastSkip; }
 		}
 
+        /// <summary>
+        /// Gets the initial offset at the beginning of the parsing.
+        /// </summary>
+        public int Offset
+        {
+            get { return _offset; }
+        }
+
+        /// <summary>
+        /// Gets the length of the expression being parsed.
+        /// </summary>
+        public int Length
+        {
+            get { return _final - _offset; }
+        }
+
+        /// <summary>
+        /// Gets the string that has been parsed by this instance.
+        /// </summary>
+        public string Input
+        {
+            get { return _input; }
+            protected set { _input = value; }
+        }
+
 		#endregion
 
 		#region Methods
@@ -185,7 +242,7 @@ namespace YAMP
 			var expressions = new Stack<Expression>();
 			var takeop = false;
 			var maxLevel = -100;
-			var offset = _offset;
+			_final = _offset;
 			var shadow = _input;
 
 			while (shadow.Length > 0)
@@ -197,7 +254,7 @@ namespace YAMP
 					case '\r':
 					case '\n':
 						_lastSkip = shadow[0];
-						offset++;
+						_final++;
 						shadow = shadow.Substring(1);
 						continue;
 				}
@@ -233,15 +290,15 @@ namespace YAMP
 					}
 
 					shadow = op.Set(shadow);
-					offset += op.Input.Length;
+					_final += op.Input.Length;
 				}
 				else
 				{
 					var exp = Tokens.Instance.FindExpression(_query, shadow);
-					exp.Offset = offset;
+					exp.Offset = _final;
 					expressions.Push(exp);
 					shadow = exp.Set(shadow);
-					offset += exp.Input.Length;
+					_final += exp.Input.Length;
 					takeop = true;
 				}
 			}

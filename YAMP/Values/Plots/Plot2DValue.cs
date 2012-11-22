@@ -28,13 +28,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+using YAMP.Converter;
 
 namespace YAMP
 {
-	[Serializable]
-    public class Plot2DValue : PlotValue<Plot2DValue.PointPair>
+    public sealed class Plot2DValue : PlotValue
 	{
 		#region ctor
 
@@ -42,13 +40,6 @@ namespace YAMP
 		{
 			IsLogX = false;
 			IsLogY = false;
-		}
-
-		public Plot2DValue(SerializationInfo info, StreamingContext ctxt) : base(info, ctxt)
-		{
-			IsLogX = (bool)info.GetValue("IsLogX", typeof(bool));
-			IsLogY = (bool)info.GetValue("IsLogY", typeof(bool));
-
 		}
 
 		#endregion
@@ -78,13 +69,13 @@ namespace YAMP
             if (m.DimensionY == 0 || m.DimensionX == 0)
                 return;
 
-            if (m.DimensionX == 1)
+            if (m.IsVector)
             {
-                var x = Generate(1.0, 1.0, m.DimensionY);
-                var y = ConvertY(m, 0, m.DimensionY, 0);
+                var x = Generate(1.0, 1.0, m.Length);
+                var y = Convert(m, 0, m.Length);
                 AddValues(x, y);
             }
-            else
+            else if(m.DimensionX <= m.DimensionY)
             {
                 var x = ConvertY(m, 0, m.DimensionY, 0);
 
@@ -94,26 +85,68 @@ namespace YAMP
                     AddValues(x, y);
                 }
             }
+            else
+            {
+                var x = ConvertX(m, 0, m.DimensionX, 0);
+
+                for (var k = 2; k <= m.DimensionY; k++)
+                {
+                    var y = ConvertX(m, 0, m.DimensionX, k - 1);
+                    AddValues(x, y);
+                }
+            }
         }
 
         public void AddPoints(MatrixValue x, MatrixValue y)
         {
-            if (x.DimensionX > 1 && x.DimensionY > 1)
+            if (x.IsVector)
+            {
+                var vx = Convert(x, 0, x.Length);
+
+                if (y.DimensionY > y.DimensionX || y.DimensionY == x.Length)
+                {
+                    var dim = Math.Min(x.Length, y.DimensionY);
+
+                    for (var i = 0; i < y.DimensionX; i++)
+                    {
+                        var vy = ConvertY(y, 0, dim, i);
+                        AddValues(vx, vy);
+                    }
+                }
+                else
+                {
+                    var dim = Math.Min(x.Length, y.DimensionX);
+
+                    for (var i = 0; i < y.DimensionY; i++)
+                    {
+                        var vy = ConvertX(y, 0, dim, i);
+                        AddValues(vx, vy);
+                    }
+                }
+            }
+            else
             {
                 AddPoints(x);
                 AddPoints(y);
             }
+        }
+
+        public void AddPoints(MatrixValue x, MatrixValue y, params MatrixValue[] zs)
+        {
+            if (x.IsVector)
+            {
+                AddPoints(x, y);
+
+                foreach (var z in zs)
+                    AddPoints(x, z);
+            }
             else
             {
-                var transpose = y.DimensionY == 1 && y.DimensionX > 1;
-                var dim = Math.Min(x.Length, transpose ? y.DimensionX : y.DimensionY);
-                var _x = Convert(x, 0, dim);
+                AddPoints(x);
+                AddPoints(y);
 
-                for (var k = 1; k <= y.DimensionX; k++)
-                {
-                    var _y = transpose ? ConvertX(y, 0, dim, k - 1) : ConvertY(y, 0, dim, k - 1);
-                    AddValues(_x, _y);
-                }
+                foreach (var z in zs)
+                    AddPoints(z);
             }
         }
 
@@ -125,7 +158,7 @@ namespace YAMP
             var ymin = double.MaxValue;
             var ymax = double.MinValue;
 
-            for (var i = 0; i < _x.Length; i++)
+            for (var i = 0; i < _y.Length; i++)
             {
                 var x = _x[i];
                 var y = _y[i];
@@ -161,14 +194,13 @@ namespace YAMP
             if (Count == 0 || ymax > MaxY)
                 MaxY = ymax;
 
-            AddValues(p);
+            AddSeries(p);
         }
 
 		#endregion
 
         #region Nested types
 
-		[Serializable]
         public struct PointPair
         {
             public double X;
@@ -179,23 +211,86 @@ namespace YAMP
 
 		#region Serialization
 
+        public override byte[] Serialize()
+        {
+            using (var s = Serializer.Create())
+            {
+                Serialize(s);
+                s.Serialize(IsLogX);
+                s.Serialize(IsLogY);
+                s.Serialize(Count);
+
+                for (var i = 0; i < Count; i++)
+                {
+                    var points = this[i];
+                    points.Serialize(s);
+                    s.Serialize(points.Count);
+
+                    for (int j = 0; j < points.Count; j++)
+                    {
+                        s.Serialize(points[j].X);
+                        s.Serialize(points[j].Y);
+                    }
+                }
+
+                return s.Value;
+            }
+        }
+
 		public override Value Deserialize(byte[] content)
 		{
-			var o = BinaryDeserialize(content) as Plot2DValue;
+            using (var ds = Deserializer.Create(content))
+            {
+                Deserialize(ds);
+                IsLogX = ds.GetBoolean();
+                IsLogY = ds.GetBoolean();
+                var length = ds.GetInt();
 
-			if (o == null)
-				return Value.Empty;
+                for (var i = 0; i < length; i++)
+                {
+                    var points = new Points<PointPair>();
+                    points.Deserialize(ds);
+                    var count = ds.GetInt();
 
-			return o;
-		}
+                    for (int j = 0; j < count; j++)
+                    {
+                        var x = ds.GetDouble();
+                        var y = ds.GetDouble();
 
-		public override void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-		{
-			base.GetObjectData(info, ctxt);
-			info.AddValue("IsLogX", IsLogX);
-			info.AddValue("IsLogY", IsLogY);
+                        points.Add(new PointPair
+                        {
+                            X = x,
+                            Y = y
+                        });
+                    }
+
+                    AddSeries(points);
+                }
+            }
+
+            return this;
 		}
 
 		#endregion
+
+        #region Index
+
+        public Points<PointPair> this[int index]
+        {
+            get
+            {
+                return base.GetSeries(index) as Points<PointPair>;
+            }
+        }
+
+        public PointPair this[int index, int point]
+        {
+            get
+            {
+                return this[index][point];
+            }
+        }
+
+        #endregion
     }
 }

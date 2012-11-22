@@ -5,23 +5,23 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
-    class IndexOperator : UnaryOperator
+    class ArgsOperator : UnaryOperator
 	{
 		#region Members
 
 		ArgumentsBracketExpression _content;
         QueryContext _query;
-		_Function _indexer;
 
 		#endregion
 
 		#region ctor
 
-		public IndexOperator() : base("(", 1000)
+		public ArgsOperator() : base("(", 1000)
         {
         }
 
-        public IndexOperator(QueryContext query) : base("(", 1000)
+        public ArgsOperator(QueryContext query)
+            : base("(", 1000)
         {
             _query = query;
 		}
@@ -44,7 +44,7 @@ namespace YAMP
 
 		public override Operator Create(QueryContext query)
         {
-            return new IndexOperator(query);
+            return new ArgsOperator(query);
         }
 
         public override string Set(string input)
@@ -55,20 +55,18 @@ namespace YAMP
 
         public override Value Perform(Value left)
         {
-            return _indexer.Get();
-        }
-
-        public Value Perform(Value left, Value value)
-        {
-            _indexer.Set(value);
             return left;
         }
 
         public override Value Handle(Expression expression, Dictionary<string, Value> symbols)
         {
+            var args = _content.Interpret(symbols);
             var left = expression.Interpret(symbols);
-            SetIndexer(left, symbols);
-            return Perform(left);
+
+            if(left is IFunction)
+                return ((IFunction)left).Perform(_query.Context, args);
+
+            throw new FunctionNotFoundException(expression.Input);
         }
 
         public Value Handle(Expression expression, Value value, Dictionary<string, Value> symbols)
@@ -76,37 +74,33 @@ namespace YAMP
             var isSymbol = expression is SymbolExpression;
             var symbolName = string.Empty;
             var context = _query.Context;
+            var args = _content.Interpret(symbols);
 
             if (isSymbol)
             {
-                var sym = expression as SymbolExpression;
+                var sym = (SymbolExpression)expression;
                 symbolName = sym.SymbolName;
-                isSymbol = sym.IsSymbol;
 
-                if (isSymbol && !context.Variables.ContainsKey(sym.SymbolName))
+                if (!context.Variables.ContainsKey(sym.SymbolName))
                     context.AssignVariable(sym.SymbolName, new MatrixValue());
             }
 
             var left = expression.Interpret(symbols);
-            SetIndexer(left, symbols);
-            var ret = Perform(left, value);
 
-            if (isSymbol)
-                context.AssignVariable(symbolName, ret);
+            if (left is ISetFunction)
+            {
+                var sf = (ISetFunction)left;
+                sf.Perform(_query.Context, args, value);
+                return left;
+            }
 
-            return ret;
+            throw new FunctionNotFoundException(expression.Input);
         }
 
         public override string ToString()
         {
             return base.ToString() + Environment.NewLine + _content.ToString();
         }
-
-        void SetIndexer(Value left, Dictionary<string, Value> symbols)
-        {
-            _indexer = new _Function(left);
-			_indexer.Perform(_content.Interpret(symbols));
-		}
 
 		#endregion
     }

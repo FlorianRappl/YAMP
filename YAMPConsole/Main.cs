@@ -20,7 +20,14 @@ namespace YAMPConsole
 		
 		public static void Main (string[] args)
 		{
-			Console.WriteLine ("Command Line Test Tool of YAMP");
+            Console.WriteLine("Command Line Test Tool of YAMP");
+            Console.WriteLine();
+            Console.WriteLine("--------------------------");
+            Console.WriteLine();
+            Console.WriteLine(" YAMP VERSION " + YAMP.Parser.Version);
+            Console.WriteLine();
+            Console.WriteLine("--------------------------");
+            Console.WriteLine();
 
 #if DEBUG
 			Console.WriteLine("DEBUG MODE");
@@ -30,7 +37,8 @@ namespace YAMPConsole
 			Benchmarks();
 #elif CONSOLE
 			Console.WriteLine("CONSOLE MODE");
-			Console.WriteLine("Enter your own statements now (exit with empty line):");
+			Console.WriteLine("Enter your own statements now (exit with the command 'exit'):");
+            Console.WriteLine();
 			var query = string.Empty;
 
 			YAMP.Parser.AddCustomFunction("G", v => new YAMP.ScalarValue((v as YAMP.ScalarValue).Value * Math.PI) );
@@ -120,7 +128,7 @@ namespace YAMPConsole
 						if (value != null)
 						{
 							Console.WriteLine(value);
-							Console.Write(parser);
+							Console.WriteLine(parser);
 						}
 					}
 					catch (Exception ex)
