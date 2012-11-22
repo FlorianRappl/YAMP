@@ -33,7 +33,7 @@ using System.IO;
 
 namespace YAMP
 {
-	public class MatrixValue : NumericValue, IHasIndex, ISign
+	public class MatrixValue : NumericValue, IFunction, ISetFunction
 	{
 		#region Members
 
@@ -45,6 +45,16 @@ namespace YAMP
 		#endregion
 
 		#region Properties
+
+        public bool IsScalar
+        {
+            get { return DimensionX == 1 && DimensionY == 1; }
+        }
+
+        public bool IsVector
+        {
+            get { return (DimensionX == 1 && DimensionY > 1) || (DimensionY == 1 && DimensionX > 1); }
+        }
 
 		public int DimensionX
 		{
@@ -174,21 +184,6 @@ namespace YAMP
 		#endregion
 
 		#region Methods
-
-		public virtual Value ChangeSign()
-		{
-			var m = new MatrixValue(DimensionY, DimensionX);
-
-			for (var i = 1; i <= DimensionX; i++)
-			{
-				for (var j = 1; j <= DimensionY; j++)
-				{
-					m[j, i] = (ScalarValue)this[j, i].ChangeSign();
-				}
-			}
-
-			return m;
-		}
 
 		public override void Clear()
 		{
@@ -769,21 +764,16 @@ namespace YAMP
 				if(i > Length || i < 1)
 					throw new ArgumentOutOfRangeException("Access in Matrix out of bounds.");
 
-				var row = (i - 1) % dimY + 1;
-				var col = (i - 1) / dimY + 1;
-				return this[row, col];
+                var index = GetIndex(i);
+                return this[index.Row, index.Column];
 			}
 			set
 			{
 				if(i < 1)
 					throw new ArgumentOutOfRangeException("Access in Matrix out of bounds.");
 
-				if (dimY == 0)
-					dimY = 1;
-
-				var row = (i - 1) % dimY + 1;
-				var col = (i - 1) / dimY + 1;
-				this[row, col] = value;
+                var index = GetIndex(i);
+				this[index.Row, index.Column] = value;
 			}
 		}
 
@@ -792,13 +782,26 @@ namespace YAMP
 			return _values.ContainsKey(index);
 		}
 
+        protected MatrixIndex GetIndex(int i)
+        {
+            var dimY = Math.Max(1, this.dimY);
+            var row = (i - 1) % dimY + 1;
+            var col = (i - 1) / dimY + 1;
+                            
+            return new MatrixIndex
+            {
+                Row = row,
+                Column = col
+            };
+        }
+
 		protected ScalarValue GetIndex(MatrixIndex index)
 		{
 			return _values[index];
 		}
 
 		#endregion
-
+        
 		#region Operators
 
 		public static MatrixValue operator *(MatrixValue a, MatrixValue b)
@@ -855,51 +858,167 @@ namespace YAMP
 
 		#endregion
 
-		#region Index
+        #region Behavior as method
 
-		public int[] Dimensions
-		{
-			get
-			{
-				return new int[] { DimensionY, DimensionX };
-			}
-		}
+        public Value Perform(ParseContext context, Value argument, Value values)
+        {
+            if (!(values is NumericValue))
+                throw new OperationNotSupportedException("matrix-set", values);
 
-		public IHasIndex Create(int[] _dimensions)
-		{
-			if(_dimensions.Length == 1)
-				return new MatrixValue(_dimensions[0], 1);
+            var indices = new List<MatrixIndex>();
 
-			return new MatrixValue(_dimensions[0], _dimensions[1]);
-		}
+            if (argument is ArgumentsValue)
+            {
+                var ags = (ArgumentsValue)argument;
 
-		public Value Get(IIsIndex index)
-		{
-			if (index is VectorIndex)
-				return this[((VectorIndex)index).Entry];
+                if (ags.Length == 1)
+                    return Perform(context, ags[1], values);
+                else if (ags.Length > 2)
+                    throw new ArgumentsException("matrix-index", 3);
 
-			var mi = (MatrixIndex)index;
-			return this[mi.Row, mi.Column];
-		}
+                var rows = BuildIndex(ags[1], DimensionY);
+                var columns = BuildIndex(ags[2], DimensionX);
 
-		public void Set(IIsIndex index, Value value)
-		{
-			if (!(value is ScalarValue))
-				throw new OperationNotSupportedException("Index", value);
+                for (int i = 0; i < columns.Length; i++)
+                {
+                    for (int j = 0; j < rows.Length; j++)
+                    {
+                        indices.Add(new MatrixIndex
+                        {
+                            Column = columns[i],
+                            Row = rows[j]
+                        });
+                    }
+                }
+            }
+            else if (argument is NumericValue)
+            {
+                if (argument is MatrixValue)
+                {
+                    var mm = (MatrixValue)argument;
 
-			var scalar = value as ScalarValue;
+                    if (mm.DimensionX == DimensionX && mm.DimensionY == DimensionY)
+                        LogicalSubscripting(mm, indices);
+                }
 
-			if (index is VectorIndex)
-			{
-				this[((VectorIndex)index).Entry] = scalar;
-				return;
-			}
-			
-			var mi = (MatrixIndex)index;
-			this[mi.Row, mi.Column] = scalar;
-		}
+                if (indices.Count == 0)
+                {
+                    var idx = BuildIndex(argument, Length);
 
-		#endregion
-	}
+                    for (int i = 0; i < idx.Length; i++)
+                        indices.Add(GetIndex(idx[i]));
+                }
+            }
+            else
+                throw new OperationNotSupportedException("matrix-index", argument);
+
+            if (values is MatrixValue)
+            {
+                var index = 1;
+                var m = (MatrixValue)values;
+
+                if (m.Length != indices.Count)
+                    throw new DimensionException(m.Length, indices.Count);
+
+                foreach (var mi in indices)
+                    this[mi.Row, mi.Column] = m[index++];
+            }
+            else if(values is ScalarValue)
+            {
+                var value = (ScalarValue)values;
+
+                foreach (var mi in indices)
+                    this[mi.Row, mi.Column] = value.Clone();
+            }
+
+            return this;
+        }
+
+        public Value Perform(ParseContext context, Value argument)
+        {
+            if (argument is ArgumentsValue)
+            {
+                var ags = (ArgumentsValue)argument;
+
+                if (ags.Length == 1)
+                    return Perform(context, ags[1]);
+                else if(ags.Length > 2)
+                    throw new ArgumentsException("matrix-index", 3);
+
+                var rows = BuildIndex(ags[1], DimensionY);
+                var columns = BuildIndex(ags[2], DimensionX);
+
+                if (rows.Length == 1 && columns.Length == 1)
+                    return this[rows[0], columns[0]].Clone();
+
+                var m = new MatrixValue(rows.Length, columns.Length);
+
+                for (int i = 1; i <= m.DimensionX; i++)
+                    for (int j = 1; j <= m.DimensionY; j++)
+                        m[j, i] = this[rows[j - 1], columns[i - 1]].Clone();
+
+                return m;
+            }
+            else if (argument is NumericValue)
+            {
+                if (argument is MatrixValue)
+                {
+                    var mm = (MatrixValue)argument;
+
+                    if(mm.DimensionX == DimensionX && mm.DimensionY == DimensionY)
+                        return LogicalSubscripting(mm);
+                }
+
+                var idx = BuildIndex(argument, Length);
+
+                if (idx.Length == 1)
+                    return this[idx[0]].Clone();
+
+                var m = new MatrixValue(1, idx.Length);
+
+                for (int i = 1; i <= m.DimensionX; i++)
+                    m[i] = this[idx[i - 1]].Clone();
+
+                return m;
+            }
+
+            throw new OperationNotSupportedException("matrix-index", argument);
+        }
+
+        MatrixValue LogicalSubscripting(MatrixValue m)
+        {
+            var indices = new List<MatrixIndex>();
+            LogicalSubscripting(m, indices);
+            var n = new MatrixValue(1, indices.Count);
+
+            for (var i = 1; i <= indices.Count; i++)
+            {
+                var index = indices[i - 1];
+                n[1, i] = this[index.Row, index.Column].Clone();
+            }
+
+            return n;
+        }
+
+        void LogicalSubscripting(MatrixValue m, List<MatrixIndex> indices)
+        {
+            for (var i = 1; i <= m.DimensionX; i++)
+            {
+                for (var j = 1; j <= m.DimensionY; j++)
+                {
+                    if (m[j, i].Value != 0.0)
+                    {
+                        indices.Add(new MatrixIndex
+                        {
+                            Row = j,
+                            Column = i
+                        });
+                    }
+                }
+            }
+        }
+
+        #endregion
+    }
 }
 

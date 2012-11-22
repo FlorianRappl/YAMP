@@ -27,12 +27,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.IO;
+using YAMP.Converter;
 
 namespace YAMP
 {
-	[Serializable]
-	public class PolarPlotValue : PlotValue<PolarPlotValue.PointPair>
+	public sealed class PolarPlotValue : PlotValue
 	{
 		#region ctor
 
@@ -41,12 +41,6 @@ namespace YAMP
 			FractionSymbol = "π";
 			FractionUnit = Math.PI;
 			Gridlines = true;
-		}
-
-		public PolarPlotValue(SerializationInfo info, StreamingContext ctxt) : base(info, ctxt)
-		{
-			FractionSymbol = (string)info.GetValue("FractionSymbol", typeof(string));
-			FractionUnit = (double)info.GetValue("FractionUnit", typeof(double));
 		}
 
 		#endregion
@@ -69,51 +63,93 @@ namespace YAMP
 
 		#endregion
 
-		#region Methods
+        #region Methods
 
-		public override void AddPoints(MatrixValue m)
-		{
-			if (m.DimensionY == 0 || m.DimensionX == 0)
-				return;
+        public override void AddPoints(MatrixValue m)
+        {
+            if (m.DimensionY == 0 || m.DimensionX == 0)
+                return;
 
-			if (m.DimensionX == 1)
-			{
-				var x = Generate(1.0, 1.0, m.DimensionY);
-				var y = ConvertY(m, 0, m.DimensionY, 0);
-				AddValues(x, y);
-			}
-			else
-			{
-				var x = ConvertY(m, 0, m.DimensionY, 0);
+            if (m.IsVector)
+            {
+                var x = Generate(1.0, 1.0, m.Length);
+                var y = Convert(m, 0, m.Length);
+                AddValues(x, y);
+            }
+            else if (m.DimensionX <= m.DimensionY)
+            {
+                var x = ConvertY(m, 0, m.DimensionY, 0);
 
-				for (var k = 2; k <= m.DimensionX; k++)
-				{
-					var y = ConvertY(m, 0, m.DimensionY, k - 1);
-					AddValues(x, y);
-				}
-			}
-		}
+                for (var k = 2; k <= m.DimensionX; k++)
+                {
+                    var y = ConvertY(m, 0, m.DimensionY, k - 1);
+                    AddValues(x, y);
+                }
+            }
+            else
+            {
+                var x = ConvertX(m, 0, m.DimensionX, 0);
 
-		public void AddPoints(MatrixValue x, MatrixValue y)
-		{
-			if (x.DimensionX > 1 && x.DimensionY > 1)
-			{
-				AddPoints(x);
-				AddPoints(y);
-			}
-			else
-			{
-				var transpose = y.DimensionY == 1 && y.DimensionX > 1;
-				var dim = Math.Min(x.Length, transpose ? y.DimensionX : y.DimensionY);
-				var _x = Convert(x, 0, dim);
+                for (var k = 2; k <= m.DimensionY; k++)
+                {
+                    var y = ConvertX(m, 0, m.DimensionX, k - 1);
+                    AddValues(x, y);
+                }
+            }
+        }
 
-				for (var k = 1; k <= y.DimensionX; k++)
-				{
-					var _y = transpose ? ConvertX(y, 0, dim, k - 1) : ConvertY(y, 0, dim, k - 1);
-					AddValues(_x, _y);
-				}
-			}
-		}
+        public void AddPoints(MatrixValue x, MatrixValue y)
+        {
+            if (x.IsVector)
+            {
+                var vx = Convert(x, 0, x.Length);
+
+                if (y.DimensionY > y.DimensionX || y.DimensionY == x.Length)
+                {
+                    var dim = Math.Min(x.Length, y.DimensionY);
+
+                    for (var i = 0; i < y.DimensionX; i++)
+                    {
+                        var vy = ConvertY(y, 0, dim, i);
+                        AddValues(vx, vy);
+                    }
+                }
+                else
+                {
+                    var dim = Math.Min(x.Length, y.DimensionX);
+
+                    for (var i = 0; i < y.DimensionY; i++)
+                    {
+                        var vy = ConvertX(y, 0, dim, i);
+                        AddValues(vx, vy);
+                    }
+                }
+            }
+            else
+            {
+                AddPoints(x);
+                AddPoints(y);
+            }
+        }
+
+        public void AddPoints(MatrixValue x, MatrixValue y, params MatrixValue[] zs)
+        {
+            if (x.IsVector)
+            {
+                AddPoints(x, y);
+
+                foreach (var z in zs)
+                    AddPoints(x, z);
+            }
+            else
+            {
+                AddPoints(x);
+                AddPoints(y);
+
+                foreach (var z in zs)
+                    AddPoints(z);
+            }
+        }
 
 		void AddValues(double[] _x, double[] _y)
 		{
@@ -123,7 +159,7 @@ namespace YAMP
 			var ymin = double.MaxValue;
 			var ymax = double.MinValue;
 
-			for (var i = 0; i < _x.Length; i++)
+			for (var i = 0; i < _y.Length; i++)
 			{
 				var x = _x[i];
 				var y = _y[i];
@@ -147,14 +183,13 @@ namespace YAMP
 			if (Count == 0 || ymax > MaxY)
 				MaxY = ymax;
 
-			AddValues(p);
+			AddSeries(p);
 		}
 
 		#endregion
 
 		#region Nested types
 
-		[Serializable]
 		public struct PointPair
 		{
 			public double Angle;
@@ -163,25 +198,88 @@ namespace YAMP
 
 		#endregion
 
-		#region Serialization
+        #region Serialization
 
-		public override Value Deserialize(byte[] content)
-		{
-			var o = BinaryDeserialize(content) as PolarPlotValue;
+        public override byte[] Serialize()
+        {
+            using (var s = Serializer.Create())
+            {
+                Serialize(s);
+                s.Serialize(FractionSymbol);
+                s.Serialize(FractionUnit);
+                s.Serialize(Count);
 
-			if (o == null)
-				return Value.Empty;
+                for (var i = 0; i < Count; i++)
+                {
+                    var points = this[i];
+                    points.Serialize(s);
+                    s.Serialize(points.Count);
 
-			return o;
-		}
+                    for (int j = 0; j < points.Count; j++)
+                    {
+                        s.Serialize(points[j].Angle);
+                        s.Serialize(points[j].Magnitude);
+                    }
+                }
 
-		public override void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-		{
-			base.GetObjectData(info, ctxt);
-			info.AddValue("FractionSymbol", FractionSymbol);
-			info.AddValue("FractionUnit", FractionUnit);
-		}
+                return s.Value;
+            }
+        }
 
-		#endregion
+        public override Value Deserialize(byte[] content)
+        {
+            using (var ds = Deserializer.Create(content))
+            {
+                Deserialize(ds);
+                FractionSymbol = ds.GetString();
+                FractionUnit = ds.GetDouble();
+                var length = ds.GetInt();
+
+                for (var i = 0; i < length; i++)
+                {
+                    var points = new Points<PointPair>();
+                    points.Deserialize(ds);
+                    var count = ds.GetInt();
+
+                    for (int j = 0; j < count; j++)
+                    {
+                        var x = ds.GetDouble();
+                        var y = ds.GetDouble();
+
+                        points.Add(new PointPair
+                        {
+                            Angle = x,
+                            Magnitude = y
+                        });
+                    }
+
+                    AddSeries(points);
+                }
+            }
+
+            return this;
+        }
+
+        #endregion
+
+        #region Index
+
+        public Points<PointPair> this[int index]
+        {
+            get
+            {
+                return base.GetSeries(index) as Points<PointPair>;
+            }
+        }
+
+        public PointPair this[int index, int point]
+        {
+            get
+            {
+                return this[index][point];
+            }
+        }
+
+        #endregion
 	}
 }

@@ -26,11 +26,12 @@
 */
 
 using System;
+using System.IO;
 using System.Text;
 
 namespace YAMP
 {
-	public class StringValue : Value, IHasIndex
+	public class StringValue : Value, IFunction
 	{
 		#region Members
 
@@ -81,18 +82,20 @@ namespace YAMP
 		
 		public override byte[] Serialize ()
 		{
-			var content = Encoding.Unicode.GetBytes(_value);
-			var length = BitConverter.GetBytes(content.Length);
-			var value = new byte[length.Length + content.Length];
-			length.CopyTo(value, 0);
-			content.CopyTo(value, length.Length);
-			return value;
+            using (var ms = Serializer.Create())
+            {
+                ms.Serialize(_value);
+                return ms.Value;
+            }
 		}
 
 		public override Value Deserialize (byte[] content)
 		{
-			var length = BitConverter.ToInt32(content, 0);
-			_value = Encoding.Unicode.GetString(content, 4, length);
+            using(var ds = Deserializer.Create(content))
+            {
+                _value = ds.GetString();
+            }
+
 			return this;
 		}
 
@@ -109,6 +112,10 @@ namespace YAMP
 			_value = value;
 		}
 
+        public StringValue(char[] str) : this(new string(str))
+        {
+        }
+
 		#endregion
 
 		#region Overrides
@@ -120,30 +127,25 @@ namespace YAMP
 
 		#endregion
 
-        #region Index
+        #region Behavior as method
 
-        public int[] Dimensions
+        public Value Perform(ParseContext context, Value argument)
         {
-            get { return new int[] { Length }; }
-        }
+            if (argument is NumericValue)
+            {
+                var idx = BuildIndex(argument, Length);
+                var str = new char[idx.Length];
 
-		public IHasIndex Create(int[] _dimensions)
-		{
-			return new StringValue();
-		}
+                for (var i = 0; i < idx.Length; i++)
+                    str[i] = _value[idx[i]];
 
-        public Value Get(IIsIndex index)
-        {
-            return new StringValue(_value[((VectorIndex)index).Entry - 1].ToString());
-        }
+                return new StringValue(str);
+            }
 
-		public void Set(IIsIndex index, Value value)
-        {
-			var idx = ((VectorIndex)index).Entry - 1;
-            _value = _value.Remove(idx, 1).Insert(idx, value.ToString());
+            throw new OperationNotSupportedException("string-index", argument);
         }
 
         #endregion
-	}
+    }
 }
 

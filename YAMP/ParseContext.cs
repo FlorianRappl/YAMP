@@ -354,7 +354,8 @@ namespace YAMP
             if (parent != null)
                 return parent.FindConstants(name);
 
-            throw new SymbolException(name);
+            //throw new SymbolException(name);
+            return null;
         }
 
         /// <summary>
@@ -374,7 +375,8 @@ namespace YAMP
             if (parent != null)
                 return parent.FindFunction(name);
 
-            throw new FunctionNotFoundException(name);
+            //throw new FunctionException(name);
+            return null;
         }
 
         #endregion

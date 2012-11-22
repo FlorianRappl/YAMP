@@ -7,11 +7,17 @@ using System.Text.RegularExpressions;
 namespace YAMP
 {
 	class SymbolExpression : Expression
-	{
+    {
+        #region Members
+
+        static readonly string symbolRegex = @"[A-Za-z]+[A-Za-z0-9_]*\b";
 		static Regex fx;
-		FunctionExpression func;
-		
-		public SymbolExpression() : base(@"[A-Za-z]+[A-Za-z0-9_]*\b")
+
+        #endregion
+
+        #region ctor
+
+        public SymbolExpression() : base(symbolRegex)
 		{
 		}
 
@@ -21,69 +27,53 @@ namespace YAMP
 			mx = match;
 		}
 
-		public bool IsSymbol
-		{
-			get { return func == null; }
-		}
+        #endregion
+
+        #region Properties
+
+        public static string SymbolRegularExpression
+        {
+            get { return symbolRegex; }
+        }
 
 		public string SymbolName
 		{
 			get { return _input; }
 		}
 
-		public static void SetFunctionPattern(string pattern)
-		{
-			fx = new Regex("^" + pattern);
-		}
+        #endregion
 
-		public override Expression Create(QueryContext query, Match match)
+        #region Methods
+
+        public override Expression Create(QueryContext query, Match match)
 		{
 			return new SymbolExpression(query, match);
 		}
 
 		public override Value Interpret(Dictionary<string, Value> symbols)
 		{
-			if(func != null)
-				return func.Interpret(symbols);
+            if (symbols.ContainsKey(_input))
+                return symbols[_input];
 
-			if(symbols.ContainsKey(_input))
-				return symbols[_input];
+            var variable = Context.GetVariable(_input);
 
-			var variable = Context.GetVariable(_input);
+            if (variable != null)
+                return variable;
 
-			if (variable != null)
-				return variable;
-			
-			return Context.FindConstants(_input).Value;
-		}
-		
-		public override string ToString()
-		{
-			if(func != null)
-				return func.ToString();
-			
-			return base.ToString();
-		}
-		
-		public override string Set(string input)
-		{
-			var m = fx.Match(input);
+            var constant = Context.FindConstants(_input);
 
-			if(m.Success)
-			{
-				var name = input.Substring(0, input.IndexOf('('));
+            if (constant != null)
+                return constant.Value;
 
-				if (Context.GetVariable(name) == null)
-				{
-					func = new FunctionExpression(Query, m);
-					input = func.Set(input);
-					_input = func.Input;
-					return input;
-				}
-			}
-				
-			return base.Set(input);
-		}
+            var function = Context.FindFunction(_input);
+
+            if (function != null)
+                return new FunctionValue(function);
+            
+            throw new SymbolException(_input);
+        }
+
+        #endregion
 	}
 }
 

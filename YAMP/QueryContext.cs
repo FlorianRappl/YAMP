@@ -25,6 +25,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
 using System.Collections.Generic;
 
 namespace YAMP
@@ -38,6 +39,7 @@ namespace YAMP
 
 		string _original;
 		string _input;
+        ParseTreeCollection statements;
 
 		#endregion
 
@@ -50,7 +52,36 @@ namespace YAMP
 		public QueryContext(string input)
 		{
 			Input = input;
+            statements = new ParseTreeCollection(this);
 		}
+
+        /// <summary>
+        /// Creates a new (underlying) QueryContext
+        /// </summary>
+        /// <param name="query">The query context to copy</param>
+        internal QueryContext(QueryContext query) : this(query.Input)
+        {
+            Context = new ParseContext(query.Context);
+        }
+
+        /// <summary>
+        /// Just a stupid dummy!
+        /// </summary>
+        private QueryContext()
+        {
+        }
+
+        /// <summary>
+        /// Creates a dummy context that just holds the given ParseContext.
+        /// </summary>
+        /// <param name="context">The ParseContext to contain</param>
+        /// <returns>A new (dummy) QueryContext</returns>
+        public static QueryContext Dummy(ParseContext context)
+        {
+            var query = new QueryContext();
+            query.Context = context;
+            return query;
+        }
 
 		#endregion
 
@@ -76,7 +107,10 @@ namespace YAMP
 		/// <summary>
 		/// Gets a boolean indicating whether the result should be printed.
 		/// </summary>
-		public bool IsMuted { get; internal set; }
+        public bool IsMuted
+        {
+            get { return Output == null; }
+        }
 
 		/// <summary>
 		/// Gets the original passed input.
@@ -96,10 +130,13 @@ namespace YAMP
 		/// </summary>
 		public ParseContext Context { get; internal set; }
 
-		/// <summary>
-		/// Gets the interpreter generated for this query.
-		/// </summary>
-		public ParseTree Interpreter { get; internal set; }
+        /// <summary>
+        /// Gets the statements generated for this query.
+        /// </summary>
+        public ParseTreeCollection Statements
+        {
+            get { return statements; }
+        }
 
 		#endregion
 
@@ -107,23 +144,12 @@ namespace YAMP
 
 		internal void Interpret(Dictionary<string, Value> values)
 		{
-			if (Interpreter.HasContent)
-			{
-				Output = Interpreter.Interpret(values);
-
-				if (!Interpreter.IsAssignment)
-				{
-					if (Output is ArgumentsValue)
-						Output = (Output as ArgumentsValue).First();
-
-					Context.AssignVariable("$", Output);
-				}
-			}
+            Output = Statements.Run(values);
 		}
 
 		public override string ToString()
 		{
-			return Interpreter.ToString();
+			return string.Format("{0} ={1}{2}", Input, Environment.NewLine, Statements);
 		}
 
 		#endregion

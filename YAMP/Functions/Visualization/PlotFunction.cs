@@ -27,5 +27,13 @@ namespace YAMP
             plot.AddPoints(m, n);
             return plot;
         }
+
+		[Description("Just displays the given plot.")]
+		[Example("plot(myplot)", "Displays the given plot stored in the variable myplot.")]
+		public PlotValue Function(PlotValue plot)
+		{
+			Context.LastPlot = plot;
+			return plot;
+		}
     }
 }

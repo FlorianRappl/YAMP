@@ -28,82 +28,21 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+using YAMP.Converter;
 
 namespace YAMP
 {
-	[Serializable]
-	public abstract class PlotValue<T> : PlotValue
-	{
-		#region Members
-
-		List<Points<T>> points;
-
-		#endregion
-
-		#region ctor
-
-		public PlotValue()
-		{
-			points = new List<Points<T>>();
-		}
-
-		public PlotValue(SerializationInfo info, StreamingContext ctxt) : base(info, ctxt)
-		{
-			points = (List<Points<T>>)info.GetValue("Points", typeof(List<Points<T>>));
-		}
-
-		#endregion
-
-		#region Properties
-
-		public override int Count { get { return points.Count; } }
-
-		public Points<T> this[int index]
-		{
-			get
-			{
-				return points[index];
-			}
-		}
-
-		public T this[int index, int point]
-		{
-			get
-			{
-				return points[index][point];
-			}
-		}
-
-		#endregion
-
-		#region Methods
-
-		public void AddValues(Points<T> values)
-		{
-			values.Color = ColorPalette[Count % ColorPalette.Length];
-			points.Add(values);
-		}
-
-		#endregion
-
-		#region Serialization
-
-		public override void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-		{
-			info.AddValue("Points", points);
-		}
-
-		#endregion
-	}
-
-	[Serializable]
 	public abstract class PlotValue : Value
-	{
-		#region Events
+    {
+        #region Members
 
-		public event EventHandler<PlotEventArgs> OnPlotChanged;
+        protected List<IPointSeries> points;
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler<PlotEventArgs> OnPlotChanged;
 
 		#endregion
 
@@ -111,6 +50,7 @@ namespace YAMP
 
 		public PlotValue()
 		{
+            points = new List<IPointSeries>();
 			Title = string.Empty;
 			ShowLegend = true;
 			LegendBackground = "white";
@@ -123,29 +63,11 @@ namespace YAMP
 			MinorGridlines = false;
 		}
 
-		public PlotValue(SerializationInfo info, StreamingContext ctxt)
-		{
-			Title = (string)info.GetValue("Title", typeof(string));
-			ShowLegend = (bool)info.GetValue("ShowLegend", typeof(bool));
-			LegendBackground = (string)info.GetValue("LegendBackground", typeof(string));
-			LegendLineColor = (string)info.GetValue("LegendLineColor", typeof(string));
-			LegendLineWidth = (double)info.GetValue("LegendLineWidth", typeof(double));
-			LegendPosition = (LegendPosition)info.GetValue("LegendPosition", typeof(LegendPosition));
-			XLabel = (string)info.GetValue("XLabel", typeof(string));
-			YLabel = (string)info.GetValue("YLabel", typeof(string));
-			Gridlines = (bool)info.GetValue("Gridlines", typeof(bool));
-			MinorGridlines = (bool)info.GetValue("MinorGridlines", typeof(bool));
-			MinX = (double)info.GetValue("MinX", typeof(double));
-			MaxX = (double)info.GetValue("MaxX", typeof(double));
-			MinY = (double)info.GetValue("MinY", typeof(double));
-			MaxY = (double)info.GetValue("MaxY", typeof(double));
-		}
-
 		#endregion
 
 		#region Properties
 
-		public virtual int Count { get { return 0; } }
+		public int Count { get { return points.Count; } }
 
 		[ScalarToBooleanConverter]
 		public bool Gridlines
@@ -289,6 +211,16 @@ namespace YAMP
 			RaisePlotChanged("Data");
 		}
 
+        public void UpdateProperties()
+        {
+            RaisePlotChanged("Properties");
+        }
+
+        public void UpdateLayout()
+        {
+            RaisePlotChanged("Layout");
+        }
+
 		public void SetXRange(double min, double max)
 		{
 			MinX = min;
@@ -327,8 +259,8 @@ namespace YAMP
 
 			for (int i = 0; i < length; i++)
 			{
-				values[i] = complex ? m[j].Abs().Value : m[j].Value;
-			   j++;
+			    values[i] = complex ? m[j].Abs().Value : m[j].Value;
+			    j++;
 			}
 
 			return values;
@@ -365,6 +297,17 @@ namespace YAMP
 
 			return values;
 		}
+
+        public void AddSeries(IPointSeries series)
+        {
+            series.Color = ColorPalette[Count % ColorPalette.Length];
+            points.Add(series);
+        }
+
+        public IPointSeries GetSeries(int index)
+        {
+            return points[index];
+        }
 
 		#endregion
 
@@ -433,46 +376,41 @@ namespace YAMP
 
 		#region Serialization
 
-		protected static object BinaryDeserialize(byte[] content)
+		internal void Serialize(Serializer s)
 		{
-			using (var stream = new MemoryStream(content))
-			{
-				var bformatter = new BinaryFormatter();
-				return bformatter.Deserialize(stream);
-			}
+            s.Serialize(Title);
+            s.Serialize(ShowLegend);
+            s.Serialize(LegendBackground);
+            s.Serialize(LegendLineColor);
+            s.Serialize(LegendLineWidth);
+            s.Serialize((int)LegendPosition);
+            s.Serialize(XLabel);
+            s.Serialize(YLabel);
+            s.Serialize(Gridlines);
+            s.Serialize(MinorGridlines);
+            s.Serialize(MinX);
+            s.Serialize(MaxX);
+            s.Serialize(MinY);
+            s.Serialize(MaxY);
 		}
 
-		public override byte[] Serialize()
-		{
-			byte[] content;
-
-			using (var stream = new MemoryStream())
-			{
-				var bformatter = new BinaryFormatter();
-				bformatter.Serialize(stream, this);
-				content = stream.ToArray();
-			}
-
-			return content;
-		}
-
-		public virtual void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-		{
-			info.AddValue("Title", Title);
-			info.AddValue("ShowLegend", ShowLegend);
-			info.AddValue("LegendBackground", LegendBackground);
-			info.AddValue("LegendLineColor", LegendLineColor);
-			info.AddValue("LegendLineWidth", LegendLineWidth);
-			info.AddValue("LegendPosition", LegendPosition);
-			info.AddValue("XLabel", XLabel);
-			info.AddValue("YLabel", YLabel);
-			info.AddValue("Gridlines", Gridlines);
-			info.AddValue("MinorGridlines", MinorGridlines);
-			info.AddValue("MinX", MinX);
-			info.AddValue("MaxX", MaxX);
-			info.AddValue("MinY", MinY);
-			info.AddValue("MaxY", MaxY);
-		}
+        internal void Deserialize(Deserializer ds)
+        {
+            Title = ds.GetString();
+            ShowLegend = ds.GetBoolean();
+            LegendBackground = ds.GetString();
+            LegendLineColor = ds.GetString();
+            LegendLineWidth = ds.GetDouble();
+            LegendPosition = (LegendPosition)ds.GetInt();
+            XLabel = ds.GetString();
+            YLabel = ds.GetString();
+            Gridlines = ds.GetBoolean();
+            MinorGridlines = ds.GetBoolean();
+            MinX = ds.GetDouble();
+            MaxX = ds.GetDouble();
+            MinY = ds.GetDouble();
+            MaxY = ds.GetDouble();
+        }
 
 		#endregion
 	}

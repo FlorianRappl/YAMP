@@ -26,16 +26,24 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace YAMP
 {
-	[Serializable]
 	public abstract class Value
-	{
-		static readonly Value _empty = new ScalarValue();
-		
-		public static Value Empty
+    {
+        #region Members
+
+        static readonly Value _empty = new ScalarValue();
+
+        public static readonly Type[] EmptyTypes = new Type[0];
+
+        #endregion
+
+        #region Properties
+
+        public static Value Empty
 		{
 			get
 			{
@@ -50,8 +58,12 @@ namespace YAMP
 				return GetType().Name.RemoveValueConvention();
 			}
 		}
-		
-		public abstract Value Add(Value right);
+
+        #endregion
+
+        #region Methods
+
+        public abstract Value Add(Value right);
 		
 		public abstract Value Subtract(Value right);
 		
@@ -92,7 +104,34 @@ namespace YAMP
             return string.Empty;
         }
 
-		public static readonly Type[] EmptyTypes = new Type[0];
-	}
+        protected static int[] BuildIndex(Value arg, int max)
+        {
+            if (arg is ScalarValue)
+                return new int[] { ((ScalarValue)arg).IntValue };
+
+            var idx = new List<int>();
+
+            if (arg is RangeValue)
+            {
+                var r = (RangeValue)arg;
+                var step = (int)r.Step;
+                var maxLength = r.All ? max : (int)r.End;
+
+                for (var j = (int)r.Start; j <= maxLength; j += step)
+                    idx.Add(j);
+            }
+            else if (arg is MatrixValue)
+            {
+                var m = (MatrixValue)arg;
+
+                for (var j = 1; j <= m.Length; j++)
+                    idx.Add(m[j].IntValue);
+            }
+
+            return idx.ToArray();
+        }
+
+        #endregion
+    }
 }
 

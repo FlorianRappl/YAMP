@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
-	public class ArgumentsValue : Value, IHasIndex
+	public class ArgumentsValue : Value, IFunction
 	{
 		#region Members
 
@@ -154,7 +154,7 @@ namespace YAMP
 
 		#region ctor
 
-		public ArgumentsValue ()
+		public ArgumentsValue()
 		{
 			_values = new List<Value>();
 		}
@@ -220,31 +220,16 @@ namespace YAMP
 
         #endregion
 
-        #region Index
+        #region Behavior as a method
 
-        public int[] Dimensions
+        public Value Perform(ParseContext context, Value argument)
         {
-            get
-            {
-                return new int[] { Length };
-            }
-        }
+            if (argument is ScalarValue)
+                return this[((ScalarValue)argument).IntValue];
 
-		public IHasIndex Create(int[] _dimensions)
-		{
-			return new ArgumentsValue();
-		}
-
-        public Value Get(IIsIndex index)
-        {
-			return this[((VectorIndex)index).Entry];
-        }
-
-		public void Set(IIsIndex index, Value value)
-        {
-			this[((VectorIndex)index).Entry] = value;
+            throw new OperationNotSupportedException("argument-index", argument);
         }
 
         #endregion
-	}
+    }
 }

@@ -29,7 +29,7 @@ using System;
 
 namespace YAMP
 {
-	public class ScalarValue : NumericValue, ISign
+	public class ScalarValue : NumericValue
     {
         #region Constants
 
@@ -147,11 +147,6 @@ namespace YAMP
         #endregion
 
         #region Methods
-
-        public Value ChangeSign()
-        {
-            return new ScalarValue(-_real, -_imag);
-        }
 
         public ScalarValue Clone()
 		{

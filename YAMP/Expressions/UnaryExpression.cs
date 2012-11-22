@@ -9,8 +9,7 @@ namespace YAMP
     {
         #region Members
 
-        Expression _child;
-        bool _changeSign;
+        static readonly ScalarValue minusOne = new ScalarValue(-1.0, 0.0);
 
         #endregion
 
@@ -18,7 +17,6 @@ namespace YAMP
 
         public UnaryExpression() : base(@"[\+\-]+")
         {
-            _changeSign = false;
         }
 
         public UnaryExpression(QueryContext query) : this()
@@ -37,45 +35,13 @@ namespace YAMP
 
         public override Value Interpret(Dictionary<string, Value> symbols)
         {
-            var birth = _child.Interpret(symbols);
-
-            if (_changeSign)
-            {
-                if (birth is ISign)
-                    return (birth as ISign).ChangeSign();
-                
-                throw new ArgumentTypeNotSupportedException("-", Offset, birth.GetType());
-            }
-
-            return birth;
+            return minusOne;
         }
 
         public override string Set(string input)
         {
-            int index = 0;
-            int minusCount = 0;
-
-            for (; index < input.Length; index++)
-            {
-                if (input[index] == '+')
-                    continue;
-                else if (input[index] == '-')
-                    minusCount++;
-                else
-                    break;
-            }
-
-            _changeSign = (minusCount & 1) == 1;
-
-            if (index == input.Length)
-                throw new ParseException(Offset + index - 1, input);
-
-            var rest = input.Substring(index);
-            _child = Tokens.Instance.FindExpression(Query, rest);
-            _child.Offset = Offset + index;
-            var delivery = _child.Set(rest);
-            _input = input.Substring(0, index) + _child.Input;
-            return delivery;
+            _input = string.Empty;
+            return "*" + input.Substring(1);
         }
 
         #endregion

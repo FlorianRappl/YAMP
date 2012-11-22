@@ -86,6 +86,9 @@ namespace YAMP
 				if (type.IsAbstract)
 					continue;
 
+                if (type.Name.EndsWith("Value"))
+                    continue;
+
 			    var interfaces = type.GetInterfaces();
 
 				if (interfaces.Any(iface => iface.Name.Equals(ir)))

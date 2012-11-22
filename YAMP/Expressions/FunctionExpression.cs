@@ -5,7 +5,7 @@ using System.Collections;
 using System.Text.RegularExpressions;
 
 namespace YAMP
-{
+{/*
 	class FunctionExpression : Expression
 	{
 		#region Members
@@ -74,6 +74,6 @@ namespace YAMP
 		}
 
 		#endregion
-	}
+	}*/
 }
 
