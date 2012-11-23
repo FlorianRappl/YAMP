@@ -152,11 +152,9 @@ namespace YAMP.Numerics
                     for (int j = 1; j <= n; j++)
                     {
                         if (i > j)
-                            X[i, j].Value = LU[i][j];
+                            X[i, j] = new ScalarValue(LU[i][j]);
                         else if (i == j)
-                            X[i, j].Value = 1.0;
-                        else
-                            X[i, j].Value = 0.0;
+                            X[i, j] = new ScalarValue(1.0);
                     }
                 }
 
@@ -179,9 +177,7 @@ namespace YAMP.Numerics
                     for (int j = 1; j <= n; j++)
                     {
                         if (i <= j)
-                            X[i, j].Value = LU[i][j];
-                        else
-                            X[i, j].Value = 0.0;
+                            X[i, j] = new ScalarValue(LU[i][j]);
                     }
                 }
 

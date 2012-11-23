@@ -4,7 +4,8 @@ namespace YAMP
 {
 	/// <summary>
 	/// Provides a kind attribute to be read by the help method. This attribute specifies the kind of function / constant that is declared.
-	/// </summary>
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
 	public class KindAttribute : Attribute
 	{
         /// <summary>
@@ -25,9 +26,9 @@ namespace YAMP
 		}
 
         /// <summary>
-        /// Gets or sets the kind.
+        /// Gets the kind.
         /// </summary>
-        public string Kind { get; set; }
+        public string Kind { get; private set; }
 	}
 
 	public enum PopularKinds

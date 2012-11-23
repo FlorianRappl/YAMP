@@ -5,6 +5,7 @@ namespace YAMP
     /// <summary>
     /// Provides a description attribute to be read by the help method.
     /// </summary>
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public class DescriptionAttribute : Attribute
     {
         /// <summary>
@@ -17,8 +18,8 @@ namespace YAMP
         }
 
         /// <summary>
-        /// Gets or sets the description.
+        /// Gets the description.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; private set; }
     }
 }

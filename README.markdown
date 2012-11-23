@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **1.0.1**. A NuGet package (current version 1.0.0) is
+The current version number is **1.1.0**. A NuGet package (current version 1.0.1) is
 available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code -
 since the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -37,6 +37,31 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**1.1.0:**
+- Removed the functions `title()`, `xlabel()`, ... to focus on the more general `set()`
+- Added the ability to write so called lambda expressions, i.e. functions in the code
+- Changed the random number generator to the Mersenne Twister MT19937
+- Added a function `diag()` to create diagonal matrices
+- Added a function `sort()` to sort vectors in matrices
+- Fixed some bugs regarding the SVD, Mandelbrot and other functions
+- Added a function to talk to the SVD, called `svd()`
+- Added the possibility to have multiple output arguments over `ArgumentValue`
+- Improved the possibility to have multiple statements
+- Added new tests and improved the test console application
+- Added a new class for serializing and one for deserializing (helpers)
+- Improved the documention and added a new `ReturnsAttribute` attribute (mult. outputs)
+- Added a new type called `FunctionValue`, which stores lambda expressions
+- Added a function `gcd()` to determine the greatest common divisor
+- Added several new random distributions along with the new random generator
+- Improved the way that indices work in YAMP - values can now act as functions as well
+- Added new constants `deg`, `g` and `omega`.
+- Moved the converter attributes to a different namespace
+- Added a lot new classes for numerics, e.g. in Optimization, ODE, Interpolator, ...
+- Added a new function `cd()` for changing the working directory
+- Added comments, i.e. `//` is a line comment and `/*` to `*/` is a block comment
+- Changed the `ToString()` of the parser / parse tree, expression and operators.
+- Added the ability to document return parameters with comments
+
 **1.0.1:**
 - Removed the `setData()` method to adjust plot series values
 - Added the `set()` method to set arbitrary plot properties and series

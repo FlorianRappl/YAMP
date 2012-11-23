@@ -60,7 +60,7 @@ namespace YAMP.Numerics
                 for (var j = 0; j < height; j++)
                 {
                     var y = j * ys + yi;
-                    M[j + 1, i + 1].Value = Run(x, y);
+                    M[j + 1, i + 1] = new ScalarValue(Run(x, y));
                 }
             }
 

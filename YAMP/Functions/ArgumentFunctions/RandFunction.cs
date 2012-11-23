@@ -1,4 +1,5 @@
 using System;
+using YAMP.Numerics;
 
 namespace YAMP
 {
@@ -6,7 +7,7 @@ namespace YAMP
 	[Kind(PopularKinds.Function)]
 	class RandFunction : ArgumentFunction
 	{
-		static readonly Random ran = new Random();
+		static readonly ContinuousUniformDistribution ran = new ContinuousUniformDistribution();
 
 		[Description("Generates one uniformly dist. random value between 0 and 1.")]
 		public ScalarValue Function()

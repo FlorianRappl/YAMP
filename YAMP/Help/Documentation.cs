@@ -132,7 +132,6 @@ namespace YAMP.Help
 
 			if (topic.Instance is IFunction)
 			{
-				var argf = to.IsSubclassOf(typeof(ArgumentFunction));
 				var help = new HelpFunctionSection();
 				help.Name = topic.Name;
 				help.Description = GetDescription(to);
@@ -141,7 +140,7 @@ namespace YAMP.Help
 
 				foreach (var function in functions)
 				{
-					if ((argf && function.Name.Equals("Function")) || function.Name.Equals("Perform"))
+					if (function.Name.Equals("Function"))
 					{
 						var isextern = true;
 						var parameters = function.GetParameters();
@@ -208,8 +207,9 @@ namespace YAMP.Help
 		HelpFunctionUsage GetUsage(string name, MethodInfo function)
 		{
 			var objects = function.GetCustomAttributes(typeof(ExampleAttribute), false);
+            var rets = function.GetCustomAttributes(typeof(ReturnsAttribute), false);
 			var help = new HelpFunctionUsage();
-			var args = function.GetParameters();
+            var args = function.GetParameters();
 
 			var sb = new StringBuilder();
 			sb.Append(name).Append("(");
@@ -222,7 +222,15 @@ namespace YAMP.Help
 			sb.AppendLine(")");
 
 			help.Usage = sb.ToString();
-			help.Returns = ModifyValueType(function.ReturnType);
+
+            if (rets.Length == 0)
+			    help.Returns.Add(ModifyValueType(function.ReturnType));
+            else
+            {
+                foreach (ReturnsAttribute attribute in rets)
+                    help.Returns.Add(ModifyValueType(attribute.ReturnType) + " : " + attribute.Explanation);
+            }
+
 			help.Description = GetDescription(function);
 
 			foreach (var arg in args)

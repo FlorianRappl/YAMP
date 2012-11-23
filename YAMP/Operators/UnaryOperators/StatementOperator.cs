@@ -6,11 +6,7 @@ namespace YAMP
 	{
         QueryContext query;
 
-		public StatementOperator() : base(";", 1)
-		{
-		}
-
-        public StatementOperator(QueryContext query) : this()
+		public StatementOperator(QueryContext query) : base(";", 1)
         {
             this.query = query;
         }

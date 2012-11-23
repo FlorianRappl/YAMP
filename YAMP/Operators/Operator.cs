@@ -116,7 +116,7 @@ namespace YAMP
 		
 		public override string ToString()
 		{
-			return string.Format ("[ Operator   : {0} ]", _op);
+			return GetType().Name.Replace("Operator", string.Empty);
 		}
 
 		#endregion

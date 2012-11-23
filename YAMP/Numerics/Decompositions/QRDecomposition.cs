@@ -126,9 +126,7 @@ namespace YAMP.Numerics
                     for (int j = 1; j <= n; j++)
                     {
                         if (i >= j)
-                            X[i, j].Value = QR[i - 1][j - 1];
-                        else
-                            X[i, j].Value = 0.0;
+                            X[i, j] = new ScalarValue(QR[i - 1][j - 1]);
                     }
                 }
 
@@ -152,11 +150,9 @@ namespace YAMP.Numerics
                     for (int j = 1; j <= n; j++)
                     {
                         if (i < j)
-                            X[i, j].Value = QR[i - 1][j - 1];
+                            X[i, j] = new ScalarValue(QR[i - 1][j - 1]);
                         else if (i == j)
-                            X[i, j].Value = Rdiag[i - 1];
-                        else
-                            X[i, j].Value = 0.0;
+                            X[i, j] = new ScalarValue(Rdiag[i - 1]);
                     }
                 }
 
@@ -177,9 +173,9 @@ namespace YAMP.Numerics
                 for (int k = n; k > 0; k--)
                 {
                     for (int i = 1; i <= m; i++)
-                        Q[i, k].Value = 0.0;
+                        X[i, k] = new ScalarValue(0.0);
 
-                    Q[k, k].Value = 1.0;
+                    X[k, k] = new ScalarValue(1.0);
 
                     for (int j = k; j <= n; j++)
                     {
@@ -190,12 +186,12 @@ namespace YAMP.Numerics
                             var s = 0.0;
 
                             for (int i = k; i <= m; i++)
-                                s += QR[i - 1][l] * Q[i, j].Value;
+                                s += QR[i - 1][l] * X[i, j].Value;
 
                             s = (-s) / QR[l][l];
 
                             for (int i = k; i <= m; i++)
-                                Q[i, j].Value += s * QR[i - 1][l];
+                                X[i, j] = X[i, j] + s * QR[i - 1][l];
                         }
                     }
                 }

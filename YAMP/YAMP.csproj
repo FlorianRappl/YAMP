@@ -64,6 +64,7 @@
     <Compile Include="Attributes\Converter\StringToStringConverterAttribute.cs" />
     <Compile Include="Attributes\KindAttribute.cs" />
     <Compile Include="Attributes\Converter\ValueConverterAttribute.cs" />
+    <Compile Include="Attributes\ReturnsAttribute.cs" />
     <Compile Include="Constants\AlphaConstant.cs" />
     <Compile Include="Constants\BaseConstant.cs" />
     <Compile Include="Constants\ContainerConstant.cs" />
@@ -90,14 +91,25 @@
     <Compile Include="Expressions\MatrixBracketExpression.cs" />
     <Compile Include="Expressions\TreeExpression.cs" />
     <Compile Include="Expressions\UnaryExpression.cs" />
+    <Compile Include="Functions\ArgumentFunctions\DiagFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\SimpsFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\TrapzFunction.cs" />
+    <Compile Include="Functions\BaseFunction.cs" />
     <Compile Include="Functions\ContainerFunction.cs" />
     <Compile Include="Functions\Fractals\MandelbrotFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\ModFunction.cs" />
+    <Compile Include="Functions\LinearAlgebra\SvdFunction.cs" />
     <Compile Include="Functions\Numerics\DiffFunction.cs" />
+    <Compile Include="Functions\Numerics\GcdFunction.cs" />
     <Compile Include="Functions\Numerics\IntFunction.cs" />
     <Compile Include="Functions\StandardFunctions\ProductFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\SortFunction.cs" />
+    <Compile Include="Functions\Statistics\DevFunction.cs" />
+    <Compile Include="Functions\Statistics\LsqFunction.cs" />
+    <Compile Include="Functions\Statistics\MeanFunction.cs" />
+    <Compile Include="Functions\Statistics\MedianFunction.cs" />
+    <Compile Include="Functions\Statistics\VarFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\CdFunction.cs" />
     <Compile Include="Functions\SystemFunctions\LsFunction.cs" />
     <Compile Include="Functions\SystemFunctions\PwdFunction.cs" />
     <Compile Include="Functions\SystemFunctions\SleepFunction.cs" />
@@ -111,7 +123,6 @@
     <Compile Include="Functions\LogicFunctions\IsComplexFunction.cs" />
     <Compile Include="Functions\LogicFunctions\IsRealFunction.cs" />
     <Compile Include="Functions\Numerics\SplineFunction.cs" />
-    <Compile Include="Functions\PropertyFunction.cs" />
     <Compile Include="Functions\StandardFunctions\RoundFunction.cs" />
     <Compile Include="Functions\SystemFunction.cs" />
     <Compile Include="Functions\SystemFunctions\ClearFunction.cs" />
@@ -130,12 +141,7 @@
     <Compile Include="Functions\SystemFunctions\VerFunction.cs" />
     <Compile Include="Functions\SystemFunctions\WhoFunction.cs" />
     <Compile Include="Functions\VisualizationFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\SetFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\TitleFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\XLabelFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\XRangeFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\YLabelFunction.cs" />
-    <Compile Include="Functions\Visualization\Helpers\YRangeFunction.cs" />
+    <Compile Include="Functions\Visualization\SetFunction.cs" />
     <Compile Include="Functions\Visualization\LogLogFunction.cs" />
     <Compile Include="Functions\Visualization\PlotFunction.cs" />
     <Compile Include="Functions\Visualization\PolarFunction.cs" />
@@ -157,7 +163,19 @@
     <Compile Include="Numerics\Integration\SimpsonIntegrator.cs" />
     <Compile Include="Numerics\Integration\TrapezIntegrator.cs" />
     <Compile Include="Numerics\Interpolations\Interpolation.cs" />
+    <Compile Include="Numerics\Interpolations\NevilleInterpolator.cs" />
+    <Compile Include="Numerics\Interpolations\NewtonInterpolation.cs" />
     <Compile Include="Numerics\Interpolations\SplineInterpolation.cs" />
+    <Compile Include="Numerics\NonLinear\HalfDivisionMethod.cs" />
+    <Compile Include="Numerics\NonLinear\NewtonMethod.cs" />
+    <Compile Include="Numerics\NonLinear\NonLinearBase.cs" />
+    <Compile Include="Numerics\NonLinear\SecantMethod.cs" />
+    <Compile Include="Numerics\ODE\Euler.cs" />
+    <Compile Include="Numerics\ODE\ODEBase.cs" />
+    <Compile Include="Numerics\ODE\RungeKutta.cs" />
+    <Compile Include="Numerics\Optimization\GoldenSection.cs" />
+    <Compile Include="Numerics\Optimization\OptimizationBase.cs" />
+    <Compile Include="Numerics\Optimization\Pijavsky.cs" />
     <Compile Include="Numerics\Others\Eigenvalues.cs" />
     <Compile Include="Numerics\Decompositions\LUDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\QRDecomposition.cs" />
@@ -165,6 +183,19 @@
     <Compile Include="Numerics\NumericHelpers.cs" />
     <Compile Include="Numerics\Others\FFT.cs" />
     <Compile Include="Numerics\Others\Mandelbrot.cs" />
+    <Compile Include="Numerics\Random\BinomialDistribution.cs" />
+    <Compile Include="Numerics\Random\ContinuousUniformDistribution.cs" />
+    <Compile Include="Numerics\Random\DiscreteUniformDistribution.cs" />
+    <Compile Include="Numerics\Random\Distribution.cs" />
+    <Compile Include="Numerics\Random\ExponentialDistribution.cs" />
+    <Compile Include="Numerics\Random\GammaDistribution.cs" />
+    <Compile Include="Numerics\Random\Generator.cs" />
+    <Compile Include="Numerics\Random\LaplaceDistribution.cs" />
+    <Compile Include="Numerics\Random\MT19937Generator.cs" />
+    <Compile Include="Numerics\Random\NormalDistribution.cs" />
+    <Compile Include="Numerics\Random\PoissonDistribution.cs" />
+    <Compile Include="Numerics\Random\RayleighDistribution.cs" />
+    <Compile Include="Numerics\Random\WeibullDistribution.cs" />
     <Compile Include="Numerics\Solvers\Arnoldi.cs" />
     <Compile Include="Numerics\Solvers\CGSolver.cs" />
     <Compile Include="Numerics\Solvers\GMRESkSolver.cs" />
@@ -217,6 +248,7 @@
     <Compile Include="Functions\Trigonometric\TanhFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\ZerosFunction.cs" />
     <Compile Include="Operators\UnaryOperators\StatementOperator.cs" />
+    <Compile Include="Operators\UnaryOperators\TerminateOperator.cs" />
     <Compile Include="ParseContext.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Parsers\ArgumentsParseTree.cs" />
@@ -252,7 +284,6 @@
     <Compile Include="Expressions\BracketExpression.cs" />
     <Compile Include="Expressions\SymbolExpression.cs" />
     <Compile Include="Expressions\NumberExpression.cs" />
-    <Compile Include="Expressions\FunctionExpression.cs" />
     <Compile Include="Operators\Operator.cs" />
     <Compile Include="Operators\BinaryOperators\PlusOperator.cs" />
     <Compile Include="Tokens.cs" />
@@ -310,10 +341,7 @@
     <Compile Include="Exceptions\WrongArgumentsException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Numerics\ODE\" />
-    <Folder Include="Numerics\Optimization\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
 xcopy /y "$(TargetPath)" "$(SolutionDir)\Nuget\lib\net35\"

@@ -1,4 +1,5 @@
 using System;
+using YAMP.Numerics;
 
 namespace YAMP
 {
@@ -6,9 +7,7 @@ namespace YAMP
 	[Kind(PopularKinds.Function)]
 	class RandnFunction : ArgumentFunction
 	{	
-		static readonly Random ran = new Random();
-		static bool buffered = false;
-		static double buffer;
+		static readonly NormalDistribution ran = new NormalDistribution();
 
 		[Description("Generates one normally (gaussian) distributed random value around 0 with standard deviation 1.")]
 		public ScalarValue Function()
@@ -52,26 +51,10 @@ namespace YAMP
 
 		double Gaussian(double sigma, double mu)
 		{
-			if(buffered)
-			{
-				buffered = false;
-				return mu + sigma * buffer;
-			}
-			
-			double s, u, v;
-			
-			do
-			{
-				u = ran.NextDouble() * 2.0 - 1.0;
-				v = ran.NextDouble() * 2.0 - 1.0;
-				s = u * u + v * v;
-			} while(s == 0.0 || s >= 1.0);
-			
-			double a = Math.Sqrt(-2.0 * Math.Log(s) / s);
-			double z = u * a;
-			buffer = v * a;
-			buffered = true;
-			return mu + sigma * z;
+			ran.Sigma = sigma;
+			ran.Mu = mu;
+
+			return ran.NextDouble();
 		}
 	}
 }

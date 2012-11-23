@@ -62,7 +62,7 @@ namespace YAMP
             input = ParseFront(input.Substring(1));
             input = ParseBody(input);
 
-            return input;
+            return ";" + input;
         }
 
         string ParseBody(string input)

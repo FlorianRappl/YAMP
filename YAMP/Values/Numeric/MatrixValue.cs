@@ -130,9 +130,9 @@ namespace YAMP
 
 		public MatrixValue(double[][] values, int rows, int cols) : this(rows, cols)
 		{
-			for (var j = 0; j < rows; j++)
+			for (var j = 0; j < values.Length; j++)
 			{
-				for (var i = 0; i < cols; i++)
+				for (var i = 0; i < values[j].Length; i++)
 				{
 					if (values[j][i] == 0.0)
 						continue;
@@ -184,6 +184,42 @@ namespace YAMP
 		#endregion
 
 		#region Methods
+
+		public MatrixValue VectorSort()
+		{
+			var v = new MatrixValue(1, Length);
+
+			for (var k = 1; k <= Length; k++)
+				v[k] = this[k].Clone();
+
+			for (var i = 1; i < Length; i++)
+			{
+				for (var j = i + 1; j <= Length; j++)
+				{
+					if (v[j] < v[i])
+					{
+						var index1 = v.GetIndex(j);
+						var index2 = v.GetIndex(i);
+
+						var tmp = v._values[index1];
+						v._values[index1] = v._values[index2];
+						v._values[index2] = tmp;
+					}
+				}
+			}
+
+			return v;
+		}
+
+		public ScalarValue Sum()
+		{
+			var s = new ScalarValue();
+
+			foreach (var entry in _values)
+				s += entry.Value;
+
+			return s;
+		}
 
 		public override void Clear()
 		{
@@ -559,12 +595,15 @@ namespace YAMP
 
 		public MatrixValue Adjungate()
 		{
-			var m = new MatrixValue(dimX, dimY);
+			var m = new MatrixValue(DimensionX, DimensionY);
 
-			for (var i = 1; i <= DimensionY; i++)
+			foreach (var pair in _values)
 			{
-				for (var j = 1; j <= DimensionX; j++)
-					m[j, i] = this[i, j].Conjugate();
+				m._values.Add(new MatrixIndex
+				{
+					Row = pair.Key.Column,
+					Column = pair.Key.Row
+				}, pair.Value.Conjugate());
 			}
 
 			return m;
@@ -572,16 +611,15 @@ namespace YAMP
 
 		public MatrixValue Transpose()
 		{
-			var m = Clone();
-			m.DimensionX = DimensionY;
-			m.DimensionY = DimensionX;
+			var m = new MatrixValue(DimensionX, DimensionY);
 
 			foreach (var pair in _values)
 			{
-				var index = pair.Key;
-				var temp = index.Row;
-				index.Row = index.Column;
-				index.Column = temp;
+				m._values.Add(new MatrixIndex
+				{
+					Row = pair.Key.Column,
+					Column = pair.Key.Row
+				}, pair.Value.Clone());
 			}
 
 			return m;
@@ -673,6 +711,20 @@ namespace YAMP
 			return false;
 		}
 
+        public double[] GetRealVector(int yoffset, int ylength, int xoffset, int xlength)
+        {
+            var k = 0;
+            var array = new double[ylength * xlength];
+
+            for (var i = 1 + xoffset; i <= xlength; i++)
+            {
+                for (var j = 1 + yoffset; j <= ylength; j++)
+                    array[k++] = this[j, i].Value;
+            }
+
+            return array;
+        }
+
 		public double[][] GetRealArray()
 		{
 			var array = new double[DimensionY][];
@@ -688,24 +740,24 @@ namespace YAMP
 			return array;
 		}
 
-		public MatrixValue SubMatrix(int dy, int dimy, int dx, int dimx)
+		public MatrixValue SubMatrix(int yoffset, int yfinal, int xoffset, int xfinal)
 		{
-			var X = new MatrixValue(dimy - dy, dimx - dx);
+			var X = new MatrixValue(yfinal - yoffset, xfinal - xoffset);
 
-			for (int j = dy + 1; j <= dimy; j++)
-				for (int i = dx + 1; i <= dimx; i++)
-					X[j - dy, i - dx] = this[j, i].Clone();
+			for (int j = yoffset + 1; j <= yfinal; j++)
+				for (int i = xoffset + 1; i <= xfinal; i++)
+					X[j - yoffset, i - xoffset] = this[j, i].Clone();
 
 			return X;
 		}
 
-		public MatrixValue SubMatrix(int[] y, int dx, int dimx)
+		public MatrixValue SubMatrix(int[] y, int xoffset, int xfinal)
 		{
-			var X = new MatrixValue(y.Length, dimx - dx);
+			var X = new MatrixValue(y.Length, xfinal - xoffset);
 
 			for (int j = 1; j <= y.Length; j++)
-				for (int i = dx + 1; i <= dimx; i++)
-					X[j, i - dx] = this[y[j - 1], i].Clone();
+				for (int i = xoffset + 1; i <= xfinal; i++)
+					X[j, i - xoffset] = this[y[j - 1], i].Clone();
 
 			return X;
 		}
