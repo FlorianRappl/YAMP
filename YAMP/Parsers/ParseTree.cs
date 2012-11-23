@@ -44,7 +44,7 @@ namespace YAMP
 		int _offset;
         int _final;
 		QueryContext _query;
-		char _lastSkip;
+		Stack<char> _skips;
 
 		#endregion
 
@@ -192,9 +192,9 @@ namespace YAMP
 		/// <summary>
 		/// Gets the last skipped character.
 		/// </summary>
-		protected char LastSkip
+		protected Stack<char> Skips
 		{
-			get { return _lastSkip; }
+			get { return _skips; }
 		}
 
         /// <summary>
@@ -241,23 +241,44 @@ namespace YAMP
 			var operators = new Stack<Operator>();
 			var expressions = new Stack<Expression>();
 			var takeop = false;
-			var maxLevel = -100;
+            var maxLevel = -100;
+            var shadow = _input;
 			_final = _offset;
-			var shadow = _input;
+            _skips = new Stack<char>();
 
 			while (shadow.Length > 0)
-			{
-				switch (shadow[0])
-				{
-					case ' ':
-					case '\t':
-					case '\r':
-					case '\n':
-						_lastSkip = shadow[0];
-						_final++;
-						shadow = shadow.Substring(1);
-						continue;
-				}
+            {
+                switch (shadow[0])
+                {
+                    case ' ':
+                    case '\t':
+                    case '\r':
+                    case '\n':
+                        _skips.Push(shadow[0]);
+                        _final++;
+                        shadow = shadow.Substring(1);
+                        continue;
+                    case '/':
+                        if (shadow.Length != 1)
+                        {
+                            if (shadow[1] == '*')
+                            {
+                                var index = shadow.IndexOf("*/") + 2;
+                                shadow = shadow.Substring(index == 1 ? shadow.Length : index);
+                                _final += index;
+                                continue;
+                            }
+                            else if (shadow[1] == '/')
+                            {
+                                var index = shadow.IndexOf('\n') + 1;
+                                shadow = shadow.Substring(index == 0 ? shadow.Length : index);
+                                _final += index;
+                                continue;
+                            }
+                        }
+
+                        break;
+                }
 
 				if (takeop)
 				{
@@ -339,29 +360,18 @@ namespace YAMP
 		public override string ToString()
 		{
 			if (!HasContent)
-				return string.Empty;
+				return "-- empty --";
 
 			var sb = new StringBuilder();
-			sb.Append(PrintExpression(Expressions[0]));
+            sb.Append("[ ").Append(Expressions[0]).Append(" ]");
 
 			if (Operator != null)
 			{
-				sb.Append("+").AppendLine(Operator.ToString());
+				sb.Append(" [ ").Append(Operator).Append(" ]");
 
-				if (Expressions.Length == 2)
-					sb.Append(PrintExpression(Expressions[1]));
+                if (Expressions.Length == 2)
+                    sb.Append(" [ ").Append(Expressions[1]).Append(" ]");
 			}
-
-			return sb.ToString();
-		}
-
-		string PrintExpression(Expression exp)
-		{
-			var lines = exp.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-			var sb = new StringBuilder();
-
-			foreach (var line in lines)
-				sb.Append("+").AppendLine(line);
 
 			return sb.ToString();
 		}

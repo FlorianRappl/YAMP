@@ -84,7 +84,7 @@ namespace YAMP
             if (Tree != null)
                 return Tree.ToString();
 
-            return string.Empty;
+            return base.ToString();
         }
 
         #endregion

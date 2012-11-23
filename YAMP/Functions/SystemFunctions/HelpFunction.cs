@@ -59,7 +59,10 @@ namespace YAMP
 						sb.AppendLine("** Usage **").Append("\t").AppendLine(usage.Usage);
 						sb.AppendLine("** Description **").Append("\t").AppendLine(usage.Description);
 						sb.AppendLine("** Arguments **").Append("\t").AppendLine(string.Join(", ", usage.Arguments.ToArray()));
-						sb.AppendLine("** Returns **").Append("\t").AppendLine(usage.Returns);
+						sb.AppendLine("** Returns **");
+                        
+                        foreach(var ret in usage.Returns)
+                            sb.Append("\t").AppendLine(ret);
 
 						foreach(var example in usage.Examples)
 						{

@@ -207,8 +207,9 @@ namespace YAMP.Help
 		HelpFunctionUsage GetUsage(string name, MethodInfo function)
 		{
 			var objects = function.GetCustomAttributes(typeof(ExampleAttribute), false);
+            var rets = function.GetCustomAttributes(typeof(ReturnsAttribute), false);
 			var help = new HelpFunctionUsage();
-			var args = function.GetParameters();
+            var args = function.GetParameters();
 
 			var sb = new StringBuilder();
 			sb.Append(name).Append("(");
@@ -221,7 +222,15 @@ namespace YAMP.Help
 			sb.AppendLine(")");
 
 			help.Usage = sb.ToString();
-			help.Returns = ModifyValueType(function.ReturnType);
+
+            if (rets.Length == 0)
+			    help.Returns.Add(ModifyValueType(function.ReturnType));
+            else
+            {
+                foreach (ReturnsAttribute attribute in rets)
+                    help.Returns.Add(ModifyValueType(attribute.ReturnType) + " : " + attribute.Explanation);
+            }
+
 			help.Description = GetDescription(function);
 
 			foreach (var arg in args)

@@ -4,7 +4,8 @@ namespace YAMP
 {
 	/// <summary>
 	/// Provides a kind attribute to be read by the help method. This attribute specifies the kind of function / constant that is declared.
-	/// </summary>
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
 	public class KindAttribute : Attribute
 	{
         /// <summary>
