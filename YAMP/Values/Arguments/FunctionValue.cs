@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
-    class FunctionValue : Value, IFunction
+    public class FunctionValue : Value, IFunction
     {
         #region Members
 
@@ -62,7 +62,7 @@ namespace YAMP
             };
         }
 
-        public FunctionValue(string[] arguments, LambdaParseTree body) 
+        internal FunctionValue(string[] arguments, LambdaParseTree body) 
         {
             this.arguments = arguments;
             this.body = body.Input;

@@ -84,7 +84,10 @@ namespace YAMP.Numerics
         ///   <see cref="StandardGenerator"/> as underlying random number generator. 
         /// </summary>
         public ContinuousUniformDistribution()
-        {
+		{
+			this.alpha = 0.0;
+			this.beta = 1.0;
+			this.UpdateHelpers();
         }
 
         /// <summary>

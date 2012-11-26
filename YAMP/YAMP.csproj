@@ -102,6 +102,7 @@
     <Compile Include="Functions\Numerics\DiffFunction.cs" />
     <Compile Include="Functions\Numerics\GcdFunction.cs" />
     <Compile Include="Functions\Numerics\IntFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\FixFunction.cs" />
     <Compile Include="Functions\StandardFunctions\ProductFunction.cs" />
     <Compile Include="Functions\StandardFunctions\SortFunction.cs" />
     <Compile Include="Functions\Statistics\DevFunction.cs" />

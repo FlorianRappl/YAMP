@@ -337,6 +337,9 @@ namespace YAMPConsole
 			Test("f = @x => x.^2; f(2)", 4.0);
 			Test("f = @(x, y) => x*y'; f([1,2,3],[1,2,3])", 14.0);
 			Test("[a,b,c]=12.0;b", 12.0);
+			Test("round(sum(randn(10000, 1)) / 1000)", 0.0);
+			Test("round(sum(rand(10000, 1)) / 1000)", 5.0);
+			Test("round(sum(randi(10000, 1, 1, 10)) / 10000)", 5.0);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}
