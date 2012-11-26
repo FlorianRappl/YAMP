@@ -103,7 +103,7 @@ namespace YAMP
             {
                 var vx = Convert(x, 0, x.Length);
 
-                if (y.DimensionY > y.DimensionX || y.DimensionY == x.Length)
+                if (y.DimensionY > y.DimensionX || y.DimensionY >= x.Length)
                 {
                     var dim = Math.Min(x.Length, y.DimensionY);
 

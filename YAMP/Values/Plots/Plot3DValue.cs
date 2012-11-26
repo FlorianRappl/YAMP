@@ -130,9 +130,7 @@ namespace YAMP
                 return;
 
             if (m.IsVector)
-            {
                 return;
-            }
             else if (m.DimensionX <= m.DimensionY && m.DimensionX == 3)
             {
                 var x = ConvertY(m, 0, m.DimensionY, 0);
