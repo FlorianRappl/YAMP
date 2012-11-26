@@ -343,6 +343,8 @@ namespace YAMPConsole
             Test("2+3//This is a line-comment!\n-4", 1.0);
             Test("1-8* /* this is another comment */ 0.25", -1.0);
             Test("1-8* /* this is \nanother comment\nwith new lines */ 0.5+4", 1.0);
+			Test("ode(@(t, x) => -x, 0:0.01:1, 1.0)(101, 2)", 0.36818409421192455);
+			Test("root(@x => x.^2-4, 3)", 2.0000000000519473);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}

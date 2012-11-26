@@ -102,6 +102,8 @@
     <Compile Include="Functions\Numerics\DiffFunction.cs" />
     <Compile Include="Functions\Numerics\GcdFunction.cs" />
     <Compile Include="Functions\Numerics\IntFunction.cs" />
+    <Compile Include="Functions\Numerics\OdeFunction.cs" />
+    <Compile Include="Functions\Numerics\RootFunction.cs" />
     <Compile Include="Functions\StandardFunctions\FixFunction.cs" />
     <Compile Include="Functions\StandardFunctions\ProductFunction.cs" />
     <Compile Include="Functions\StandardFunctions\SortFunction.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="Functions\Statistics\MedianFunction.cs" />
     <Compile Include="Functions\Statistics\VarFunction.cs" />
     <Compile Include="Functions\SystemFunctions\CdFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\DateFunction.cs" />
     <Compile Include="Functions\SystemFunctions\LsFunction.cs" />
     <Compile Include="Functions\SystemFunctions\PwdFunction.cs" />
     <Compile Include="Functions\SystemFunctions\SleepFunction.cs" />

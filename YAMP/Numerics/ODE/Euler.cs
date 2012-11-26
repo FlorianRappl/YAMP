@@ -8,7 +8,7 @@ namespace YAMP.Numerics
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="function">Function to be solved delegate</param>
+        /// <param name="f">Function to be solved delegate</param>
         /// <param name="begin">Interval start point value</param>
         /// <param name="end">Interval end point value</param>
         /// <param name="y0">Starting condition</param>

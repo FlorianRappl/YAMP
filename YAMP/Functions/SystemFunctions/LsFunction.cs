@@ -12,6 +12,13 @@ namespace YAMP
 		[Example("ls()", "Lists name, attributes and the time of the last modification of the current working directory's files and sub-directories.")]
 		public StringValue Function()
 		{
+			return Function(new StringValue("*"));
+		}
+
+		[Description("Reads the file system table and lists the filtered contents of the current working directory.")]
+		[Example("ls(\"*.png\")", "Lists only png files with name, attributes and the time of the last modification of the current working directory.")]
+		public StringValue Function(StringValue filter)
+		{
 			var sb = new StringBuilder();
 
 			var dir = new DirectoryInfo(Environment.CurrentDirectory);
@@ -19,14 +26,14 @@ namespace YAMP
 			sb.AppendFormat("{0,-32} {1,-10}   {2}", "Name", "Attributes", "Last changed").AppendLine();
 			sb.AppendLine("------------------------------------------------------------");
 
-			foreach (var subdir in dir.GetDirectories())
+			foreach (var subdir in dir.GetDirectories(filter.Value))
 			{
-				sb.AppendFormat("{0,-32}  {1,-8}  {2} {3}", Limit(subdir.Name), PrintAttributes(subdir.Attributes), 
+				sb.AppendFormat("{0,-32}  {1,-8}  {2} {3}", Limit(subdir.Name), PrintAttributes(subdir.Attributes),
 					subdir.LastWriteTime.ToShortDateString(), subdir.LastWriteTime.ToShortTimeString());
 				sb.AppendLine();
 			}
 
-			foreach (var file in dir.GetFiles())
+			foreach (var file in dir.GetFiles(filter.Value))
 			{
 				sb.AppendFormat("{0,-32}  {1,-8}  {2} {3}", Limit(file.Name), PrintAttributes(file.Attributes),
 					file.LastWriteTime.ToShortDateString(), file.LastWriteTime.ToShortTimeString());

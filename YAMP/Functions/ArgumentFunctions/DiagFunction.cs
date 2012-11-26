@@ -37,7 +37,7 @@ namespace YAMP
 					}
 				}
 				else
-					throw new ArgumentTypeNotSupportedException("diag", i + 1, values.Values[i].GetType());
+					throw new ArgumentTypeNotSupportedException("diag", i + 1, values.Values[i].Header);
 			}
 
 			return m;

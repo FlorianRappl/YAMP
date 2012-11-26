@@ -142,6 +142,20 @@ namespace YAMP
 			}
 		}
 
+		public MatrixValue(double[,] values) : this(values.GetLength(0), values.GetLength(1))
+		{
+			for (var j = 0; j < dimY; j++)
+			{
+				for (var i = 0; i < dimX; i++)
+				{
+					if (values[j, i] == 0.0)
+						continue;
+
+					this[j + 1, i + 1] = new ScalarValue(values[j, i]);
+				}
+			}
+		}
+
 		#endregion
 
 		#region Statics
