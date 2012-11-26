@@ -4,6 +4,7 @@ using System.Text;
 
 namespace YAMP
 {
+    [Kind(PopularKinds.System)]
 	[Description("Lists the contents of the current working directory.")]
 	class LsFunction : SystemFunction
 	{

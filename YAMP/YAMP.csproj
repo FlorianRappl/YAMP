@@ -110,6 +110,7 @@
     <Compile Include="Functions\Statistics\MeanFunction.cs" />
     <Compile Include="Functions\Statistics\MedianFunction.cs" />
     <Compile Include="Functions\Statistics\VarFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\CdFunction.cs" />
     <Compile Include="Functions\SystemFunctions\LsFunction.cs" />
     <Compile Include="Functions\SystemFunctions\PwdFunction.cs" />
     <Compile Include="Functions\SystemFunctions\SleepFunction.cs" />
@@ -163,7 +164,19 @@
     <Compile Include="Numerics\Integration\SimpsonIntegrator.cs" />
     <Compile Include="Numerics\Integration\TrapezIntegrator.cs" />
     <Compile Include="Numerics\Interpolations\Interpolation.cs" />
+    <Compile Include="Numerics\Interpolations\NevilleInterpolator.cs" />
+    <Compile Include="Numerics\Interpolations\NewtonInterpolation.cs" />
     <Compile Include="Numerics\Interpolations\SplineInterpolation.cs" />
+    <Compile Include="Numerics\NonLinear\HalfDivisionMethod.cs" />
+    <Compile Include="Numerics\NonLinear\NewtonMethod.cs" />
+    <Compile Include="Numerics\NonLinear\NonLinearBase.cs" />
+    <Compile Include="Numerics\NonLinear\SecantMethod.cs" />
+    <Compile Include="Numerics\ODE\Euler.cs" />
+    <Compile Include="Numerics\ODE\ODEBase.cs" />
+    <Compile Include="Numerics\ODE\RungeKutta.cs" />
+    <Compile Include="Numerics\Optimization\GoldenSection.cs" />
+    <Compile Include="Numerics\Optimization\OptimizationBase.cs" />
+    <Compile Include="Numerics\Optimization\Pijavsky.cs" />
     <Compile Include="Numerics\Others\Eigenvalues.cs" />
     <Compile Include="Numerics\Decompositions\LUDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\QRDecomposition.cs" />
@@ -272,7 +285,6 @@
     <Compile Include="Expressions\BracketExpression.cs" />
     <Compile Include="Expressions\SymbolExpression.cs" />
     <Compile Include="Expressions\NumberExpression.cs" />
-    <Compile Include="Expressions\FunctionExpression.cs" />
     <Compile Include="Operators\Operator.cs" />
     <Compile Include="Operators\BinaryOperators\PlusOperator.cs" />
     <Compile Include="Tokens.cs" />
@@ -330,10 +342,7 @@
     <Compile Include="Exceptions\WrongArgumentsException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Numerics\ODE\" />
-    <Folder Include="Numerics\Optimization\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
 xcopy /y "$(TargetPath)" "$(SolutionDir)\Nuget\lib\net35\"

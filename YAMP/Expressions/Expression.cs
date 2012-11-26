@@ -74,7 +74,7 @@ namespace YAMP
 
 		public override string ToString ()
 		{
-			return string.Format ("[ Expression : {0} ]", _input);
+            return GetType().Name.Replace("Expression", string.Empty);
 		}
 
 		#endregion

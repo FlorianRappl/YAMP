@@ -6,12 +6,10 @@ namespace YAMP
 {
     class AbsExpression : TreeExpression
     {
-        AbsFunction abs;
+        static readonly AbsFunction abs = new AbsFunction();
 
-        public AbsExpression()
-            : base(@"\|.*\|")
+        public AbsExpression() : base(@"\|.*\|")
         {
-            abs = new AbsFunction();
         }
 
         public AbsExpression(QueryContext query) : this()
@@ -51,11 +49,6 @@ namespace YAMP
             }
 
             throw new BracketException("|", input);
-        }
-
-        public override string ToString()
-        {
-            return "| | [ ExpressionType = Abs ]\n" + Tree.ToString();
         }
     }
 }

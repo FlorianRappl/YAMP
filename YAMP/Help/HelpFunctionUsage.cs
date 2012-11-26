@@ -9,6 +9,7 @@ namespace YAMP.Help
 		{
 			Examples = new List<HelpExample>();
 			Arguments = new List<string>();
+            Returns = new List<string>();
 		}
 
 		public string Usage { get; set; }
@@ -17,7 +18,7 @@ namespace YAMP.Help
 
 		public List<string> Arguments { get; private set; }
 
-		public string Returns { get; set; }
+        public List<string> Returns { get; set; }
 
 		public List<HelpExample> Examples { get; private set; }
 	}

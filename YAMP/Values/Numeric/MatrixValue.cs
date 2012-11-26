@@ -723,6 +723,20 @@ namespace YAMP
 			return false;
 		}
 
+        public double[] GetRealVector(int yoffset, int ylength, int xoffset, int xlength)
+        {
+            var k = 0;
+            var array = new double[ylength * xlength];
+
+            for (var i = 1 + xoffset; i <= xlength; i++)
+            {
+                for (var j = 1 + yoffset; j <= ylength; j++)
+                    array[k++] = this[j, i].Value;
+            }
+
+            return array;
+        }
+
 		public double[][] GetRealArray()
 		{
 			var array = new double[DimensionY][];
@@ -1069,6 +1083,6 @@ namespace YAMP
         }
 
         #endregion
-	}
+    }
 }
 

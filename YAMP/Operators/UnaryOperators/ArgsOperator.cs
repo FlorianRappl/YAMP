@@ -99,7 +99,7 @@ namespace YAMP
 
         public override string ToString()
         {
-            return base.ToString() + Environment.NewLine + _content.ToString();
+            return _content.ToString();
         }
 
 		#endregion

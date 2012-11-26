@@ -4,7 +4,8 @@ namespace YAMP
 {
 	/// <summary>
 	/// The attribute to store information about optional arguments.
-	/// </summary>
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class ArgumentsAttribute : Attribute
 	{
 		/// <summary>
