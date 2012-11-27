@@ -109,12 +109,16 @@
     <Compile Include="Functions\BaseFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\SvdFunction.cs" />
     <Compile Include="Functions\Numerics\GcdFunction.cs" />
+    <Compile Include="Functions\Numerics\OdeFunction.cs" />
+    <Compile Include="Functions\Numerics\RootFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\FixFunction.cs" />
     <Compile Include="Functions\StandardFunctions\SortFunction.cs" />
     <Compile Include="Functions\Statistics\DevFunction.cs" />
     <Compile Include="Functions\Statistics\LsqFunction.cs" />
     <Compile Include="Functions\Statistics\MeanFunction.cs" />
     <Compile Include="Functions\Statistics\MedianFunction.cs" />
     <Compile Include="Functions\Statistics\VarFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\DateFunction.cs" />
     <Compile Include="Functions\SystemFunctions\VerFunction.cs" />
     <Compile Include="Functions\Visualization\SetFunction.cs" />
     <Compile Include="Interfaces\ISetFunction.cs" />
