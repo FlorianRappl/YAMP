@@ -72,7 +72,8 @@ namespace YAMP
 
             if (m.IsVector)
             {
-                var x = Generate(1.0, 1.0, m.Length);
+                var x = Generate(0.0, 1.0, m.Length - 1);
+                Normalize(x, m.Length);
                 var y = Convert(m, 0, m.Length);
                 AddValues(x, y);
             }
@@ -104,7 +105,7 @@ namespace YAMP
             {
                 var vx = Convert(x, 0, x.Length);
 
-                if (y.DimensionY > y.DimensionX || y.DimensionY == x.Length)
+                if (y.DimensionY > y.DimensionX || y.DimensionY >= x.Length)
                 {
                     var dim = Math.Min(x.Length, y.DimensionY);
 
@@ -185,6 +186,12 @@ namespace YAMP
 
 			AddSeries(p);
 		}
+
+        void Normalize(double[] x, double max)
+        {
+            for (var i = 0; i < x.Length; i++)
+                x[i] = x[i] / max;
+        }
 
 		#endregion
 

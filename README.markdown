@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **1.1.0**. A NuGet package (current version 1.0.1) is
+The current version number is **1.1.0**. A NuGet package (current version 1.1.0) is
 available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code -
 since the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -61,6 +61,10 @@ Version history
 - Added comments, i.e. `//` is a line comment and `/*` to `*/` is a block comment
 - Changed the `ToString()` of the parser / parse tree, expression and operators.
 - Added the ability to document return parameters with comments
+- Added functions for finding the root `root()` and for differential eq. `ode()`
+- Added a function `date()` to get the current date as a `StringValue`
+- Added more properties and functions to the `MatrixValue` class
+- Improved the string output of a `FunctionValue` instance
 
 **1.0.1:**
 - Removed the `setData()` method to adjust plot series values

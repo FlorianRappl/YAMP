@@ -9,8 +9,8 @@ namespace YAMP
 	{
 		[Description("Solves the eigenproblem of a matrix A and return a vector with all (+degenerate) eigenvalues.")]
 		[Example("eig([1,2,3;4,5,6;7,8,9])", "Returns a vector with the three eigenvalues 16.11684, -1.11684 and 0 of this 3x3 matrix.")]
-		[Returns(typeof(MatrixValue), "The eigenvalues of the matrix stored in a vector.")]
-        [Returns(typeof(MatrixValue), "The eigenvectors of the matrix stored in a matrix.")]
+		[Returns(typeof(MatrixValue), "The eigenvalues of the matrix stored in a vector.", 0)]
+        [Returns(typeof(MatrixValue), "The eigenvectors of the matrix stored in a matrix.", 1)]
 		public ArgumentsValue Function(MatrixValue argument)
 		{
 			var ev = new Eigenvalues(argument as MatrixValue);

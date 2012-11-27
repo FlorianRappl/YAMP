@@ -142,6 +142,20 @@ namespace YAMP
 			}
 		}
 
+		public MatrixValue(double[,] values) : this(values.GetLength(0), values.GetLength(1))
+		{
+			for (var j = 0; j < dimY; j++)
+			{
+				for (var i = 0; i < dimX; i++)
+				{
+					if (values[j, i] == 0.0)
+						continue;
+
+					this[j + 1, i + 1] = new ScalarValue(values[j, i]);
+				}
+			}
+		}
+
 		#endregion
 
 		#region Statics
@@ -184,6 +198,20 @@ namespace YAMP
 		#endregion
 
 		#region Methods
+
+		public int MaximumLength
+		{
+			get
+			{
+				var max = 0;
+
+				foreach (var el in _values.Values)
+					if (el.Length > max)
+						max = el.Length;
+
+				return max;
+			}
+		}
 
 		public MatrixValue VectorSort()
 		{
@@ -595,33 +623,31 @@ namespace YAMP
 
 		public MatrixValue Adjungate()
 		{
-			var m = new MatrixValue(DimensionX, DimensionY);
+			var m = Transpose();
 
-			foreach (var pair in _values)
-			{
-				m._values.Add(new MatrixIndex
-				{
-					Row = pair.Key.Column,
-					Column = pair.Key.Row
-				}, pair.Value.Conjugate());
-			}
+			foreach (var pair in m._values)
+				pair.Value.ImaginaryValue = -pair.Value.ImaginaryValue;
 
 			return m;
 		}
 
 		public MatrixValue Transpose()
 		{
-			var m = new MatrixValue(DimensionX, DimensionY);
+			var m = Clone();
+			var nv = new Dictionary<MatrixIndex, ScalarValue>();
 
-			foreach (var pair in _values)
+			foreach (var pair in m._values)
 			{
-				m._values.Add(new MatrixIndex
+				nv.Add(new MatrixIndex
 				{
 					Row = pair.Key.Column,
 					Column = pair.Key.Row
-				}, pair.Value.Clone());
+				}, pair.Value);
 			}
 
+			m._values = nv;
+			m.dimX = dimY;
+			m.dimY = dimX;
 			return m;
 		}
 

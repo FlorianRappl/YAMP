@@ -13,7 +13,7 @@ namespace YAMP.Numerics.Optimization
         /// <param name="function">Function to be solved delegate</param>
         public NewtonMethod(Func<double, double> f, double x, double d) : base(f, d)
         {
-            Result = new double[2, 10];
+            Result = new double[1, 2];
             int t = 0;
             double x1, y;
 
@@ -27,7 +27,7 @@ namespace YAMP.Numerics.Optimization
             while (Math.Abs(y) >= d);
 
             Result[0, 0] = x;
-            Result[1, 0] = t;
+            Result[0, 1] = t;
         }
     }
 }

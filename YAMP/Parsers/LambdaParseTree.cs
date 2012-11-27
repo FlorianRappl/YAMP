@@ -26,6 +26,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace YAMP
 {
@@ -33,8 +34,21 @@ namespace YAMP
     /// The class used as the parse tree for lambda expressions.
     /// </summary>
     class LambdaParseTree : ParseTree
-    {
-        private string p;
+	{
+		static Dictionary<string, Operator> operators = new Dictionary<string, Operator>();
+
+		static LambdaParseTree()
+		{
+			var terminator = new TerminateOperator(null);
+			operators.Add(",", terminator);
+			operators.Add(";", terminator);
+		}
+
+		public char LastToken
+		{
+			get;
+			private set;
+		}
 
         public LambdaParseTree(QueryContext context, string input, int offset)
             : base(context, input, offset)
@@ -42,13 +56,16 @@ namespace YAMP
         }
 
         protected override Operator FindOperator(string input)
-        {
-            var op = Tokens.FindAvailableOperator(Query, input);
+		{
+			var op = Tokens.FindOperator(operators, Query, input);
 
-            if (op != null)
-                return op;
+			if (op != null)
+			{
+				LastToken = input[0];
+				return op;
+			}
 
-            return new TerminateOperator(Query);
+			return Tokens.Instance.FindOperator(Query, input);
         }
     }
 }

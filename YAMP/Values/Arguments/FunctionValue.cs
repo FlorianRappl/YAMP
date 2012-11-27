@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
-    class FunctionValue : Value, IFunction
+    public class FunctionValue : Value, IFunction
     {
         #region Members
 
@@ -62,7 +62,7 @@ namespace YAMP
             };
         }
 
-        public FunctionValue(string[] arguments, LambdaParseTree body) 
+        internal FunctionValue(string[] arguments, LambdaParseTree body) 
         {
             this.arguments = arguments;
             this.body = body.Input;
@@ -108,29 +108,37 @@ namespace YAMP
         }
 
         public override Value Add(Value right)
-        {
-            throw new NotImplementedException();
+		{
+			throw new OperationNotSupportedException("+", this);
         }
 
         public override Value Subtract(Value right)
-        {
-            throw new NotImplementedException();
+		{
+			throw new OperationNotSupportedException("-", this);
         }
 
         public override Value Multiply(Value right)
-        {
-            throw new NotImplementedException();
+		{
+			throw new OperationNotSupportedException("*", this);
         }
 
         public override Value Divide(Value denominator)
-        {
-            throw new NotImplementedException();
+		{
+			throw new OperationNotSupportedException("/", this);
         }
 
         public override Value Power(Value exponent)
-        {
-            throw new NotImplementedException();
+		{
+			throw new OperationNotSupportedException("^", this);
         }
+
+		public override string ToString()
+		{
+			if (arguments == null || string.IsNullOrEmpty(body))
+				return "λ reference";
+
+			return string.Format("@({0}) => {1}", string.Join(", ", arguments), body);
+		}
 
         #endregion
 

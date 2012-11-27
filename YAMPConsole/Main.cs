@@ -337,9 +337,14 @@ namespace YAMPConsole
 			Test("f = @x => x.^2; f(2)", 4.0);
 			Test("f = @(x, y) => x*y'; f([1,2,3],[1,2,3])", 14.0);
 			Test("[a,b,c]=12.0;b", 12.0);
+			Test("round(sum(randn(10000, 1)) / 1000)", 0.0);
+			Test("round(sum(rand(10000, 1)) / 1000)", 5.0);
+			Test("round(sum(randi(10000, 1, 1, 10)) / 10000)", 5.0);
             Test("2+3//This is a line-comment!\n-4", 1.0);
             Test("1-8* /* this is another comment */ 0.25", -1.0);
             Test("1-8* /* this is \nanother comment\nwith new lines */ 0.5+4", 1.0);
+			Test("ode(@(t, x) => -x, 0:0.01:1, 1.0)(101, 2)", 0.36818409421192455);
+			Test("root(@x => x.^2-4, 3)", 2.0000000000519473);
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 		}

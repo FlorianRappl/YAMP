@@ -13,11 +13,13 @@ namespace YAMP
 		/// (should be used in combination with multiple output arguments).
         /// </summary>
         /// <param name="type">The type that will be returned</param>
-		/// <param name="explanation">The specific explanations</param>
-		public ReturnsAttribute(Type type, string explanation)
+        /// <param name="explanation">The specific explanations</param>
+        /// <param name="order">The rank of the return type</param>
+		public ReturnsAttribute(Type type, string explanation, int order = 0)
 		{
             ReturnType = type;
 			Explanation = explanation;
+            Order = order;
 		}
 
 		/// <summary>
@@ -33,5 +35,10 @@ namespace YAMP
         /// Gets the type that will be returned.
         /// </summary>
         public Type ReturnType { get; private set; }
+
+        /// <summary>
+        /// Gets the rank of the return attribute.
+        /// </summary>
+        public int Order { get; private set; }
     }
 }

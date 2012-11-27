@@ -118,9 +118,23 @@ namespace YAMP
 
 		#endregion
 
-		#region Overrides
+        #region Conversations
 
-		public override string ToString (ParseContext context)
+        public static explicit operator ScalarValue(StringValue value)
+        {
+            var sum = 0.0;
+
+            foreach(var c in value.Value)
+                sum += (double)c;
+
+            return new ScalarValue(sum, value.Length);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString (ParseContext context)
 		{
 			return _value;
 		}

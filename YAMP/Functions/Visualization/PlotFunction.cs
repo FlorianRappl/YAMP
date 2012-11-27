@@ -28,6 +28,27 @@ namespace YAMP
             return plot;
         }
 
+        [Description("Performs the plot of a matrix. The first column is interpreted as x-values if it has only one column. In this case the columns of the other matrices are interpreted as a collection of y-values. Otherwise all matrices are viewed as a collection of y-values corresponding to a set of x-values.")]
+        [Example("plot(0:15, 2^1:16, 3^1:16)", "Plots the powers of 2 from 1 to 16 and the powers of 3 from 1 to 16 at x = 0, 1, ..., 15.")]
+        [Example("plot([1:11, 2^(1:2:21)], [0:10, 2^(0:2:20)], [-10:0, 2^(-20:2:0)])", "Plots the odd, even and negative powers of 2 at different x-values.")]
+        [Example("plot(0:0.01:2*pi, [sin(0:0.01:2*pi), cos(0:0.01:2*pi), 0:0.01:2*pi], [sinh(0:0.01:2*pi), cosh(0:0.01:2*pi)])", "Plots the values of a sin, cos, linear, cosh and sinh function with x-values from 0 to 2 Pi.")]
+        public virtual Plot2DValue Function(MatrixValue m, MatrixValue n, ArgumentsValue l)
+        {
+            var plot = new Plot2DValue();
+            var values = new MatrixValue[l.Length];
+
+            for (var i = 0; i != l.Length; i++)
+            {
+                if (l.Values[i] is MatrixValue)
+                    values[i] = (MatrixValue)l.Values[i];
+                else
+                    throw new OperationNotSupportedException("plot", l.Values[i]);
+            }
+
+            plot.AddPoints(m, n, values);
+            return plot;
+        }
+
 		[Description("Just displays the given plot.")]
 		[Example("plot(myplot)", "Displays the given plot stored in the variable myplot.")]
 		public PlotValue Function(PlotValue plot)

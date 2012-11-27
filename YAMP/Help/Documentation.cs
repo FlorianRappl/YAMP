@@ -227,6 +227,8 @@ namespace YAMP.Help
 			    help.Returns.Add(ModifyValueType(function.ReturnType));
             else
             {
+                rets = rets.OrderBy(m => ((ReturnsAttribute)m).Order).ToArray();
+
                 foreach (ReturnsAttribute attribute in rets)
                     help.Returns.Add(ModifyValueType(attribute.ReturnType) + " : " + attribute.Explanation);
             }

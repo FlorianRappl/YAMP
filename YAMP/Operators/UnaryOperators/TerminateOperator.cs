@@ -6,8 +6,7 @@ namespace YAMP
 	{
 		QueryContext query;
 
-		public TerminateOperator(QueryContext query)
-			: base(";", 1)
+		public TerminateOperator(QueryContext query) : base(";", 1)
 		{
 			this.query = query;
 		}

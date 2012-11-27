@@ -70,7 +70,15 @@ namespace YAMP
 
         #endregion
 
-        #region Properties
+		#region Properties
+
+		public int Length
+		{
+			get
+			{
+				return ToString().Length;
+			}
+		}
 
         /// <summary>
         /// Gets the integer part of the real contribution.

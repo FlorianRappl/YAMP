@@ -17,8 +17,13 @@ namespace YAMP
             AtArgument = index;
         }
 
-        public ArgumentTypeNotSupportedException(string function, int index, Type type)
-            : base("The function {0}() is not supported with argument #{1}. The argument should be of type {2}.", function, index + 1, type.Name.RemoveValueConvention())
+		public ArgumentTypeNotSupportedException(string function, int index, Type type) 
+			: base(function, index, type.Name.RemoveValueConvention())
+		{
+		}
+
+        public ArgumentTypeNotSupportedException(string function, int index, string type)
+            : base("The function {0}() is not supported with argument #{1}. The argument should be of type {2}.", function, index + 1, type)
         {
             Symbol = function;
             AtArgument = index;
