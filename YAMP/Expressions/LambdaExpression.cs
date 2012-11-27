@@ -62,8 +62,8 @@ namespace YAMP
             input = ParseFront(input.Substring(1));
             input = ParseBody(input);
 
-			if (input.Length == 0)
-				return input;
+			if (body.LastToken == '\0')
+				return string.Empty;
 
             return body.LastToken + input;
         }

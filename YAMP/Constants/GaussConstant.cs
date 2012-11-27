@@ -7,7 +7,7 @@ namespace YAMP
     /// </summary>
     [Description("In mathematics, Gauss's constant, denoted by G, is defined as the reciprocal of the arithmetic-geometric mean of 1 and the square root of 2.")]
     [Kind(PopularKinds.Constant)]
-    class GConstant : BaseConstant
+    class GaussConstant : BaseConstant
     {
         static readonly ScalarValue gauss = new ScalarValue(0.8346268416740731862814297);
 

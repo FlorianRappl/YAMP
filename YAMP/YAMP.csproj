@@ -67,12 +67,14 @@
     <Compile Include="Attributes\ReturnsAttribute.cs" />
     <Compile Include="Constants\AlphaConstant.cs" />
     <Compile Include="Constants\BaseConstant.cs" />
+    <Compile Include="Constants\BernoulliConstant.cs" />
+    <Compile Include="Constants\CatalanConstant.cs" />
     <Compile Include="Constants\ContainerConstant.cs" />
     <Compile Include="Constants\DegConstant.cs" />
     <Compile Include="Constants\DeltaConstant.cs" />
     <Compile Include="Constants\EConstant.cs" />
     <Compile Include="Constants\Gamma1Constant.cs" />
-    <Compile Include="Constants\GConstant.cs" />
+    <Compile Include="Constants\GaussConstant.cs" />
     <Compile Include="Constants\IConstant.cs" />
     <Compile Include="Constants\OmegaConstant.cs" />
     <Compile Include="Constants\PhiConstant.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="Exceptions\ArgumentValueException.cs" />
     <Compile Include="Exceptions\ExpressionNotFoundException.cs" />
     <Compile Include="Exceptions\MatrixFormatException.cs" />
+    <Compile Include="Exceptions\NonconvergenceException.cs" />
     <Compile Include="Exceptions\PropertyNotFoundException.cs" />
     <Compile Include="Exceptions\YAMPException.cs" />
     <Compile Include="Expressions\ArgumentsBracketExpression.cs" />
@@ -186,6 +189,7 @@
     <Compile Include="Numerics\Decompositions\SingularValueDecomposition.cs" />
     <Compile Include="Numerics\NumericHelpers.cs" />
     <Compile Include="Numerics\Others\FFT.cs" />
+    <Compile Include="Numerics\Others\Gamma.cs" />
     <Compile Include="Numerics\Others\Mandelbrot.cs" />
     <Compile Include="Numerics\Random\BinomialDistribution.cs" />
     <Compile Include="Numerics\Random\ContinuousUniformDistribution.cs" />

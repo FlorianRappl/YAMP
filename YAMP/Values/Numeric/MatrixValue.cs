@@ -156,6 +156,12 @@ namespace YAMP
 			}
 		}
 
+		public MatrixValue(double[] vector) : this(vector.Length, 1)
+		{
+			for (var j = 0; j < vector.Length; j++)
+				this[j + 1] = new ScalarValue(vector[j]);
+		}
+
 		#endregion
 
 		#region Statics
@@ -218,7 +224,7 @@ namespace YAMP
 			var v = new MatrixValue(1, Length);
 
 			for (var k = 1; k <= Length; k++)
-				v[k] = this[k].Clone();
+				v._values.Add(GetIndex(k), this[k].Clone());
 
 			for (var i = 1; i < Length; i++)
 			{

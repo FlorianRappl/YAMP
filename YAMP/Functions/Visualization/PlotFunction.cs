@@ -32,6 +32,7 @@ namespace YAMP
         [Example("plot(0:15, 2^1:16, 3^1:16)", "Plots the powers of 2 from 1 to 16 and the powers of 3 from 1 to 16 at x = 0, 1, ..., 15.")]
         [Example("plot([1:11, 2^(1:2:21)], [0:10, 2^(0:2:20)], [-10:0, 2^(-20:2:0)])", "Plots the odd, even and negative powers of 2 at different x-values.")]
         [Example("plot(0:0.01:2*pi, [sin(0:0.01:2*pi), cos(0:0.01:2*pi), 0:0.01:2*pi], [sinh(0:0.01:2*pi), cosh(0:0.01:2*pi)])", "Plots the values of a sin, cos, linear, cosh and sinh function with x-values from 0 to 2 Pi.")]
+		[Arguments(2, 1)]
         public virtual Plot2DValue Function(MatrixValue m, MatrixValue n, ArgumentsValue l)
         {
             var plot = new Plot2DValue();

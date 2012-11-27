@@ -373,21 +373,84 @@ namespace YAMP
             {
                 var k = IntValue;
 
-                if ((k & 1) == 0)
-                    return new ScalarValue(false);
-
-                var sqrt = (int)Math.Sqrt(Value);
-
-				for (var i = 3; i <= sqrt; i += 2)
-				{
-					if (k % i == 0)
-						return new ScalarValue(false);
-				}
-
-                return new ScalarValue(true);
+				if(k > 0)
+					return new ScalarValue(IsPrime(k));
             }
 
 			return new ScalarValue(false);
+		}
+
+		static bool IsPrime(int n)
+		{
+			if (n < 8)
+				return ((n == 2) || (n == 3) || (n == 5) || (n == 7));
+			else
+			{
+				if (n % 2 == 0) 
+					return (false);
+
+				int m = n - 1;
+				int d = m;
+				int s = 0;
+
+				while (d % 2 == 0)
+				{
+					s++;
+					d = d / 2;
+				}
+
+				if (n < 1373653)
+					return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 3));
+				
+				return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 7) && IsProbablyPrime(n, m, s, d, 61));
+
+			}
+		}
+
+		static bool IsProbablyPrime(int n, int m, int s, int d, int w)
+		{
+			int x = PowMod(w, d, n);
+
+			if ((x == 1) || (x == m))
+				return true;
+
+			for (int i = 0; i < s; i++)
+			{
+				x = PowMod(x, 2, n);
+				if (x == 1) 
+					return false;
+				if (x == m) 
+				
+					return true;
+			}
+			return false;
+		}
+
+		static int PowMod(int b, int e, int m)
+		{
+			if (b < 0) 
+				throw new ArgumentOutOfRangeException("b");
+
+			if (e < 1) 
+				throw new ArgumentOutOfRangeException("e");
+
+			if (m < 1) 
+				throw new ArgumentOutOfRangeException("m");
+
+			long bb = Convert.ToInt64(b);
+			long mm = Convert.ToInt64(m);
+			long rr = 1;
+
+			while (e > 0)
+			{
+				if ((e & 1) == 1)
+					rr = checked((rr * bb) % mm);
+
+				e = e >> 1;
+				bb = checked((bb * bb) % mm);
+			}
+
+			return Convert.ToInt32(rr);
 		}
 		
 		public ScalarValue Factorial()
@@ -429,12 +492,15 @@ namespace YAMP
 
         public override string ToString(ParseContext context)
         {
-            if (Math.Abs(_imag) < epsilon)
-                return string.Format(context.NumberFormat, "{0}", Math.Abs(Value) < epsilon ? 0.0 : Math.Round(Value, context.Precision));
-            else if (Math.Abs(_real) < epsilon)
-                return string.Format(context.NumberFormat, "{0}i", Math.Round(ImaginaryValue, context.Precision));
+			var re = Math.Round(Value, context.Precision);
+			var im = Math.Round(ImaginaryValue, context.Precision);
 
-            return string.Format(context.NumberFormat, "{0}{2}{1}i", Math.Round(Value, context.Precision), Math.Round(ImaginaryValue, context.Precision), ImaginaryValue < 0.0 ? string.Empty : "+");
+            if (im == 0.0)
+                return string.Format(context.NumberFormat, "{0}", re);
+            else if (re == 0.0)
+                return string.Format(context.NumberFormat, "{0}i", im);
+
+            return string.Format(context.NumberFormat, "{0}{2}{1}i", re, im, ImaginaryValue < 0.0 ? string.Empty : "+");
         }
 		
 		public override bool Equals(object obj)

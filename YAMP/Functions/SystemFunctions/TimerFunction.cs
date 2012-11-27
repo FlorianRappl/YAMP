@@ -6,20 +6,15 @@ namespace YAMP
 	[Kind(PopularKinds.System)]
 	class TimerFunction : SystemFunction
 	{
-	    int _startMilliSecs;
-	    int _elapsedMilliSecs;
-	    bool _isRunning;
-
-        public TimerFunction()
-        {
-            Reset();
-        }
+	    static int _startMilliSecs = 0;
+	    static int _elapsedMilliSecs = 0;
+	    static bool _isRunning = false;
 
 		[Description("Outputs the current value of the stopwatch in milliseconds.")]
 		public ScalarValue Function()
 		{
 			if (_isRunning)
-				return new ScalarValue(Environment.TickCount - _startMilliSecs);
+				return new ScalarValue(_elapsedMilliSecs + Environment.TickCount - _startMilliSecs);
 
 			return new ScalarValue(_elapsedMilliSecs);
 		}
@@ -70,11 +65,11 @@ namespace YAMP
 
 		void Start()
 		{
-			if (_isRunning)
-				return;
-
-			_startMilliSecs = Environment.TickCount;
-			_isRunning = true;
+			if (!_isRunning)
+			{
+				_startMilliSecs = Environment.TickCount;
+				_isRunning = true;
+			}
 		}
 
         void Stop()
@@ -89,8 +84,7 @@ namespace YAMP
 		void Reset()
 		{
 			_elapsedMilliSecs = 0;
-			_isRunning = false;
-			_startMilliSecs = 0;
+			_startMilliSecs = Environment.TickCount;
 		}
 	}
 }

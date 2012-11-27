@@ -51,6 +51,14 @@ namespace YAMP
 			get { return _value.Length; }
 		}
 
+		public int Lines
+		{
+			get
+			{
+				return _value.Split('\n').Length;
+			}
+		}
+
 		#endregion
 
 		#region implemented abstract members of Value
