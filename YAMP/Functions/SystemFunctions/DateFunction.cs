@@ -11,7 +11,7 @@ namespace YAMP
 		public StringValue Function()
 		{
 			var dt = DateTime.Today;
-			return new StringValue(dt.ToShortDateString());
+			return new StringValue(dt.ToString("d"));
 		}
 
 		[Description("Gets the current date with the specified offset in days.")]
@@ -19,7 +19,7 @@ namespace YAMP
 		public StringValue Function(ScalarValue offset)
 		{
 			var dt = DateTime.Today.AddDays(offset.Value);
-			return new StringValue(dt.ToShortDateString());
+			return new StringValue(dt.ToString("d"));
 		}
 	}
 }
