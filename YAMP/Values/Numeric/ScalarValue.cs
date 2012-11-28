@@ -72,6 +72,9 @@ namespace YAMP
 
 		#region Properties
 
+        /// <summary>
+        /// Gets the length of the output in the default representation.
+        /// </summary>
 		public int Length
 		{
 			get
@@ -79,6 +82,16 @@ namespace YAMP
 				return ToString().Length;
 			}
 		}
+
+        /// <summary>
+        /// Gets the length of the output in the given parse context.
+        /// </summary>
+        /// <param name="context">The query context to consider.</param>
+        /// <returns>The length of the string representation</returns>
+        public int GetLength(ParseContext context)
+        {
+            return ToString(context).Length;
+        }
 
         /// <summary>
         /// Gets the integer part of the real contribution.
@@ -156,26 +169,46 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Computes z * z = z^2.
+        /// </summary>
+        /// <returns>The square of the current instance.</returns>
 		public ScalarValue Square()
 		{
 			return this * this;
 		}
 
+        /// <summary>
+        /// Copies the current instance.
+        /// </summary>
+        /// <returns>A deep copy of the current scalar.</returns>
         public ScalarValue Clone()
 		{
 			return new ScalarValue(this);
 		}
 		
+        /// <summary>
+        /// Computes the absolute value of the current scalar.
+        /// </summary>
+        /// <returns>The absolute value, which is a real scalar.</returns>
 		public override ScalarValue Abs()
 		{
 			return new ScalarValue(abs());
 		}
 
+        /// <summary>
+        /// Computes the absolute value squared of the current scalar.
+        /// </summary>
+        /// <returns>The squared absolute value, which is a real scalar.</returns>
         public override ScalarValue AbsSquare()
         {
             return new ScalarValue(_real * _real + _imag * _imag);
         }
 		
+        /// <summary>
+        /// Conjugates the current scalar value, i.e. switches the sign of the imaginary value.
+        /// </summary>
+        /// <returns>The conjugated scalar value.</returns>
 		public ScalarValue Conjugate()
 		{
 			return new ScalarValue(_real, -_imag);

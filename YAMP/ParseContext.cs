@@ -97,6 +97,9 @@ namespace YAMP
 
         static ParseContext _default;
 
+        /// <summary>
+        /// Gets the default (root) parse context.
+        /// </summary>
         internal static ParseContext Default
         {
             get

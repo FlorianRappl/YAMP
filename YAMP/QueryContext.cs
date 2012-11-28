@@ -85,7 +85,21 @@ namespace YAMP
 
 		#endregion
 
-		#region Properties
+        #region Properties
+
+        /// <summary>
+        /// Gets the result in a string representation.
+        /// </summary>
+        public string Result
+        {
+            get
+            {
+                if (Output == null)
+                    return string.Empty;
+
+                return Output.ToString(Context);
+            }
+        }
 
 		/// <summary>
 		/// Gets the input that is being used by the parser.
@@ -153,5 +167,5 @@ namespace YAMP
 		}
 
 		#endregion
-	}
+    }
 }

@@ -40,6 +40,7 @@ namespace YAMPConsole
 			Console.WriteLine("Enter your own statements now (exit with the command 'exit'):");
             Console.WriteLine();
 			var query = string.Empty;
+            var context = YAMP.Parser.Load();
 
 			YAMP.Parser.AddCustomFunction("G", v => new YAMP.ScalarValue((v as YAMP.ScalarValue).Value * Math.PI) );
 			YAMP.Parser.AddCustomConstant("R", 2.53);
@@ -122,13 +123,12 @@ namespace YAMPConsole
 				{
 					try
 					{
-						var parser = YAMP.Parser.Parse(query);
-						var value = parser.Execute();
+                        var result = context.Run(query);
 
-						if (value != null)
+						if (result.Output != null)
 						{
-							Console.WriteLine(value);
-							Console.WriteLine(parser);
+							Console.WriteLine(result.Result);
+							Console.WriteLine(result.Statements);
 						}
 					}
 					catch (Exception ex)

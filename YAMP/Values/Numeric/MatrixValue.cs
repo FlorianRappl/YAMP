@@ -205,19 +205,46 @@ namespace YAMP
 
 		#region Methods
 
+        /// <summary>
+        /// Gets the maximum length of a cell in the default string representation.
+        /// </summary>
 		public int MaximumLength
 		{
 			get
 			{
 				var max = 0;
 
-				foreach (var el in _values.Values)
-					if (el.Length > max)
-						max = el.Length;
+                foreach (var el in _values.Values)
+                {
+                    var length = el.Length;
+
+                    if (length > max)
+                        max = length;
+                }
 
 				return max;
 			}
 		}
+
+        /// <summary>
+        /// Gets the maximum length of cell by considering the given context.
+        /// </summary>
+        /// <param name="context">The parse context which holds the state information.</param>
+        /// <returns>The length of the string in chars.</returns>
+        public int GetMaximumLength(ParseContext context)
+        {
+            var max = 0;
+
+            foreach (var el in _values.Values)
+            {
+                var length = el.GetLength(context);
+
+                if (length > max)
+                    max = length;
+            }
+
+            return max;
+        }
 
 		public MatrixValue VectorSort()
 		{
