@@ -74,7 +74,7 @@ namespace YAMP.Numerics
 
 			var f = (z - 0.5) * z.Log() - z + Math.Log(2.0 * Math.PI) / 2.0;
 			var reduce = f.ImaginaryValue / (2.0 * Math.PI);
-			reduce = f.ImaginaryValue - Math.Truncate(reduce) * 2.0 * Math.PI;
+			reduce = f.ImaginaryValue - (int)(reduce) * 2.0 * Math.PI;
 			f = new ScalarValue(f.Value, reduce);
 
 			var zsqu = z * z;

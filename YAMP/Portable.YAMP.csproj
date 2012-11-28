@@ -49,9 +49,12 @@
     <Compile Include="Attributes\ExampleAttribute.cs" />
     <Compile Include="Attributes\KindAttribute.cs" />
     <Compile Include="Attributes\ReturnsAttribute.cs" />
+    <Compile Include="Constants\BernoulliConstant.cs" />
+    <Compile Include="Constants\CatalanConstant.cs" />
     <Compile Include="Constants\DegConstant.cs" />
-    <Compile Include="Constants\GConstant.cs" />
+    <Compile Include="Constants\GaussConstant.cs" />
     <Compile Include="Constants\OmegaConstant.cs" />
+    <Compile Include="Exceptions\NonconvergenceException.cs" />
     <Compile Include="Expressions\LambdaExpression.cs" />
     <Compile Include="Functions\ArgumentFunctions\DiagFunction.cs" />
     <Compile Include="Functions\BaseFunction.cs" />
@@ -82,6 +85,7 @@
     <Compile Include="Numerics\Optimization\GoldenSection.cs" />
     <Compile Include="Numerics\Optimization\OptimizationBase.cs" />
     <Compile Include="Numerics\Optimization\Pijavsky.cs" />
+    <Compile Include="Numerics\Others\Gamma.cs" />
     <Compile Include="Numerics\Random\BinomialDistribution.cs" />
     <Compile Include="Numerics\Random\ContinuousUniformDistribution.cs" />
     <Compile Include="Numerics\Random\DiscreteUniformDistribution.cs" />
