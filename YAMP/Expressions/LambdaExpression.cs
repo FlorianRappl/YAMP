@@ -19,7 +19,7 @@ namespace YAMP
 
         #region ctor
 
-        public LambdaExpression() : base("^@(.*)=>(.*)")
+        public LambdaExpression() : base("@(.*)=>(.*)")
         {
         }
 
@@ -88,12 +88,15 @@ namespace YAMP
                     case ' ':
                         //Ignore
                         break;
+
                     case'(':
                         openBracket++;
                         break;
+
                     case ')':
                         openBracket--;
                         break;
+
                     case '=':
                         if (openBracket != 0)
                             throw new ParseException(i + 1 + Offset, p.Substring(i));
@@ -106,12 +109,15 @@ namespace YAMP
                             throw new ParseException(i + 2 + Offset, p.Substring(i + 1));
 
                         break;
+
                     case ',':
                         if (commaRequired)
                             commaRequired = false;
                         else
                             throw new ParseException(i + 1 + Offset, p.Substring(i));
+
                         break;
+
                     default:
                         var rest = p.Substring(i);
 

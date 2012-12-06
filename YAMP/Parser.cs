@@ -37,7 +37,7 @@ namespace YAMP
 	/// <summary>
 	/// The YAMP interaction class.
 	/// </summary>
-	public class Parser
+	public sealed class Parser
 	{
 		#region Members
 
@@ -445,7 +445,7 @@ namespace YAMP
 		/// <returns>The given context.</returns>
 		public static ParseContext LoadPlugin(ParseContext context, Assembly assembly)
 		{
-			Tokens.Instance.RegisterAssembly(context, assembly);
+			Elements.Instance.RegisterAssembly(context, assembly);
 			return context;
 		}
 
@@ -454,7 +454,7 @@ namespace YAMP
 		/// </summary>
 		public static ParseContext Load()
 		{
-			Tokens.Instance.Touch();
+			Elements.Instance.Touch();
 
 			if (primary == null)
 				primary = new ParseContext(ParseContext.Default);

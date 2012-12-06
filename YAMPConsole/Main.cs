@@ -160,18 +160,18 @@ namespace YAMPConsole
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
-            var lines = new string[0];
+			var lines = new string[0];
 			// This is Benchmark #1
 			//var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
-            //var lines = MakeTenK("2-3*5+7/2-8*2");
+			//var lines = MakeTenK("2-3*5+7/2-8*2");
 			// This is Benchmark #3
 			//var lines = MakeTenK("2+3");
 			// This is Benchmark #4
 			//var lines = MakeTenK("2-(3*5)^2+7/(2-8)*2");
 			
 			// The implementation here... YAMP
-			// 4814 ms ; 252 ms ; 95 ms ; 413 ms
+			// 4814 ms ; 279 ms ; 95 ms ; 413 ms
 			Benchmark("YAMP", lines, query => YAMP.Parser.Parse(query).Execute());
 
 			//http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
@@ -257,6 +257,8 @@ namespace YAMPConsole
 
 		static void Tests()
 		{
+			var sw = Stopwatch.StartNew();
+
 			Test("2-3-4", -5.0);
 			Test("(10^6*27)/8/1024", (27000000.0 / 8.0) / 1024.0);
 			Test("-pi", -Math.PI);
@@ -349,8 +351,15 @@ namespace YAMPConsole
 			Test("(-5)^2", 25.0);
 			Test("(5)^2", 25.0);
 			Test("(-75)^2", Math.Pow(75.0, 2.0));
+			Test("real(2+5i)", 2.0);
+			Test("imag(2+5i)", 5.0);
+			Test("bessel(2, 4.5)", 0.21784898358785076);
+			Test("erf(1.4)", 0.95228511976264874);
+
+			sw.Stop();
 			
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
+			Console.WriteLine("Time for the tests ... {0} ms", sw.ElapsedMilliseconds);
 		}
 		
 		static bool Test(string query, double xmin, double xmax, CompareAction compare)

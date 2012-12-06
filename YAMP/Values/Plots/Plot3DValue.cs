@@ -52,7 +52,8 @@ namespace YAMP
 
         #region Properties
 
-        [ScalarToBooleanConverter]
+		[ScalarToBooleanConverter]
+		[StringToBooleanConverter]
 		public bool IsLogX
 		{
 			get;
@@ -60,6 +61,7 @@ namespace YAMP
 		}
 
 		[ScalarToBooleanConverter]
+		[StringToBooleanConverter]
 		public bool IsLogY
 		{
 			get;
@@ -67,6 +69,7 @@ namespace YAMP
 		}
 
 		[ScalarToBooleanConverter]
+		[StringToBooleanConverter]
         public bool IsLogZ
         {
             get;
@@ -74,34 +77,25 @@ namespace YAMP
         }
 
 		[StringToStringConverter]
-        public string ZLabel
-        {
-            get { return zlabel; }
-            set
-            {
-                zlabel = value;
-            }
-        }
+		public string ZLabel
+		{
+			get;
+			set;
+		}
 
 		[ScalarToDoubleConverter]
-        public double MinZ
-        {
-            get { return minz; }
-            set
-            {
-                minz = value;
-            }
-        }
+		public double MinZ
+		{
+			get;
+			set;
+		}
 
 		[ScalarToDoubleConverter]
-        public double MaxZ
-        {
-            get { return maxz; }
-            set
-            {
-                maxz = value;
-            }
-        }
+		public double MaxZ
+		{
+			get;
+			set;
+		}
 
 		[MatrixToDoubleArrayConverter]
         public double[] ZRange

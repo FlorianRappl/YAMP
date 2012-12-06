@@ -2,7 +2,7 @@
 
 namespace YAMP
 {
-	abstract class BaseConstant : IConstants
+	public abstract class BaseConstant : IConstants
 	{
 		string name;
 

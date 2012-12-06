@@ -53,12 +53,12 @@ namespace YAMP
 
 		protected override Operator FindOperator(string input)
 		{
-			var op = Tokens.FindOperator(operators, Query, input);
+			var op = Elements.FindOperator(operators, Query, input);
 
 			if (op != null)
 				return op;
 
-			op = Tokens.FindAvailableOperator(Query, input);
+			op = Elements.FindAvailableOperator(Query, input);
 
 			if (op != null)
 				return op;
@@ -70,16 +70,10 @@ namespace YAMP
             {
                 var c = Skips.Pop();
 
-                switch (c)
-                {
-                    case ' ':
-                    case '\t':
-                        containsSpace = true;
-                        break;
-                    case '\n':
-                        containsNewline = true;
-                        break;
-                }
+				if (c == Tokens.Newline)
+					containsNewline = true;
+				else if (c == Tokens.Whitespace)
+					containsSpace = true;
             }
 
             if (containsNewline)

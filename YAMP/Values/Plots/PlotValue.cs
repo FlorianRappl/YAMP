@@ -70,6 +70,7 @@ namespace YAMP
 		public int Count { get { return points.Count; } }
 
 		[ScalarToBooleanConverter]
+		[StringToBooleanConverter]
 		public bool Gridlines
 		{
 			get;
@@ -77,6 +78,7 @@ namespace YAMP
 		}
 
 		[ScalarToBooleanConverter]
+		[StringToBooleanConverter]
 		public bool MinorGridlines
 		{
 			get;

@@ -35,7 +35,7 @@ namespace YAMP
     /// <summary>
     /// Class that describes the current parse context (available functions, constants, variables, ...).
     /// </summary>
-    public class ParseContext
+    public sealed class ParseContext
     {
         #region Members
 

@@ -34,7 +34,7 @@ namespace YAMP
     /// <summary>
     /// The collection of statement parse trees i.e. all statements of a query context
     /// </summary>
-    public class ParseTreeCollection
+    public sealed class ParseTreeCollection
     {
         #region Members
 

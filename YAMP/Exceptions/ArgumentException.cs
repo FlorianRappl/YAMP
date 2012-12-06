@@ -17,11 +17,16 @@ namespace YAMP
         }
 
         public ArgumentException(string function, int argument, string expected, string received)
-            : base("The argument #{0} provided for {1} is not valid. Excepted argument of type {2}, but received {3}.", argument, function, expected, received)
+            : base("The argument #{0} provided for {1} is not valid. Excpected argument of type {2}, but received {3}.", argument, function, expected, received)
         {
             Symbol = function;
             AtArgument = argument;
         }
+
+		public ArgumentException(string expected, string received)
+			: base("Expected argument was {0}, but received {1}.", expected, received)
+		{
+		}
 	}
 }
 

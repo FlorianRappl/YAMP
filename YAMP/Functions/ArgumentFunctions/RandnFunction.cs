@@ -3,7 +3,7 @@ using YAMP.Numerics;
 
 namespace YAMP
 {
-	[Description("Generates a matrix with normally (gaussian) distributed random values.")]
+	[Description("Generates a matrix with normal distributed random values. In probability theory, the normal (or Gaussian) distribution is a continuous probability distribution, defined on the entire real line, that has a bell-shaped probability density function, known as the Gaussian function or informally as the bell curve.")]
 	[Kind(PopularKinds.Function)]
 	class RandnFunction : ArgumentFunction
 	{	

@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace YAMP
 {
-	public abstract class Operator : IRegisterToken
+	public abstract class Operator : IRegisterElement
 	{
 		#region Members
 
@@ -109,9 +109,9 @@ namespace YAMP
 			return Create(query);
 		}
 		
-		public virtual void RegisterToken()
+		public virtual void RegisterElement()
 		{
-			Tokens.Instance.AddOperator(_op, this);
+			Elements.Instance.AddOperator(_op, this);
 		}
 		
 		public override string ToString()

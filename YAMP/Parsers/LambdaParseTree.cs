@@ -57,7 +57,7 @@ namespace YAMP
 
         protected override Operator FindOperator(string input)
 		{
-			var op = Tokens.FindOperator(operators, Query, input);
+			var op = Elements.FindOperator(operators, Query, input);
 
 			if (op != null)
 			{
@@ -65,7 +65,7 @@ namespace YAMP
 				return op;
 			}
 
-			return Tokens.Instance.FindOperator(Query, input);
+			return Elements.Instance.FindOperator(Query, input);
         }
     }
 }

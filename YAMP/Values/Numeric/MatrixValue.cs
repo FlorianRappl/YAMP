@@ -784,6 +784,16 @@ namespace YAMP
             return array;
         }
 
+		public double[] GetRealVector()
+		{
+			var array = new double[Length];
+
+			for (var i = 1; i <= Length; i++)
+				array[i - 1] = this[i].Value;
+
+			return array;
+		}
+
 		public double[][] GetRealArray()
 		{
 			var array = new double[DimensionY][];
@@ -1130,6 +1140,6 @@ namespace YAMP
         }
 
         #endregion
-    }
+	}
 }
 

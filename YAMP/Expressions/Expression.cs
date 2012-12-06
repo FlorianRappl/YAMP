@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace YAMP
 {
-	public abstract class Expression : IRegisterToken
+	public abstract class Expression : IRegisterElement
 	{
 		#region Members
 
@@ -67,9 +67,9 @@ namespace YAMP
 			return input.Substring(_input.Length);
 		}
 		
-		public virtual void RegisterToken ()
+		public virtual void RegisterElement ()
 		{
-			Tokens.Instance.AddExpression(_pattern, this);
+			Elements.Instance.AddExpression(_pattern, this);
 		}
 
 		public override string ToString ()
