@@ -13,7 +13,7 @@ namespace YAMP
 			return ArgumentsValue.Create(left, right);
 		}
 
-		public override void RegisterToken()
+		public override void RegisterElement()
 		{
 			ArgumentsParseTree.Register(this);
 		}

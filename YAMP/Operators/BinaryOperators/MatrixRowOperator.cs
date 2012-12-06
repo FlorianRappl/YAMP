@@ -19,7 +19,7 @@ namespace YAMP
 			return MatrixValue.Create(left).AddRow(right);
 		}
 
-		public override void RegisterToken()
+		public override void RegisterElement()
 		{
 			MatrixParseTree.Register(this);
 		}  

@@ -44,7 +44,9 @@ namespace YAMP
 		int _offset;
         int _final;
 		QueryContext _query;
-		Stack<char> _skips;
+		Stack<Tokens> _skips;
+
+		static readonly string unicodeWhitespaces = "\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\uFEFF";
 
 		#endregion
 
@@ -192,7 +194,7 @@ namespace YAMP
 		/// <summary>
 		/// Gets the last skipped character.
 		/// </summary>
-		protected Stack<char> Skips
+		protected Stack<Tokens> Skips
 		{
 			get { return _skips; }
 		}
@@ -228,7 +230,7 @@ namespace YAMP
 
 		protected virtual Operator FindOperator(string input)
 		{
-			return Tokens.Instance.FindOperator(_query, input);
+			return Elements.Instance.FindOperator(_query, input);
 		}
 
 		protected virtual Value DefaultValue()
@@ -244,41 +246,38 @@ namespace YAMP
             var maxLevel = -100;
             var shadow = _input;
 			_final = _offset;
-            _skips = new Stack<char>();
+            _skips = new Stack<Tokens>();
 
 			while (shadow.Length > 0)
             {
-                switch (shadow[0])
-                {
-                    case ' ':
-                    case '\t':
-                    case '\r':
-                    case '\n':
-                        _skips.Push(shadow[0]);
-                        _final++;
-                        shadow = shadow.Substring(1);
-                        continue;
-                    case '/':
-                        if (shadow.Length != 1)
-                        {
-                            if (shadow[1] == '*')
-                            {
-                                var index = shadow.IndexOf("*/") + 2;
-                                shadow = shadow.Substring(index == 1 ? shadow.Length : index);
-                                _final += index;
-                                continue;
-                            }
-                            else if (shadow[1] == '/')
-                            {
-                                var index = shadow.IndexOf('\n') + 1;
-                                shadow = shadow.Substring(index == 0 ? shadow.Length : index);
-                                _final += index;
-                                continue;
-                            }
-                        }
-
-                        break;
-                }
+				if (IsNewLine(shadow[0]))
+				{
+					shadow = shadow.Substring(1);
+					_skips.Push(Tokens.Newline);
+					_final++;
+					continue;
+				}
+				else if (IsWhiteSpace(shadow[0]))
+				{
+					shadow = shadow.Substring(1);
+					_skips.Push(Tokens.Whitespace);
+					_final++;
+					continue;
+				}
+				else if (IsBlockComment(shadow))
+				{
+					var index = shadow.IndexOf("*/") + 2;
+					shadow = shadow.Substring(index == 1 ? shadow.Length : index);
+					_final += index;
+					continue;
+				}
+				else if (IsLineComment(shadow))
+				{
+					var index = shadow.IndexOf('\n') + 1;
+					shadow = shadow.Substring(index == 0 ? shadow.Length : index);
+					_final += index;
+					continue;
+				}
 
 				if (takeop)
 				{
@@ -315,7 +314,7 @@ namespace YAMP
 				}
 				else
 				{
-					var exp = Tokens.Instance.FindExpression(_query, shadow);
+					var exp = Elements.Instance.FindExpression(_query, shadow);
 					exp.Offset = _final;
 					expressions.Push(exp);
 					shadow = exp.Set(shadow);
@@ -374,6 +373,38 @@ namespace YAMP
 			}
 
 			return sb.ToString();
+		}
+
+		#endregion
+
+		#region Helpers
+
+		protected bool IsWhiteSpace(char ch) 
+		{
+			return (ch == 32) ||  // space
+				(ch == 9) ||      // horizontal tab
+				(ch == 0xB) ||	  // vertical tab
+				(ch == 0xC) ||	  // form feed / new page
+				(ch == 0xA0) ||	  // non-breaking space
+				(ch >= 0x1680 && unicodeWhitespaces.IndexOf(ch.ToString()) >= 0);
+		}
+
+		protected bool IsNewLine(char ch) 
+		{
+			return (ch == 10) ||  // line feed
+				(ch == 13) ||	  // carriage return
+				(ch == 0x2028) || // line seperator
+				(ch == 0x2029);	  // paragraph seperator
+		}
+
+		protected bool IsLineComment(string shadow)
+		{
+			return shadow.Length > 1 && shadow[0] == '/' && shadow[1] == '/';
+		}
+
+		protected bool IsBlockComment(string shadow)
+		{
+			return shadow.Length > 1 && shadow[0] == '/' && shadow[1] == '*';
 		}
 
 		#endregion

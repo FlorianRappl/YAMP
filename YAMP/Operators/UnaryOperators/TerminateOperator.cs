@@ -26,7 +26,7 @@ namespace YAMP
 			return string.Empty;
 		}
 
-		public override void RegisterToken()
+		public override void RegisterElement()
 		{
 			//Do nothing.
 		}

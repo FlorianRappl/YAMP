@@ -75,7 +75,7 @@ namespace YAMP
                 return new StatementOperator(Query);
             }
 
-			return Tokens.Instance.FindOperator(Query, input);
+			return Elements.Instance.FindOperator(Query, input);
 		}
 
         public override string ToString()

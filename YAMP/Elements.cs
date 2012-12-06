@@ -36,9 +36,9 @@ using System.Reflection;
 namespace YAMP
 {
 	/// <summary>
-	/// Provides internal access to the tokens and handles the token registration and variable assignment.
+	/// Provides internal access to the elements and handles the element registration and variable assignment.
 	/// </summary>
-	class Tokens
+	sealed class Elements
 	{
 		#region Members
 
@@ -49,7 +49,7 @@ namespace YAMP
 
 		#region ctor
 
-		Tokens ()
+		Elements ()
 		{
 			operators = new Dictionary<string, Operator>();
 			expressions = new Dictionary<Regex, Expression>();
@@ -57,9 +57,9 @@ namespace YAMP
 		
 		#endregion
 		
-		#region Register tokens
+		#region Register elements
 		
-		void RegisterTokens()
+		void RegisterElements()
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			RegisterAssembly(ParseContext.Default, assembly);
@@ -77,7 +77,7 @@ namespace YAMP
 		public void RegisterAssembly(ParseContext context, Assembly assembly)
 		{
 			var types = assembly.GetTypes();
-			var ir = typeof(IRegisterToken).Name;
+			var ir = typeof(IRegisterElement).Name;
 			var fu = typeof(IFunction).Name;
 			var ct = typeof(IConstants).Name;
 
@@ -96,7 +96,7 @@ namespace YAMP
 					var ctor = type.GetConstructor(Value.EmptyTypes);
 
 					if(ctor != null)
-						(ctor.Invoke(null) as IRegisterToken).RegisterToken();
+						(ctor.Invoke(null) as IRegisterElement).RegisterElement();
 				}
 
                 if (interfaces.Any(iface => iface.Name.Equals(fu)))
@@ -258,16 +258,16 @@ namespace YAMP
 
 		#region Singleton
 
-		static Tokens _instance;
+		static Elements _instance;
 		
-		public static Tokens Instance
+		public static Elements Instance
 		{
 			get
 			{
 				if(_instance == null)
 				{
-					_instance = new Tokens();
-					_instance.RegisterTokens();
+					_instance = new Elements();
+					_instance.RegisterElements();
 				}
 				
 				return _instance;

@@ -51,6 +51,7 @@ namespace YAMP
         #region Properties
 
         [ScalarToBooleanConverter]
+		[StringToBooleanConverter]
 		public bool Lines
 		{
 			get;
@@ -72,6 +73,7 @@ namespace YAMP
 		}
 
 		[ScalarToBooleanConverter]
+		[StringToBooleanConverter]
 		public bool ShowLabel
 		{
 			get;

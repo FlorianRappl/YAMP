@@ -46,14 +46,14 @@ namespace YAMP.Numerics
         /// <returns>Structure to access L, U and piv.</returns>
         public LUDecomposition(MatrixValue A)
         {
-            // Use a "left-looking", dot-product, Crout/Doolittle algorithm.
+            // Use a "left-looking", dot-product, Crout / Doolittle algorithm.
             LU = A.GetRealArray();
             m = A.DimensionY;
             n = A.DimensionX;
             piv = new int[m];
 
             for (int i = 0; i < m; i++)
-                piv[i] = i + 1;
+                piv[i] = i;
             
             pivsign = 1;
             var LUrowi = new double[0];
@@ -78,8 +78,7 @@ namespace YAMP.Numerics
                     for (int k = 0; k < kmax; k++)
                         s += LUrowi[k] * LUcolj[k];
 
-                    LUcolj[i] -= s;
-                    LUrowi[j] = LUcolj[i];
+					LUrowi[j] = LUcolj[i] -= s;
                 }
 
                 // Find pivot and exchange if necessary.
@@ -115,6 +114,7 @@ namespace YAMP.Numerics
                 }
             }
         }
+
         #endregion //  Constructor
 
         #region Public Properties
@@ -152,7 +152,7 @@ namespace YAMP.Numerics
                     for (int j = 1; j <= n; j++)
                     {
                         if (i > j)
-                            X[i, j] = new ScalarValue(LU[i][j]);
+                            X[i, j] = new ScalarValue(LU[i - 1][j - 1]);
                         else if (i == j)
                             X[i, j] = new ScalarValue(1.0);
                     }
@@ -177,7 +177,7 @@ namespace YAMP.Numerics
                     for (int j = 1; j <= n; j++)
                     {
                         if (i <= j)
-                            X[i, j] = new ScalarValue(LU[i][j]);
+                            X[i, j] = new ScalarValue(LU[i - 1][j - 1]);
                     }
                 }
 
@@ -189,33 +189,16 @@ namespace YAMP.Numerics
         /// Return pivot permutation vector
         /// </summary>
         /// <returns>piv</returns>
-        virtual public int[] Pivot
+        virtual public MatrixValue Pivot
         {
             get
             {
-                var p = new int[m];
+				var P = new MatrixValue(m, m);
 
-                for (int i = 0; i < m; i++)
-                    p[i] = piv[i];
+                for (var i = 1; i <= m; i++)
+					P[i, piv[i - 1] + 1] = new ScalarValue(1.0);
                 
-                return p;
-            }
-        }
-
-        /// <summary>
-        /// Return pivot permutation vector as a one-dimensional double array
-        /// </summary>
-        /// <returns>(double) piv</returns>
-        virtual public double[] DoublePivot
-        {
-            get
-            {
-                var vals = new double[m];
-
-                for (int i = 0; i < m; i++)
-                    vals[i] = (double)piv[i];
-                
-                return vals;
+                return P;
             }
         }
 

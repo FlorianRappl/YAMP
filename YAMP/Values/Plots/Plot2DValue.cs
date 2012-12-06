@@ -47,6 +47,7 @@ namespace YAMP
 		#region Properties
 
 		[ScalarToBooleanConverter]
+		[StringToBooleanConverter]
 		public bool IsLogX
 		{
 			get;
@@ -54,6 +55,7 @@ namespace YAMP
 		}
 
 		[ScalarToBooleanConverter]
+		[StringToBooleanConverter]
 		public bool IsLogY
 		{
 			get;
