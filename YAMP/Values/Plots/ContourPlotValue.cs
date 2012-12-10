@@ -153,7 +153,7 @@ namespace YAMP
 			if (Count == 0 || ymax > MaxY)
 				MaxY = ymax;
 
-			SetLevels(zmin, zmax, Math.Min(dx, dy));
+			SetLevels(zmin, zmax, Math.Max(Math.Min(dx, dy) / 4, 3));
 			AddSeries(p);
 		}
 

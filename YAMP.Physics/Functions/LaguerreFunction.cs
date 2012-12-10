@@ -1,0 +1,72 @@
+﻿using System;
+using YAMP;
+using YAMP.Numerics;
+
+namespace YAMP.Physics
+{
+    [Description("In mathematics, the Laguerre polynomials are solutions of Laguerre's equation, which is a second-order linear differential equation. This equation has nonsingular solutions only if n is a non-negative integer. The Laguerre polynomials arise in quantum mechanics, in the radial part of the solution of the Schrödinger equation for a one-electron atom.")]
+    [Kind(PopularKinds.Function)]
+    class LaguerreFunction : ArgumentFunction
+    {
+        [Description("Evaluates the Laguerre polynomial of some order n with the parameter alpha at the given point z in C.")]
+        [Example("laguerre(3, 1.0, 1.5)", "Evaluates the Laguerre polynomial of order 3 with alpha set to 1.0 at the point z = 1.5.")]
+        public ScalarValue Function(ScalarValue n, ScalarValue alpha, ScalarValue z)
+        {
+            if (n.IntValue < 0)
+                throw new Exception("Laguerre polynomial of order n < 0 does not make sense.");
+
+            return LaguerrePolynomial(n.IntValue, alpha, z);
+        }
+
+        [Description("Evaluates the Laguerre polynomial of some order n with the parameter alpha at the given points of the matrix Z in C.")]
+        [Example("laguerre(2, 1.0, [0.5, 1.5, 2.5])", "Evaluates the Laguerre polynomial of order 2 with alpha set to 1.0 at the points z = 0.5, 1.5 and 2.5.")]
+        public MatrixValue Function(ScalarValue n, ScalarValue alpha, MatrixValue Z)
+        {
+            if (n.IntValue < 0)
+                throw new Exception("Laguerre polynomial of order n < 0 does not make sense.");
+
+            var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
+
+            for (var i = 1; i <= Z.Length; i++)
+                M[i] = LaguerrePolynomial(n.IntValue, alpha, Z[i]);
+
+            return M;
+        }
+
+        [Description("Evaluates the Laguerre polynomial of some order n with the parameter alpha set to 0 at the given point z in C.")]
+        [Example("laguerre(3, 1.5)", "Evaluates the Laguerre polynomial of order 3 at the point z = 1.5.")]
+        public ScalarValue Function(ScalarValue n, ScalarValue z)
+        {
+            return Function(n, new ScalarValue(), z);
+        }
+
+        [Description("Evaluates the Laguerre polynomial of some order n with the parameter alpha set to 0 at the given points of the matrix Z in C.")]
+        [Example("laguerre(2, [0.5, 1.5, 2.5])", "Evaluates the Laguerre polynomial of order 2 at the points z = 0.5, 1.5 and 2.5")]
+        public MatrixValue Function(ScalarValue n, MatrixValue Z)
+        {
+            return Function(n, new ScalarValue(), Z);
+        }
+
+        /// <summary>
+        /// Returns the Laguerre polynomial of order n with parameters alpha and beta of the specified number.
+        /// </summary>
+        /// <param name="n">Order</param>
+        /// <param name="alpha">parameter alpha</param>
+        /// <param name="z">z</param>
+        /// <returns>Value</returns>
+        static ScalarValue LaguerrePolynomial(int n, ScalarValue alpha, ScalarValue z)
+        {
+            var p = new ScalarValue();
+            var m = n + 1;
+            var s = 1;
+
+            for (int i = 0; i < m; i++)
+            {
+                p += s * Helpers.BinomialCoefficient(n + alpha, new ScalarValue(n - i)) * Helpers.Power(z, i) / Helpers.Factorial(i);
+                s *= (-1);
+            }
+
+            return p;
+        }
+    }
+}

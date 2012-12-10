@@ -41,6 +41,7 @@ namespace YAMPConsole
             Console.WriteLine();
 			var query = string.Empty;
             var context = YAMP.Parser.Load();
+            YAMP.Parser.LoadPlugin(context, System.Reflection.Assembly.LoadFile(Environment.CurrentDirectory + "\\YAMP.Physics.dll"));
 
 			YAMP.Parser.AddCustomFunction("G", v => new YAMP.ScalarValue((v as YAMP.ScalarValue).Value * Math.PI) );
 			YAMP.Parser.AddCustomConstant("R", 2.53);

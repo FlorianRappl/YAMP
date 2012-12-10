@@ -7,7 +7,7 @@ namespace YAMP.Physics
 	[Kind(PopularKinds.Constant)]
 	class GConstant : BaseConstant
 	{
-		static readonly ScalarValue g = new ScalarValue(6.6738480e-11);
+		static readonly UnitValue g = new UnitValue(6.6738480e-11, "m^3/kg/s^2");
 
 		public override Value Value
 		{

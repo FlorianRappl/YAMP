@@ -7,7 +7,7 @@ namespace YAMP.Physics
 	[Kind(PopularKinds.Constant)]
 	class CConstant : BaseConstant
 	{
-		static readonly ScalarValue c = new ScalarValue(299792458);
+		static readonly UnitValue c = new UnitValue(299792458, "m/s");
 
 		public override Value Value
 		{

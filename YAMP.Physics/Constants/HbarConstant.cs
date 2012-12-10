@@ -7,7 +7,7 @@ namespace YAMP.Physics
 	[Kind(PopularKinds.Constant)]
 	class HbarConstant : BaseConstant
 	{
-		static readonly ScalarValue planck = new ScalarValue(1.05457172647e-34);
+		static readonly UnitValue planck = new UnitValue(1.05457172647e-34, "J*s");
 
 		public override Value Value
 		{
