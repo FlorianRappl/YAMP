@@ -169,6 +169,11 @@ namespace YAMP
 
         #region Methods
 
+        public double Arg()
+        {
+            return Math.Atan2(_imag, _real);
+        }
+
         /// <summary>
         /// Computes z * z = z^2.
         /// </summary>
@@ -182,7 +187,7 @@ namespace YAMP
         /// Copies the current instance.
         /// </summary>
         /// <returns>A deep copy of the current scalar.</returns>
-        public ScalarValue Clone()
+        public virtual ScalarValue Clone()
 		{
 			return new ScalarValue(this);
 		}
@@ -384,14 +389,14 @@ namespace YAMP
 		public ScalarValue Ln()
 		{
 			var re = Math.Log(abs());
-			var im = arg();
+			var im = Arg();
 			return new ScalarValue(re, im);
 		}
 		
 		public ScalarValue Log()
 		{
 			var re = Math.Log(abs(), 10.0);
-			var im = arg();
+			var im = Arg();
 			return new ScalarValue(re, im);
 		}
 
@@ -517,11 +522,17 @@ namespace YAMP
         {
             return Math.Sqrt(_real * _real + _imag * _imag);
         }
-
-        double arg()
+        
+        double Round(double value, int digits)
         {
-            return Math.Atan2(_imag, _real);
-        }
+            if (value == 0.0)
+                return value;
+
+            var orderOfMagnitude = Math.Ceiling(Math.Log10(Math.Abs(value)));
+            var shift = Math.Pow(10, digits - orderOfMagnitude);
+            var roundedValue = Math.Round(value * shift) / shift;
+            return roundedValue;
+        } 
 
         public override string ToString(ParseContext context)
         {

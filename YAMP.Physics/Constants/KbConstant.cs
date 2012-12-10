@@ -7,7 +7,7 @@ namespace YAMP.Physics
 	[Kind(PopularKinds.Constant)]
 	class KbConstant : BaseConstant
 	{
-		static readonly ScalarValue kb = new ScalarValue(1.380648813e-23);
+		static readonly UnitValue kb = new UnitValue(1.380648813e-23, "J/K");
 
 		public override Value Value
 		{

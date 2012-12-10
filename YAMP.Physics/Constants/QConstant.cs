@@ -7,7 +7,7 @@ namespace YAMP.Physics
 	[Kind(PopularKinds.Constant)]
 	class QConstant : BaseConstant
 	{
-		static readonly ScalarValue charge = new ScalarValue(1.60217656535e-19);
+		static readonly UnitValue charge = new UnitValue(1.60217656535e-19, "C");
 
 		public override Value Value
 		{

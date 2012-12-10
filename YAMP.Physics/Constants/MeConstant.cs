@@ -7,7 +7,7 @@ namespace YAMP.Physics
 	[Kind(PopularKinds.Constant)]
 	class MeConstant : BaseConstant
 	{
-		readonly static ScalarValue value = new ScalarValue(9.1093821545e-31);
+		readonly static UnitValue value = new UnitValue(9.1093821545e-31, "kg");
 
 		public override Value Value
 		{

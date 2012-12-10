@@ -7,7 +7,7 @@ namespace YAMP.Physics
 	[Kind(PopularKinds.Constant)]
 	class GaConstant : BaseConstant
 	{
-		readonly static ScalarValue value = new ScalarValue(9.80665);
+		readonly static UnitValue value = new UnitValue(9.80665, "m/s^2");
 
 		public override Value Value
 		{
