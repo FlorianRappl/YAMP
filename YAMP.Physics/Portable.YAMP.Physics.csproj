@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6F521146-B625-4C6F-A3CA-440A8153E6F7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>YAMP.Physics</RootNamespace>
+    <AssemblyName>YAMP.Physics</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile2</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants\CConstant.cs" />
+    <Compile Include="Constants\GaConstant.cs" />
+    <Compile Include="Constants\GConstant.cs" />
+    <Compile Include="Constants\HbarConstant.cs" />
+    <Compile Include="Constants\HConstant.cs" />
+    <Compile Include="Constants\KbConstant.cs" />
+    <Compile Include="Constants\MeConstant.cs" />
+    <Compile Include="Constants\NaConstant.cs" />
+    <Compile Include="Constants\QConstant.cs" />
+    <Compile Include="Constants\RConstant.cs" />
+    <Compile Include="Functions\ChebyshevFunction.cs" />
+    <Compile Include="Functions\ClebschFunction.cs" />
+    <Compile Include="Functions\HermiteFunction.cs" />
+    <Compile Include="Functions\JacobiFunction.cs" />
+    <Compile Include="Functions\LaguerreFunction.cs" />
+    <Compile Include="Functions\LegendreFunction.cs" />
+    <Compile Include="Functions\UnitFunction.cs" />
+    <Compile Include="Functions\YlmFunction.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="Values\UnitValue.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YAMP\Portable.YAMP.csproj">
+      <Project>{a63fb450-11a4-4f93-a9c6-d07e16268b3f}</Project>
+      <Name>Portable.YAMP</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -89,8 +89,7 @@ namespace YAMP.Physics
 
         bool isNotHalf(ScalarValue j)
         {
-            var result = j.Value / 0.5;
-            return Math.Truncate(result) != result;
+            return Math.IEEERemainder(j.Value, 0.5) != 0.0;
         }
     }
 }
