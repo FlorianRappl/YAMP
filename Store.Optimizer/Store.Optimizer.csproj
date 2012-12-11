@@ -105,6 +105,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\Bobyqa.cs" />
+    <Compile Include="Services\OptimizationRunner.cs" />
     <Compile Include="ViewModels\VariableViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -154,7 +156,12 @@
       <HintPath>..\packages\Windows.UI.Interactivity.1.0.2.0\lib\winrt45\Windows.UI.Interactivity.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\YAMP\Portable.YAMP.csproj">
+      <Project>{a63fb450-11a4-4f93-a9c6-d07e16268b3f}</Project>
+      <Name>Portable.YAMP</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>
