@@ -1,0 +1,74 @@
+﻿<UserControl
+    x:Class="Store.Optimizer.Views.ShellView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:caliburn="using:Caliburn.Micro"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <caliburn:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
+            <ListView x:Name="Variables">
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <Grid Background="LightGray">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="120"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" FontSize="14" HorizontalAlignment="Left" Padding="3" Text="Name"/>
+                            <TextBlock Grid.Column="1" FontSize="14" HorizontalAlignment="Right" Padding="3" Text="Lower bound"/>
+                            <TextBlock Grid.Column="2" FontSize="14" HorizontalAlignment="Right" Padding="3" Text="Upper bound"/>
+                            <TextBlock Grid.Column="3" FontSize="14" HorizontalAlignment="Right" Padding="3" Text="Value"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="120"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox BorderThickness="0" Grid.Column="0" Text="{Binding Name,Mode=TwoWay}"/>
+                            <CheckBox BorderThickness="0" Grid.Column="1" IsChecked="{Binding HasLowerBound,Mode=TwoWay}"/>
+                            <TextBox BorderThickness="0" Grid.Column="2" HorizontalContentAlignment="Right" Text="{Binding LowerBound,Mode=TwoWay}" 
+                                     Visibility="{Binding HasLowerBound,Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <CheckBox BorderThickness="0" Grid.Column="3" IsChecked="{Binding HasUpperBound,Mode=TwoWay}"/>
+                            <TextBox BorderThickness="0" Grid.Column="4" HorizontalContentAlignment="Right" Text="{Binding UpperBound,Mode=TwoWay}" 
+                                     Visibility="{Binding HasUpperBound,Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <TextBox BorderThickness="0" Grid.Column="5" HorizontalContentAlignment="Right" Text="{Binding Value,Mode=TwoWay}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button x:Name="AddVariable" Content="Add variable"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top">
+            <TextBlock Text="Objective f =" VerticalAlignment="Center" FontSize="14"/>
+            <TextBox x:Name="Objective" MinWidth="200"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom">
+            <Button x:Name="Optimize" Content="Run"/>
+            <TextBlock x:Name="OptimalValue"></TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>
