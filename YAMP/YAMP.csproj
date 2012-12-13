@@ -112,6 +112,7 @@
     <Compile Include="Functions\Numerics\IntFunction.cs" />
     <Compile Include="Functions\Numerics\OdeFunction.cs" />
     <Compile Include="Functions\Numerics\RootFunction.cs" />
+    <Compile Include="Functions\Spectroscopy\PochFunction.cs" />
     <Compile Include="Functions\StandardFunctions\ArgFunction.cs" />
     <Compile Include="Functions\StandardFunctions\Bessel0Function.cs" />
     <Compile Include="Functions\StandardFunctions\Bessel1Function.cs" />

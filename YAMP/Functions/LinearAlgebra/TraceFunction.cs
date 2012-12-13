@@ -8,16 +8,16 @@ namespace YAMP
 	{
 		[Description("Sums all elements on the diagonal.")]
 		[Example("trace([1,2;3,4])", "Results in the value 5.")]
-		public ScalarValue Function(MatrixValue argument)
+		public ScalarValue Function(MatrixValue M)
 		{
-			return argument.Trace();
+			return M.Trace();
 		}
 
 		[Description("The trace of a 1x1 matrix is the element itself.")]
 		[Example("trace(10)", "Results in the value 10.")]
-		public ScalarValue Function(ScalarValue argument)
+		public ScalarValue Function(ScalarValue x)
 		{
-			return argument;
+			return x;
 		}
 	}
 }

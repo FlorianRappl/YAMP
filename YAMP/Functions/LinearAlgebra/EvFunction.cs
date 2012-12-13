@@ -9,9 +9,9 @@ namespace YAMP
 	{
 		[Description("Solves the eigenproblem of a matrix A and return a matrix with all (+degenerate) eigenvectors.")]
 		[Example("eig([1,2,3;4,5,6;7,8,9])", "Returns a 3x3 matrix with the three eigenvectors of this 3x3 matrix.")]
-		public MatrixValue Function(MatrixValue argument)
+		public MatrixValue Function(MatrixValue M)
 		{
-			var ev = new Eigenvalues(argument as MatrixValue);
+			var ev = new Eigenvalues(M as MatrixValue);
 			return ev.GetV();
 		}
 	}

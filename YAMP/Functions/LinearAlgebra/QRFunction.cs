@@ -13,9 +13,9 @@ namespace YAMP
 		[Returns(typeof(MatrixValue), "The economy sized orthogonal factor matrix Q.", 0)]
 		[Returns(typeof(MatrixValue), "The upper triangular factor matrix R.", 1)]
 		[Returns(typeof(MatrixValue), "The Householder vectors H.", 2)]
-		public ArgumentsValue Function(MatrixValue m)
+		public ArgumentsValue Function(MatrixValue M)
 		{
-			var qr = new QRDecomposition(m);
+			var qr = new QRDecomposition(M);
 			return new ArgumentsValue(qr.Q, qr.R, qr.H);
 		}
 	}

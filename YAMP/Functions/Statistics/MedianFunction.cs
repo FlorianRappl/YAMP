@@ -9,26 +9,26 @@ namespace YAMP
 		[Description("Computes the median of the given values.")]
 		[Example("median([1, 5, 2, 8, 7])", "Evaluates the values 1, 5, 2, 8, 7 and computes the median, which is 5.")]
 		[Example("median([1, 6, 2, 8, 7, 2])", "Evaluates the values 1, 6, 2, 8, 7, 2 and computes the median, which is 4.")]
-		public ScalarValue Function(MatrixValue m)
+		public ScalarValue Function(MatrixValue M)
 		{
-			if (m.Length == 0)
+			if (M.Length == 0)
 				return new ScalarValue();
-			else if (m.Length == 1)
-				return m[1];
+			else if (M.Length == 1)
+				return M[1];
 
-			m = m.VectorSort();
+			M = M.VectorSort();
 			int midPoint;
 			var sum = new ScalarValue();
 
-			if (m.Length % 2 == 1)
+			if (M.Length % 2 == 1)
 			{
-				midPoint = m.Length / 2;
-				sum = m[midPoint + 1];
+				midPoint = M.Length / 2;
+				sum = M[midPoint + 1];
 			}
 			else
 			{
-				midPoint = (m.Length / 2);
-				sum = m[midPoint] + m[midPoint + 1];
+				midPoint = (M.Length / 2);
+				sum = M[midPoint] + M[midPoint + 1];
 				sum /= 2.0;
 			}
 

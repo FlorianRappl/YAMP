@@ -13,9 +13,9 @@ namespace YAMP
 		[Returns(typeof(MatrixValue), "The diagonal matrix of singular values (Sigma).", 0)]
         [Returns(typeof(MatrixValue), "The left singular vectors (U).", 1)]
         [Returns(typeof(MatrixValue), "The right singular vectors (V*).", 2)]
-		public ArgumentsValue Function(MatrixValue m)
+		public ArgumentsValue Function(MatrixValue M)
 		{
-			var svd = new SingularValueDecomposition(m);
+			var svd = new SingularValueDecomposition(M);
 			return new ArgumentsValue(svd.S, svd.GetU(), svd.GetV());
 		}
 	}

@@ -162,6 +162,13 @@ namespace YAMP
 				this[j + 1] = new ScalarValue(vector[j]);
 		}
 
+        public MatrixValue(int rows, int cols, ScalarValue filling) : this(rows, cols)
+        {
+            for (var i = 1; i <= dimX; i++)
+                for (var j = 1; j <= dimY; j++)
+                    this[j, i] = filling.Clone();
+        }
+
 		#endregion
 
 		#region Statics

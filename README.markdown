@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **1.1.0**. A NuGet package (current version 1.1.0) is
+The current version number is **1.1.1**. A NuGet package (current version 1.1.1) is
 available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code -
 since the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -37,6 +37,31 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**1.1.1:**
+- Added plugin project YAMP.Physics
+- Added some special functions to YAMP.Physics
+- Added several physical constants to YAMP.Physics
+- YAMP.Physics will have a special unit type - still under construction
+- Added `ContourPlotValue` type for contour plots
+- Improved the Gamma function
+- Added `arg()` function as well as `real()` and `imag()`
+- Added the `ncr()` function (n choose r, binomial coefficient)
+- Renamed some classes to improve the code
+- Improved whitespace, newline and comment handling
+- Added `lu()` and `qr()` functions for linear algebra
+- Added `bessel()`, `bessel0()` and `bessel1()` functions
+- Added `mv()` and `cp()` function
+- Added function `contour()` for creating contour plots
+- Added the error function `erf()` and `erfc()`
+- Improved the `set()` function
+- Added exponential distribution `rande()`
+- Improved the string representation of the scalar value
+- Added more constants
+- Improved `IsPrime()`
+- Fixed an issue with the `timer()`
+- Improved the help
+- Added the possibility for string literals @"a\bc" (i.e. "a\\bc")
+
 **1.1.0:**
 - Removed the functions `title()`, `xlabel()`, ... to focus on the more general `set()`
 - Added the ability to write so called lambda expressions, i.e. functions in the code

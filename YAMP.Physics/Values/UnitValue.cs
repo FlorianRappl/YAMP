@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using YAMP;
 
 namespace YAMP.Physics
@@ -37,13 +38,20 @@ namespace YAMP.Physics
             this.unit = unit;
         }
 
-        public UnitValue(double real, double imag, string unit)
-            : base(real, imag)
+        public UnitValue(double real, double imag, string unit) : base(real, imag)
         {
             this.unit = unit;
         }
 
         public UnitValue(ScalarValue value, string unit) : this(value.Value, value.ImaginaryValue, unit)
+        {
+        }
+
+        public UnitValue(UnitValue value) : this(value.Value, value.ImaginaryValue, value.Unit)
+        {
+        }
+
+        public UnitValue(ScalarValue value, StringValue unit) : this(value.Value, value.ImaginaryValue, unit.Value)
         {
         }
 

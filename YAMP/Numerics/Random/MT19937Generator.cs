@@ -260,7 +260,6 @@ namespace YAMP.Numerics
         /// A 32-bit unsigned integer greater than or equal to <see cref="UInt32.MinValue"/> and 
         ///   less than or equal to <see cref="UInt32.MaxValue"/>.
         /// </returns>
-        [CLSCompliant(false)]
         public uint NextUInt()
         {
             if (this.mti >= MT19937Generator.N)

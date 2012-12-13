@@ -8,16 +8,16 @@ namespace YAMP
 	{
 		[Description("Uses the best algorithm to compute the determinant.")]
 		[Example("det([1,3;-1,0])", "Computes the determinant of the matrix [1,3;-1,0]; returns 3.")]
-		public ScalarValue Function(MatrixValue argument)
+		public ScalarValue Function(MatrixValue M)
 		{
-			return argument.Det();
+			return M.Det();
 		}
 
 		[Description("Returns the argument.")]
 		[Example("det(5)", "The determinant of a 1x1 matrix is the argument itself.")]
-		public ScalarValue Function(ScalarValue argument)
+		public ScalarValue Function(ScalarValue x)
 		{
-			return argument;
+			return x;
 		}
 	}
 }

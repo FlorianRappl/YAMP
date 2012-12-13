@@ -8,8 +8,12 @@ namespace YAMP.Physics
     [Kind(PopularKinds.Function)]
     class YlmFunction : ArgumentFunction
     {
-        [Description("Computes the spherical harmonics at given l, m with values for theta and phi.")]
-        [Example("ylm(1, 1, pi/2, 0)", "Evaluates the spherical harmonics Ylm(theta ,phi) with l = 1, m = 1, theta = pi / 2 and phi = 0.")]
+        static readonly double lnpi = Math.Log(Math.PI);
+        static readonly double fourpi = (4.0 * Math.PI);
+
+        [Description("Computes the spherical harmonics at given l, m with values for theta and phi. This results in the value of Ylm with the given l, m at the given angles.")]
+        [Example("ylm(0, 0, 0, 0)", "Computes the spherical harmonics Ylm(theta, phi) at l = 0, m = 0 - which gives the constant expression 1/2 * sqrt(1/pi) independent of theta and phi.")]
+        [Example("ylm(1, 1, pi / 2, 0)", "Evaluates the spherical harmonics Ylm(theta ,phi) with l = 1, m = 1, theta = pi / 2 and phi = 0.")]
         public ScalarValue Function(ScalarValue l, ScalarValue m, ScalarValue theta, ScalarValue phi)
         {
             if (l.IntValue < 0)
@@ -18,13 +22,87 @@ namespace YAMP.Physics
             return new ScalarValue(Ylm(l.IntValue, m.IntValue, theta.Value, phi.Value));
         }
 
-        //TODO Somethings still wrong / fishy...
-        //Check with http://en.wikipedia.org/wiki/Table_of_spherical_harmonics
+        [Description("Computes the spherical harmonics at given l, m with multiple values for theta and one value for phi. This results in a matrix of Ylm values for the given l, m at the given angles. The matrix has the dimension of theta.")]
+        [Example("ylm(1, 1, [-pi / 2, pi / 2; 0, pi], 0)", "Evaluates the spherical harmonics Ylm(theta ,phi) with l = 1, m = 1, theta = a 2 x2 matrix and phi = 0.")]
+        public MatrixValue Function(ScalarValue l, ScalarValue m, MatrixValue theta, ScalarValue phi)
+        {
+            if (l.IntValue < 0)
+                throw new Exception("Spherical harmonics of order l < 0 does not make sense.");
+
+            var M = new MatrixValue(theta.DimensionY, theta.DimensionX);
+
+            for(var i = 1; i <= theta.DimensionX; i++)
+                for(var j = 1; j <= theta.DimensionY; j++)
+                    M[j, i] = new ScalarValue(Ylm(l.IntValue, m.IntValue, theta[j, i].Value, phi.Value));
+
+            return M;
+        }
+
+        [Description("Computes the spherical harmonics at given l, m with one value for theta and multiple values for phi. This results in a matrix of Ylm values for the given l, m at the given angles. The matrix has the dimension of phi.")]
+        [Example("ylm(1, 1, pi / 2, 0 : pi / 10 : pi)", "Evaluates the spherical harmonics Ylm(theta ,phi) with l = 1, m = 1, theta = pi / 2 and phi being a vector from 0 to pi with a spacing of pi / 10.")]
+        public MatrixValue Function(ScalarValue l, ScalarValue m, ScalarValue theta, MatrixValue phi)
+        {
+            if (l.IntValue < 0)
+                throw new Exception("Spherical harmonics of order l < 0 does not make sense.");
+
+            var M = new MatrixValue(phi.DimensionY, phi.DimensionX);
+
+            for (var i = 1; i <= phi.DimensionX; i++)
+                for (var j = 1; j <= phi.DimensionY; j++)
+                    M[j, i] = new ScalarValue(Ylm(l.IntValue, m.IntValue, theta.Value, phi[j, i].Value));
+
+            return M;
+        }
+
+        [Description("Computes the spherical harmonics at given l, m with multiple values for theta and phi. This results in a matrix of Ylm values for the given l, m at the given angles. The matrix has dimension of the length of theta times the length of phi.")]
+        [Example("ylm(1, 1, [-pi / 2, pi / 2; 0, pi], 0 : pi / 10 : pi)", "Evaluates the spherical harmonics Ylm(theta ,phi) with l = 1, m = 1, theta = a 2 x2 matrix and phi = 0 : pi / 10 : pi.")]
+        public MatrixValue Function(ScalarValue l, ScalarValue m, MatrixValue theta, MatrixValue phi)
+        {
+            if (l.IntValue < 0)
+                throw new Exception("Spherical harmonics of order l < 0 does not make sense.");
+
+            var M = new MatrixValue(theta.Length, phi.Length);
+
+            for (var i = 1; i <= phi.Length; i++)
+                for (var j = 1; j <= theta.Length; j++)
+                    M[j, i] = new ScalarValue(Ylm(l.IntValue, m.IntValue, theta[j].Value, phi[i].Value));
+
+            return M;
+        }
+
+        //
+        // General formulas
+        //
+        // ylm(0, 0, theta, phi) = 1/2 * sqrt(1/pi)
+        // ylm(1, 0, theta, phi) = 1/2 * sqrt(3/pi) * cos(theta)
+        // ylm(1, -1, theta, phi) = 1/2 * sqrt(3/(2*pi)) * exp(-i*phi) * sin(theta)
+        // ylm(1, 1, theta, phi) = -1/2 * sqrt(3/(2*pi)) * exp(i*phi) * sin(theta)
+        // die negativen m sind gleich zu den positiven m, nur mit einem vorzeichen (-1)^m und entsprechenden exp(- arg)
+        // ylm(2, 0, theta, phi) = 1/4 * sqrt(5/pi) * (3*cos(theta)^2 - 1)
+        // ylm(2, 1, theta, phi) = -1/2 * sqrt(15/2/pi) * exp(i * phi) * sin(theta) * cos(theta)
+        // ylm(2, 2, theta, phi) = 1/4 * sqrt(15/2/pi) * exp(2*i*phi) * sin(theta)^2
+        // ylm(3, 0, theta, phi) = 1/4 * sqrt(7/pi) * (5 * cos(theta)^3 - 3 * cos(theta))
+        // ylm(3, 1, theta, phi) = -1/8 * sqrt(21/pi) * exp(i * phi) * sin(theta) * (5 * cos(theta)^2 - 1)
+        // ylm(3, 2, theta, phi) = 1/4 * sqrt(105/2/pi) * exp(2 * i * phi) * sin(theta)^2 * cos(theta)
+        // ....
+        // Examples with values for theta and phi
+        //
+        // ylm(0, 0, 0, 0) = 1/2 * sqrt(1/pi) ~ 0.28
+        // ylm(1, 0, 0, 0) = 1/2 * sqrt(3/pi) ~ 0.48
+        // ylm(1, -1, pi / 2, 0) = 1/2 * sqrt(3/(2*pi)) ~ 0.34
+        // ylm(1, 1, pi / 2, 0) = -1/2 * sqrt(3/(2*pi)) ~ -0.34
+        // ylm(2, 0, 0, 0) = 1/4 * sqrt(5/pi) * 2 ~ 0.63
+        // ylm(2, 1, pi / 4, 0) = -1/2 * sqrt(15/2/pi) * sin(pi / 4) * cos(pi / 4) ~ 0.38
+        // ylm(2, 2, pi / 2, 0) = 1/4 * sqrt(15/2/pi) ~ 0.38
+        // ylm(3, 0, 0, 0) = 1/4 * sqrt(7/pi) * 2 ~ 0.74
+        // ylm(3, 1, pi / 4, 0) = -1/8 * sqrt(21/pi) * sin(pi / 4) * (5 * cos(pi / 4)^2 - 1) ~ -0.34
+        // ylm(3, 2, pi / 4, 0) = 1/4 * sqrt(105/2/pi) * sin(pi / 4)^2 * cos(pi / 4) ~ 0.36
+        //
         static ScalarValue Ylm(int l, int m, double theta, double phi)
         {
             var expphi = new ScalarValue(0.0, m * phi).Exp();
-            var factor = Math.Sqrt((2 * l + 1) * Helpers.Factorial(l - m) / Helpers.Factorial(l + m));
-            var legend = Plm(l, m, Math.Cos(theta));
+            var factor = m < 0 ? Math.Pow(-1, -m) : 1.0;
+            var legend = Plm(l, Math.Abs(m), Math.Cos(theta));
             return factor * expphi * legend;
         }
 
@@ -116,21 +194,15 @@ namespace YAMP.Physics
                 return 0.0;
             }
             else /* m > 0 and |x| < 1 here */
-            {
-                /* 
-                 * Starting value for recursion.
-                 * Y_m^m(x) = sqrt( (2m+1)/(4pi m) gamma(m+1/2)/gamma(m) ) (-1)^m (1-x^2)^(m/2) / pi^(1/4)
-                 */
+            { 
+                //Y_m^m(x) = sqrt( (2m+1)/(4pi m) gamma(m+1/2)/gamma(m) ) (-1)^m (1-x^2)^(m/2) / pi^(1/4)
                 double sgn = m % 2 == 1 ? -1.0 : 1.0;
                 double y_mmp1_factor = x * sqrt(2.0 * m + 3.0);
                 double lncirc = Math.Log(1 - x * x);
-                double lnpoch = -Math.Log(Gamma.LinearGamma(m + 0.5) / Gamma.LinearGamma(m));  /* Gamma(m+1/2)/Gamma(m) */
-                double lnpre_val = -0.25 * Math.Log(Math.PI) + 0.5 * (lnpoch + m * lncirc);
-
-                /* Compute exp(ln_pre) with error term, avoiding call to gsl_sf_exp_err BJG */
-                double ex_pre = Math.Exp(lnpre_val);
-                double sr = sqrt((2.0 + 1.0 / m) / (4.0 * Math.PI));
-                double y_mm = sgn * sr * ex_pre;
+                double lnpoch = Gamma.LogGamma(m + 0.5) - Gamma.LogGamma(m);
+                double expf = Math.Exp(0.5 * (lnpoch + m * lncirc) - 0.25 * lnpi);
+                double sr = sqrt((2.0 + 1.0 / m) / fourpi);
+                double y_mm = sgn * sr * expf;
                 double y_mmp1 = y_mmp1_factor * y_mm;
 
                 if (l == m)
@@ -155,34 +227,6 @@ namespace YAMP.Physics
 
                     return y_ell;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Calculate P_m^m(x) from the analytic result: 
-        /// P_m^m(x) = (-1)^m (2m-1)!! (1-x^2)^(m/2) , m > 0
-        ///          = 1, m = 0
-        /// </summary>
-        /// <param name="m">order m</param>
-        /// <param name="x">argument x</param>
-        /// <returns></returns>
-        static double Pmm(int m, double x)
-        {
-            if (m == 0)
-                return 1.0;
-            else
-            {
-                var p_mm = 1.0;
-                var root_factor = sqrt(1.0 - x) * sqrt(1.0 + x);
-                var fact_coeff = 1.0;
-
-                for (int i = 1; i <= m; i++)
-                {
-                    p_mm *= -fact_coeff * root_factor;
-                    fact_coeff += 2.0;
-                }
-
-                return p_mm;
             }
         }
     }

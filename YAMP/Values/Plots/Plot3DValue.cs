@@ -34,14 +34,6 @@ namespace YAMP
 {
     public sealed class Plot3DValue : PlotValue
     {
-        #region Members
-
-        string zlabel;
-        double minz;
-        double maxz;
-
-        #endregion
-
         #region ctor
 
         public Plot3DValue()

@@ -9,12 +9,15 @@ namespace YAMP.Help
 		{
 			Examples = new List<HelpExample>();
 			Arguments = new List<string>();
+            ArgumentNames = new List<string>();
             Returns = new List<string>();
 		}
 
 		public string Usage { get; set; }
 
-		public string Description { get; set; }
+        public string Description { get; set; }
+
+        public List<string> ArgumentNames { get; private set; }
 
 		public List<string> Arguments { get; private set; }
 

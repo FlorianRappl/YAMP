@@ -13,9 +13,9 @@ namespace YAMP
 		[Returns(typeof(MatrixValue), "The lower matrix L.", 0)]
 		[Returns(typeof(MatrixValue), "The upper (right) matrix U.", 1)]
 		[Returns(typeof(MatrixValue), "The permutation matrix P.", 2)]
-		public ArgumentsValue Function(MatrixValue m)
+		public ArgumentsValue Function(MatrixValue M)
 		{
-			var lu = new LUDecomposition(m);
+			var lu = new LUDecomposition(M);
 			return new ArgumentsValue(lu.L, lu.U, lu.Pivot);
 		}
 	}

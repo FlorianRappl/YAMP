@@ -256,18 +256,6 @@ namespace YAMP.Help
 			var help = new HelpFunctionUsage();
 			var args = function.GetParameters();
 
-			var sb = new StringBuilder();
-			sb.Append(name).Append("(");
-			var s = new string[args.Length];
-
-			for (var i = 0; i < args.Length; )
-				s[i] = "x" + (++i);
-
-			sb.Append(string.Join(",", s));
-			sb.AppendLine(")");
-
-			help.Usage = sb.ToString();
-
 			if (rets.Length == 0)
 				help.Returns.Add(ModifyValueType(function.ReturnType));
 			else
@@ -278,10 +266,19 @@ namespace YAMP.Help
 					help.Returns.Add(ModifyValueType(attribute.ReturnType) + " : " + attribute.Explanation);
 			}
 
-			help.Description = GetDescription(function);
+            help.Description = GetDescription(function);
+            var sb = new StringBuilder();
 
-			foreach (var arg in args)
-				help.Arguments.Add(ModifyValueType(arg.ParameterType));
+            foreach (var arg in args)
+            {
+                help.ArgumentNames.Add(arg.Name);
+                help.Arguments.Add(ModifyValueType(arg.ParameterType));
+            }
+
+            sb.Append(name).Append("(");
+            sb.Append(string.Join(",", help.ArgumentNames.ToArray()));
+            sb.AppendLine(")");
+            help.Usage = sb.ToString();
 
 			foreach (ExampleAttribute attribute in objects)
 				help.Examples.Add(GetExample(attribute));

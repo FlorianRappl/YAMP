@@ -15,9 +15,9 @@ namespace YAMP
 
         [Description("Sets the output precision to x digits.")]
         [Example("precision(5)", "Sets the precision to 5 digits.")]
-        public StringValue Function(ScalarValue precision)
+        public StringValue Function(ScalarValue digits)
         {
-            Context.Precision = precision.IntValue;
+            Context.Precision = digits.IntValue;
             return new StringValue("Output precision changed to " + Context.Precision + " digits.");
         }
     }

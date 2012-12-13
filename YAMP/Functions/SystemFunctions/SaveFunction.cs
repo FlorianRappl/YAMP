@@ -15,16 +15,16 @@ namespace YAMP
 
         [Description("Saves all variables that are currently available.")]
         [Example("save(\"myfile.mat\")", "Saves all variables in the file myfile.mat")]
-        public StringValue Function(StringValue filename)
+        public StringValue Function(StringValue fileName)
 		{
-            Save(filename.Value, Context.Variables);
+            Save(fileName.Value, Context.Variables);
             return new StringValue(Context.Variables.Count + " objects saved.");
 		}
 
         [Description("Saves the specified variables in the file.")]
         [Example("save(\"myfile.mat\", \"x\", \"y\")", "Saves the variables x and y in the file myfile.mat")]
 		[Arguments(1)]
-        public StringValue Function(StringValue filename, ArgumentsValue args)
+        public StringValue Function(StringValue fileName, ArgumentsValue args)
         {
             var workspace = new Dictionary<string, Value>();
 
@@ -39,7 +39,7 @@ namespace YAMP
                 }
             }
 
-            Save(filename.Value, workspace);
+            Save(fileName.Value, workspace);
             return new StringValue(workspace.Count + " objects saved.");
         }
 

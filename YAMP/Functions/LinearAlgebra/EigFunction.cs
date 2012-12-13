@@ -11,9 +11,9 @@ namespace YAMP
 		[Example("eig([1,2,3;4,5,6;7,8,9])", "Returns a vector with the three eigenvalues 16.11684, -1.11684 and 0 of this 3x3 matrix.")]
 		[Returns(typeof(MatrixValue), "The eigenvalues of the matrix stored in a vector.", 0)]
         [Returns(typeof(MatrixValue), "The eigenvectors of the matrix stored in a matrix.", 1)]
-		public ArgumentsValue Function(MatrixValue argument)
+		public ArgumentsValue Function(MatrixValue M)
 		{
-			var ev = new Eigenvalues(argument as MatrixValue);
+			var ev = new Eigenvalues(M as MatrixValue);
 			var m = new MatrixValue(ev.RealEigenvalues.Length, 1);
 			var n = ev.GetV();
 

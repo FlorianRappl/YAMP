@@ -7,12 +7,33 @@ using System.Text.RegularExpressions;
 namespace YAMP
 {
 	class StringExpression : Expression
-	{
-		public StringExpression () : base(@"\""")
+    {
+        #region Members
+
+        bool literal;
+
+        #endregion
+
+        #region ctor
+
+        public StringExpression () : base(@"@?\"".*""")
 		{
 		}
 
-		public override Expression Create(QueryContext query, Match match)
+        #endregion
+
+        #region Properties
+
+        public bool Literal
+        {
+            get { return literal; }
+        }
+
+        #endregion
+
+        #region Methods
+
+        public override Expression Create(QueryContext query, Match match)
 		{
 			return new StringExpression();
 		}
@@ -26,10 +47,17 @@ namespace YAMP
 		{
 			var escape = false;
 			var sb = new StringBuilder();
+            var offset = 1;
 
-			for(var i = 1; i < input.Length; i++)
+            if (input[0] == '@')
+            {
+                offset++;
+                literal = true;
+            }
+
+			for(var i = offset; i < input.Length; i++)
 			{
-				if(!escape && input[i] == '\\')
+				if(!literal && !escape && input[i] == '\\')
 					escape = true;
 				else if(!escape && input[i] == '"')
 				{
@@ -63,7 +91,9 @@ namespace YAMP
 			}
 			
 			throw new BracketException(Offset, "\"", input);
-		}
-	}
+        }
+
+        #endregion
+    }
 }
 

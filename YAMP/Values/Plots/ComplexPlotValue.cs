@@ -38,6 +38,7 @@ namespace YAMP
 
         public override void AddPoints(MatrixValue m)
         {
+            //Leave empty
         }
 
         #region Serialization

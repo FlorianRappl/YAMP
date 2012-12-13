@@ -23,9 +23,9 @@ namespace YAMP
 		[Example("timer(0)", "Stops the stopwatch")]
 		[Example("timer(1)", "Starts the stopwatch")]
 		[Example("timer(-1)", "Resets the stopwatch")]
-		public ScalarValue Function(ScalarValue a)
+		public ScalarValue Function(ScalarValue action)
 		{
-			switch (a.IntValue)
+			switch (action.IntValue)
 			{
 				case -1:
 					Reset();
@@ -45,9 +45,9 @@ namespace YAMP
 		[Example("timer(\"stop\")", "Stops the stopwatch")]
 		[Example("timer(\"start\")", "Starts the stopwatch")]
 		[Example("timer(\"reset\")", "Resets the stopwatch")]
-		public ScalarValue Function(StringValue a)
+		public ScalarValue Function(StringValue action)
 		{
-			switch (a.Value.ToLower())
+			switch (action.Value.ToLower())
 			{
 				case "reset":
 					Reset();

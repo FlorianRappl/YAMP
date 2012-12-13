@@ -11,7 +11,6 @@ namespace YAMP
         #region Members
 
         static readonly string symbolRegex = @"[A-Za-z]+[A-Za-z0-9_]*\b";
-		static Regex fx;
 
         #endregion
 

@@ -9,13 +9,13 @@ namespace YAMP
 	{
 		[Description("Sets the computation thread on idle for the proposed time in milliseconds (ms).")]
 		[Example("sleep(150)", "Sleeps for 150ms and outputs the real waiting time in ms.")]
-		public ScalarValue Function(ScalarValue a)
+		public ScalarValue Function(ScalarValue timeout)
 		{
 			var start = Environment.TickCount;
 
 			using (var blocking = new ManualResetEvent(false))
 			{
-				blocking.WaitOne(a.IntValue);
+				blocking.WaitOne(timeout.IntValue);
 			}
 
 			var time = Environment.TickCount - start;

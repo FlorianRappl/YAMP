@@ -36,6 +36,8 @@ namespace YAMP
 
 		public ContourPlotValue()
 		{
+            ShowLevel = true;
+            ColorPalette = "Jet";
 		}
 
 		#endregion
@@ -153,13 +155,28 @@ namespace YAMP
 			if (Count == 0 || ymax > MaxY)
 				MaxY = ymax;
 
-			SetLevels(zmin, zmax, Math.Max(Math.Min(dx, dy) / 4, 3));
+			SetLevels(zmin, zmax, Math.Min(Math.Max(dx, dy), 10));
 			AddSeries(p);
 		}
 
 		#endregion
 
-		#region Properties
+        #region Properties
+
+        [ScalarToBooleanConverter]
+        [StringToBooleanConverter]
+        public bool ShowLevel
+        {
+            get;
+            set;
+        }
+
+        [StringToStringConverter]
+        public string ColorPalette
+        {
+            get;
+            set;
+        }
 
 		public double[] Levels
 		{
@@ -187,6 +204,8 @@ namespace YAMP
 			using (var s = Serializer.Create())
 			{
 				Serialize(s);
+                s.Serialize(ColorPalette);
+                s.Serialize(ShowLevel);
 				s.Serialize(Levels.Length);
 
 				for (var i = 0; i < Levels.Length; i++)
@@ -217,6 +236,8 @@ namespace YAMP
 			using (var ds = Deserializer.Create(content))
 			{
 				Deserialize(ds);
+                ColorPalette = ds.GetString();
+                ShowLevel = ds.GetBoolean();
 				Levels = new double[ds.GetInt()];
 
 				for (var i = 0; i < Levels.Length; i++)
