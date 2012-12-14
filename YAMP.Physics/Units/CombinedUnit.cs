@@ -15,7 +15,7 @@ namespace YAMP.Physics
         double factor;
         string unit;
         Dictionary<string, int> units;
-        static CultureInfo numberFormat = CultureInfo.CreateSpecificCulture("en-us");
+        static CultureInfo numberFormat = new CultureInfo("en-us");
 
         #endregion
 
