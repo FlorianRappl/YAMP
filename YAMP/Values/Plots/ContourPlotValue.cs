@@ -37,7 +37,7 @@ namespace YAMP
 		public ContourPlotValue()
 		{
             ShowLevel = true;
-            ColorPalette = "Jet";
+            ColorPalette = ColorPalettes.Jet;
 		}
 
 		#endregion
@@ -171,8 +171,8 @@ namespace YAMP
             set;
         }
 
-        [StringToStringConverter]
-        public string ColorPalette
+        [StringToEnumConverter(typeof(ColorPalettes))]
+        public ColorPalettes ColorPalette
         {
             get;
             set;
@@ -204,7 +204,7 @@ namespace YAMP
 			using (var s = Serializer.Create())
 			{
 				Serialize(s);
-                s.Serialize(ColorPalette);
+                s.Serialize((int)ColorPalette);
                 s.Serialize(ShowLevel);
 				s.Serialize(Levels.Length);
 
@@ -236,7 +236,7 @@ namespace YAMP
 			using (var ds = Deserializer.Create(content))
 			{
 				Deserialize(ds);
-                ColorPalette = ds.GetString();
+                ColorPalette = (ColorPalettes)ds.GetInt();
                 ShowLevel = ds.GetBoolean();
 				Levels = new double[ds.GetInt()];
 

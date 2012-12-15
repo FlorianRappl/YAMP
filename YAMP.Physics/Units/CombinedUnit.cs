@@ -1,4 +1,31 @@
-﻿using System;
+﻿/*
+    Copyright (c) 2012, Florian Rappl.
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+          notice, this list of conditions and the following disclaimer in the
+          documentation and/or other materials provided with the distribution.
+        * Neither the name of the YAMP team nor the names of its contributors
+          may be used to endorse or promote products derived from this
+          software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -14,8 +41,8 @@ namespace YAMP.Physics
         int lastAddedFactor;
         double factor;
         string unit;
-        Dictionary<string, int> units;
-        static CultureInfo numberFormat = new CultureInfo("en-us");
+        Dictionary<string, int> units = new Dictionary<string, int>();
+        static CultureInfo numberFormat = CultureInfo.CreateSpecificCulture("en-us");
 
         #endregion
 
@@ -78,7 +105,7 @@ namespace YAMP.Physics
             foreach (var pos in positive)
             {
                 if (inner)
-                    s.Append(" * ");
+                    s.Append("*");
                 else
                     inner = true;
 
@@ -95,12 +122,15 @@ namespace YAMP.Physics
                 if (s.Length == 0)
                     s.Append("1");
 
-                s.Append(" / (");
+                if (negative.Count != 1)
+                    s.Append("/(");
+                else
+                    s.Append("/");
 
                 foreach (var neg in negative)
                 {
                     if(inner)
-                        s.Append(" * ");
+                        s.Append("*");
                     else
                         inner = true;
 
@@ -110,14 +140,16 @@ namespace YAMP.Physics
                         s.Append("^").Append(-units[neg]);
                 }
 
-                s.Append(")");
+                if (negative.Count != 1)
+                    s.Append(")");
             }
 
             unit = s.ToString();
         }
 
-        public void ConvertTo(string unit)
+        public List<Func<double, double>> ConvertTo(string unit)
         {
+            var list = new List<Func<double, double>>();
             var sourceFactor = factor;
             factor = 1.0;
             var source = units;
@@ -135,7 +167,7 @@ namespace YAMP.Physics
 
                 for (var i = 1; i <= abs; i++)
                 {
-                    var tu = FindMapping(srcUnit.Key, target, sign);
+                    var tu = FindMapping(srcUnit.Key, target, sign, list);
 
                     if (bag.ContainsKey(tu))
                         bag[tu] += sign;
@@ -144,14 +176,49 @@ namespace YAMP.Physics
                 }
             }
 
+            if (target.Count != 0)
+                throw new YAMPException("The conversation is not possible. The units are not converting properly.");
+
             units = bag;
+            Unpack();
+            return list;
         }
 
-        string FindMapping(string source, Dictionary<string, int> target, int sign)
+        string FindMapping(string source, Dictionary<string, int> target, int sign, List<Func<double, double>> list)
         {
             var srcUnit = FindUnit(source);
-            //TODO not ready yet!
-            return source;//just as dummy!
+
+            if (srcUnit == null)
+                throw new YAMPException("The unit " + source + " could not be found.");
+
+            factor *= srcUnit.Weight;
+
+            foreach(var unit in target.Keys)
+            {
+                if (srcUnit.HasConversation(unit))
+                {
+                    var dstUnit = FindUnit(unit);
+                    target[unit] -= sign;
+
+                    if (sign > 0)
+                    {
+                        list.Add(srcUnit.GetConversation(dstUnit.Unit));
+                        factor /= dstUnit.Weight;
+                    }
+                    else
+                    {
+                        list.Add(srcUnit.GetInverseConversation(dstUnit.Unit));
+                        factor *= dstUnit.Weight;
+                    }
+
+                    if (target[unit] == 0)
+                        target.Remove(unit);
+
+                    return unit;
+                }
+            }
+
+            throw new YAMPException("Nothing found to convert for " + srcUnit.Unit + ".");
         }
 
         protected override PhysicalUnit Create()
@@ -163,7 +230,7 @@ namespace YAMP.Physics
 
         #region Parsing
 
-        void AddUnit(string unit, int exp)
+        void AddUnit(Dictionary<string, int> units, string unit, int exp)
         {
             if (exp == 0)
                 return;
@@ -192,12 +259,12 @@ namespace YAMP.Physics
             foreach (var ch in unit)
                 tk[k++] = GetToken(ch);
 
+            tk[k] = Token.End;
+
             var sum = Count(Token.OpenBracket, tk) - Count(Token.CloseBracket, tk);
 
             if (sum != 0)
                 throw new BracketException("(", unit);
-
-            tk[k] = Token.End;
 
             for (var i = 0; i != unit.Length; i++)
             {
@@ -226,7 +293,7 @@ namespace YAMP.Physics
 
                 var r = reverse ? -1 : 1;
                 var current = tk[i];
-                var result = EatWhile(current, tk, unit.Substring(i));
+                var result = EatWhile(current, tk, unit, i);
 
                 switch (op)
                 {
@@ -234,7 +301,7 @@ namespace YAMP.Physics
                         if (current == Token.Number)
                             factor *= Math.Pow(ConvertToDouble(result), r);
                         else if (current == Token.Letter)
-                            AddUnit(result, r);
+                            AddUnit(units, result, r);
                         else
                             throw new ParseException(i, unit.Substring(i));
                         break;
@@ -243,7 +310,7 @@ namespace YAMP.Physics
                         if (current == Token.Number)
                             factor /= Math.Pow(ConvertToDouble(result), r);
                         else if (current == Token.Letter)
-                            AddUnit(result, -r);
+                            AddUnit(units, result, -r);
                         else
                             throw new ParseException(i, unit.Substring(i));
                         break;
@@ -253,9 +320,11 @@ namespace YAMP.Physics
                             throw new ParseException(i, unit.Substring(i));
 
                         var exp = ConvertToInteger(result);
-                        AddUnit(lastAddedUnit, r * lastAddedFactor * (exp - 1));
+                        AddUnit(units, lastAddedUnit, r * lastAddedFactor * (exp - 1));
                         break;
                 }
+
+                i += result.Length - 1;
             }
 
             return units;
@@ -272,10 +341,10 @@ namespace YAMP.Physics
             return sum;
         }
 
-        string EatWhile(Token token, Token[] tokens, string text)
+        string EatWhile(Token token, Token[] tokens, string text, int start)
         {
             var sb = new StringBuilder();
-            var index = 0;
+            var index = start;
 
             do
             {

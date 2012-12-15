@@ -71,7 +71,7 @@ namespace YAMP
 
             if (m.IsVector)
             {
-                var x = Generate(0.0, 1.0, m.Length - 1);
+                var x = Generate(0.0, 1.0, m.Length);
                 Normalize(x, m.Length);
                 var y = Convert(m, 0, m.Length);
                 AddValues(x, y);

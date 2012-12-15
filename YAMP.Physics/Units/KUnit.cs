@@ -7,8 +7,8 @@ namespace YAMP.Physics
     {
         public KUnit()
         {
-            Add("°C", t => t - 273.16);
-            Add("°F", t => 9.0 * t / 5.0 - 460);
+            Add("°C", 1.0, -273.16);
+            Add("°F", 9.0 / 5.0, -460.0);
         }
 
         protected override PhysicalUnit Create()

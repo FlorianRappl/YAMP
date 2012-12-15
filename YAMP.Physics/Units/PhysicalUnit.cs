@@ -1,4 +1,31 @@
-﻿using System;
+﻿/*
+    Copyright (c) 2012, Florian Rappl.
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+          notice, this list of conditions and the following disclaimer in the
+          documentation and/or other materials provided with the distribution.
+        * Neither the name of the YAMP team nor the names of its contributors
+          may be used to endorse or promote products derived from this
+          software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using YAMP;
@@ -9,7 +36,8 @@ namespace YAMP.Physics
     {
         #region Members
 
-        Dictionary<string, Func<double, double>> conversationTable;
+        Dictionary<PhysicalUnit, Func<double, double>> conversionTable;
+        Dictionary<PhysicalUnit, Func<double, double>> invConversionTable;
         Dictionary<string, double> prefixes;
         double weight;
 
@@ -23,11 +51,18 @@ namespace YAMP.Physics
         {
             var assembly = Assembly.GetExecutingAssembly();
             var types = assembly.GetTypes();
+            var combinedTypes = new List<Type>();
 
             foreach (var type in types)
             {
                 if (type.IsSubclassOf(typeof(PhysicalUnit)) && !type.IsAbstract)
                 {
+                    if(type.IsSubclassOf(typeof(CombinedUnit)))
+                    {
+                        combinedTypes.Add(type);
+                        continue;
+                    }
+
                     var ctor  = type.GetConstructor(Value.EmptyTypes);
 
                     if(ctor == null)
@@ -37,12 +72,24 @@ namespace YAMP.Physics
                     knownUnits.Add(instance.Unit, instance);
                 }
             }
+
+            foreach (var type in combinedTypes)
+            {
+                var ctor  = type.GetConstructor(Value.EmptyTypes);
+
+                if(ctor == null)
+                    continue;
+
+                var instance = ctor.Invoke(null) as PhysicalUnit;
+                knownUnits.Add(instance.Unit, instance);
+            }
         }
 
         public PhysicalUnit()
         {
             weight = 1.0;
-            conversationTable = new Dictionary<string, Func<double, double>>();
+            invConversionTable = new Dictionary<PhysicalUnit, Func<double, double>>();
+            conversionTable = new Dictionary<PhysicalUnit, Func<double, double>>();
             prefixes = new Dictionary<string, double>();
             Unit = this.GetType().Name.Replace("Unit", string.Empty);
             SetPrefixes();
@@ -136,15 +183,66 @@ namespace YAMP.Physics
             prefixes.Add("y", 1e-24);
         }
 
+        public virtual bool HasConversation(string target)
+        {
+            if (CanBe(target))
+                return true;
+
+            foreach (var entry in conversionTable)
+            {
+                if (entry.Key.CanBe(target))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public virtual Func<double, double> GetConversation(string unit)
+        {
+            if (unit == Unit)
+                return x => x;
+
+            return conversionTable[knownUnits[unit]];
+        }
+
+        public virtual Func<double, double> GetInverseConversation(string unit)
+        {
+            if (unit == Unit)
+                return x => x;
+
+            return invConversionTable[knownUnits[unit]];
+        }
+
+        /// <summary>
+        /// Adds a conversation determined by y = a * x.
+        /// </summary>
+        /// <param name="target">The target unit, e.g. in m to yd, yd would be the target unit.</param>
+        /// <param name="rate">The rate of the conversion.</param>
+        /// <returns>The current unit.</returns>
         public PhysicalUnit Add(string target, double rate)
         {
-            conversationTable.Add(target, x => x * rate);
+            if (!knownUnits.ContainsKey(target))
+                knownUnits.Add(target, new ConversationUnit(target, this));
+
+            conversionTable.Add(knownUnits[target], x => x * rate);
+            invConversionTable.Add(knownUnits[target], x => x / rate);
             return this;
         }
 
-        public PhysicalUnit Add(string target, Func<double, double> rate)
+        /// <summary>
+        /// Adds a conversation determined by y = a * x + b.
+        /// </summary>
+        /// <param name="target">The target unit, e.g. in K to °C, °C would be the target unit.</param>
+        /// <param name="rate">The rate (a) of the conversion.</param>
+        /// <param name="offset">The offset (b) of the conversion.</param>
+        /// <returns>The current unit.</returns>
+        public PhysicalUnit Add(string target, double rate, double offset)
         {
-            conversationTable.Add(target, rate);
+            if (!knownUnits.ContainsKey(target))
+                knownUnits.Add(target, new ConversationUnit(target, this));
+
+            conversionTable.Add(knownUnits[target], x => x * rate + offset);
+            invConversionTable.Add(knownUnits[target], x => (x - offset) / rate);
             return this;
         }
 

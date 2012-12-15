@@ -64,11 +64,12 @@
     <Compile Include="Units\AUnit.cs" />
     <Compile Include="Units\cdUnit.cs" />
     <Compile Include="Units\CombinedUnit.cs" />
+    <Compile Include="Units\ConversationUnit.cs" />
     <Compile Include="Units\CUnit.cs" />
     <Compile Include="Units\gUnit.cs" />
     <Compile Include="Units\JUnit.cs" />
     <Compile Include="Units\KUnit.cs" />
-    <Compile Include="Units\kWhUnit.cs" />
+    <Compile Include="Units\WhUnit.cs" />
     <Compile Include="Units\molUnit.cs" />
     <Compile Include="Units\mUnit.cs" />
     <Compile Include="Units\eVUnit.cs" />

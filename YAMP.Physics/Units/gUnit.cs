@@ -7,7 +7,7 @@ namespace YAMP.Physics
     {
         public gUnit()
         {
-            Add("lb", 2.205);
+            Add("lb", 0.002205);
         }
 
         protected override PhysicalUnit Create()

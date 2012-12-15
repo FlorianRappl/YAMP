@@ -7,8 +7,9 @@ namespace YAMP.Physics
     {
         public sUnit()
         {
-            Add("d", 0.00001157407);
-            Add("yr", 3.16880878e-8); 
+            Add("d", 1.0 / 86400.0);
+            Add("h", 1.0 / 3600.0);
+            Add("yr", 1.0 / (86400.0 * 365.25)); 
         }
 
         protected override PhysicalUnit Create()

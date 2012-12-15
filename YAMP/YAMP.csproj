@@ -298,6 +298,7 @@
     <Compile Include="Attributes\ExampleAttribute.cs" />
     <Compile Include="Values\Arguments\FunctionValue.cs" />
     <Compile Include="Values\Numeric\NumericValue.cs" />
+    <Compile Include="Values\Plots\ColorPalettes.cs" />
     <Compile Include="Values\Plots\ComplexPlotValue.cs" />
     <Compile Include="Values\Plots\ContourPlotValue.cs" />
     <Compile Include="Values\Plots\LegendPosition.cs" />
@@ -371,7 +372,9 @@
     <Compile Include="Exceptions\WrongArgumentsException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Scripting\" />
+  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
 xcopy /y "$(TargetPath)" "$(SolutionDir)\Nuget\lib\net35\"

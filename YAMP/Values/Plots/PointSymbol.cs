@@ -11,7 +11,6 @@ namespace YAMP
 		Triangle = 4,
 		Cross = 5,
 		Plus = 6,
-		Star = 7,
-		Custom = 8,
+		Star = 7
 	}
 }
