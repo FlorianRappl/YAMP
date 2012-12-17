@@ -334,6 +334,7 @@
     <Compile Include="Values\Numeric\NumericValue.cs" />
     <Compile Include="Values\Numeric\RangeValue.cs" />
     <Compile Include="Values\Numeric\ScalarValue.cs" />
+    <Compile Include="Values\Plots\ColorPalettes.cs" />
     <Compile Include="Values\Plots\ComplexPlotValue.cs" />
     <Compile Include="Values\Plots\ContourPlotValue.cs" />
     <Compile Include="Values\Plots\LegendPosition.cs" />
