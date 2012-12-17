@@ -33,6 +33,9 @@ using YAMP;
 
 namespace YAMP.Physics
 {
+    /// <summary>
+    /// Used to represent combined units -- temporary and defined.
+    /// </summary>
     class CombinedUnit : PhysicalUnit
     {
         #region Members
@@ -53,7 +56,7 @@ namespace YAMP.Physics
             Unit = unit;
         }
 
-        protected CombinedUnit(string combination, double factor = 1.0)
+        protected CombinedUnit(string combination, double factor)
         {
             this.factor = factor;
             units = Parse(combination);
@@ -64,11 +67,17 @@ namespace YAMP.Physics
 
         #region Properties
 
+        /// <summary>
+        /// Gets the underlying factor.
+        /// </summary>
         public double Factor
         {
             get { return factor; }
         }
 
+        /// <summary>
+        /// Gets or sets the presented unit.
+        /// </summary>
         public override string Unit
         {
             get
@@ -83,11 +92,26 @@ namespace YAMP.Physics
             }
         }
 
+        /// <summary>
+        /// Gets the underlying elementary units.
+        /// </summary>
+        public Dictionary<string, int> ElementaryUnits
+        {
+            get
+            {
+                return units;
+            }
+        }
+
         #endregion
 
         #region Methods
 
-        public void Unpack()
+        /// <summary>
+        /// Unpacks the given units, i.e. returns the representation of the unit in elementary units.
+        /// </summary>
+        /// <returns>The string represention in elementary units.</returns>
+        public string Unpack()
         {
             var inner = false;
             var s = new StringBuilder();
@@ -144,9 +168,14 @@ namespace YAMP.Physics
                     s.Append(")");
             }
 
-            unit = s.ToString();
+            return s.ToString();
         }
 
+        /// <summary>
+        /// Tries to convert the unit to the given unit.
+        /// </summary>
+        /// <param name="unit">The unit (combination) to convert to.</param>
+        /// <returns>A list of converters to be performed on a certain value having the current unit.</returns>
         public List<Func<double, double>> ConvertTo(string unit)
         {
             var list = new List<Func<double, double>>();
@@ -180,7 +209,7 @@ namespace YAMP.Physics
                 throw new YAMPException("The conversation is not possible. The units are not converting properly.");
 
             units = bag;
-            Unpack();
+            this.unit = unit;
             return list;
         }
 
@@ -191,7 +220,7 @@ namespace YAMP.Physics
             if (srcUnit == null)
                 throw new YAMPException("The unit " + source + " could not be found.");
 
-            factor *= srcUnit.Weight;
+            factor *= Math.Pow(srcUnit.Weight, sign);
 
             foreach(var unit in target.Keys)
             {
@@ -224,6 +253,14 @@ namespace YAMP.Physics
         protected override PhysicalUnit Create()
         {
             return new CombinedUnit(Unit);
+        }
+
+        public CombinedUnit CreateFrom(string unit)
+        {
+            var name = Unpack();
+            var obj = new CombinedUnit(name, factor);
+            obj.factor *= GetWeight(unit);
+            return obj;
         }
 
         #endregion
@@ -288,7 +325,12 @@ namespace YAMP.Physics
                     reverseStack.Push(reverse);
 
                     if (op == Token.Divide)
+                    {
+                        op = Token.Multiply;
                         reverse = !reverse;
+                    }
+
+                    continue;
                 }
 
                 var r = reverse ? -1 : 1;
@@ -320,11 +362,39 @@ namespace YAMP.Physics
                             throw new ParseException(i, unit.Substring(i));
 
                         var exp = ConvertToInteger(result);
-                        AddUnit(units, lastAddedUnit, r * lastAddedFactor * (exp - 1));
+                        AddUnit(units, lastAddedUnit, lastAddedFactor * (exp - 1));
                         break;
                 }
 
                 i += result.Length - 1;
+            }
+
+            var combined = new List<string>();
+
+            foreach (var unitKey in units.Keys)
+            {
+                if (IsCombinedUnit(unitKey))
+                    combined.Add(unitKey);
+            }
+
+            foreach (var cu in combined)
+            {
+                var newUnit = FindCombinedUnit(cu);
+                var count = units[cu];
+                units.Remove(cu);
+
+                foreach (var pair in newUnit.ElementaryUnits)
+                {
+                    if (units.ContainsKey(pair.Key))
+                        units[pair.Key] += pair.Value * count;
+                    else
+                        units.Add(pair.Key, pair.Value * count);
+
+                    if (units[pair.Key] == 0)
+                        units.Remove(pair.Key);
+                }
+
+                factor *= Math.Pow(newUnit.Factor, count);
             }
 
             return units;

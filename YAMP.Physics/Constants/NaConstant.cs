@@ -7,7 +7,7 @@ namespace YAMP.Physics
 	[Kind(PopularKinds.Constant)]
 	class NaConstant : BaseConstant
 	{
-		static readonly ScalarValue na = new ScalarValue(6.0221412927e23);
+		static readonly UnitValue na = new UnitValue(6.0221412927e23, "1 / mol");
 
 		public override Value Value
 		{

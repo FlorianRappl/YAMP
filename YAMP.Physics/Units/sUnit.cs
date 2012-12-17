@@ -3,6 +3,9 @@ using YAMP;
 
 namespace YAMP.Physics
 {
+    /// <summary>
+    /// Second (SI unit) -- unit of time
+    /// </summary>
     class sUnit : PhysicalUnit
     {
         public sUnit()

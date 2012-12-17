@@ -218,6 +218,17 @@ namespace YAMP
         }
 
         /// <summary>
+        /// Gets or sets if values should use a custom string representation mode where
+        /// exponents are shown in times ten to the power of some superscript instead of
+        /// the scientific exponential notation. 
+        /// </summary>
+        public bool CustomExponent
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets the value if the context is read only (the variables cannot be altered).
         /// </summary>
         public bool IsReadOnly

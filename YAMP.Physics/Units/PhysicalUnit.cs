@@ -32,6 +32,9 @@ using YAMP;
 
 namespace YAMP.Physics
 {
+    /// <summary>
+    /// Represents an (in its essence elementary) physical unit.
+    /// </summary>
     abstract class PhysicalUnit
     {
         #region Members
@@ -42,6 +45,7 @@ namespace YAMP.Physics
         double weight;
 
         static Dictionary<string, PhysicalUnit> knownUnits = new Dictionary<string, PhysicalUnit>();
+        static Dictionary<string, CombinedUnit> combinedUnits = new Dictionary<string, CombinedUnit>();
 
         #endregion
 
@@ -80,8 +84,8 @@ namespace YAMP.Physics
                 if(ctor == null)
                     continue;
 
-                var instance = ctor.Invoke(null) as PhysicalUnit;
-                knownUnits.Add(instance.Unit, instance);
+                var instance = ctor.Invoke(null) as CombinedUnit;
+                combinedUnits.Add(instance.Unit, instance);
             }
         }
 
@@ -124,6 +128,28 @@ namespace YAMP.Physics
             return null;
         }
 
+        public static bool IsCombinedUnit(string unit)
+        {
+            foreach (var value in combinedUnits.Values)
+            {
+                if (value.CanBe(unit))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static CombinedUnit FindCombinedUnit(string unit)
+        {
+            foreach (var value in combinedUnits.Values)
+            {
+                if (value.CanBe(unit))
+                    return value.CreateFrom(unit);
+            }
+
+            return null;
+        }
+
         public virtual PhysicalUnit TransformTo(string unit)
         {
             if (!unit.Equals(Unit))
@@ -140,6 +166,20 @@ namespace YAMP.Physics
             }
 
             return Create();
+        }
+
+        protected double GetWeight(string unit)
+        {
+            if (!unit.Equals(Unit))
+            {
+                foreach (var prefix in prefixes)
+                {
+                    if (prefix.Key + Unit == unit)
+                        return prefix.Value;
+                }
+            }
+
+            return 1.0;
         }
 
         protected abstract PhysicalUnit Create();
@@ -200,7 +240,7 @@ namespace YAMP.Physics
         public virtual Func<double, double> GetConversation(string unit)
         {
             if (unit == Unit)
-                return x => x;
+                return Identity;
 
             return conversionTable[knownUnits[unit]];
         }
@@ -208,9 +248,14 @@ namespace YAMP.Physics
         public virtual Func<double, double> GetInverseConversation(string unit)
         {
             if (unit == Unit)
-                return x => x;
+                return Identity;
 
             return invConversionTable[knownUnits[unit]];
+        }
+
+        double Identity(double x)
+        {
+            return x;
         }
 
         /// <summary>

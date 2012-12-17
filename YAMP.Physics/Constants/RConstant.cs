@@ -7,7 +7,7 @@ namespace YAMP.Physics
 	[Kind(PopularKinds.Constant)]
 	class RConstant : BaseConstant
 	{
-		readonly static UnitValue value = new UnitValue(8.314462175, "J/K/mol");
+		readonly static UnitValue value = new UnitValue(8.314462175, "J / (K * mol)");
 
 		public override Value Value
 		{

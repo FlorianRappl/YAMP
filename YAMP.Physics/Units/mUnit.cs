@@ -3,6 +3,9 @@ using YAMP;
 
 namespace YAMP.Physics
 {
+    /// <summary>
+    /// Meters (SI unit) -- unit of length
+    /// </summary>
     class mUnit : PhysicalUnit
     {
         public mUnit()

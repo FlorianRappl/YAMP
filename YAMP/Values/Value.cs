@@ -1,4 +1,4 @@
-/*
+﻿/*
     Copyright (c) 2012, Florian Rappl.
     All rights reserved.
 
@@ -28,6 +28,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 
 namespace YAMP
 {
@@ -132,6 +133,98 @@ namespace YAMP
         }
 
         #endregion
+
+        #region String Representation Helpers
+
+        public static string Format(ParseContext context, double value)
+        {
+            double amt;
+            int sign, exponent;
+            SplitEngineeringParts(value, out sign, out amt, out exponent);
+            return ComposeEngrFormat(context, sign, amt, exponent);
+        }
+
+        static void SplitEngineeringParts(double value, out int sign, out double new_value, out int exponent)
+        {
+            sign = Math.Sign(value);
+            value = Math.Abs(value);
+
+            if (value > 0.0)
+            {
+                if (value > 1.0)
+                    exponent = (int)(Math.Floor(Math.Log10(value) / 3.0) * 3.0);
+                else
+                    exponent = (int)(Math.Ceiling(Math.Log10(value) / 3.0) * 3.0);
+            }
+            else
+                exponent = 0;
+
+            new_value = value * Math.Pow(10.0, -exponent);
+
+            if (new_value >= 1e3)
+            {
+                new_value /= 1e3;
+                exponent += 3;
+            }
+
+            if (new_value <= 1e-3 && new_value > 0)
+            {
+                new_value *= 1e3;
+                exponent -= 3;
+            }
+        }
+
+        static string ComposeEngrFormat(ParseContext context, int sign, double v, int exponent)
+        {
+            int expsign = Math.Sign(exponent);
+            int significant_digits = context.Precision;
+            exponent = Math.Abs(exponent);
+            int digits = v > 0 ? (int)Math.Log10(v) + 1 : 0;
+            significant_digits += Math.Abs(v) < 1.0 ? 1 : 0;
+            int decimals = Math.Max(significant_digits - digits, 0);
+            double round = Math.Pow(10, -decimals);
+            digits = v > 0 ? (int)Math.Log10(v + 0.5 * round) + 1 : 0;
+            decimals = Math.Max(significant_digits - digits, 0);
+            string f = "0:F";
+
+            if (exponent == 0)
+                return string.Format(context.NumberFormat, "{" + f + decimals + "}", sign * v);
+            else if (context.CustomExponent)
+                return string.Format(context.NumberFormat, "{" + f + decimals + "}{1}", sign * v, ToSuperScript(expsign * exponent));
+            
+            return string.Format(context.NumberFormat, "{" + f + decimals + "}e{1}", sign * v, expsign * exponent);
+        }
+
+        static string ToSuperScript(int exp)
+        {
+            var sb = new StringBuilder();
+            sb.Append("·10");
+            var str = exp.ToString();
+
+            foreach (var ch in str)
+            {
+                var target = '⁻';
+
+                switch(ch)
+                {
+                    case '0': target = '⁰'; break;
+                    case '1': target = '¹'; break;
+                    case '2': target = '²'; break;
+                    case '3': target = '³'; break;
+                    case '4': target = '⁴'; break;
+                    case '5': target = '⁵'; break;
+                    case '6': target = '⁶'; break;
+                    case '7': target = '⁷'; break;
+                    case '8': target = '⁸'; break;
+                    case '9': target = '⁹'; break;
+                }
+
+                sb.Append(target);
+            }
+
+            return sb.ToString();
+        }
+
+        #endregion
     }
 }
-

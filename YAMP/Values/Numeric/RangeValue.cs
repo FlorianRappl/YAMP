@@ -69,12 +69,25 @@ namespace YAMP
 
         #region Properties
 
+        /// <summary>
+        /// Gets the specified step size.
+        /// </summary>
         public double Step { get; private set; }
 
+        /// <summary>
+        /// Gets the specified offset.
+        /// </summary>
         public double Start { get; private set; }
 
+        /// <summary>
+        /// Gets the specified tail.
+        /// </summary>
         public double End { get; private set; }
 
+        /// <summary>
+        /// Gets a boolean to indicate whether all elements (of the
+        /// target object) should be used.
+        /// </summary>
         public bool All { get; private set; }
 
         #endregion

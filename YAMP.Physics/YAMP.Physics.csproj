@@ -57,6 +57,7 @@
     <Compile Include="Functions\JacobiFunction.cs" />
     <Compile Include="Functions\LaguerreFunction.cs" />
     <Compile Include="Functions\LegendreFunction.cs" />
+    <Compile Include="Functions\SincFunction.cs" />
     <Compile Include="Functions\UnitFunction.cs" />
     <Compile Include="Functions\YlmFunction.cs" />
     <Compile Include="Helpers.cs" />
@@ -66,16 +67,27 @@
     <Compile Include="Units\CombinedUnit.cs" />
     <Compile Include="Units\ConversationUnit.cs" />
     <Compile Include="Units\CUnit.cs" />
-    <Compile Include="Units\gUnit.cs" />
+    <Compile Include="Units\dynUnit.cs" />
+    <Compile Include="Units\ergUnit.cs" />
+    <Compile Include="Units\FUnit.cs" />
+    <Compile Include="Units\GUnit.cs" />
+    <Compile Include="Units\HUnit.cs" />
+    <Compile Include="Units\HzUnit.cs" />
     <Compile Include="Units\JUnit.cs" />
     <Compile Include="Units\KUnit.cs" />
-    <Compile Include="Units\WhUnit.cs" />
     <Compile Include="Units\molUnit.cs" />
     <Compile Include="Units\mUnit.cs" />
     <Compile Include="Units\eVUnit.cs" />
+    <Compile Include="Units\NUnit.cs" />
     <Compile Include="Units\PhysicalUnit.cs" />
+    <Compile Include="Units\statCUnit.cs" />
     <Compile Include="Units\sUnit.cs" />
+    <Compile Include="Units\TUnit.cs" />
     <Compile Include="Units\VUnit.cs" />
+    <Compile Include="Units\WbUnit.cs" />
+    <Compile Include="Units\WUnit.cs" />
+    <Compile Include="Units\ħUnit.cs" />
+    <Compile Include="Units\ΩUnit.cs" />
     <Compile Include="Values\UnitValue.cs" />
   </ItemGroup>
   <ItemGroup>

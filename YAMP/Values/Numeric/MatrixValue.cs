@@ -46,33 +46,51 @@ namespace YAMP
 
 		#region Properties
 
+        /// <summary>
+        /// Gets a boolean if the matrix is only 1x1.
+        /// </summary>
         public bool IsScalar
         {
             get { return DimensionX == 1 && DimensionY == 1; }
         }
 
+        /// <summary>
+        /// Gets a boolean if the matrix is only a row (rows = 1) or column (columns = 1) vector.
+        /// </summary>
         public bool IsVector
         {
             get { return (DimensionX == 1 && DimensionY > 1) || (DimensionY == 1 && DimensionX > 1); }
         }
 
+        /// <summary>
+        /// Gets the number of columns.
+        /// </summary>
 		public int DimensionX
 		{
 			get { return dimX;  }
 			protected set { dimX = value; }
 		}
 		
+        /// <summary>
+        /// Gets the number of rows.
+        /// </summary>
 		public int DimensionY
 		{
 			get { return dimY; }
 			protected set { dimY = value; }
 		}
 		
+        /// <summary>
+        /// Gets the length of the matrix, i.e. rows * columns.
+        /// </summary>
 		public int Length
 		{
 			get { return DimensionX * DimensionY; }
 		}
 
+        /// <summary>
+        /// Gets a value if the matrix is symmetric, i.e. M_ij = M_ji
+        /// </summary>
 		public bool IsSymmetric
 		{
 			get
@@ -96,6 +114,9 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Gets a boolean if the matrix has any complex (im != 0.0) entries.
+        /// </summary>
 		public bool IsComplex
 		{
 			get
@@ -113,21 +134,54 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Gets the maximum exponent used by values within the matrix.
+        /// </summary>
+        public int Exponent
+        {
+            get
+            {
+                if (_values.Count == 0)
+                    return 0;
+
+                var exp = int.MinValue;
+
+                foreach (var value in _values)
+                    exp = Math.Max(value.Value.Exponent, exp);
+
+                return exp;
+            }
+        }
+
 		#endregion
 
 		#region ctors
 
+        /// <summary>
+        /// Constructs a new matrix.
+        /// </summary>
 		public MatrixValue ()
 		{
 			_values = new Dictionary<MatrixIndex, ScalarValue>();
 		}
 		
+        /// <summary>
+        /// Constructs a new matrix with the given dimension.
+        /// </summary>
+        /// <param name="rows">The number of rows.</param>
+        /// <param name="cols">The number of columns.</param>
 		public MatrixValue(int rows, int cols) : this()
 		{
 			dimX = cols;
 			dimY = rows;
 		}
 
+        /// <summary>
+        /// Constructs a new matrix based on the jagged double array.
+        /// </summary>
+        /// <param name="values">The values to use.</param>
+        /// <param name="rows">The number of rows in the new matrix.</param>
+        /// <param name="cols">The number of columns in the matrix.</param>
 		public MatrixValue(double[][] values, int rows, int cols) : this(rows, cols)
 		{
 			for (var j = 0; j < values.Length; j++)
@@ -142,6 +196,10 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Constructs a new matrix based on the given two dimensional array.
+        /// </summary>
+        /// <param name="values">The values which set the dimensions and starting values of the matrix.</param>
 		public MatrixValue(double[,] values) : this(values.GetLength(0), values.GetLength(1))
 		{
 			for (var j = 0; j < dimY; j++)
@@ -156,12 +214,22 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Constructs a new (column) vector based on the given double array.
+        /// </summary>
+        /// <param name="vector"></param>
 		public MatrixValue(double[] vector) : this(vector.Length, 1)
 		{
 			for (var j = 0; j < vector.Length; j++)
 				this[j + 1] = new ScalarValue(vector[j]);
 		}
 
+        /// <summary>
+        /// Constructs a new matrix with the given dimension and sets each entry to the given value.
+        /// </summary>
+        /// <param name="rows"></param>
+        /// <param name="cols"></param>
+        /// <param name="filling"></param>
         public MatrixValue(int rows, int cols, ScalarValue filling) : this(rows, cols)
         {
             for (var i = 1; i <= dimX; i++)

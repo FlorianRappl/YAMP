@@ -3,6 +3,9 @@ using YAMP;
 
 namespace YAMP.Physics
 {
+    /// <summary>
+    /// Kelvin (SI unit) -- unit of temperature
+    /// </summary>
     class KUnit : PhysicalUnit
     {
         public KUnit()

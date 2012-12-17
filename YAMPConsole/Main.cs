@@ -31,7 +31,13 @@ namespace YAMPConsole
 
 #if DEBUG
 			Console.WriteLine("DEBUG MODE");
+            Console.WriteLine("----------");
+            Console.WriteLine("Testing the core . . .");
 			Tests();
+            Console.WriteLine("Press any key to continue . . .");
+            Console.ReadKey();
+            Console.WriteLine("Testing physics library . . .");
+            TestPhysics();
 #elif BENCHMARKS
 			Console.WriteLine("BENCHMARK MODE");
 			Benchmarks();
@@ -41,7 +47,8 @@ namespace YAMPConsole
             Console.WriteLine();
 			var query = string.Empty;
             var context = YAMP.Parser.Load();
-            YAMP.Parser.LoadPlugin(context, System.Reflection.Assembly.LoadFile(Environment.CurrentDirectory + "\\YAMP.Physics.dll"));
+            //YAMP.Parser.LoadPlugin(context, System.Reflection.Assembly.LoadFile(Environment.CurrentDirectory + "\\YAMP.Physics.dll"));
+            LoadPhysics();
 
 			YAMP.Parser.AddCustomFunction("G", v => new YAMP.ScalarValue((v as YAMP.ScalarValue).Value * Math.PI) );
 			YAMP.Parser.AddCustomConstant("R", 2.53);
@@ -143,6 +150,11 @@ namespace YAMPConsole
 #endif
 
 		}
+
+        static void LoadPhysics()
+        {
+            YAMP.Parser.LoadPlugin(System.Reflection.Assembly.LoadFile(Environment.CurrentDirectory + "\\YAMP.Physics.dll"));
+        }
 
 #if BENCHMARKS
 
@@ -257,7 +269,9 @@ namespace YAMPConsole
 #if DEBUG
 
 		static void Tests()
-		{
+        {
+            success = 0;
+            total = 0;
 			var sw = Stopwatch.StartNew();
 
 			Test("2-3-4", -5.0);
@@ -362,6 +376,35 @@ namespace YAMPConsole
 			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
 			Console.WriteLine("Time for the tests ... {0} ms", sw.ElapsedMilliseconds);
 		}
+
+        static void TestPhysics()
+        {
+            success = 0;
+            total = 0;
+            LoadPhysics();
+
+            var sw = Stopwatch.StartNew();
+
+            Test("convert(1, \"m / s\", \"km / h\")", 3.6);
+            Test("convert(1, \"eV\", \"J\") - Q", 0.0);
+            Test("convert(1, \"m\", \"ft\")", 3.2808);
+            Test("ylm(0, 0, 0, 0)", 0.5 / Math.Sqrt(Math.PI));
+            Test("ylm(0, 0, 10, 0)", 0.5 / Math.Sqrt(Math.PI));
+            Test("ylm(0, 0, 0, 5)", 0.5 / Math.Sqrt(Math.PI));
+            Test("ylm(1, 0, pi / 3, 0)", 0.5 * Math.Sqrt(3.0 / Math.PI) * Math.Cos(Math.PI / 3.0));
+            Test("ylm(2, 2, pi / 3, 0)", 0.28970565151739147);
+            Test("imag(ylm(2, 1, pi / 3, 0.5))", -0.16037899974811717);
+            Test("clebsch(0.5, 0.5)(1, 5)", 1.0);
+            Test("clebsch(0.5, 0.5)(5, 5)", 1.0 / Math.Sqrt(2.0));
+            Test("legendre(3, 1)", 1.0);
+            Test("hermite(3, 2)", 40.0);
+            Test("laguerre(2, 2)", -0.99999999999999956);
+
+            sw.Stop();
+
+            Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
+            Console.WriteLine("Time for the tests ... {0} ms", sw.ElapsedMilliseconds);
+        }
 		
 		static bool Test(string query, double xmin, double xmax, CompareAction compare)
 		{

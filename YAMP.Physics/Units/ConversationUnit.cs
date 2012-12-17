@@ -3,6 +3,9 @@ using YAMP;
 
 namespace YAMP.Physics
 {
+    /// <summary>
+    /// Used for conversations from one unit to another.
+    /// </summary>
     class ConversationUnit : PhysicalUnit
     {
         PhysicalUnit _from;

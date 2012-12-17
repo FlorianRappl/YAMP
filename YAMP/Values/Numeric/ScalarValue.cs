@@ -1,4 +1,4 @@
-/*
+﻿/*
     Copyright (c) 2012, Florian Rappl.
     All rights reserved.
 
@@ -26,6 +26,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace YAMP
 {
@@ -70,7 +72,41 @@ namespace YAMP
 
         #endregion
 
-		#region Properties
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the real part of the scalar.
+        /// </summary>
+        public double Re
+        {
+            get { return _real; }
+            set { _real = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the imaginary part of the scalar.
+        /// </summary>
+        public double Im
+        {
+            get { return _imag; }
+            set { _imag = value; }
+        }
+
+        /// <summary>
+        /// Gets the maximum exponent of the current scalar.
+        /// </summary>
+        public int Exponent
+        {
+            get
+            {
+                if (_imag == 0.0)
+                    return GetExponent(_real);
+                else if (_real == 0.0)
+                    return GetExponent(_imag);
+
+                return Math.Max(GetExponent(_real), GetExponent(_imag));
+            }
+        }
 
         /// <summary>
         /// Gets the length of the output in the default representation.
@@ -169,6 +205,10 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Computes Atan2(imaginary, real), i.e. the angle in the complex (gaussian) plane.
+        /// </summary>
+        /// <returns>The angle of the y-x ratio.</returns>
         public double Arg()
         {
             return Math.Atan2(_imag, _real);
@@ -493,8 +533,8 @@ namespace YAMP
 		
 		public ScalarValue Factorial()
 		{
-            var re = factorial(_real);
-            var im = factorial(_imag);
+            var re = Factorial(_real);
+            var im = Factorial(_imag);
 
             if (_imag == 0.0)
                 im = 0.0;
@@ -504,7 +544,7 @@ namespace YAMP
 			return new ScalarValue(re, im);
 		}
 		
-		double factorial(double r)
+		double Factorial(double r)
 		{
 			var k = (int)Math.Abs(r);
 			var value = r < 0 ? -1.0 : 1.0;
@@ -522,29 +562,47 @@ namespace YAMP
         {
             return Math.Sqrt(_real * _real + _imag * _imag);
         }
-        
-        double Round(double value, int digits)
-        {
-            if (value == 0.0)
-                return value;
 
-            var orderOfMagnitude = Math.Ceiling(Math.Log10(Math.Abs(value)));
-            var shift = Math.Pow(10, digits - orderOfMagnitude);
-            var roundedValue = Math.Round(value * shift) / shift;
-            return roundedValue;
-        } 
+        int GetExponent(double value)
+        {
+            var log = Math.Log10(Math.Abs(value));
+            return (int)Math.Floor(log);
+        }
+
+        /// <summary>
+        /// Use this string representation if you have a global exponent like
+        /// everything is already e5 or similar. In this case the values get
+        /// multiplied with e-5 for the output.
+        /// </summary>
+        /// <param name="context">The parse context to use.</param>
+        /// <param name="exponent">The global exponent that is in use.</param>
+        /// <returns>The string representation for this global exponent.</returns>
+        public string ToString(ParseContext context, int exponent)
+        {
+            var f = Math.Pow(10, -exponent);
+
+            var re = Format(context, _real * f);
+            var im = Format(context, _imag * f);
+
+            if (ImaginaryValue == 0.0)
+                return re;
+            else if (Value == 0.0)
+                return im;
+
+            return string.Format("{0}{2}{1}", re, im, ImaginaryValue < 0.0 ? string.Empty : "+");
+        }
 
         public override string ToString(ParseContext context)
         {
-			var re = Math.Round(Value, context.Precision);
-			var im = Math.Round(ImaginaryValue, context.Precision);
+            var re = Format(context, _real);
+            var im = Format(context, _imag);
 
-            if (im == 0.0)
-                return string.Format(context.NumberFormat, "{0}", re);
-            else if (re == 0.0)
-                return string.Format(context.NumberFormat, "{0}i", im);
+            if (ImaginaryValue == 0.0)
+                return re;
+            else if (Value == 0.0)
+                return im;
 
-            return string.Format(context.NumberFormat, "{0}{2}{1}i", re, im, ImaginaryValue < 0.0 ? string.Empty : "+");
+            return string.Format("{0}{2}{1}", re, im, ImaginaryValue < 0.0 ? string.Empty : "+");
         }
 		
 		public override bool Equals(object obj)
