@@ -9,6 +9,9 @@ namespace YAMP.Physics
     {
         protected override ScalarValue GetValue(ScalarValue value)
         {
+            if (value.Value == 0.0 && value.ImaginaryValue == 0.0)
+                return new ScalarValue(1.0, 0.0);
+
             var arg = value * Math.PI;
             return arg.Sin() / arg;
         }

@@ -47,6 +47,7 @@ namespace YAMP
         int? precision = 5;
         bool isReadOnly;
         PlotValue lastPlot;
+        DisplayStyle displayStyle;
 
         #endregion
 
@@ -84,10 +85,13 @@ namespace YAMP
             {
                 numFormat = new CultureInfo("en-us").NumberFormat;
                 precision = 5;
+                displayStyle = DisplayStyle.Scientific;
             }
             else
             {
                 numFormat = parent.NumberFormat;
+                precision = parent.Precision;
+                displayStyle = parent.displayStyle;
             }
         }
 
@@ -118,6 +122,19 @@ namespace YAMP
         #endregion
 
         #region Properties
+
+        public DisplayStyle DefaultDisplayStyle
+        {
+            get
+            {
+                return displayStyle;
+            }
+            set
+            {
+                displayStyle = value;
+                //TODO
+            }
+        }
 
         /// <summary>
         /// Gets the constants that are present in the local context.
