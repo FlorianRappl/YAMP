@@ -93,7 +93,6 @@
     <Compile Include="Exceptions\YAMPException.cs" />
     <Compile Include="Expressions\ArgumentsBracketExpression.cs" />
     <Compile Include="Exceptions\EscapeSequenceNotDetectedException.cs" />
-    <Compile Include="Expressions\LambdaExpression.cs" />
     <Compile Include="Expressions\MatrixBracketExpression.cs" />
     <Compile Include="Expressions\TreeExpression.cs" />
     <Compile Include="Expressions\UnaryExpression.cs" />
@@ -245,6 +244,7 @@
     <Compile Include="Operators\AssigmentOperators\PowerAssignmentOperator.cs" />
     <Compile Include="Operators\AssigmentOperators\RightDivideAssignmentOperator.cs" />
     <Compile Include="Operators\BinaryOperators\ArgumentsSeperatorOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\FatArrowOperator.cs" />
     <Compile Include="Operators\BinaryOperators\MatrixColumnOperator.cs" />
     <Compile Include="Operators\BinaryOperators\MatrixRowOperator.cs" />
     <Compile Include="Operators\BinaryOperators\ModuloOperator.cs" />
@@ -289,7 +289,6 @@
     <Compile Include="ParseContext.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Parsers\ArgumentsParseTree.cs" />
-    <Compile Include="Parsers\LambdaParseTree.cs" />
     <Compile Include="Parsers\MatrixParseTree.cs" />
     <Compile Include="Parsers\ParseTreeCollection.cs" />
     <Compile Include="Parsers\StatementParseTree.cs" />
