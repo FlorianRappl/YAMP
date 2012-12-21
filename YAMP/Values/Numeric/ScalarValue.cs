@@ -581,12 +581,6 @@ namespace YAMP
             return Math.Sqrt(_real * _real + _imag * _imag);
         }
 
-        int GetExponent(double value)
-        {
-            var log = Math.Log10(Math.Abs(value));
-            return (int)Math.Floor(log);
-        }
-
         /// <summary>
         /// Use this string representation if you have a global exponent like
         /// everything is already e5 or similar. In this case the values get
@@ -600,7 +594,7 @@ namespace YAMP
             var f = Math.Pow(10, -exponent);
 
             var re = Format(context, _real * f);
-            var im = Format(context, _imag * f);
+            var im = Format(context, _imag * f) + "i";
 
             if (ImaginaryValue == 0.0)
                 return re;
@@ -612,15 +606,7 @@ namespace YAMP
 
         public override string ToString(ParseContext context)
         {
-            var re = Format(context, _real);
-            var im = Format(context, _imag);
-
-            if (ImaginaryValue == 0.0)
-                return re;
-            else if (Value == 0.0)
-                return im;
-
-            return string.Format("{0}{2}{1}", re, im, ImaginaryValue < 0.0 ? string.Empty : "+");
+            return ToString(context, 0);
         }
 		
 		public override bool Equals(object obj)

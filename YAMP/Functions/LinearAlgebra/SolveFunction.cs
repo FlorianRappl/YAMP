@@ -23,8 +23,6 @@ namespace YAMP
 				return gmres.Solve(phi);
 			}
 
-			//TODO Add more sophisticated algorithms
-
 			return M.Inverse().Multiply(phi) as MatrixValue;
 		}
 

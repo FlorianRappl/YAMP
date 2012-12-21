@@ -47,6 +47,7 @@ namespace YAMP
         int? precision = 5;
         bool isReadOnly;
         PlotValue lastPlot;
+        DisplayStyle displayStyle;
 
         #endregion
 
@@ -84,10 +85,13 @@ namespace YAMP
             {
                 numFormat = new CultureInfo("en-us").NumberFormat;
                 precision = 5;
+                displayStyle = DisplayStyle.Scientific;
             }
             else
             {
                 numFormat = parent.NumberFormat;
+                precision = parent.Precision;
+                displayStyle = parent.displayStyle;
             }
         }
 
@@ -118,6 +122,15 @@ namespace YAMP
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets or sets the default display style.
+        /// </summary>
+        public DisplayStyle DefaultDisplayStyle
+        {
+            get { return displayStyle; }
+            set { displayStyle = value; }
+        }
 
         /// <summary>
         /// Gets the constants that are present in the local context.
@@ -237,12 +250,12 @@ namespace YAMP
         }
 
         /// <summary>
-        /// Gets the current precision in decimal digits.
+        /// Gets or sets the current precision in decimal digits.
         /// </summary>
         public int Precision
         {
             get { return precision.HasValue ? precision.Value : parent.Precision; }
-            internal set { precision = value; }
+            set { precision = value; }
         }
 
         /// <summary>
@@ -368,7 +381,6 @@ namespace YAMP
             if (parent != null)
                 return parent.FindConstants(name);
 
-            //throw new SymbolException(name);
             return null;
         }
 
@@ -389,7 +401,6 @@ namespace YAMP
             if (parent != null)
                 return parent.FindFunction(name);
 
-            //throw new FunctionException(name);
             return null;
         }
 
@@ -449,6 +460,15 @@ namespace YAMP
         #endregion
 
         #region Comfort Methods
+
+        /// <summary>
+        /// Sets the lastplot to be used to the given value.
+        /// </summary>
+        /// <param name="plot"></param>
+        public void ChangeLastPlotTo(PlotValue plot)
+        {
+            lastPlot = plot;
+        }
 
         /// <summary>
         /// Runs a query within the current context.

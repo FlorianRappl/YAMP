@@ -73,6 +73,17 @@ namespace YAMP
             protected set { _tree = value; }
         }
 
+        /// <summary>
+        /// Gets the input for this tree.
+        /// </summary>
+        internal override string Input
+        {
+            get
+            {
+                return base.Input ?? _tree.Input;
+            }
+        }
+
         #endregion
 
         #region Methods

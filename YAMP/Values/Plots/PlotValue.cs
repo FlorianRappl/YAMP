@@ -157,6 +157,7 @@ namespace YAMP
 		}
 
 		[ScalarToBooleanConverter]
+        [StringToBooleanConverter]
 		public bool ShowLegend
 		{
 			get;

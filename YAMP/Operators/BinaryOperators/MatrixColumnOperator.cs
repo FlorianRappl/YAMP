@@ -4,7 +4,7 @@ namespace YAMP
 {
 	class MatrixColumnOperator : BinaryOperator
 	{
-		public MatrixColumnOperator() : base(",", 2)
+		public MatrixColumnOperator() : base(",", 1)
 		{
 		}
 

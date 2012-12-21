@@ -7,9 +7,6 @@ namespace YAMP
 	[Kind(PopularKinds.Function)]
 	class MinFunction : StandardFunction
 	{
-		[Description("Evaluates the vector(s) and outputs the minimum scalar(s) in the vector(s).")]
-		[Example("min([1,2,3,4,5,6,7,-1])", "Finds the minimum in the vector, which is -1 in this case.")]
-		[Example("min([1,2;3,4;5,6;7,-1])", "Finds the minimums of the vectors (of the matrix), which are 1 and -1 in this case.")]
 		public override Value Perform(Value argument)
 		{
 			if (argument is ScalarValue)
@@ -35,6 +32,14 @@ namespace YAMP
 
 			throw new OperationNotSupportedException("min", argument);
 		}
+
+        [Description("Evaluates the vector(s) and outputs the minimum scalar(s) in the vector(s).")]
+        [Example("min([1,2,3,4,5,6,7,-1])", "Finds the minimum in the vector, which is -1 in this case.")]
+        [Example("min([1,2;3,4;5,6;7,-1])", "Finds the minimums of the vectors (of the matrix), which are 1 and -1 in this case.")]
+        public override MatrixValue Function(MatrixValue x)
+        {
+            return base.Function(x);
+        }
 		
 		ScalarValue GetVectorMin(MatrixValue vec)
 		{

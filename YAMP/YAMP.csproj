@@ -74,12 +74,14 @@
     <Compile Include="Constants\DegConstant.cs" />
     <Compile Include="Constants\DeltaConstant.cs" />
     <Compile Include="Constants\EConstant.cs" />
+    <Compile Include="Constants\FalseConstant.cs" />
     <Compile Include="Constants\Gamma1Constant.cs" />
     <Compile Include="Constants\GaussConstant.cs" />
     <Compile Include="Constants\IConstant.cs" />
     <Compile Include="Constants\OmegaConstant.cs" />
     <Compile Include="Constants\PhiConstant.cs" />
     <Compile Include="Constants\PiConstant.cs" />
+    <Compile Include="Constants\TrueConstant.cs" />
     <Compile Include="Exceptions\ArgumentException.cs" />
     <Compile Include="Exceptions\ArgumentsException.cs" />
     <Compile Include="Exceptions\ArgumentTypeNotSupportedException.cs" />
@@ -91,7 +93,6 @@
     <Compile Include="Exceptions\YAMPException.cs" />
     <Compile Include="Expressions\ArgumentsBracketExpression.cs" />
     <Compile Include="Exceptions\EscapeSequenceNotDetectedException.cs" />
-    <Compile Include="Expressions\LambdaExpression.cs" />
     <Compile Include="Expressions\MatrixBracketExpression.cs" />
     <Compile Include="Expressions\ScopeBracketExpression.cs" />
     <Compile Include="Expressions\TreeExpression.cs" />
@@ -129,7 +130,9 @@
     <Compile Include="Functions\StandardFunctions\ProductFunction.cs" />
     <Compile Include="Functions\StandardFunctions\RealFunction.cs" />
     <Compile Include="Functions\StandardFunctions\SortFunction.cs" />
+    <Compile Include="Functions\Statistics\AvgFunction.cs" />
     <Compile Include="Functions\Statistics\DevFunction.cs" />
+    <Compile Include="Functions\Statistics\HmeanFunction.cs" />
     <Compile Include="Functions\Statistics\LsqFunction.cs" />
     <Compile Include="Functions\Statistics\MeanFunction.cs" />
     <Compile Include="Functions\Statistics\MedianFunction.cs" />
@@ -137,10 +140,12 @@
     <Compile Include="Functions\SystemFunctions\CdFunction.cs" />
     <Compile Include="Functions\SystemFunctions\CpFunction.cs" />
     <Compile Include="Functions\SystemFunctions\DateFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\FormatFunction.cs" />
     <Compile Include="Functions\SystemFunctions\LsFunction.cs" />
     <Compile Include="Functions\SystemFunctions\MvFunction.cs" />
     <Compile Include="Functions\SystemFunctions\PwdFunction.cs" />
     <Compile Include="Functions\SystemFunctions\SleepFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\TimeFunction.cs" />
     <Compile Include="Functions\SystemFunctions\TypeFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\CGFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\EigenFunction.cs" />
@@ -240,6 +245,7 @@
     <Compile Include="Operators\AssigmentOperators\PowerAssignmentOperator.cs" />
     <Compile Include="Operators\AssigmentOperators\RightDivideAssignmentOperator.cs" />
     <Compile Include="Operators\BinaryOperators\ArgumentsSeperatorOperator.cs" />
+    <Compile Include="Operators\BinaryOperators\FatArrowOperator.cs" />
     <Compile Include="Operators\BinaryOperators\MatrixColumnOperator.cs" />
     <Compile Include="Operators\BinaryOperators\MatrixRowOperator.cs" />
     <Compile Include="Operators\BinaryOperators\ModuloOperator.cs" />
@@ -292,6 +298,7 @@
     <Compile Include="Parsers\StatementParseTree.cs" />
     <Compile Include="Parsers\Tokens.cs" />
     <Compile Include="Providers\Deserializer.cs" />
+    <Compile Include="Providers\DisplayStyle.cs" />
     <Compile Include="Providers\MatrixIndex.cs" />
     <Compile Include="Providers\PlotEventArgs.cs" />
     <Compile Include="Providers\Serializer.cs" />

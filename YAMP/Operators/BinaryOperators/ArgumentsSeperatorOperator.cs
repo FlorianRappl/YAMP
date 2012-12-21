@@ -4,7 +4,7 @@ namespace YAMP
 {
 	class ArgumentsSeperatorOperator : BinaryOperator
 	{
-		public ArgumentsSeperatorOperator() : base(",", 2)
+		public ArgumentsSeperatorOperator() : base(",", 1)
 		{
 		}
 

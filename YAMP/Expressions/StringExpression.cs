@@ -42,7 +42,7 @@ namespace YAMP
 
         #region ctor
 
-        public StringExpression () : base(@"@?\"".*""")
+        public StringExpression() : base(@"@?\"".*""")
 		{
 		}
 

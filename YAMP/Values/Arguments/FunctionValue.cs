@@ -54,15 +54,16 @@ namespace YAMP
             this.arguments = arguments;
             this.body = body;
             canSerialize = true;
-            perform = (context, argument) =>
+            perform = (context, argument) => 
             {
-                var tree = new LambdaParseTree(QueryContext.Dummy(context), body, 0);
+                var tree = new TreeExpression(QueryContext.Dummy(context));
+                tree.Set(body);
                 SetPerform(arguments, tree);
                 return Perform(context, argument);
             };
         }
 
-        internal FunctionValue(string[] arguments, LambdaParseTree body) 
+        internal FunctionValue(string[] arguments, Expression body) 
         {
             this.arguments = arguments;
             this.body = body.Input;
@@ -80,7 +81,7 @@ namespace YAMP
 
         #region Methods
 
-        void SetPerform(string[] arguments, LambdaParseTree body)
+        void SetPerform(string[] arguments, Expression body)
         {
             perform = (context, argument) =>
             {
@@ -137,7 +138,7 @@ namespace YAMP
 			if (arguments == null || string.IsNullOrEmpty(body))
 				return "λ reference";
 
-			return string.Format("@({0}) => {1}", string.Join(", ", arguments), body);
+			return string.Format("({0}) => {1}", string.Join(", ", arguments), body);
 		}
 
         #endregion

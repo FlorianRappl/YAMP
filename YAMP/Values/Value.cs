@@ -64,6 +64,12 @@ namespace YAMP
 
         #region Methods
 
+        protected int GetExponent(double value)
+        {
+            var log = Math.Log10(Math.Abs(value));
+            return (int)Math.Floor(log);
+        }
+
         public abstract Value Add(Value right);
 		
 		public abstract Value Subtract(Value right);
@@ -148,22 +154,62 @@ namespace YAMP
 			else if (double.IsNaN(value))
 				return "nan";
 
-            SplitEngineeringParts(value, out sign, out amt, out exponent);
-            return ComposeEngrFormat(context, sign, amt, exponent);
+            switch (context.DefaultDisplayStyle)
+            {
+                case DisplayStyle.Scientific:
+                    ScientificFormat(context, value, out sign, out amt, out exponent);
+                    break;
+                case DisplayStyle.Engineering:
+                    EngineeringFormat(context, value, out sign, out amt, out exponent);
+                    break;
+                default:
+                    sign = Math.Sign(value);
+                    amt = sign * value;
+                    exponent = 0;
+                    break;
+            }
+            
+            return ComposeFormat(context, sign, amt, exponent);
         }
 
-        static void SplitEngineeringParts(double value, out int sign, out double new_value, out int exponent)
+        static void ScientificFormat(ParseContext context, double value, out int sign, out double new_value, out int exponent)
         {
             sign = Math.Sign(value);
-            value = Math.Abs(value);
+            value = sign * value;
+            var prec = (double)context.Precision;
+            var suggested = Math.Pow(10.0, prec);
 
-            if (value > 0.0)
+            if (value > 1.0)
+                exponent = (int)(Math.Floor(Math.Log10(value) / prec) * prec);
+            else if (value > 0.0)
+                exponent = (int)(Math.Ceiling(Math.Log10(value)));
+            else
+                exponent = 0;
+
+            new_value = value * Math.Pow(10.0, -exponent);
+
+            if (new_value >= suggested)
             {
-                if (value > 1.0)
-                    exponent = (int)(Math.Floor(Math.Log10(value) / 3.0) * 3.0);
-                else
-                    exponent = (int)(Math.Ceiling(Math.Log10(value) / 3.0) * 3.0);
+                new_value /= suggested;
+                exponent += context.Precision;
             }
+
+            if (new_value < 1 && new_value > 0)
+            {
+                new_value *= 10.0;
+                exponent -= 1;
+            }
+        }
+
+        static void EngineeringFormat(ParseContext context, double value, out int sign, out double new_value, out int exponent)
+        {
+            sign = Math.Sign(value);
+            value = sign * value;
+
+            if (value > 1.0)
+                exponent = (int)(Math.Floor(Math.Log10(value) / 3.0) * 3.0);
+            else if(value > 0.0)
+                exponent = (int)(Math.Ceiling(Math.Log10(value) / 3.0) * 3.0);
             else
                 exponent = 0;
 
@@ -171,7 +217,7 @@ namespace YAMP
 
             if (new_value >= 1e3)
             {
-                new_value /= 1e3;
+                new_value *= 1e-3;
                 exponent += 3;
             }
 
@@ -182,7 +228,7 @@ namespace YAMP
             }
         }
 
-        static string ComposeEngrFormat(ParseContext context, int sign, double v, int exponent)
+        static string ComposeFormat(ParseContext context, int sign, double v, int exponent)
         {
             int expsign = Math.Sign(exponent);
             int significant_digits = context.Precision;

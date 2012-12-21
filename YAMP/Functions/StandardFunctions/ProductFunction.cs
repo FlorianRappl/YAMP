@@ -6,9 +6,6 @@ namespace YAMP
 	[Kind(PopularKinds.Function)]
 	class ProductFunction : StandardFunction
 	{
-		[Description("Evaluates the vector(s) and outputs the product(s) of the vector(s).")]
-		[Example("product([1,2,3,4,5,6,7,-1])", "Computes the product of the vector, which is -5040 in this case.")]
-		[Example("product([1,2;3,4;5,6;7,-1])", "Computes the product of the two vectors, which are 105 and -48 in this case.")]
 		public override Value Perform(Value argument)
 		{
 			if (argument is ScalarValue)
@@ -34,6 +31,14 @@ namespace YAMP
 			
 			throw new OperationNotSupportedException("product", argument);
 		}
+
+        [Description("Evaluates the vector(s) and outputs the product(s) of the vector(s).")]
+        [Example("product([1,2,3,4,5,6,7,-1])", "Computes the product of the vector, which is -5040 in this case.")]
+        [Example("product([1,2;3,4;5,6;7,-1])", "Computes the product of the two vectors, which are 105 and -48 in this case.")]
+        public override MatrixValue Function(MatrixValue x)
+        {
+            return base.Function(x);
+        }
 		
 		ScalarValue GetVectorProduct(MatrixValue vec)
 		{

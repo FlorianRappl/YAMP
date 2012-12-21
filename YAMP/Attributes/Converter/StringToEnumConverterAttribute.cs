@@ -7,20 +7,19 @@ namespace YAMP.Converter
 {
     public class StringToEnumConverter : ValueConverterAttribute
     {
-        public StringToEnumConverter(Type enumType)
-            : base(typeof(StringValue))
+        public StringToEnumConverter(Type enumType) : base(typeof(StringValue))
         {
             Converter = w =>
             {
                 var str = (w as StringValue).Value;
+
                 try
                 {
                     return Enum.Parse(enumType, str, true);
                 }
-                catch (ArgumentException)
+                catch
                 {
-                    var possibilites =
-                        enumType.GetFields(BindingFlags.Public | BindingFlags.Static).Select(fi => fi.Name).ToArray();
+                    var possibilites = enumType.GetFields(BindingFlags.Public | BindingFlags.Static).Select(fi => fi.Name).ToArray();
                     throw new ArgumentValueException(str, possibilites);
                 }
             };

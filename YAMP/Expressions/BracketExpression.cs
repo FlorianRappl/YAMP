@@ -48,7 +48,7 @@ namespace YAMP
 
 		#endregion
 
-		#region Methods
+        #region Methods
 
 		internal override string Input 
 		{
@@ -89,5 +89,5 @@ namespace YAMP
 		}
 
 		#endregion
-	}
+    }
 }

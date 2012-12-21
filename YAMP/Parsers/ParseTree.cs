@@ -230,7 +230,7 @@ namespace YAMP
         /// </summary>
         public string Input
         {
-            get { return _input; }
+            get { return _input ?? InputAggregate(); }
             protected set { _input = value; }
         }
 
@@ -400,7 +400,23 @@ namespace YAMP
 
 		#endregion
 
-		#region Helpers
+        #region Helpers
+
+        string InputAggregate()
+        {
+            if (_expressions == null || _expressions.Length == 0)
+                return string.Empty;
+
+            if (_expressions.Length == 1)
+            {
+                if (_operator == null)
+                    return _expressions[0].Input;
+
+                return _expressions[0].Input + _operator.Input;
+            }
+
+            return _expressions[0].Input + _operator.Input + _expressions[1].Input;
+        }
 
 		public static bool IsWhiteSpace(char ch) 
 		{

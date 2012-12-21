@@ -660,11 +660,16 @@ namespace YAMP
 		{
 			var target = One(DimensionX);
 
-			if(DimensionX != DimensionY || DimensionX < 32)
+			if(DimensionX < 32)
 			{
 				var lu = new YAMP.Numerics.LUDecomposition(this);
 				return lu.Solve(target);
 			}
+            else if (IsSymmetric)
+            {
+                var cho = new YAMP.Numerics.CholeskyDecomposition(this);
+                return cho.Solve(target);
+            }
 
 			var qr = new YAMP.Numerics.QRDecomposition(this);
 			return qr.Solve(target);
