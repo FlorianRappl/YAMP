@@ -38,9 +38,10 @@ namespace YAMP
     {
         #region Members
 
-        List<StatementParseTree> statements;
+        List<ParseTree> statements;
         QueryContext query;
         int count;
+		int startLine;
 
         #endregion
 
@@ -48,8 +49,14 @@ namespace YAMP
 
         public ParseTreeCollection(QueryContext _query)
         {
-            count = 1;
-            statements = new List<StatementParseTree>();
+			if(Parser.EnableScripting)
+				CreateParser = CreateScriptingParser;
+			else
+				CreateParser = CreateStandardParser;
+
+			startLine = 1;
+            count = 0;
+            statements = new List<ParseTree>();
             query = _query;
         }
 
@@ -57,6 +64,9 @@ namespace YAMP
 
         #region Properties
 
+		/// <summary>
+		/// Gets the used query context.
+		/// </summary>
         public QueryContext Query
         {
             get 
@@ -65,6 +75,20 @@ namespace YAMP
             }
         }
 
+		/// <summary>
+		/// Gets the start line number of the parse tree collection.
+		/// </summary>
+		public int StartLine
+		{
+			get
+			{
+				return startLine;
+			}
+		}
+
+		/// <summary>
+		/// Gets the currently parsed number of lines.
+		/// </summary>
         public int Count
         {
             get
@@ -73,17 +97,94 @@ namespace YAMP
             }
         }
 
+		/// <summary>
+		/// Gets the currently available rest.
+		/// </summary>
+		public string Rest
+		{
+			get;
+			internal set;
+		}
+
+		/// <summary>
+		/// Gets the currently parsed line.
+		/// </summary>
+		public int CurrentLine
+		{
+			get { return startLine + count; }
+		}
+
+		/// <summary>
+		/// Gets the currently available statements.
+		/// </summary>
+		public IEnumerable<ParseTree> Statements
+		{
+			get
+			{
+				foreach (var statement in statements)
+					yield return statement;
+			}
+		}
+
+		Func<QueryContext, string, int, ParseTree> CreateParser
+		{
+			get;
+			set;
+		}
+
         #endregion
 
         #region Methods
 
-        internal void AddStatement(string input)
-        {
-            var line = count++;
-            var statement = new StatementParseTree(query, input, line);
-            statements.Insert(0, statement);
-        }
+		ParseTree CreateStandardParser(QueryContext query, string input, int line)
+		{
+			return new StatementParseTree(query, input, line);
+		}
 
+		ParseTree CreateScriptingParser(QueryContext query, string input, int line)
+		{
+			return new KeywordParseTree(query, input, line);
+		}
+
+		/// <summary>
+		/// Initializes a parse tree collection, i.e. starts parsing.
+		/// </summary>
+		/// <param name="input">The input to parse.</param>
+		/// <param name="lineShift">The line shift to the standard line #1.</param>
+		internal void Init(string input, int lineShift = 0)
+		{
+			var current = input;
+			var line = lineShift + 1;
+			startLine = line;
+
+			do
+			{
+				Rest = null;
+				var statement = CreateParser(query, current, line++);
+				statements.Add(statement);
+				count++;
+				current = Rest;
+			}
+			while (!string.IsNullOrEmpty(Rest));
+		}
+
+		Keyword ParseKeyword(string input)
+		{
+			if (Parser.EnableScripting)
+			{
+				var tokens = ParseTree.Get(Tokens.Letter, input);
+				var keyword = Elements.Instance.FindKeyword(Query, tokens);
+				return keyword;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Evaluates a parsed tree collection, i.e. starts evaluating.
+		/// </summary>
+		/// <param name="values">The values to consider additionally to those available in the context.</param>
+		/// <returns>A value or null if nothing should be displayed.</returns>
         internal Value Run(Dictionary<string, Value> values)
         {
             Value value = null;
@@ -114,13 +215,11 @@ namespace YAMP
             var str = new string[statements.Count];
 
             for (var i = 0; i != statements.Count; i++)
-            {
                 str[i] = statements[i].ToString();
-            }
 
             return string.Join(Environment.NewLine, str);
         }
 
         #endregion
-    }
+	}
 }

@@ -140,6 +140,14 @@ namespace YAMP
         {
             double amt;
             int sign, exponent;
+
+			if (double.IsPositiveInfinity(value))
+				return "inf";
+			else if (double.IsNegativeInfinity(value))
+				return "-inf";
+			else if (double.IsNaN(value))
+				return "nan";
+
             SplitEngineeringParts(value, out sign, out amt, out exponent);
             return ComposeEngrFormat(context, sign, amt, exponent);
         }

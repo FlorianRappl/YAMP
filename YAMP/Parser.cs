@@ -53,7 +53,6 @@ namespace YAMP
 		{
 			_query = query;
 			query.Context = context;
-            query.Statements.AddStatement(query.Input);
 		}
 
 		#endregion
@@ -69,7 +68,9 @@ namespace YAMP
 		/// <returns>The parser instance.</returns>
 		public static Parser Parse(string input)
 		{
-			return new Parser(PrimaryContext, new QueryContext(input));
+			var p = new Parser(PrimaryContext, new QueryContext(input));
+			p.Build();
+			return p;
 		}
 
 		/// <summary>
@@ -84,7 +85,9 @@ namespace YAMP
 		/// <returns>The parser instance.</returns>
 		public static Parser Parse(ParseContext context, string input)
 		{
-			return new Parser(context, new QueryContext(input));
+			var p = new Parser(context, new QueryContext(input));
+			p.Build();
+			return p;
 		}
 
 		#endregion
@@ -132,9 +135,30 @@ namespace YAMP
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets of scripting should be enabled (allowed / activated).
+		/// </summary>
+		/// <value>
+		/// The current setting.
+		/// </value>
+		public static bool EnableScripting
+		{
+			get;
+			set;
+		}
+
 		#endregion
 
-		#region Execution
+		#region Expression Tree Creation
+
+		void Build()
+		{
+			_query.Statements.Init(_query.Input);
+		}
+
+		#endregion
+
+		#region Evaluation
 
 		/// <summary>
 		/// Execute the evaluation of this parser instance without any external symbols.

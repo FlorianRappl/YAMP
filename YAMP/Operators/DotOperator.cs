@@ -22,49 +22,63 @@ namespace YAMP
 
 			if (left is MatrixValue && right is MatrixValue)
 			{
-				var l = left as MatrixValue;
-				var r = right as MatrixValue;
-
-				if (l.DimensionX != r.DimensionX)
-					throw new DimensionException(l.DimensionX, r.DimensionX);
-
-				if (l.DimensionY != r.DimensionY)
-					throw new DimensionException(l.DimensionY, r.DimensionY);
-
-				var m = new MatrixValue(l.DimensionY, l.DimensionX);
-
-				for (var i = 1; i <= l.DimensionX; i++)
-					for (var j = 1; j <= l.DimensionY; j++)
-						m[j, i] = Operation(l[j, i], r[j, i]);
-
-				return m;
+				var l = (MatrixValue)left;
+				var r = (MatrixValue)right;
+				return Dot(l, r);
 			}
 			else if (left is MatrixValue && right is ScalarValue)
 			{
-				var l = left as MatrixValue;
-				var r = right as ScalarValue;
-				var m = new MatrixValue(l.DimensionY, l.DimensionX);
-
-				for (var i = 1; i <= l.DimensionX; i++)
-					for (var j = 1; j <= l.DimensionY; j++)
-						m[j, i] = Operation(l[j, i], r);
-
-				return m;
+				var l = (MatrixValue)left;
+				var r = (ScalarValue)right;
+				return Dot(l, r);
 			}
 			else if (left is ScalarValue && right is MatrixValue)
 			{
-				var l = left as ScalarValue;
-				var r = right as MatrixValue;
-				var m = new MatrixValue(r.DimensionY, r.DimensionX);
-
-				for (var i = 1; i <= r.DimensionX; i++)
-					for (var j = 1; j <= r.DimensionY; j++)
-						m[j, i] = Operation(l, r[j, i]);
-
-				return m;
+				var l = (ScalarValue)left;
+				var r = (MatrixValue)right;
+				return Dot(l, r);
 			}
 
 			return _top.Perform(left, right);
+		}
+
+		public MatrixValue Dot(MatrixValue left, MatrixValue right)
+		{
+			if (left.DimensionX != right.DimensionX)
+				throw new DimensionException(left.DimensionX, right.DimensionX);
+
+			if (left.DimensionY != right.DimensionY)
+				throw new DimensionException(left.DimensionY, right.DimensionY);
+
+			var m = new MatrixValue(left.DimensionY, left.DimensionX);
+
+			for (var i = 1; i <= left.DimensionX; i++)
+				for (var j = 1; j <= left.DimensionY; j++)
+					m[j, i] = Operation(left[j, i], right[j, i]);
+
+			return m;
+		}
+
+		public MatrixValue Dot(MatrixValue left, ScalarValue right)
+		{
+			var m = new MatrixValue(left.DimensionY, left.DimensionX);
+
+			for (var i = 1; i <= left.DimensionX; i++)
+				for (var j = 1; j <= left.DimensionY; j++)
+					m[j, i] = Operation(left[j, i], right);
+
+			return m;
+		}
+
+		public MatrixValue Dot(ScalarValue left, MatrixValue right)
+		{
+			var m = new MatrixValue(right.DimensionY, right.DimensionX);
+
+			for (var i = 1; i <= right.DimensionX; i++)
+				for (var j = 1; j <= right.DimensionY; j++)
+					m[j, i] = Operation(left, right[j, i]);
+
+			return m;
 		}
 	}
 }

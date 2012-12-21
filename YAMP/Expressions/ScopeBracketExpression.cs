@@ -1,4 +1,4 @@
-/*
+﻿/*
 	Copyright (c) 2012, Florian Rappl.
 	All rights reserved.
 
@@ -25,87 +25,30 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 using System;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace YAMP
 {
-	public abstract class Expression : IRegisterElement
+	class ScopeBracketExpression : BracketExpression
 	{
-		#region Members
-
-		string _pattern;
-		protected string _input;
-		protected Match mx;
-		int _offset;
-
-		#endregion
-
-		#region ctor
-
-		public Expression(string pattern)
+		public ScopeBracketExpression() : base(@"\{.*\}", '{', '}')
 		{
-			_pattern = pattern;
 		}
 
-		#endregion
-
-		#region Properties
-
-		internal string Pattern
+		public ScopeBracketExpression(QueryContext query) : this()
 		{
-			get { return _pattern; }
+			Query = query;
 		}
 
-		internal Match Match
+		public override Expression Create(QueryContext query, Match match)
 		{
-			get { return mx; }
-		}
-		
-		internal int Offset
-		{
-			get { return _offset; }
-			set { _offset = value; }
+			return new ScopeBracketExpression(query);
 		}
 
-		internal virtual string Input
+		protected override ParseTree CreateParseTree(string input)
 		{
-			get { return _input; }
+			return new ScopeParseTree(Query, input, Query.Statements.CurrentLine);
 		}
-
-		public ParseContext Context { get { return Query.Context; } }
-
-		public QueryContext Query { get; protected set; }
-
-		#endregion
-
-		#region Methods
-		
-		public abstract Value Interpret(Dictionary<string, Value> symbols);
-
-		public abstract Expression Create(QueryContext query, Match match);
-
-		public virtual string Set(string input)
-		{
-			_input = mx.Value;
-			return input.Substring(_input.Length);
-		}
-		
-		public virtual void RegisterElement()
-		{
-			Elements.Instance.AddExpression(_pattern, this);
-		}
-
-		public override string ToString ()
-		{
-            return GetType().Name.Replace("Expression", string.Empty);
-		}
-
-		#endregion
 	}
 }
-

@@ -263,14 +263,14 @@ namespace YAMP
 		{
 			if(right is ScalarValue)
 			{
-				var r = right as ScalarValue;
+				var r = (ScalarValue)right;
                 var re = _real + r._real;
                 var im = _imag + r._imag;
                 return new ScalarValue(re, im);
             }
             else if (right is MatrixValue)
             {
-                var r = right as MatrixValue;
+				var r = (MatrixValue)right;
                 return r.Add(this);
             }
 			else if(right is StringValue)
@@ -286,19 +286,19 @@ namespace YAMP
 		{
 			if(right is ScalarValue)
 			{
-				var r = right as ScalarValue;
+				var r = (ScalarValue)right;
                 var re = _real - r._real;
                 var im = _imag - r._imag;
                 return new ScalarValue(re, im);
             }
             else if (right is MatrixValue)
             {
-				var r = right as MatrixValue;
+				var r = (MatrixValue)right;
 				var m = new MatrixValue(r.DimensionY, r.DimensionX);
 				
 				for(var j = 1; j <= r.DimensionY; j++)
 					for(var i = 1; i <= r.DimensionX; i++)
-						m[j, i] = this.Subtract(r[j, i]) as ScalarValue;
+						m[j, i] = (ScalarValue)Subtract(r[j, i]);
 				
 				return m;
             }
@@ -310,14 +310,22 @@ namespace YAMP
 		{
 			if(right is ScalarValue)
 			{
-				var r = right as ScalarValue;
+				var r = (ScalarValue)right;
+
+				if (IsZero)
+					return new ScalarValue();
+				else if (_real == 0.0)
+					return new ScalarValue(-_imag * r._imag, r._real * _imag);
+				else if (_imag == 0.0)
+					return new ScalarValue(_real * r._real, _real * r._imag);
+
 				var re = _real * r._real - _imag * r._imag;
 				var im = _real * r._imag + _imag * r._real;
                 return new ScalarValue(re, im);
 			}
             else if (right is MatrixValue)
             {
-                var r = right as MatrixValue;
+				var r = (MatrixValue)right;
                 return r.Multiply(this);
             }
 			
@@ -328,7 +336,17 @@ namespace YAMP
 		{
 			if(right is ScalarValue)
 			{
-				var r = (right as ScalarValue).Conjugate();
+				var r = (ScalarValue)right;
+
+				if (r.IsZero)
+				{
+					if (IsZero)
+						return new ScalarValue(1.0);
+
+					return new ScalarValue(_real != 0.0 ? _real / 0.0 : 0.0, _imag != 0.0 ? _imag / 0.0 : 0.0);
+				}
+
+				r = r.Conjugate();
                 var q = r._real * r._real + r._imag * r._imag;
                 var re = (_real * r._real - _imag * r._imag) / q;
                 var im = (_real * r._imag + _imag * r._real) / q;
@@ -336,7 +354,7 @@ namespace YAMP
 			}
 			else if(right is MatrixValue)
 			{
-				var inv = (right as MatrixValue).Inverse();
+				var inv = ((MatrixValue)right).Inverse();
 				return this.Multiply(inv);
 			}
 			
@@ -350,11 +368,11 @@ namespace YAMP
                 if (Value == 0.0 && ImaginaryValue == 0.0)
                     return new ScalarValue();
 
-                var exp = exponent as ScalarValue;
+				var exp = (ScalarValue)exponent;
                 var theta = _real == 0.0 ? Math.PI / 2 * Math.Sign(ImaginaryValue) : Math.Atan2(_imag, _real);
                 var L = _real / Math.Cos(theta);
                 var phi = Ln() * exp._imag;
-                var R = (I.Multiply(phi) as ScalarValue).Exp();
+				var R = ((ScalarValue)I.Multiply(phi)).Exp();
                 var alpha = _real == 0.0 ? 1.0 : Math.Pow(Math.Abs(L), exp._real);
                 var beta = theta * exp._real;
                 var _cos = Math.Cos(beta);
@@ -369,12 +387,12 @@ namespace YAMP
 			}
 			else if(exponent is MatrixValue)
 			{
-				var b = exponent as MatrixValue;
+				var b = (MatrixValue)exponent;
 				var m = new MatrixValue(b.DimensionY, b.DimensionX);
 
 				for(var i = 1; i <= b.DimensionX; i++)
 					for(var j = 1; j <= b.DimensionY; j++)
-						m[j, i] = Power(b[j, i]) as ScalarValue;
+						m[j, i] = (ScalarValue)Power(b[j, i]);
 
 				return m;
 			}

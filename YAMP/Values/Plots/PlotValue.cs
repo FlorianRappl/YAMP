@@ -191,7 +191,7 @@ namespace YAMP
 			set;
 		}
 
-		public static string[] ColorPalette { get { return colorPalette; } }
+		public static string[] StandardColors { get { return standardColors; } }
 
 		#endregion
 
@@ -302,7 +302,7 @@ namespace YAMP
 
         public void AddSeries(IPointSeries series)
         {
-            series.Color = ColorPalette[Count % ColorPalette.Length];
+            series.Color = StandardColors[Count % StandardColors.Length];
             points.Add(series);
         }
 
@@ -315,7 +315,7 @@ namespace YAMP
 
 		#region Statics
 
-		readonly static string[] colorPalette = new string[]
+		readonly static string[] standardColors = new string[]
 		{
 			"red", 
 			"green",

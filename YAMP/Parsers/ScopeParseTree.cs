@@ -1,4 +1,4 @@
-/*
+﻿/*
 	Copyright (c) 2012, Florian Rappl.
 	All rights reserved.
 
@@ -25,87 +25,63 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 using System;
-using System.Text;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace YAMP
 {
-	public abstract class Expression : IRegisterElement
+	/// <summary>
+	/// The scope parse tree that allows to create new local variables and more.
+	/// </summary>
+	class ScopeParseTree : ParseTree
 	{
-		#region Members
-
-		string _pattern;
-		protected string _input;
-		protected Match mx;
-		int _offset;
-
-		#endregion
-
 		#region ctor
 
-		public Expression(string pattern)
+		public ScopeParseTree(QueryContext query, string input, int line) : base(new QueryContext(query), input, true)
 		{
-			_pattern = pattern;
+			Query.Statements.Init(input, line);
 		}
 
 		#endregion
 
 		#region Properties
 
-		internal string Pattern
+		/// <summary>
+		/// Gets the starting statement line of this scope.
+		/// </summary>
+		public int StartLine
 		{
-			get { return _pattern; }
+			get
+			{
+				return Query.Statements.StartLine;
+			}
 		}
 
-		internal Match Match
+		/// <summary>
+		/// Gets the statements included in this scope.
+		/// </summary>
+		public IEnumerable<ParseTree> Statements
 		{
-			get { return mx; }
+			get
+			{
+				return Query.Statements.Statements;
+			}
 		}
-		
-		internal int Offset
-		{
-			get { return _offset; }
-			set { _offset = value; }
-		}
-
-		internal virtual string Input
-		{
-			get { return _input; }
-		}
-
-		public ParseContext Context { get { return Query.Context; } }
-
-		public QueryContext Query { get; protected set; }
 
 		#endregion
 
 		#region Methods
-		
-		public abstract Value Interpret(Dictionary<string, Value> symbols);
 
-		public abstract Expression Create(QueryContext query, Match match);
-
-		public virtual string Set(string input)
+		internal override Value Interpret(Dictionary<string, Value> symbols)
 		{
-			_input = mx.Value;
-			return input.Substring(_input.Length);
-		}
-		
-		public virtual void RegisterElement()
-		{
-			Elements.Instance.AddExpression(_pattern, this);
+			return Query.Statements.Run(symbols);
 		}
 
-		public override string ToString ()
+		public override string ToString()
 		{
-            return GetType().Name.Replace("Expression", string.Empty);
+			return Query.Statements.ToString();
 		}
 
 		#endregion
 	}
 }
-

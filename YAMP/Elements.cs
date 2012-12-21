@@ -44,6 +44,7 @@ namespace YAMP
 
 		IDictionary<string, Operator> operators;
 		IDictionary<Regex, Expression> expressions;
+		IDictionary<string, Keyword> keywords;
 		
 		#endregion
 
@@ -53,6 +54,7 @@ namespace YAMP
 		{
 			operators = new Dictionary<string, Operator>();
 			expressions = new Dictionary<Regex, Expression>();
+			keywords = new Dictionary<string, Keyword>();
 		}
 		
 		#endregion
@@ -137,6 +139,11 @@ namespace YAMP
 		{
 			expressions.Add(new Regex("^" + pattern, RegexOptions.Singleline), exp);
 		}
+
+		public void AddKeyword(string pattern, Keyword keyword)
+		{
+			keywords.Add(pattern, keyword);
+		}
 		
 		#endregion
 
@@ -187,6 +194,20 @@ namespace YAMP
 		public static Operator FindAvailableOperator(QueryContext context, string input)
 		{
 			return FindOperator(Instance.operators, context, input);
+		}
+
+		/// <summary>
+		/// Searches for the given keyword in the list of available keywords. Creates a class if the keyword is found.
+		/// </summary>
+		/// <param name="context">The current context.</param>
+		/// <param name="keyword">The keyword to look for.</param>
+		/// <returns>A freshly created instance of the found keyword object.</returns>
+		public Keyword FindKeyword(QueryContext context, string keyword)
+		{
+			if(keywords.ContainsKey(keyword))
+				return keywords[keyword].Create(context);
+
+			return null;
 		}
 
 		/// <summary>

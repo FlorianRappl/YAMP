@@ -93,6 +93,7 @@
     <Compile Include="Exceptions\EscapeSequenceNotDetectedException.cs" />
     <Compile Include="Expressions\LambdaExpression.cs" />
     <Compile Include="Expressions\MatrixBracketExpression.cs" />
+    <Compile Include="Expressions\ScopeBracketExpression.cs" />
     <Compile Include="Expressions\TreeExpression.cs" />
     <Compile Include="Expressions\UnaryExpression.cs" />
     <Compile Include="Functions\ArgumentFunctions\NcrFunction.cs" />
@@ -283,9 +284,11 @@
     <Compile Include="ParseContext.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Parsers\ArgumentsParseTree.cs" />
+    <Compile Include="Parsers\KeywordParseTree.cs" />
     <Compile Include="Parsers\LambdaParseTree.cs" />
     <Compile Include="Parsers\MatrixParseTree.cs" />
     <Compile Include="Parsers\ParseTreeCollection.cs" />
+    <Compile Include="Parsers\ScopeParseTree.cs" />
     <Compile Include="Parsers\StatementParseTree.cs" />
     <Compile Include="Parsers\Tokens.cs" />
     <Compile Include="Providers\Deserializer.cs" />
@@ -300,6 +303,9 @@
     <Compile Include="Providers\ConventionExtensions.cs" />
     <Compile Include="Attributes\DescriptionAttribute.cs" />
     <Compile Include="Attributes\ExampleAttribute.cs" />
+    <Compile Include="Scripting\ElseKeyword.cs" />
+    <Compile Include="Scripting\IfKeyword.cs" />
+    <Compile Include="Scripting\Keyword.cs" />
     <Compile Include="Values\Arguments\FunctionValue.cs" />
     <Compile Include="Values\Numeric\NumericValue.cs" />
     <Compile Include="Values\Plots\ColorPalettes.cs" />
@@ -376,9 +382,7 @@
     <Compile Include="Exceptions\WrongArgumentsException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Scripting\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
 xcopy /y "$(TargetPath)" "$(SolutionDir)\Nuget\lib\net35\"

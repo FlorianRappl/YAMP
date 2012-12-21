@@ -78,6 +78,16 @@ namespace YAMP
 			Parse();
 		}
 
+		internal ParseTree(QueryContext query, string input, bool preventParse)
+		{
+			_query = query;
+			_offset = 0;
+			_input = input;
+
+			if (!preventParse)
+				Parse();
+		}
+
 		/// <summary>
 		/// Main constructor - use as entry point!
 		/// </summary>
@@ -233,9 +243,48 @@ namespace YAMP
 			return Elements.Instance.FindOperator(_query, input);
 		}
 
+		protected virtual Expression FindExpression(string input)
+		{
+			return Elements.Instance.FindExpression(_query, input);
+		}
+
 		protected virtual Value DefaultValue()
 		{
 			return null;
+		}
+
+		protected bool Advance(ref string input)
+		{
+			if (IsNewLine(input[0]))
+			{
+				input = input.Substring(1);
+				_skips.Push(Tokens.Newline);
+				_final++;
+				return true;
+			}
+			else if (IsWhiteSpace(input[0]))
+			{
+				input = input.Substring(1);
+				_skips.Push(Tokens.Whitespace);
+				_final++;
+				return true;
+			}
+			else if (IsBlockComment(input))
+			{
+				var index = input.IndexOf("*/") + 2;
+				input = input.Substring(index == 1 ? input.Length : index);
+				_final += index;
+				return true;
+			}
+			else if (IsLineComment(input))
+			{
+				var index = input.IndexOf('\n') + 1;
+				input = input.Substring(index == 0 ? input.Length : index);
+				_final += index;
+				return true;
+			}
+
+			return false;
 		}
 
 		void Parse()
@@ -250,34 +299,8 @@ namespace YAMP
 
 			while (shadow.Length > 0)
             {
-				if (IsNewLine(shadow[0]))
-				{
-					shadow = shadow.Substring(1);
-					_skips.Push(Tokens.Newline);
-					_final++;
+				if (Advance(ref shadow))
 					continue;
-				}
-				else if (IsWhiteSpace(shadow[0]))
-				{
-					shadow = shadow.Substring(1);
-					_skips.Push(Tokens.Whitespace);
-					_final++;
-					continue;
-				}
-				else if (IsBlockComment(shadow))
-				{
-					var index = shadow.IndexOf("*/") + 2;
-					shadow = shadow.Substring(index == 1 ? shadow.Length : index);
-					_final += index;
-					continue;
-				}
-				else if (IsLineComment(shadow))
-				{
-					var index = shadow.IndexOf('\n') + 1;
-					shadow = shadow.Substring(index == 0 ? shadow.Length : index);
-					_final += index;
-					continue;
-				}
 
 				if (takeop)
 				{
@@ -314,7 +337,7 @@ namespace YAMP
 				}
 				else
 				{
-					var exp = Elements.Instance.FindExpression(_query, shadow);
+					var exp = FindExpression(shadow);
 					exp.Offset = _final;
 					expressions.Push(exp);
 					shadow = exp.Set(shadow);
@@ -379,7 +402,7 @@ namespace YAMP
 
 		#region Helpers
 
-		protected bool IsWhiteSpace(char ch) 
+		public static bool IsWhiteSpace(char ch) 
 		{
 			return (ch == 32) ||  // space
 				(ch == 9) ||      // horizontal tab
@@ -389,7 +412,7 @@ namespace YAMP
 				(ch >= 0x1680 && unicodeWhitespaces.IndexOf(ch.ToString()) >= 0);
 		}
 
-		protected bool IsNewLine(char ch) 
+		public static bool IsNewLine(char ch) 
 		{
 			return (ch == 10) ||  // line feed
 				(ch == 13) ||	  // carriage return
@@ -397,14 +420,39 @@ namespace YAMP
 				(ch == 0x2029);	  // paragraph seperator
 		}
 
-		protected bool IsLineComment(string shadow)
+		public static bool IsLineComment(string content)
 		{
-			return shadow.Length > 1 && shadow[0] == '/' && shadow[1] == '/';
+			return content.Length > 1 && content[0] == '/' && content[1] == '/';
 		}
 
-		protected bool IsBlockComment(string shadow)
+		public static bool IsBlockComment(string content)
 		{
-			return shadow.Length > 1 && shadow[0] == '/' && shadow[1] == '*';
+			return content.Length > 1 && content[0] == '/' && content[1] == '*';
+		}
+
+		public static Tokens Select(char ch)
+		{
+			if (IsWhiteSpace(ch))
+				return Tokens.Whitespace;
+			else if (IsNewLine(ch))
+				return Tokens.Newline;
+			else if ("0123456789".Contains(ch.ToString()))
+				return Tokens.Number;
+			else if ("abcdefghijklmnopqrstvwxyz".Contains(ch.ToString().ToLower()))
+				return Tokens.Letter;
+
+			return Tokens.None;
+		}
+
+		public static string Get(Tokens kind, string source)
+		{
+			var index = 0;
+
+			for (; index < source.Length; index++)
+				if (Select(source[index]) != kind)
+					break;
+
+			return source.Substring(0, index);
 		}
 
 		#endregion

@@ -6,6 +6,8 @@ namespace YAMP
 	{
 		None,
 		Whitespace,
-		Newline
+		Newline,
+		Letter,
+		Number
 	}
 }

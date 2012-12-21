@@ -442,7 +442,7 @@ namespace YAMP
 		{
 			if(right is MatrixValue)
 			{
-				var r = right as MatrixValue;
+				var r = (MatrixValue)right;
 				
 				if(r.DimensionX != DimensionX)
 					throw new DimensionException(DimensionX, r.DimensionX);
@@ -464,7 +464,7 @@ namespace YAMP
 
 				for(var j = 1; j <= DimensionY; j++)
 					for(var i = 1; i <= DimensionX; i++)
-						m[j, i] = this[j, i].Add(right) as ScalarValue;
+						m[j, i] = (ScalarValue)this[j, i].Add(right);
 
 				return m;
 			}
@@ -482,7 +482,7 @@ namespace YAMP
 				if (DimensionX == 1)
 					return this[1, 1].Power(exponent);
 
-				var exp = exponent as ScalarValue;
+				var exp = (ScalarValue)exponent;
 				
 				if(exp.ImaginaryValue != 0.0 || Math.Floor(exp.Value) != exp.Value)
 					throw new OperationNotSupportedException("^", exponent);
@@ -495,7 +495,7 @@ namespace YAMP
 					multiplier = this.Inverse();
 
 				for (var i = 0; i < count; i++)
-					eye = eye.Multiply(multiplier) as MatrixValue;
+					eye = (MatrixValue)eye.Multiply(multiplier);
 
 				return eye;
 			}
@@ -507,7 +507,7 @@ namespace YAMP
 		{
 			if(right is MatrixValue)
 			{
-				var r = right as MatrixValue;
+				var r = (MatrixValue)right;
 				
 				if(r.DimensionX != DimensionX)
 					throw new DimensionException(DimensionX, r.DimensionX);
@@ -519,7 +519,7 @@ namespace YAMP
 				
 				for(var j = 1; j <= DimensionY; j++)
 					for(var i = 1; i <= DimensionX; i++)
-						m[j, i] = this[j, i].Subtract(r[j, i]) as ScalarValue;				
+						m[j, i] = (ScalarValue)this[j, i].Subtract(r[j, i]);				
 				
 				return m;
 			}
@@ -529,7 +529,7 @@ namespace YAMP
 
 				for(var j = 1; j <= DimensionY; j++)
 					for(var i = 1; i <= DimensionX; i++)
-						m[j, i] = this[j, i].Subtract(right) as ScalarValue;
+						m[j, i] = (ScalarValue)this[j, i].Subtract(right);
 
 				return m;
 			}
@@ -554,7 +554,7 @@ namespace YAMP
 					for(var i = 1; i <= A.DimensionY; i++)
 					{						
 						for(var k = 1; k <= A.DimensionX; k++)
-							M[i, j] = M[i, j].Add(A[i, k].Multiply(B[k, j])) as ScalarValue;
+							M[i, j] = (ScalarValue)M[i, j].Add(A[i, k].Multiply(B[k, j]));
 						
 						if(A.DimensionY == B.DimensionX && A.DimensionY == 1)
 							return M[1, 1];
@@ -569,7 +569,7 @@ namespace YAMP
 
 				for(var i = 1; i <= DimensionX; i++)
 					for(var j = 1; j <= DimensionY; j++)
-						A[j, i] = this[j, i].Multiply(right) as ScalarValue;
+						A[j, i] = (ScalarValue)this[j, i].Multiply(right);
 
 				return A;
 			}
@@ -585,13 +585,13 @@ namespace YAMP
 				
 				for(var j = 1; j <= DimensionY; j++)
 					for(var i = 1; i <= DimensionX; i++)
-						m[j, i] = this[j, i].Divide(denominator) as ScalarValue;
+						m[j, i] = (ScalarValue)this[j, i].Divide(denominator);
 				
 				return m;
 			}
 			else if (denominator is MatrixValue)
 			{
-				var Q = denominator as MatrixValue;
+				var Q = (MatrixValue)denominator;
 				
 				if(DimensionX != Q.DimensionX)
 					throw new DimensionException(DimensionX, Q.DimensionX);
