@@ -72,6 +72,7 @@ namespace YAMP
             if (input[0] == ';')
             {
                 Input = Input.Remove(Input.Length - input.Length);
+                Rest = input.Substring(1);
                 return new StatementOperator(Query);
             }
 

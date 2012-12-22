@@ -45,11 +45,11 @@ namespace YAMPConsole
 			Console.WriteLine("CONSOLE MODE");
 			Console.WriteLine("Enter your own statements now (exit with the command 'exit'):");
             Console.WriteLine();
-			var query = string.Empty;
+            var query = string.Empty;
             var context = YAMP.Parser.Load();
-            //YAMP.Parser.LoadPlugin(context, System.Reflection.Assembly.LoadFile(Environment.CurrentDirectory + "\\YAMP.Physics.dll"));
             LoadPhysics();
 
+            YAMP.Parser.EnableScripting = true;
 			YAMP.Parser.AddCustomFunction("G", v => new YAMP.ScalarValue((v as YAMP.ScalarValue).Value * Math.PI) );
 			YAMP.Parser.AddCustomConstant("R", 2.53);
 
@@ -173,11 +173,11 @@ namespace YAMPConsole
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
-			var lines = new string[0];
+            var lines = new string[0];
 			// This is Benchmark #1
-			//var lines = File.ReadAllLines(BMK_FILE);
+            //var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
-			//var lines = MakeTenK("2-3*5+7/2-8*2");
+            //var lines = MakeTenK("2-3*5+7/2-8*2");
 			// This is Benchmark #3
 			//var lines = MakeTenK("2+3");
 			// This is Benchmark #4
@@ -270,6 +270,7 @@ namespace YAMPConsole
 
 		static void Tests()
         {
+            YAMP.Parser.EnableScripting = true;
             success = 0;
             total = 0;
 			var sw = Stopwatch.StartNew();
@@ -370,6 +371,12 @@ namespace YAMPConsole
 			Test("imag(2+5i)", 5.0);
 			Test("bessel(2, 4.5)", 0.21784898358785076);
 			Test("erf(1.4)", 0.95228511976264874);
+            Test("x = round(sum(sum([1, 0; 0, 100] * Jackknife([3 + randn(1000, 1), 10 + 2 * randn(1000, 1)], 10, avg)))); sum([x < 29, x > 18]) / 2", 1.0);
+            Test("x = round(sum(sum([1, 0; 0, 10] * Jackknife([3 + randn(1000, 1), 10 + 2 * randn(1000, 1)], 10, var)*[10,0;0,1]))); sum([x < 24, x > 16]) / 2", 1.0);
+            Test("sum(sum(round(cor([3 + randn(100, 1), 10 + 2 * randn(100, 1)]))))", 2.0);
+            Test("sum(round(acor(3 + randn(100, 1))))", 1.0);
+            Test("x=[]; y= 0; for(i = 1; i <= 10; i+=1) { y+=i; x(i) = y; } x(10) - x(9)", 10.0);
+            Test("x=9; y=5; if(x > y) { t = x; x = y; y = t; } y - x", 4.0);
 
 			sw.Stop();
 			
@@ -490,5 +497,5 @@ namespace YAMPConsole
 		}
 
 #endif
-	}
+    }
 }

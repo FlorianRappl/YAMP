@@ -61,6 +61,7 @@ namespace YAMP
         /// <param name="query">The query context to copy</param>
         internal QueryContext(QueryContext query) : this(query.Input)
         {
+            Parent = query;
             Context = new ParseContext(query.Context);
         }
 
@@ -86,6 +87,15 @@ namespace YAMP
 		#endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets the parent of this query context.
+        /// </summary>
+        public QueryContext Parent
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// Gets the result in a string representation.

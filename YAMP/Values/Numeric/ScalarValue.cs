@@ -75,6 +75,22 @@ namespace YAMP
         #region Properties
 
         /// <summary>
+        /// Gets a value if the scalar value is actually on true.
+        /// </summary>
+        public bool IsTrue
+        {
+            get { return this == TrueConstant._true; }
+        }
+
+        /// <summary>
+        /// Gets a value if the scalar value is actually on false.
+        /// </summary>
+        public bool IsFalse
+        {
+            get { return this == FalseConstant._false; }
+        }
+
+        /// <summary>
         /// Gets or sets the real part of the scalar.
         /// </summary>
         public double Re

@@ -30,70 +30,63 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
-	class IfKeyword : Keyword
+    class DoKeyword : BreakableKeyword
     {
         #region Members
 
-        ElseKeyword elseKeyword;
+        WhileKeyword whileKeyword;
 
         #endregion
 
         #region ctor
 
-        public IfKeyword() : base("if", 1)
-		{
-		}
+        public DoKeyword() : base("do", 0)
+        {
+        }
 
-		public IfKeyword(QueryContext query) : this()
-		{
-			Query = query;
-		}
+        public DoKeyword(QueryContext query) : this()
+        {
+            whileKeyword = new WhileKeyword(query);
+            Query = query;
+        }
 
         #endregion
 
         #region Methods
 
         public override Keyword Create(QueryContext query)
-		{
-			return new IfKeyword(query);
-		}
+        {
+            return new DoKeyword(query);
+        }
 
         public override Value Run(Dictionary<string, Value> symbols)
         {
-            var condition = Arguments[0].Interpret(symbols);
+            var rtrn = Body.Interpret(symbols);
 
-            if (condition != null && condition is ScalarValue)
-            {
-                var boolean = (ScalarValue)condition;
+            if (Break)
+                return rtrn;
 
-                if (boolean.IsTrue)
-                    return Body.Interpret(symbols);
-                else if (elseKeyword != null)
-                    return elseKeyword.Run(symbols);
-
-                return null;
-            }
-
-            throw new ParseException(Offset, Token + ". A boolean value is required to determine the condition");
+            rtrn = whileKeyword.Run(symbols);
+            return rtrn;
         }
 
         public override string ParseBody()
         {
             var rest = Body.Rest ?? string.Empty;
-            var index = rest.IndexOf("else");
+            var index = rest.IndexOf("while");
+            whileKeyword.Offset = Offset + Input.Length - rest.Length;
 
-            if (index >= 0)
-            {
-                var between = rest.Substring(0, index);
+            if (index == 1)
+                throw new ParseException(whileKeyword.Offset, rest);
 
-                if (!ParseTree.Scan(between, Tokens.Whitespace, Tokens.Newline))
-                {
-                    elseKeyword = new ElseKeyword(Query);
-                    elseKeyword.Offset = Offset + Input.Length - rest.Length + 4;
-                    return elseKeyword.Parse(rest.Substring(index + 4));
-                }
-            }
+            var between = rest.Substring(0, index);
 
+            if (ParseTree.Scan(between, Tokens.Whitespace, Tokens.Newline))
+                throw new ParseException(whileKeyword.Offset, rest);
+
+            rest = rest.Substring(index + 5);
+            rest = whileKeyword.ParseArguments(rest);
+            whileKeyword.Body = Body;
             return rest;
         }
 

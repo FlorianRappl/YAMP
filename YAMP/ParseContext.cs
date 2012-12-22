@@ -420,23 +420,30 @@ namespace YAMP
         /// <returns>The current context.</returns>
         public ParseContext AssignVariable(string name, Value value)
         {
+            var context = GetVariableContext(name);
+
+            if (context == null)
+                context = this;
+
+            AssignVariable(context, name, value);
+            RaiseVariableChanged(name, value);
+            return this;
+        }
+
+        static void AssignVariable(ParseContext context, string name, Value value)
+        {
             if (value != null)
             {
-                if (variables.ContainsKey(name))
-                    variables[name] = value;
+                if (context.variables.ContainsKey(name))
+                    context.variables[name] = value;
                 else
-                    variables.Add(name, value);
+                    context.variables.Add(name, value);
             }
             else
             {
-                if (variables.ContainsKey(name))
-                    variables.Remove(name);
-                else if (parent != null)
-                    parent.AssignVariable(name, value);
+                if (context.variables.ContainsKey(name))
+                    context.variables.Remove(name);
             }
-
-            RaiseVariableChanged(name, value);
-            return this;
         }
 
         /// <summary>
@@ -453,6 +460,17 @@ namespace YAMP
 
             if (parent != null)
                 return parent.GetVariable(name);
+
+            return null;
+        }
+
+        public ParseContext GetVariableContext(string name)
+        {
+            if (variables.ContainsKey(name))
+                return this;
+
+            if (parent != null)
+                return parent.GetVariableContext(name);
 
             return null;
         }

@@ -102,6 +102,39 @@ namespace YAMP
         #region Properties
 
         /// <summary>
+        /// Gets the non-parsed part of the original input.
+        /// </summary>
+        public string Rest { get; protected set; }
+
+        /// <summary>
+        /// Gets if the current statement is breakable.
+        /// </summary>
+        public bool IsBreakable
+        {
+            get
+            {
+                if (_expressions == null)
+                    return false;
+
+                if (_expressions.Length == 0)
+                    return false;
+
+                if (_expressions[0] is KeywordExpression)
+                {
+                    var keyword = (KeywordExpression)_expressions[0];
+                    return keyword.Key is BreakableKeyword;
+                }
+                else if (_expressions[0] is TreeExpression)
+                {
+                    var tree = (TreeExpression)_expressions[0];
+                    return tree.Tree.IsBreakable;
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating if the parse tree consists only of symbols that 
         /// are seperated by columns (commas).
         /// </summary>
@@ -236,7 +269,7 @@ namespace YAMP
 
 		#endregion
 
-		#region Methods
+        #region Methods
 
 		protected virtual Operator FindOperator(string input)
 		{
@@ -267,20 +300,6 @@ namespace YAMP
 				input = input.Substring(1);
 				_skips.Push(Tokens.Whitespace);
 				_final++;
-				return true;
-			}
-			else if (IsBlockComment(input))
-			{
-				var index = input.IndexOf("*/") + 2;
-				input = input.Substring(index == 1 ? input.Length : index);
-				_final += index;
-				return true;
-			}
-			else if (IsLineComment(input))
-			{
-				var index = input.IndexOf('\n') + 1;
-				input = input.Substring(index == 0 ? input.Length : index);
-				_final += index;
 				return true;
 			}
 
@@ -418,6 +437,11 @@ namespace YAMP
             return _expressions[0].Input + _operator.Input + _expressions[1].Input;
         }
 
+        /// <summary>
+        /// Determines if the given character is a white space character.
+        /// </summary>
+        /// <param name="ch">The character to be examined.</param>
+        /// <returns>True if the character represents a white space.</returns>
 		public static bool IsWhiteSpace(char ch) 
 		{
 			return (ch == 32) ||  // space
@@ -428,6 +452,11 @@ namespace YAMP
 				(ch >= 0x1680 && unicodeWhitespaces.IndexOf(ch.ToString()) >= 0);
 		}
 
+        /// <summary>
+        /// Determines if the given character is a new line character.
+        /// </summary>
+        /// <param name="ch">The character to be examined.</param>
+        /// <returns>True if the character represents a new line.</returns>
 		public static bool IsNewLine(char ch) 
 		{
 			return (ch == 10) ||  // line feed
@@ -436,30 +465,92 @@ namespace YAMP
 				(ch == 0x2029);	  // paragraph seperator
 		}
 
+        /// <summary>
+        /// Determines if the given content is a line comment.
+        /// </summary>
+        /// <param name="content">The comment that will be scanned from the beginning.</param>
+        /// <returns>True if a line comment has been found.</returns>
 		public static bool IsLineComment(string content)
 		{
 			return content.Length > 1 && content[0] == '/' && content[1] == '/';
 		}
 
+        /// <summary>
+        /// Determines if the given content is a block comment.
+        /// </summary>
+        /// <param name="content">The comment that will be scanned from the beginning.</param>
+        /// <returns>True if a block comment has been found.</returns>
 		public static bool IsBlockComment(string content)
 		{
 			return content.Length > 1 && content[0] == '/' && content[1] == '*';
 		}
 
+        /// <summary>
+        /// Gets the length of the comment to be replaced (0 for no comment found).
+        /// </summary>
+        /// <param name="input">The input to be scanned (at the beginning) for a comment.</param>
+        /// <returns>The length of the found comment area.</returns>
+        public static int ReplaceComment(string input)
+        {
+            if (IsBlockComment(input))
+                return input.IndexOf("*/") + 2;
+            else if (IsLineComment(input))
+                return input.IndexOf('\n');
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Selects the token for the given character.
+        /// </summary>
+        /// <param name="ch">The character to examine.</param>
+        /// <returns>The token.</returns>
 		public static Tokens Select(char ch)
 		{
-			if (IsWhiteSpace(ch))
-				return Tokens.Whitespace;
-			else if (IsNewLine(ch))
-				return Tokens.Newline;
-			else if ("0123456789".Contains(ch.ToString()))
-				return Tokens.Number;
-			else if ("abcdefghijklmnopqrstvwxyz".Contains(ch.ToString().ToLower()))
-				return Tokens.Letter;
+            if (IsWhiteSpace(ch))
+                return Tokens.Whitespace;
+            else if (IsNewLine(ch))
+                return Tokens.Newline;
+            else if ("0123456789".Contains(ch.ToString()))
+                return Tokens.Number;
+            else if ("abcdefghijklmnopqrstuvwxyz".Contains(ch.ToString().ToLower()))
+                return Tokens.Letter;
+            else if (ch == ';')
+                return Tokens.Semicolon;
 
 			return Tokens.None;
 		}
 
+        /// <summary>
+        /// Scans if tokens have been used in the input range, which are not whitelisted.
+        /// </summary>
+        /// <param name="input">The input to scan.</param>
+        /// <param name="allowedTokens">The tokens that are whitelisted for this input.</param>
+        /// <returns>True if a token is NOT in the list, false if everything was alright.</returns>
+        public static bool Scan(string input, params Tokens[] allowedTokens)
+        {
+            foreach (var ch in input)
+            {
+                var t = Select(ch);
+                var found = false;
+
+                foreach (var at in allowedTokens)
+                    if (t == at)
+                        found = true;
+
+                if (!found)
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets a substring of the source string, which starts with and contains only the given kind of token.
+        /// </summary>
+        /// <param name="kind">To token to get.</param>
+        /// <param name="source">The source to examine.</param>
+        /// <returns>The substring containing only chars of the specified kind.</returns>
 		public static string Get(Tokens kind, string source)
 		{
 			var index = 0;
@@ -471,7 +562,22 @@ namespace YAMP
 			return source.Substring(0, index);
 		}
 
+        public static Tokens GetFirstSignificantToken(string input)
+        {
+            for (var i = 0; i < input.Length; i++)
+            {
+                if (IsWhiteSpace(input[i]))
+                    continue;
+                else if (IsNewLine(input[i]))
+                    continue;
+
+                return Select(input[i]);
+            }
+
+            return Tokens.None;
+        }
+
 		#endregion
-	}
+    }
 }
 

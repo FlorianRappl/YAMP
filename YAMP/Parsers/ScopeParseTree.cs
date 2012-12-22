@@ -37,7 +37,7 @@ namespace YAMP
 	{
 		#region ctor
 
-		public ScopeParseTree(QueryContext query, string input, int line) : base(new QueryContext(query), input, true)
+		public ScopeParseTree(QueryContext query, string input, int line) : base(query, input, true)
 		{
 			Query.Statements.Init(input, line);
 		}

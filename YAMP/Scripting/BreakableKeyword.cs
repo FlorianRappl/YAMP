@@ -26,49 +26,21 @@
 */
 
 using System;
-using System.Text.RegularExpressions;
 
 namespace YAMP
 {
-	class ScopeBracketExpression : BracketExpression
+    abstract class BreakableKeyword : Keyword
     {
-        #region ctor
-
-        public ScopeBracketExpression() : base(@"\{.*\}", '{', '}')
-		{
-		}
-
-		public ScopeBracketExpression(QueryContext query) : this()
-		{
-			Query = query;
-		}
-
-        #endregion
-
-        #region Properties
-
-        public QueryContext Scope { get; private set; }
-
-        #endregion
-
-        #region Methods
-
-        public override string Set(string input)
+        public BreakableKeyword(string token, int arguments) : base(token, arguments)
         {
-            return ";" + base.Set(input);
         }
 
-        public override Expression Create(QueryContext query, Match match)
-		{
-			return new ScopeBracketExpression(query);
-		}
-
-		protected override ParseTree CreateParseTree(string input)
-		{
-            Scope = new QueryContext(Query);
-			return new ScopeParseTree(Scope, input, Query.Statements.CurrentLine);
+        public bool Break
+        {
+            get
+            {
+                return Query.Statements.Broken;
+            }
         }
-
-        #endregion
     }
 }

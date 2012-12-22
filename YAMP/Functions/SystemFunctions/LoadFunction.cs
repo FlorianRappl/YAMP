@@ -185,7 +185,7 @@ namespace YAMP
 
 				var file_string = Encoding.ASCII.GetString(file_bytes);
 
-				var lines = file_string.Split('\n').Select(line => line.Split(' ', '\t', ',')).ToList();
+				var lines = file_string.Split('\n').Select(line => line.Split(new char[]{' ', '\t', ',', '\r'}, StringSplitOptions.RemoveEmptyEntries)).ToList();
 
 				var numberOfLines = lines.Count;
 

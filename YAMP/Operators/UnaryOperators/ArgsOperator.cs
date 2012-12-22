@@ -20,8 +20,7 @@ namespace YAMP
         {
         }
 
-        public ArgsOperator(QueryContext query)
-            : base("(", 1000)
+        public ArgsOperator(QueryContext query) : base("(", 1000)
         {
             _query = query;
 		}
@@ -81,7 +80,7 @@ namespace YAMP
                 var sym = (SymbolExpression)expression;
                 symbolName = sym.SymbolName;
 
-                if (!context.Variables.ContainsKey(sym.SymbolName))
+                if (context.GetVariableContext(sym.SymbolName) == null)
                     context.AssignVariable(sym.SymbolName, new MatrixValue());
             }
 

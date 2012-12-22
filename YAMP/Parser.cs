@@ -153,7 +153,8 @@ namespace YAMP
 
 		void Build()
 		{
-			_query.Statements.Init(_query.Input);
+            var query = _query.Statements.ReplaceComments(_query.Input);
+			_query.Statements.Init(query);
 		}
 
 		#endregion

@@ -27,73 +27,49 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace YAMP
 {
-	class IfKeyword : Keyword
+    class KeywordExpression : Expression
     {
-        #region Members
+        #region ctor
 
-        ElseKeyword elseKeyword;
+        public KeywordExpression(QueryContext context, Keyword keyword) : base(string.Empty)
+        {
+            Query = context;
+            Key = keyword;
+        }
 
         #endregion
 
-        #region ctor
+        #region Properties
 
-        public IfKeyword() : base("if", 1)
-		{
-		}
-
-		public IfKeyword(QueryContext query) : this()
-		{
-			Query = query;
-		}
+        public Keyword Key
+        {
+            get;
+            private set;
+        }
 
         #endregion
 
         #region Methods
 
-        public override Keyword Create(QueryContext query)
-		{
-			return new IfKeyword(query);
-		}
-
-        public override Value Run(Dictionary<string, Value> symbols)
+        public override Value Interpret(Dictionary<string, Value> symbols)
         {
-            var condition = Arguments[0].Interpret(symbols);
-
-            if (condition != null && condition is ScalarValue)
-            {
-                var boolean = (ScalarValue)condition;
-
-                if (boolean.IsTrue)
-                    return Body.Interpret(symbols);
-                else if (elseKeyword != null)
-                    return elseKeyword.Run(symbols);
-
-                return null;
-            }
-
-            throw new ParseException(Offset, Token + ". A boolean value is required to determine the condition");
+            return Key.Run(symbols);
         }
 
-        public override string ParseBody()
+        public override Expression Create(QueryContext query, Match match)
         {
-            var rest = Body.Rest ?? string.Empty;
-            var index = rest.IndexOf("else");
+            return null;
+        }
 
-            if (index >= 0)
-            {
-                var between = rest.Substring(0, index);
-
-                if (!ParseTree.Scan(between, Tokens.Whitespace, Tokens.Newline))
-                {
-                    elseKeyword = new ElseKeyword(Query);
-                    elseKeyword.Offset = Offset + Input.Length - rest.Length + 4;
-                    return elseKeyword.Parse(rest.Substring(index + 4));
-                }
-            }
-
+        public override string Set(string input)
+        {
+            Key.Offset = Offset + Key.Token.Length;
+            var rest = Key.Parse(input.Substring(Key.Token.Length));
+            _input = Key.Input;
             return rest;
         }
 

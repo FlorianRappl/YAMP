@@ -77,6 +77,30 @@ namespace YAMP
             perform = function.Perform;
         }
 
+        public FunctionValue(string[] arguments, ParseTree body)
+        {
+            this.arguments = arguments;
+            canSerialize = false;
+            perform = (context, argument) =>
+            {
+                var av = new ArgumentsValue();
+                var symbols = new Dictionary<string, Value>();
+
+                if (argument is ArgumentsValue)
+                    av = (ArgumentsValue)argument;
+                else
+                    av.Insert(argument);
+
+                if (av.Length != arguments.Length)
+                    throw new ArgumentsException("Function", av.Length);
+
+                for (var i = 0; i < arguments.Length; i++)
+                    symbols.Add(arguments[i], av.Values[i]);
+
+                return body.Interpret(symbols);
+            };
+        }
+
         #endregion
 
         #region Methods

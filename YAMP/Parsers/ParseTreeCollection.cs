@@ -75,6 +75,24 @@ namespace YAMP
             }
         }
 
+        /// <summary>
+        /// Gets if the current statement collection should be cancelled.
+        /// </summary>
+        public bool Broken
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets the currently executed statement line.
+        /// </summary>
+        public ParseTree Current
+        {
+            get;
+            private set;
+        }
+
 		/// <summary>
 		/// Gets the start line number of the parse tree collection.
 		/// </summary>
@@ -96,15 +114,6 @@ namespace YAMP
                 return count;
             }
         }
-
-		/// <summary>
-		/// Gets the currently available rest.
-		/// </summary>
-		public string Rest
-		{
-			get;
-			internal set;
-		}
 
 		/// <summary>
 		/// Gets the currently parsed line.
@@ -146,6 +155,28 @@ namespace YAMP
 			return new KeywordParseTree(query, input, line);
 		}
 
+        public string ReplaceComments(string input)
+        {
+            var chars = new char[input.Length];
+
+            for (var i = 0; i < input.Length; i++)
+            {
+                var spaces = ParseTree.ReplaceComment(input.Substring(i));
+
+                if (spaces == 0)
+                    chars[i] = input[i];
+                else
+                {
+                    for (var j = 1; j < spaces; j++)
+                        chars[i++] = ' ';
+
+                    chars[i] = ' ';
+                }
+            }
+
+            return new String(chars);
+        }
+
 		/// <summary>
 		/// Initializes a parse tree collection, i.e. starts parsing.
 		/// </summary>
@@ -159,26 +190,21 @@ namespace YAMP
 
 			do
 			{
-				Rest = null;
 				var statement = CreateParser(query, current, line++);
 				statements.Add(statement);
 				count++;
-				current = Rest;
+				current = statement.Rest;
 			}
-			while (!string.IsNullOrEmpty(Rest));
+			while (!string.IsNullOrEmpty(current));
 		}
 
-		Keyword ParseKeyword(string input)
-		{
-			if (Parser.EnableScripting)
-			{
-				var tokens = ParseTree.Get(Tokens.Letter, input);
-				var keyword = Elements.Instance.FindKeyword(Query, tokens);
-				return keyword;
-			}
-
-			return null;
-		}
+        internal void Break()
+        {
+            if (Current.IsBreakable)
+                Broken = true;
+            else if (Query.Parent != null)
+                Query.Parent.Statements.Break();
+        }
 
 		/// <summary>
 		/// Evaluates a parsed tree collection, i.e. starts evaluating.
@@ -187,12 +213,14 @@ namespace YAMP
 		/// <returns>A value or null if nothing should be displayed.</returns>
         internal Value Run(Dictionary<string, Value> values)
         {
+            Broken = false;
             Value value = null;
 
             foreach (var statement in statements)
             {
                 if (statement.HasContent)
                 {
+                    Current = statement;
                     value = statement.Interpret(values);
 
                     if (!statement.IsAssignment)
@@ -205,6 +233,9 @@ namespace YAMP
                 }
                 else
                     value = null;
+
+                if (Broken)
+                    break;
             }
 
             return value;
@@ -221,5 +252,5 @@ namespace YAMP
         }
 
         #endregion
-	}
+    }
 }

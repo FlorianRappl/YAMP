@@ -9,7 +9,7 @@ namespace YAMP
     [Kind(PopularKinds.Constant)]
     class TrueConstant : BaseConstant
     {
-        static readonly ScalarValue _true = new ScalarValue(true);
+        public static readonly ScalarValue _true = new ScalarValue(true);
 
         public override Value Value
         {

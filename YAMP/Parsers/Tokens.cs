@@ -2,12 +2,13 @@
 
 namespace YAMP
 {
-	public enum Tokens
-	{
-		None,
-		Whitespace,
-		Newline,
-		Letter,
-		Number
-	}
+    public enum Tokens
+    {
+        None,
+        Whitespace,
+        Newline,
+        Letter,
+        Number,
+        Semicolon
+    }
 }

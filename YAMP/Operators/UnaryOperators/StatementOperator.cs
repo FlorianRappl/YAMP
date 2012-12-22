@@ -23,7 +23,6 @@ namespace YAMP
 
 		public override string Set(string input)
 		{
-			query.Statements.Rest = input.Substring(1);
 			return string.Empty;
 		}
 

@@ -49,7 +49,7 @@ namespace YAMP
             return null;
         }
 
-        SymbolExpression[] GetAllExpressions(TreeExpression tree)
+        public static SymbolExpression[] GetAllExpressions(TreeExpression tree)
         {
             var list = new List<SymbolExpression>();
 
