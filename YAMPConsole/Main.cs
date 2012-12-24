@@ -20,36 +20,36 @@ namespace YAMPConsole
 		
 		public static void Main (string[] args)
 		{
-            Console.WriteLine("Command Line Test Tool of YAMP");
-            Console.WriteLine();
-            Console.WriteLine("--------------------------");
-            Console.WriteLine();
-            Console.WriteLine(" YAMP VERSION " + YAMP.Parser.Version);
-            Console.WriteLine();
-            Console.WriteLine("--------------------------");
-            Console.WriteLine();
+			Console.WriteLine("Command Line Test Tool of YAMP");
+			Console.WriteLine();
+			Console.WriteLine("--------------------------");
+			Console.WriteLine();
+			Console.WriteLine(" YAMP VERSION " + YAMP.Parser.Version);
+			Console.WriteLine();
+			Console.WriteLine("--------------------------");
+			Console.WriteLine();
 
 #if DEBUG
 			Console.WriteLine("DEBUG MODE");
-            Console.WriteLine("----------");
-            Console.WriteLine("Testing the core . . .");
+			Console.WriteLine("----------");
+			Console.WriteLine("Testing the core . . .");
 			Tests();
-            Console.WriteLine("Press any key to continue . . .");
-            Console.ReadKey();
-            Console.WriteLine("Testing physics library . . .");
-            TestPhysics();
+			Console.WriteLine("Press any key to continue . . .");
+			Console.ReadKey();
+			Console.WriteLine("Testing physics library . . .");
+			TestPhysics();
 #elif BENCHMARKS
 			Console.WriteLine("BENCHMARK MODE");
 			Benchmarks();
 #elif CONSOLE
 			Console.WriteLine("CONSOLE MODE");
 			Console.WriteLine("Enter your own statements now (exit with the command 'exit'):");
-            Console.WriteLine();
-            var query = string.Empty;
-            var context = YAMP.Parser.Load();
-            LoadPhysics();
+			Console.WriteLine();
+			var query = string.Empty;
+			var context = YAMP.Parser.Load();
+			LoadPhysics();
 
-            YAMP.Parser.EnableScripting = true;
+			YAMP.Parser.EnableScripting = true;
 			YAMP.Parser.AddCustomFunction("G", v => new YAMP.ScalarValue((v as YAMP.ScalarValue).Value * Math.PI) );
 			YAMP.Parser.AddCustomConstant("R", 2.53);
 
@@ -131,7 +131,7 @@ namespace YAMPConsole
 				{
 					try
 					{
-                        var result = context.Run(query);
+						var result = context.Run(query);
 
 						if (result.Output != null)
 						{
@@ -151,10 +151,10 @@ namespace YAMPConsole
 
 		}
 
-        static void LoadPhysics()
-        {
-            YAMP.Parser.LoadPlugin(System.Reflection.Assembly.LoadFile(Environment.CurrentDirectory + "\\YAMP.Physics.dll"));
-        }
+		static void LoadPhysics()
+		{
+			YAMP.Parser.LoadPlugin(System.Reflection.Assembly.LoadFile(Environment.CurrentDirectory + "\\YAMP.Physics.dll"));
+		}
 
 #if BENCHMARKS
 
@@ -173,11 +173,11 @@ namespace YAMPConsole
 			Console.WriteLine("Starting benchmarks ...");	
 			Console.WriteLine("----------");
 
-            var lines = new string[0];
+			//var lines = new string[0];
 			// This is Benchmark #1
-            //var lines = File.ReadAllLines(BMK_FILE);
+			//var lines = File.ReadAllLines(BMK_FILE);
 			// This is Benchmark #2
-            //var lines = MakeTenK("2-3*5+7/2-8*2");
+			var lines = MakeTenK("2-3*5+7/2-8*2");
 			// This is Benchmark #3
 			//var lines = MakeTenK("2+3");
 			// This is Benchmark #4
@@ -269,10 +269,10 @@ namespace YAMPConsole
 #if DEBUG
 
 		static void Tests()
-        {
-            YAMP.Parser.EnableScripting = true;
-            success = 0;
-            total = 0;
+		{
+			YAMP.Parser.EnableScripting = true;
+			success = 0;
+			total = 0;
 			var sw = Stopwatch.StartNew();
 
 			Test("2-3-4", -5.0);
@@ -358,9 +358,9 @@ namespace YAMPConsole
 			Test("round(sum(randn(10000, 1)) / 1000)", 0.0);
 			Test("round(sum(rand(10000, 1)) / 1000)", 5.0);
 			Test("round(sum(randi(10000, 1, 1, 10)) / 10000)", 5.0);
-            Test("2+3//This is a line-comment!\n-4", 1.0);
-            Test("1-8* /* this is another comment */ 0.25", -1.0);
-            Test("1-8* /* this is \nanother comment\nwith new lines */ 0.5+4", 1.0);
+			Test("2+3//This is a line-comment!\n-4", 1.0);
+			Test("1-8* /* this is another comment */ 0.25", -1.0);
+			Test("1-8* /* this is \nanother comment\nwith new lines */ 0.5+4", 1.0);
 			Test("ode((t, x) => -x, 0:0.01:1, 1.0)(101, 2)", 0.36818409421192455);
 			Test("root(x => x.^2-4, 3)", 2.0000000000519473);
 			Test("sort([25,1,0,29,105,0,-5])(4)", 1.0);
@@ -371,12 +371,13 @@ namespace YAMPConsole
 			Test("imag(2+5i)", 5.0);
 			Test("bessel(2, 4.5)", 0.21784898358785076);
 			Test("erf(1.4)", 0.95228511976264874);
-            Test("x = round(sum(sum([1, 0; 0, 100] * Jackknife([3 + randn(1000, 1), 10 + 2 * randn(1000, 1)], 10, avg)))); sum([x < 29, x > 18]) / 2", 1.0);
-            Test("x = round(sum(sum([1, 0; 0, 10] * Jackknife([3 + randn(1000, 1), 10 + 2 * randn(1000, 1)], 10, var)*[10,0;0,1]))); sum([x < 24, x > 16]) / 2", 1.0);
-            Test("sum(sum(round(cor([3 + randn(100, 1), 10 + 2 * randn(100, 1)]))))", 2.0);
-            Test("sum(round(acor(3 + randn(100, 1))))", 1.0);
-            Test("x=[]; y= 0; for(i = 1; i <= 10; i+=1) { y+=i; x(i) = y; } x(10) - x(9)", 10.0);
-            Test("x=9; y=5; if(x > y) { t = x; x = y; y = t; } y - x", 4.0);
+			Test("x = round(sum(sum([1, 0; 0, 100] * Jackknife([3 + randn(1000, 1), 10 + 2 * randn(1000, 1)], 10, avg)))); sum([x < 29, x > 18]) / 2", 1.0);
+			Test("x = round(sum(sum([1, 0; 0, 10] * Jackknife([3 + randn(1000, 1), 10 + 2 * randn(1000, 1)], 10, var)*[10,0;0,1]))); sum([x < 24, x > 16]) / 2", 1.0);
+			Test("sum(sum(round(cor([3 + randn(100, 1), 10 + 2 * randn(100, 1)]))))", 2.0);
+			Test("sum(round(acor(3 + randn(100, 1))))", 1.0);
+			Test("x = []; y = 0; for(i = 1; i <= 10; i+=1) { y+=i; x(i) = y; } x(10) - x(9)", 10.0);
+			Test("x = 9; y = 5; if(x > y) { t = x; x = y; y = t; } y - x", 4.0);
+			Test("x = [3 + randn(100, 1), 10 + 2 * randn(100, 1)]; sum(sum(Bootstrap(x, 200, avg) - Jackknife(x, 20, avg))) < 0.1", 1.0);
 
 			sw.Stop();
 			
@@ -384,34 +385,34 @@ namespace YAMPConsole
 			Console.WriteLine("Time for the tests ... {0} ms", sw.ElapsedMilliseconds);
 		}
 
-        static void TestPhysics()
-        {
-            success = 0;
-            total = 0;
-            LoadPhysics();
+		static void TestPhysics()
+		{
+			success = 0;
+			total = 0;
+			LoadPhysics();
 
-            var sw = Stopwatch.StartNew();
+			var sw = Stopwatch.StartNew();
 
-            Test("convert(1, \"m / s\", \"km / h\")", 3.6);
-            Test("convert(1, \"eV\", \"J\") - Q", 0.0);
-            Test("convert(1, \"m\", \"ft\")", 3.2808);
-            Test("ylm(0, 0, 0, 0)", 0.5 / Math.Sqrt(Math.PI));
-            Test("ylm(0, 0, 10, 0)", 0.5 / Math.Sqrt(Math.PI));
-            Test("ylm(0, 0, 0, 5)", 0.5 / Math.Sqrt(Math.PI));
-            Test("ylm(1, 0, pi / 3, 0)", 0.5 * Math.Sqrt(3.0 / Math.PI) * Math.Cos(Math.PI / 3.0));
-            Test("ylm(2, 2, pi / 3, 0)", 0.28970565151739147);
-            Test("imag(ylm(2, 1, pi / 3, 0.5))", -0.16037899974811717);
-            Test("clebsch(0.5, 0.5)(1, 5)", 1.0);
-            Test("clebsch(0.5, 0.5)(5, 5)", 1.0 / Math.Sqrt(2.0));
-            Test("legendre(3, 1)", 1.0);
-            Test("hermite(3, 2)", 40.0);
-            Test("laguerre(2, 2)", -0.99999999999999956);
+			Test("convert(1, \"m / s\", \"km / h\")", 3.6);
+			Test("convert(1, \"eV\", \"J\") - Q", 0.0);
+			Test("convert(1, \"m\", \"ft\")", 3.2808);
+			Test("ylm(0, 0, 0, 0)", 0.5 / Math.Sqrt(Math.PI));
+			Test("ylm(0, 0, 10, 0)", 0.5 / Math.Sqrt(Math.PI));
+			Test("ylm(0, 0, 0, 5)", 0.5 / Math.Sqrt(Math.PI));
+			Test("ylm(1, 0, pi / 3, 0)", 0.5 * Math.Sqrt(3.0 / Math.PI) * Math.Cos(Math.PI / 3.0));
+			Test("ylm(2, 2, pi / 3, 0)", 0.28970565151739147);
+			Test("imag(ylm(2, 1, pi / 3, 0.5))", -0.16037899974811717);
+			Test("clebsch(0.5, 0.5)(1, 5)", 1.0);
+			Test("clebsch(0.5, 0.5)(5, 5)", 1.0 / Math.Sqrt(2.0));
+			Test("legendre(3, 1)", 1.0);
+			Test("hermite(3, 2)", 40.0);
+			Test("laguerre(2, 2)", -0.99999999999999956);
 
-            sw.Stop();
+			sw.Stop();
 
-            Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
-            Console.WriteLine("Time for the tests ... {0} ms", sw.ElapsedMilliseconds);
-        }
+			Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
+			Console.WriteLine("Time for the tests ... {0} ms", sw.ElapsedMilliseconds);
+		}
 		
 		static bool Test(string query, double xmin, double xmax, CompareAction compare)
 		{
@@ -497,5 +498,5 @@ namespace YAMPConsole
 		}
 
 #endif
-    }
+	}
 }

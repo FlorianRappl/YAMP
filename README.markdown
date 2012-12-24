@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **1.1.1**. A NuGet package (current version 1.1.1) is
+The current version number is **1.1.2**. A NuGet package (current version 1.1.2) is
 available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code -
 since the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -37,6 +37,31 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**1.1.2:**
+- Improved physics plugin (unit conversations done)
+- Extended `contourplot`, `polarplot` and fixed the color palette
+- Added the `sinc()` function to the physics plugin
+- Improved the output of scalars
+- Added logic function `isinfinite()`, `isnan()`
+- Added the `digamma()` function, i.e. psi(x) = psi_0(x)
+- Improved documentation
+- Added the `format()` function to define the output representation
+- Added constants `true`, `false`
+- Added statistic functions `acor()`, `cor()`, `cov()`, `hmean()`
+- Added statistic functions `jackknife()`, `xcor()` and `lsq()`
+- Added statistic function `bootstrap()`
+- Added the complex plot with `ComplexPlotValue` and the `cplot()` function
+- Added the bar plot with `BarPlotValue` and the `bar()` function
+- Added the error plot with `ErrorPlotValue` and the `errorbar()` function
+- Added the possibility to activate scripting by using `Parser.EnableScripting`
+- Added prelimary scripting with `if`, `for`, `do`, `while`, `function`
+- Added the possibility of having scopes with curly brackets
+- Improved `load()` function
+- Improved the parse trees and introduced keyword parse statements
+- Extended the `QueryContext` and `ParseContext` objects
+- Changed the syntax for lambda expressions from `@x => ...` to `x => ...`, i.e.
+  the @ sign is now obsolete
+
 **1.1.1:**
 - Added plugin project YAMP.Physics
 - Added some special functions to YAMP.Physics

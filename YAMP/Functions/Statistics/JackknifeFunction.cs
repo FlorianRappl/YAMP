@@ -6,33 +6,33 @@ namespace YAMP
     [Kind(PopularKinds.Function)]
     class JackknifeFunction : SystemFunction
     {
-        [Description("This function implements the blocked Jackknife for a functions of a set of vector data saved as the rows of a matrix. The function has to take a matrix of data as the first argument and has to return either a ScalarValue or a MatrixValue.")]
-        public MatrixValue Function(MatrixValue Configs, ScalarValue numberOfBlocks, FunctionValue Observable)
+        [Description("This function implements the blocked Jackknife for functions of a set of vector data saved as the rows of a matrix. The function has to take a matrix of data as the first argument and has to return either a scalar or a matrix.")]
+        [Example("Jackknife([3 + randn(100, 1), 10 + 2 * randn(100, 1)], 20, avg)", "Gives the statistical Jackknife estimate for the mean and the error on the mean of a dataset with 100 measurements, mean [3, 10], and gaussian noise of width [1, 4] for a blocksize of 20.")]
+        public MatrixValue Function(MatrixValue cfgs, ScalarValue n, FunctionValue f)
         {
-            return Function(Configs, numberOfBlocks, Observable, new ArgumentsValue());
+            return Function(cfgs, n, f, new ArgumentsValue());
         }
 
-        [Description("This function implements the blocked Jackknife for a functions of a set of vector data saved as the rows of a matrix. The function has to take a matrix of data as the first argument, can take constant other optional arguments, and has to return either a ScalarValue or a MatrixValue.")]
-        [Example("Jackknife([3+randn(100,1),10+2*randn(100,1)], 20, avg)", "Gives the statistical Jackknife estimate for the mean and the error on the mean of a dataset with 100 measurements, mean [3,10], and gaussian noise of width [1,4] for a blocksize of 20.")]
+        [Description("This function implements the blocked Jackknife for functions of a set of vector data saved as the rows of a matrix. The function has to take a matrix of data as the first argument, can take constant other optional arguments, and has to return either a scalar or a matrix.")]
         [Arguments(3, 1)]
-        public MatrixValue Function(MatrixValue Configs, ScalarValue numberOfBlocks, FunctionValue Observable, ArgumentsValue Parameters)
+        public MatrixValue Function(MatrixValue cfgs, ScalarValue n, FunctionValue f, ArgumentsValue P)
         {
-            int NumberOfBlocks = numberOfBlocks.IntValue;
-            int nConfigs = Configs.DimensionY;
-            int nData = Configs.DimensionX;
+            var NumberOfBlocks = n.IntValue;
+            var nConfigs = cfgs.DimensionY;
+            var nData = cfgs.DimensionX;
 
             if (NumberOfBlocks > nConfigs)
-                throw new YAMPException("Jackknife: NumberOfBlocks > nConfigs!");
+                throw new YAMPException("Jackknife: The number of measurements n is greater than the number of configurations cfgs!");
 
             if (NumberOfBlocks <= 1)
-                throw new YAMPException("Jackknife: NumberOfBlocks <= 1!");
+                throw new YAMPException("Jackknife: The number of measurements n <= 1!");
 
-            var parameters = new ArgumentsValue(Configs);
+            var parameters = new ArgumentsValue(cfgs);
 
-            foreach (var m in Parameters.Values)
+            foreach (var m in P.Values)
                 parameters.Insert(m);
 
-            var temp = Observable.Perform(Context, parameters);
+            var temp = f.Perform(Context, parameters);
             int nResult;//dimension of the result
 
             if (temp is ScalarValue)
@@ -40,65 +40,65 @@ namespace YAMP
             else if (temp is MatrixValue)
                 nResult = (temp as MatrixValue).Length;
             else
-                throw new YAMPException("Jackknife: Observable has to return either ScalarValue or MatrixValue!");
+                throw new YAMPException("Jackknife: Observable f has to return either a scalar or a matrix!");
 
             var JackknifeObservable = new MatrixValue(NumberOfBlocks, nResult);
-            int BlockSize = nConfigs / NumberOfBlocks;
-            int nConfigsBlocked = BlockSize * NumberOfBlocks;
-            int residualConfigs = nConfigs - nConfigsBlocked;
+            var BlockSize = nConfigs / NumberOfBlocks;
+            var nConfigsBlocked = BlockSize * NumberOfBlocks;
+            var residualConfigs = nConfigs - nConfigsBlocked;
 
             for (int i = 1; i <= NumberOfBlocks; i++)
             {
-                MatrixValue JackknifeConfigs;
-
                 if (i <= NumberOfBlocks - residualConfigs)
                 {
                     //the first (NumberOfBlocks - residualConfigs) blocks discard (BlockSize) elements ...
-                    JackknifeConfigs = new MatrixValue(nConfigs - BlockSize, nData);
+                    var JackknifeConfigs = new MatrixValue(nConfigs - BlockSize, nData);
                     int j = 1;
 
                     for (; j <= (i - 1) * BlockSize; j++)
                         for (int k = 1; k <= nData; k++)
-                            JackknifeConfigs[j, k] = Configs[j, k];
+                            JackknifeConfigs[j, k] = cfgs[j, k];
 
                     j += BlockSize;
 
                     for (; j <= nConfigs; j++)
                         for (int k = 1; k <= nData; k++)
-                            JackknifeConfigs[j - BlockSize, k] = Configs[j, k];
+                            JackknifeConfigs[j - BlockSize, k] = cfgs[j, k];
+
+                    parameters = new ArgumentsValue(JackknifeConfigs);
                 }
                 else
                 {
                     //... whereas the residual (residualConfigs) blocks discard (BlockSize + 1) elements
-                    JackknifeConfigs = new MatrixValue(nConfigs - BlockSize - 1, nData);
+                    var JackknifeConfigs = new MatrixValue(nConfigs - BlockSize - 1, nData);
                     int j = 1;
 
                     for (; j <= nConfigs - (NumberOfBlocks - (i - 1)) * (BlockSize + 1); j++)
                         for (int k = 1; k <= nData; k++)
-                            JackknifeConfigs[j, k] = Configs[j, k];
+                            JackknifeConfigs[j, k] = cfgs[j, k];
 
                     j += BlockSize + 1;
 
                     for (; j <= nConfigs; j++)
                         for (int k = 1; k <= nData; k++)
-                            JackknifeConfigs[j - BlockSize - 1, k] = Configs[j, k];
+                            JackknifeConfigs[j - BlockSize - 1, k] = cfgs[j, k];
+
+                    parameters = new ArgumentsValue(JackknifeConfigs);
                 }
 
-                parameters = new ArgumentsValue(JackknifeConfigs);
-
-                foreach (var m in Parameters.Values)
+                foreach (var m in P.Values)
                     parameters.Insert(m);
 
-                temp = Observable.Perform(Context, parameters);
+                temp = f.Perform(Context, parameters);
 
                 if (temp is ScalarValue)
                     JackknifeObservable[i] = (ScalarValue)temp;
                 else
                 {
-                    var m = (MatrixValue)temp;
+                    var T = (MatrixValue)temp;
 
                     for (int k = 1; k <= nResult; k++)
-                        JackknifeObservable[i, k] = m[k];
+                        JackknifeObservable[i, k] = T[k];
                 }
             }
 
@@ -113,17 +113,18 @@ namespace YAMP
                 }
                 else
                 {
+                    var m = (MatrixValue)temp;
+
                     for (int k = 1; k <= nResult; k++)
                     {
-                        JackknifeObservable[i, k] -= (temp as MatrixValue)[k];
+                        JackknifeObservable[i, k] -= m[k];
                         JackknifeObservable[i, k] *= JackknifeObservable[i, k];
                     }
                 }
             }
 
             var error = AvgFunction.Average(JackknifeObservable);
-
-            double scale = NumberOfBlocks - 1;
+            var scale = NumberOfBlocks - 1.0;
 
             if (error is ScalarValue)
                 error = ((ScalarValue)error) * scale;
@@ -147,10 +148,13 @@ namespace YAMP
             }
             else
             {
+                var T = (MatrixValue)temp;
+                var E = (MatrixValue)error;
+
                 for (int k = 1; k <= nResult; k++)
                 {
-                    result[1, k] = ((MatrixValue)temp)[k];
-                    result[2, k] = ((MatrixValue)error)[k];
+                    result[1, k] = T[k];
+                    result[2, k] = E[k];
                 }
             }
 

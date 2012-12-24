@@ -13,8 +13,8 @@ namespace YAMP
 		[Example("randi(0, 10)", "Gets a random integer between 0 and 10 (both inclusive).")]
 		public ScalarValue Function (ScalarValue min, ScalarValue max)
 		{
-			ran.Alpha  = min.IntValue;
 			ran.Beta = max.IntValue;
+			ran.Alpha  = min.IntValue;
 			return new ScalarValue(ran.Next());
 		}
 
@@ -22,8 +22,8 @@ namespace YAMP
 		[Example("randi(5, 0, 10)", "Gets a 5x5 matrix with random integers between 0 and 10 (both inclusive).")]
 		public MatrixValue Function(ScalarValue dim, ScalarValue min, ScalarValue max)
 		{
-			ran.Alpha = min.IntValue;
 			ran.Beta = max.IntValue;
+			ran.Alpha = min.IntValue;
 			var k = (int)dim.Value;
 
 			if (k < 1)
@@ -42,8 +42,8 @@ namespace YAMP
 		[Example("randi(5, 2, 0, 10)", "Gets a 5x2 matrix with random integers between 0 and 10 (both inclusive).")]
 		public MatrixValue Function(ScalarValue rows, ScalarValue cols, ScalarValue min, ScalarValue max)
 		{
-			ran.Alpha = min.IntValue;
 			ran.Beta = max.IntValue;
+			ran.Alpha = min.IntValue;
 			var k = (int)rows.Value;
 			var l = (int)cols.Value;
 			var m = new MatrixValue(k, l);
@@ -53,6 +53,11 @@ namespace YAMP
 					m[j, i] = new ScalarValue(ran.Next());
 			
 			return m;
+		}
+
+		public static DiscreteUniformDistribution Generator
+		{
+			get { return ran; }
 		}
 	}
 }
