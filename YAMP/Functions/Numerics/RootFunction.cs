@@ -8,8 +8,8 @@ namespace YAMP
 	class RootFunction : SystemFunction
 	{
 		[Description("This function calls finds the root of f(x) that is the closest to the given value of x. The output is a value x0, which has the property that f(x0) = 0. There might be more roots depending on the starting value of x.")]
-		[Example("root(@x => x^2+x, -2)", "Returns the value of -1, which has been found as a root of the function f(x) = x^2 + x. The starting value of x has been chosen to -2.")]
-		[Example("root(@x => x^2+x, 1)", "Returns the value of 0, which has been found as a root of the function f(x) = x^2 + x. The starting value of x has been chosen to 0.")]
+		[Example("root(x => x^2+x, -2)", "Returns the value of -1, which has been found as a root of the function f(x) = x^2 + x. The starting value of x has been chosen to -2.")]
+		[Example("root(x => x^2+x, 1)", "Returns the value of 0, which has been found as a root of the function f(x) = x^2 + x. The starting value of x has been chosen to 0.")]
 		public ScalarValue Function(FunctionValue f, ScalarValue x)
 		{
 			Func<double, double> lambda = t =>

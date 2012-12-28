@@ -110,6 +110,7 @@
     <Compile Include="Functions\LinearAlgebra\LUFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\QRFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\SvdFunction.cs" />
+    <Compile Include="Functions\LinearAlgebra\VectorFunction.cs" />
     <Compile Include="Functions\LogicFunctions\IsInfiniteFunction.cs" />
     <Compile Include="Functions\LogicFunctions\IsNaNFunction.cs" />
     <Compile Include="Functions\Numerics\DiffFunction.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Functions\StandardFunctions\SortFunction.cs" />
     <Compile Include="Functions\Statistics\ACorFunction.cs" />
     <Compile Include="Functions\Statistics\AvgFunction.cs" />
+    <Compile Include="Functions\Statistics\BootstrapFunction.cs" />
     <Compile Include="Functions\Statistics\CorFunction.cs" />
     <Compile Include="Functions\Statistics\CovFunction.cs" />
     <Compile Include="Functions\Statistics\DevFunction.cs" />
@@ -180,7 +182,11 @@
     <Compile Include="Functions\SystemFunctions\VerFunction.cs" />
     <Compile Include="Functions\SystemFunctions\WhoFunction.cs" />
     <Compile Include="Functions\VisualizationFunction.cs" />
+    <Compile Include="Functions\Visualization\BarFunction.cs" />
     <Compile Include="Functions\Visualization\ContourFunction.cs" />
+    <Compile Include="Functions\Visualization\CplotFunction.cs" />
+    <Compile Include="Functions\Visualization\ErrorbarFunction.cs" />
+    <Compile Include="Functions\Visualization\Plot3Function.cs" />
     <Compile Include="Functions\Visualization\SetFunction.cs" />
     <Compile Include="Functions\Visualization\LogLogFunction.cs" />
     <Compile Include="Functions\Visualization\PlotFunction.cs" />
@@ -326,9 +332,11 @@
     <Compile Include="Scripting\WhileKeyword.cs" />
     <Compile Include="Values\Arguments\FunctionValue.cs" />
     <Compile Include="Values\Numeric\NumericValue.cs" />
+    <Compile Include="Values\Plots\BarPlotValue.cs" />
     <Compile Include="Values\Plots\ColorPalettes.cs" />
     <Compile Include="Values\Plots\ComplexPlotValue.cs" />
     <Compile Include="Values\Plots\ContourPlotValue.cs" />
+    <Compile Include="Values\Plots\ErrorPlotValue.cs" />
     <Compile Include="Values\Plots\LegendPosition.cs" />
     <Compile Include="Values\Plots\Plot2DValue.cs" />
     <Compile Include="Values\Plots\Plot3DValue.cs" />

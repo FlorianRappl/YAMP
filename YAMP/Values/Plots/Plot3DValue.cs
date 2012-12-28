@@ -1,28 +1,28 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
-    All rights reserved.
+	Copyright (c) 2012, Florian Rappl.
+	All rights reserved.
 
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-        * Redistributions of source code must retain the above copyright
-          notice, this list of conditions and the following disclaimer.
-        * Redistributions in binary form must reproduce the above copyright
-          notice, this list of conditions and the following disclaimer in the
-          documentation and/or other materials provided with the distribution.
-        * Neither the name of the YAMP team nor the names of its contributors
-          may be used to endorse or promote products derived from this
-          software without specific prior written permission.
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+		* Redistributions of source code must retain the above copyright
+		  notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright
+		  notice, this list of conditions and the following disclaimer in the
+		  documentation and/or other materials provided with the distribution.
+		* Neither the name of the YAMP team nor the names of its contributors
+		  may be used to endorse or promote products derived from this
+		  software without specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-    DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
@@ -32,17 +32,17 @@ using YAMP.Converter;
 
 namespace YAMP
 {
-    public sealed class Plot3DValue : PlotValue
-    {
-        #region ctor
+	public sealed class Plot3DValue : PlotValue
+	{
+		#region ctor
 
-        public Plot3DValue()
+		public Plot3DValue()
 		{
 		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]
@@ -62,11 +62,11 @@ namespace YAMP
 
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]
-        public bool IsLogZ
-        {
-            get;
-            internal set;
-        }
+		public bool IsLogZ
+		{
+			get;
+			internal set;
+		}
 
 		[StringToStringConverter]
 		public string ZLabel
@@ -90,272 +90,280 @@ namespace YAMP
 		}
 
 		[MatrixToDoubleArrayConverter]
-        public double[] ZRange
-        {
-            get { return new double[] { MinZ, MaxZ }; }
-            set
-            {
-                MinZ = value[0];
-                MaxZ = value[1];
-            }
-        }
+		public double[] ZRange
+		{
+			get { return new double[] { MinZ, MaxZ }; }
+			set
+			{
+				MinZ = value[0];
+				MaxZ = value[1];
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        public void SetZRange(double min, double max)
-        {
-            MinZ = min;
-            MaxZ = max;
-        }
+		public void SetZRange(double min, double max)
+		{
+			MinZ = min;
+			MaxZ = max;
+		}
 
-        public override void AddPoints(MatrixValue m)
-        {
-            if (m.DimensionY == 0 || m.DimensionX == 0)
-                return;
+		public override void AddPoints(MatrixValue m)
+		{
+			if (m.DimensionY == 0 || m.DimensionX == 0)
+				return;
 
-            if (m.IsVector)
-                return;
-            else if (m.DimensionX <= m.DimensionY && m.DimensionX == 3)
-            {
-                var x = ConvertY(m, 0, m.DimensionY, 0);
-                var y = ConvertY(m, 0, m.DimensionY, 1);
-                var z = ConvertY(m, 0, m.DimensionY, 2);
-                AddValues(x, y, z);
-            }
-            else if(m.DimensionX > m.DimensionY && m.DimensionY == 3)
-            {
-                var x = ConvertX(m, 0, m.DimensionX, 0);
-                var y = ConvertX(m, 0, m.DimensionX, 1);
-                var z = ConvertX(m, 0, m.DimensionX, 2);
-                AddValues(x, y, z);
-            }
-        }
+			if (m.IsVector)
+				return;
+			else if (m.DimensionX <= m.DimensionY && m.DimensionX == 3)
+			{
+				var x = ConvertY(m, 0, m.DimensionY, 0);
+				var y = ConvertY(m, 0, m.DimensionY, 1);
+				var z = ConvertY(m, 0, m.DimensionY, 2);
+				AddValues(x, y, z);
+			}
+			else if(m.DimensionX > m.DimensionY && m.DimensionY == 3)
+			{
+				var x = ConvertX(m, 0, m.DimensionX, 0);
+				var y = ConvertX(m, 0, m.DimensionX, 1);
+				var z = ConvertX(m, 0, m.DimensionX, 2);
+				AddValues(x, y, z);
+			}
+		}
 
-        public void AddPoints(MatrixValue x, params MatrixValue[] zs)
-        {
-            double[] vx = null;
-            double[] vy = null;
-            double[] vz = null;
+		public void AddPoints(MatrixValue x, MatrixValue y, MatrixValue z)
+		{
+			var _x = Convert(x, 0, x.Length);
+			var _y = Convert(y, 0, y.Length);
+			var _z = Convert(z, 0, z.Length);
+			AddValues(_x, _y, _z);
+		}
 
-            if (x.IsVector)
-            {
-                if (zs.Length < 2)
-                    return;
+		public void AddPoints(MatrixValue x, params MatrixValue[] zs)
+		{
+			double[] vx = null;
+			double[] vy = null;
+			double[] vz = null;
 
-                vx = Convert(x, 0, x.Length);
-            }
-            else
-            {
-                AddPoints(x);
+			if (x.IsVector)
+			{
+				if (zs.Length < 2)
+					return;
 
-                foreach(MatrixValue z in zs)
-                    AddPoints(z);
+				vx = Convert(x, 0, x.Length);
+			}
+			else
+			{
+				AddPoints(x);
 
-                return;
-            }
+				foreach(MatrixValue z in zs)
+					AddPoints(z);
+
+				return;
+			}
 
 
-            for(int i = 0; i < zs.Length; i++)
-            {
-                if (zs[i].IsVector)
-                {
-                    if (vy == null)
-                        vy = Convert(zs[i], 0, zs[i].Length);
-                    else
-                    {
-                        vz = Convert(zs[i], 0, zs[i].Length);
-                        AddValues(vx, vy, vz);
-                        vx = null;
-                        vz = null;
-                    }
-                }
-                else if (zs[i].DimensionX <= zs[i].DimensionY && zs[i].DimensionX == 2)
-                {
-                    vy = ConvertY(zs[i], 0, zs[i].DimensionY, 0);
-                    vz = ConvertY(zs[i], 0, zs[i].DimensionY, 1);
-                    AddValues(vx, vy, vz);
-                }
-                else if (zs[i].DimensionX > zs[i].DimensionY && zs[i].DimensionY == 2)
-                {
-                    vy = ConvertX(zs[i], 0, zs[i].DimensionX, 0);
-                    vz = ConvertX(zs[i], 0, zs[i].DimensionX, 1);
-                    AddValues(vx, vy, vz);
-                }
-            }
-        }
+			for(int i = 0; i < zs.Length; i++)
+			{
+				if (zs[i].IsVector)
+				{
+					if (vy == null)
+						vy = Convert(zs[i], 0, zs[i].Length);
+					else
+					{
+						vz = Convert(zs[i], 0, zs[i].Length);
+						AddValues(vx, vy, vz);
+						vx = null;
+						vz = null;
+					}
+				}
+				else if (zs[i].DimensionX <= zs[i].DimensionY && zs[i].DimensionX == 2)
+				{
+					vy = ConvertY(zs[i], 0, zs[i].DimensionY, 0);
+					vz = ConvertY(zs[i], 0, zs[i].DimensionY, 1);
+					AddValues(vx, vy, vz);
+				}
+				else if (zs[i].DimensionX > zs[i].DimensionY && zs[i].DimensionY == 2)
+				{
+					vy = ConvertX(zs[i], 0, zs[i].DimensionX, 0);
+					vz = ConvertX(zs[i], 0, zs[i].DimensionX, 1);
+					AddValues(vx, vy, vz);
+				}
+			}
+		}
 
-        void AddValues(double[] _x, double[] _y, double[] _z)
-        {
-            var p = new Points<PointTriple>();
-            var length = Math.Min(_x.Length, Math.Min(_y.Length, _z.Length));
-            var xmin = double.MaxValue;
-            var xmax = double.MinValue;
-            var ymin = double.MaxValue;
-            var ymax = double.MinValue;
-            var zmin = double.MaxValue;
-            var zmax = double.MinValue;
+		void AddValues(double[] _x, double[] _y, double[] _z)
+		{
+			var p = new Points<PointTriple>();
+			var length = Math.Min(_x.Length, Math.Min(_y.Length, _z.Length));
+			var xmin = double.MaxValue;
+			var xmax = double.MinValue;
+			var ymin = double.MaxValue;
+			var ymax = double.MinValue;
+			var zmin = double.MaxValue;
+			var zmax = double.MinValue;
 
-            for (var i = 0; i < length; i++)
-            {
-                var x = _x[i];
-                var y = _y[i];
-                var z = _z[i];
+			for (var i = 0; i < length; i++)
+			{
+				var x = _x[i];
+				var y = _y[i];
+				var z = _z[i];
 
-                p.Add(new PointTriple
-                {
-                    X = x,
-                    Y = y,
-                    Z = z
-                });
+				p.Add(new PointTriple
+				{
+					X = x,
+					Y = y,
+					Z = z
+				});
 
-                if (x < xmin)
-                    xmin = x;
+				if (x < xmin)
+					xmin = x;
 
-                if (xmax < x)
-                    xmax = x;
+				if (xmax < x)
+					xmax = x;
 
-                if (y < ymin)
-                    ymin = y;
+				if (y < ymin)
+					ymin = y;
 
-                if (ymax < y)
-                    ymax = y;
+				if (ymax < y)
+					ymax = y;
 
-                if (z < zmin)
-                    zmin = z;
+				if (z < zmin)
+					zmin = z;
 
-                if (zmax < z)
-                    zmax = z;
-            }
+				if (zmax < z)
+					zmax = z;
+			}
 
-            if (Count == 0 || xmin < MinX)
-                MinX = xmin;
+			if (Count == 0 || xmin < MinX)
+				MinX = xmin;
 
-            if (Count == 0 || xmax > MaxX)
-                MaxX = xmax;
+			if (Count == 0 || xmax > MaxX)
+				MaxX = xmax;
 
-            if (Count == 0 || ymin < MinY)
-                MinY = ymin;
+			if (Count == 0 || ymin < MinY)
+				MinY = ymin;
 
-            if (Count == 0 || ymax > MaxY)
-                MaxY = ymax;
+			if (Count == 0 || ymax > MaxY)
+				MaxY = ymax;
 
-            if (Count == 0 || zmin < MinZ)
-                MinZ = zmin;
+			if (Count == 0 || zmin < MinZ)
+				MinZ = zmin;
 
-            if (Count == 0 || zmax > MaxZ)
-                MaxZ = zmax;
+			if (Count == 0 || zmax > MaxZ)
+				MaxZ = zmax;
 
-            AddSeries(p);
-        }
+			AddSeries(p);
+		}
 
-        #endregion
+		#endregion
 
-        #region Nested Type
+		#region Nested Type
 
-        public struct PointTriple
-        {
-            public double X;
-            public double Y;
-            public double Z;
-        }
+		public struct PointTriple
+		{
+			public double X;
+			public double Y;
+			public double Z;
+		}
 
 		#endregion
 
 		#region Serialization
 
-        public override byte[] Serialize()
-        {
-            using (var s = Serializer.Create())
-            {
-                Serialize(s);
-                s.Serialize(MinZ);
-                s.Serialize(MaxZ);
-                s.Serialize(ZLabel);
-                s.Serialize(IsLogX);
-                s.Serialize(IsLogY);
-                s.Serialize(IsLogZ);
-                s.Serialize(Count);
+		public override byte[] Serialize()
+		{
+			using (var s = Serializer.Create())
+			{
+				Serialize(s);
+				s.Serialize(MinZ);
+				s.Serialize(MaxZ);
+				s.Serialize(ZLabel);
+				s.Serialize(IsLogX);
+				s.Serialize(IsLogY);
+				s.Serialize(IsLogZ);
+				s.Serialize(Count);
 
-                for (var i = 0; i < Count; i++)
-                {
-                    var points = this[i];
-                    points.Serialize(s);
-                    s.Serialize(points.Count);
+				for (var i = 0; i < Count; i++)
+				{
+					var points = this[i];
+					points.Serialize(s);
+					s.Serialize(points.Count);
 
-                    for (int j = 0; j < points.Count; j++)
-                    {
-                        s.Serialize(points[j].X);
-                        s.Serialize(points[j].Y);
-                        s.Serialize(points[j].Z);
-                    }
-                }
+					for (int j = 0; j < points.Count; j++)
+					{
+						s.Serialize(points[j].X);
+						s.Serialize(points[j].Y);
+						s.Serialize(points[j].Z);
+					}
+				}
 
-                return s.Value;
-            }
-        }
+				return s.Value;
+			}
+		}
 
-        public override Value Deserialize(byte[] content)
-        {
-            using (var ds = Deserializer.Create(content))
-            {
-                Deserialize(ds);
-                MinZ = ds.GetDouble();
-                MaxZ = ds.GetDouble();
-                ZLabel = ds.GetString();
-                IsLogX = ds.GetBoolean();
-                IsLogY = ds.GetBoolean();
-                IsLogZ = ds.GetBoolean();
-                var length = ds.GetInt();
+		public override Value Deserialize(byte[] content)
+		{
+			using (var ds = Deserializer.Create(content))
+			{
+				Deserialize(ds);
+				MinZ = ds.GetDouble();
+				MaxZ = ds.GetDouble();
+				ZLabel = ds.GetString();
+				IsLogX = ds.GetBoolean();
+				IsLogY = ds.GetBoolean();
+				IsLogZ = ds.GetBoolean();
+				var length = ds.GetInt();
 
-                for (var i = 0; i < length; i++)
-                {
-                    var points = new Points<PointTriple>();
-                    points.Deserialize(ds);
-                    var count = ds.GetInt();
+				for (var i = 0; i < length; i++)
+				{
+					var points = new Points<PointTriple>();
+					points.Deserialize(ds);
+					var count = ds.GetInt();
 
-                    for (int j = 0; j < count; j++)
-                    {
-                        var x = ds.GetDouble();
-                        var y = ds.GetDouble();
-                        var z = ds.GetDouble();
+					for (int j = 0; j < count; j++)
+					{
+						var x = ds.GetDouble();
+						var y = ds.GetDouble();
+						var z = ds.GetDouble();
 
-                        points.Add(new PointTriple
-                        {
-                            X = x,
-                            Y = y,
-                            Z = z
-                        });
-                    }
+						points.Add(new PointTriple
+						{
+							X = x,
+							Y = y,
+							Z = z
+						});
+					}
 
-                    AddSeries(points);
-                }
-            }
+					AddSeries(points);
+				}
+			}
 
-            return this;
-        }
+			return this;
+		}
 
-        #endregion
+		#endregion
 
-        #region Index
+		#region Index
 
-        public Points<PointTriple> this[int index]
-        {
-            get
-            {
-                return base.GetSeries(index) as Points<PointTriple>;
-            }
-        }
+		public Points<PointTriple> this[int index]
+		{
+			get
+			{
+				return base.GetSeries(index) as Points<PointTriple>;
+			}
+		}
 
-        public PointTriple this[int index, int point]
-        {
-            get
-            {
-                return this[index][point];
-            }
-        }
+		public PointTriple this[int index, int point]
+		{
+			get
+			{
+				return this[index][point];
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -39,9 +39,8 @@ namespace YAMP
 
                 scale /= M.DimensionY;
 
-                for (var i = 1; i <= s.DimensionY; i++)
-                    for (int j = 1; j <= s.DimensionX; j++)
-                        s[i, j] *= scale;
+                for (int j = 1; j <= s.DimensionX; j++)
+                    s[1, j] *= scale;
 
                 return s;
             }

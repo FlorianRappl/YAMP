@@ -39,7 +39,7 @@ namespace YAMP
 
 		string _original;
 		string _input;
-        ParseTreeCollection statements;
+		ParseTreeCollection statements;
 
 		#endregion
 
@@ -52,64 +52,64 @@ namespace YAMP
 		public QueryContext(string input)
 		{
 			Input = input;
-            statements = new ParseTreeCollection(this);
+			statements = new ParseTreeCollection(this);
 		}
 
-        /// <summary>
-        /// Creates a new (underlying) QueryContext
-        /// </summary>
-        /// <param name="query">The query context to copy</param>
-        internal QueryContext(QueryContext query) : this(query.Input)
-        {
-            Parent = query;
-            Context = new ParseContext(query.Context);
-        }
+		/// <summary>
+		/// Creates a new (underlying) QueryContext
+		/// </summary>
+		/// <param name="query">The query context to copy</param>
+		internal QueryContext(QueryContext query) : this(query.Input)
+		{
+			Parent = query;
+			Context = new ParseContext(query.Context);
+		}
 
-        /// <summary>
-        /// Just a stupid dummy!
-        /// </summary>
-        private QueryContext()
-        {
-        }
+		/// <summary>
+		/// Just a stupid dummy!
+		/// </summary>
+		private QueryContext()
+		{
+		}
 
-        /// <summary>
-        /// Creates a dummy context that just holds the given ParseContext.
-        /// </summary>
-        /// <param name="context">The ParseContext to contain</param>
-        /// <returns>A new (dummy) QueryContext</returns>
-        public static QueryContext Dummy(ParseContext context)
-        {
-            var query = new QueryContext();
-            query.Context = context;
-            return query;
-        }
+		/// <summary>
+		/// Creates a dummy context that just holds the given ParseContext.
+		/// </summary>
+		/// <param name="context">The ParseContext to contain</param>
+		/// <returns>A new (dummy) QueryContext</returns>
+		public static QueryContext Dummy(ParseContext context)
+		{
+			var query = new QueryContext();
+			query.Context = context;
+			return query;
+		}
 
 		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        /// Gets the parent of this query context.
-        /// </summary>
-        public QueryContext Parent
-        {
-            get;
-            private set;
-        }
+		/// <summary>
+		/// Gets the parent of this query context.
+		/// </summary>
+		public QueryContext Parent
+		{
+			get;
+			private set;
+		}
 
-        /// <summary>
-        /// Gets the result in a string representation.
-        /// </summary>
-        public string Result
-        {
-            get
-            {
-                if (Output == null)
-                    return string.Empty;
+		/// <summary>
+		/// Gets the result in a string representation.
+		/// </summary>
+		public string Result
+		{
+			get
+			{
+				if (Output == null)
+					return string.Empty;
 
-                return Output.ToString(Context);
-            }
-        }
+				return Output.ToString(Context);
+			}
+		}
 
 		/// <summary>
 		/// Gets the input that is being used by the parser.
@@ -131,10 +131,10 @@ namespace YAMP
 		/// <summary>
 		/// Gets a boolean indicating whether the result should be printed.
 		/// </summary>
-        public bool IsMuted
-        {
-            get { return Output == null; }
-        }
+		public bool IsMuted
+		{
+			get { return Output == null; }
+		}
 
 		/// <summary>
 		/// Gets the original passed input.
@@ -154,13 +154,13 @@ namespace YAMP
 		/// </summary>
 		public ParseContext Context { get; internal set; }
 
-        /// <summary>
-        /// Gets the statements generated for this query.
-        /// </summary>
-        public ParseTreeCollection Statements
-        {
-            get { return statements; }
-        }
+		/// <summary>
+		/// Gets the statements generated for this query.
+		/// </summary>
+		public ParseTreeCollection Statements
+		{
+			get { return statements; }
+		}
 
 		#endregion
 
@@ -168,7 +168,7 @@ namespace YAMP
 
 		internal void Interpret(Dictionary<string, Value> values)
 		{
-            Output = Statements.Run(values);
+			Output = Statements.Run(values);
 		}
 
 		public override string ToString()
@@ -177,5 +177,5 @@ namespace YAMP
 		}
 
 		#endregion
-    }
+	}
 }

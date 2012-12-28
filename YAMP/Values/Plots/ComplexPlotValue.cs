@@ -29,11 +29,45 @@ using System;
 
 namespace YAMP
 {
-    public class ComplexPlotValue : PlotValue
+    public sealed class ComplexPlotValue : PlotValue
     {
+        #region Members
+
+        IFunction f;
+
+        #endregion
+
+        #region ctor
+
+        public ComplexPlotValue()
+        {
+            XLabel = "Real";
+            YLabel = "Imaginary";
+            ShowLegend = false;
+        }
+
+        #endregion
+
+        #region Properties
+
+        public Func<ScalarValue, ScalarValue> Fz
+        {
+            get
+            {
+                if (f != null)
+                    return z => f.Perform(ParseContext.Default, z) as ScalarValue;
+
+                return z => z;
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
         public void SetFunction(IFunction function)
         {
-            //TODO
+            f = function;
         }
 
         public override void AddPoints(MatrixValue m)
@@ -41,14 +75,17 @@ namespace YAMP
             //Leave empty
         }
 
+        #endregion
+
         #region Serialization
 
         public override byte[] Serialize()
         {
+            //TODO The plot cannot be saved at the moment!
+
             using (var s = Serializer.Create())
             {
                 Serialize(s);
-
                 return s.Value;
             }
         }
