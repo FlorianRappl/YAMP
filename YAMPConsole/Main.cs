@@ -377,6 +377,7 @@ namespace YAMPConsole
             Test("sum(round(acor(3 + randn(100, 1))))", 1.0);
             Test("x=[]; y= 0; for(i = 1; i <= 10; i+=1) { y+=i; x(i) = y; } x(10) - x(9)", 10.0);
             Test("x=9; y=5; if(x > y) { t = x; x = y; y = t; } y - x", 4.0);
+			Test("sum(dim([\n1 2 3 4\n5 6 7 8]))", 6.0);
 
 			sw.Stop();
 			

@@ -30,6 +30,9 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
+	/// <summary>
+	/// Abstract base class of scripting keywords.
+	/// </summary>
 	abstract class Keyword : IRegisterElement
     {
         #region ctor

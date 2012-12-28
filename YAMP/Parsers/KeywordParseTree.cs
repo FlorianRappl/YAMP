@@ -29,6 +29,9 @@ using System;
 
 namespace YAMP
 {
+	/// <summary>
+	/// The class used to (additionally) detect keywords in statements.
+	/// </summary>
 	class KeywordParseTree : StatementParseTree
     {
         #region Members

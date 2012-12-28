@@ -32,7 +32,7 @@ using System.Text;
 namespace YAMP
 {
 	/// <summary>
-	/// The class used for the global and local ParseTree
+	/// The class used for the global and local ParseTree.
 	/// </summary>
 	public class ParseTree
 	{

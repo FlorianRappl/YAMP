@@ -30,6 +30,9 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
+	/// <summary>
+	/// The else keyword - can (and should) only be instantiated by the if keyword.
+	/// </summary>
     class ElseKeyword : Keyword
     {
         #region ctor
