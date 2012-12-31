@@ -40,6 +40,7 @@ namespace YAMP
 		{
 			IsLogX = false;
 			IsLogY = false;
+			InitializeBoundaries();
 		}
 
 		#endregion
@@ -155,10 +156,10 @@ namespace YAMP
 		void AddValues(double[] _x, double[] _y)
 		{
 			var p = new Points<PointPair>();
-			var xmin = double.MaxValue;
-			var xmax = double.MinValue;
-			var ymin = double.MaxValue;
-			var ymax = double.MinValue;
+			var xmin = MinX;
+			var xmax = MaxX;
+			var ymin = MinY;
+			var ymax = MaxY;
 
 			for (var i = 0; i < _y.Length; i++)
 			{

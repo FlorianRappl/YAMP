@@ -38,6 +38,7 @@ namespace YAMP
 
 		public Plot3DValue()
 		{
+			InitializeBoundaries();
 		}
 
 		#endregion
@@ -103,6 +104,13 @@ namespace YAMP
 		#endregion
 
 		#region Methods
+
+		protected override void InitializeBoundaries()
+		{
+			base.InitializeBoundaries();
+			MinZ = double.MaxValue;
+			MaxZ = double.MinValue;
+		}
 
 		public void SetZRange(double min, double max)
 		{
@@ -198,12 +206,12 @@ namespace YAMP
 		{
 			var p = new Points<PointTriple>();
 			var length = Math.Min(_x.Length, Math.Min(_y.Length, _z.Length));
-			var xmin = double.MaxValue;
-			var xmax = double.MinValue;
-			var ymin = double.MaxValue;
-			var ymax = double.MinValue;
-			var zmin = double.MaxValue;
-			var zmax = double.MinValue;
+			var xmin = MinX;
+			var xmax = MaxX;
+			var ymin = MinY;
+			var ymax = MaxY;
+			var zmin = MinZ;
+			var zmax = MaxZ;
 
 			for (var i = 0; i < length; i++)
 			{

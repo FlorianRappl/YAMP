@@ -198,6 +198,14 @@ namespace YAMP
 
 		#region Methods
 
+		protected virtual void InitializeBoundaries()
+		{
+			MinX = double.MaxValue;
+			MaxX = double.MinValue;
+			MinY = double.MaxValue;
+			MaxY = double.MinValue;
+		}
+
 		internal void RaisePlotChanged(string property)
 		{
 			if (OnPlotChanged != null)

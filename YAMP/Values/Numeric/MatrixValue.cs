@@ -79,6 +79,24 @@ namespace YAMP
 			get { return dimY; }
 			protected set { dimY = value; }
 		}
+
+		/// <summary>
+		/// Gets the number of columns (alias for DimensionX).
+		/// </summary>
+		public int Columns
+		{
+			get { return dimX; }
+			protected set { dimX = value; }
+		}
+
+		/// <summary>
+		/// Gets the number of rows (alias for DimensionY).
+		/// </summary>
+		public int Rows
+		{
+			get { return dimY; }
+			protected set { dimY = value; }
+		}
 		
         /// <summary>
         /// Gets the length of the matrix, i.e. rows * columns.

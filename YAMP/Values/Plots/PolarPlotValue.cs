@@ -40,6 +40,7 @@ namespace YAMP
 			FractionSymbol = "π";
 			FractionUnit = Math.PI;
 			Gridlines = true;
+			InitializeBoundaries();
 		}
 
 		#endregion
@@ -156,8 +157,8 @@ namespace YAMP
 			var p = new Points<PointPair>();
 			MinX = 0.0;
 			MaxX = 2.0 * Math.PI;
-			var ymin = double.MaxValue;
-			var ymax = double.MinValue;
+			var ymin = MinY;
+			var ymax = MaxY;
 
 			for (var i = 0; i < _y.Length; i++)
 			{

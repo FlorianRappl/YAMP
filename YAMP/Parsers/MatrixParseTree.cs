@@ -83,5 +83,11 @@ namespace YAMP
 
 			throw new ParseException(input);
 		}
+
+		protected override Expression FindExpression(string input)
+		{
+			Skips.Clear();
+			return base.FindExpression(input);
+		}
 	}
 }

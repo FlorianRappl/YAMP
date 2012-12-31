@@ -357,7 +357,7 @@ namespace YAMPConsole
 			Test("[a,b,c]=12.0;b", 12.0);
 			Test("round(sum(randn(10000, 1)) / 1000)", 0.0);
 			Test("round(sum(rand(10000, 1)) / 1000)", 5.0);
-			Test("round(sum(randi(10000, 1, 1, 10)) / 10000)", 5.0);
+			Test("round(sum(randi(10000, 1, 1, 9)) / 10000)", 5.0);
 			Test("2+3//This is a line-comment!\n-4", 1.0);
 			Test("1-8* /* this is another comment */ 0.25", -1.0);
 			Test("1-8* /* this is \nanother comment\nwith new lines */ 0.5+4", 1.0);

@@ -49,6 +49,11 @@ namespace YAMP
 
 		public override void AddPoints(MatrixValue m)
 		{
+			MinX = 1.0;
+			MaxX = 1.0;
+			MinY = 0.0;
+			MaxY = 0.0;
+
 			for (var i = 1; i <= m.Length; i++)
 			{
 				var value = 0.0;
@@ -57,6 +62,14 @@ namespace YAMP
 					value = m[i].Abs().Value;
 				else
 					value = m[i].Value;
+
+				if (value < MinY)
+					MinY = value;
+				else if (value > MaxY)
+					MaxY = value;
+
+				if (i > MaxX)
+					MaxX = i;
 
 				AddSeries(new BarPoint(value));
 			}
@@ -113,9 +126,10 @@ namespace YAMP
 		{
 			public BarPoint()
 			{
+				BarWidth = 1.0;
 			}
 
-			public BarPoint(double y)
+			public BarPoint(double y) : this()
 			{
 				Add(y);
 			}

@@ -186,6 +186,8 @@
     <Compile Include="Functions\Visualization\ContourFunction.cs" />
     <Compile Include="Functions\Visualization\CplotFunction.cs" />
     <Compile Include="Functions\Visualization\ErrorbarFunction.cs" />
+    <Compile Include="Functions\Visualization\FplotFunction.cs" />
+    <Compile Include="Functions\Visualization\HistFunction.cs" />
     <Compile Include="Functions\Visualization\Plot3Function.cs" />
     <Compile Include="Functions\Visualization\SetFunction.cs" />
     <Compile Include="Functions\Visualization\LogLogFunction.cs" />

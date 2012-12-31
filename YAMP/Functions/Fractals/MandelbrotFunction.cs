@@ -6,7 +6,15 @@ namespace YAMP
 	[Description("Calculates values within the Mandelbrot fractal.")]
 	[Kind(PopularKinds.Function)]
     class MandelbrotFunction : ArgumentFunction
-    {
+	{
+		[Description("Calculates a point in the Mandelbrot fractal.")]
+		[Example("mandelbrot(-2.5 - 1i)", "Computes the point z = x + iy with x = -2.5, y = -1.")]
+		public ScalarValue Function(ScalarValue z)
+		{
+			var m = new Mandelbrot();
+			return new ScalarValue(m.Run(z.Value, z.ImaginaryValue));
+		}
+
         [Description("Calculates a point in the Mandelbrot fractal.")]
         [Example("mandelbrot(-2.5, -1)", "Computes the point with x = -2.5, y = -1.")]
         public ScalarValue Function(ScalarValue x, ScalarValue y)
