@@ -8,22 +8,25 @@ namespace YAMP
 	{		
 		public override Value Perform (Value argument)
 		{
-			if(argument is ScalarValue)
-			{
-				return (argument as ScalarValue).Abs();
-			}
-			else if(argument is MatrixValue)
-			{
-				var m = argument as MatrixValue;
-				
-				if(m.IsVector)
-					return m.Abs();
-				
-				return m.Det();
-			}
-			
-			throw new OperationNotSupportedException("abs", argument);
+            return Abs(argument);
 		}
+
+        public static Value Abs(Value argument)
+        {
+            if (argument is ScalarValue)
+                return new ScalarValue(((ScalarValue)argument).Abs());
+            else if (argument is MatrixValue)
+            {
+                var m = argument as MatrixValue;
+
+                if (m.IsVector)
+                    return m.Abs();
+
+                return m.Det();
+            }
+
+            throw new YAMPOperationInvalidException("abs", argument);
+        }
 
         [Description("Gives the absolute value of the provided scalar.")]
         [Example("abs(3-4)", "Results in 1.")]

@@ -17,8 +17,8 @@ namespace YAMP
 				var av = new ArgumentsValue(new ScalarValue(t), new ScalarValue(x));
 				var sv = deq.Perform(Context, av);
 
-				if (!(sv is ScalarValue))
-					throw new ArgumentTypeNotSupportedException("ode", 1, sv.Header);
+                if (!(sv is ScalarValue))
+                    throw new YAMPArgumentInvalidException(Name, sv.Header, 1);
 
 				return ((ScalarValue)sv).Value;
 			};

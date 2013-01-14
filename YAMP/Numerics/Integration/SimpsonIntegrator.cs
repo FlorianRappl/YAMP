@@ -15,7 +15,7 @@ namespace YAMP.Numerics
             var y = Values;
 
             if (x.Length != y.Length)
-                throw new DimensionException(x.Length, y.Length);
+                throw new YAMPDifferentLengthsException(x.Length, y.Length);
 
             var sum = 0.0;
 

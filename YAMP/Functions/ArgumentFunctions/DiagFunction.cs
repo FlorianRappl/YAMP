@@ -34,30 +34,30 @@ namespace YAMP
 		{
 			var m = new MatrixValue();
 
-			for (var i = 0; i < values.Length; i++)
+			for (var i = 1; i <= values.Length; i++)
 			{
 				var sy = m.DimensionY;
 				var sx = m.DimensionX;
 
-				if (values.Values[i] is ScalarValue)
-				{
-					var s = (ScalarValue)values.Values[i];
-					m[sy + 1, sx + 1] = s.Clone();
-				}
-				else if (values.Values[i] is MatrixValue)
-				{
-					var n = (MatrixValue)values.Values[i];
+                if (values[i] is ScalarValue)
+                {
+                    var s = (ScalarValue)values[i];
+                    m[sy + 1, sx + 1] = s.Clone();
+                }
+                else if (values[i] is MatrixValue)
+                {
+                    var n = (MatrixValue)values[i];
 
-					for(var l = 1; l <= n.DimensionX; l++)
-					{
-						for (var k = 1; k <= n.DimensionY; k++)
-						{
-							m[sy + k, sx + l] = n[k, l].Clone();
-						}
-					}
-				}
-				else
-					throw new ArgumentTypeNotSupportedException("diag", i + 1, values.Values[i].Header);
+                    for (var l = 1; l <= n.DimensionX; l++)
+                    {
+                        for (var k = 1; k <= n.DimensionY; k++)
+                        {
+                            m[sy + k, sx + l] = n[k, l].Clone();
+                        }
+                    }
+                }
+                else
+                    throw new YAMPArgumentInvalidException(Name, values[i].Header, i);
 			}
 
 			return m;

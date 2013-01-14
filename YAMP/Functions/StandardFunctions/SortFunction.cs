@@ -18,7 +18,7 @@ namespace YAMP
 
 			for(var i = 0; i < matrix.DimensionX; i++)
 			{
-				var vec = matrix.SubMatrix(0, matrix.DimensionY, i, i + 1);
+				var vec = matrix.GetSubMatrix(0, matrix.DimensionY, i, i + 1);
 				result = result.AddRow(vec.VectorSort());
 			}
 

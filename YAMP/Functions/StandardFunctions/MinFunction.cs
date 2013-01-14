@@ -30,7 +30,7 @@ namespace YAMP
 				}
 			}
 
-			throw new OperationNotSupportedException("min", argument);
+			throw new YAMPOperationInvalidException("min", argument);
 		}
 
         [Description("Evaluates the vector(s) and outputs the minimum scalar(s) in the vector(s).")]
@@ -49,7 +49,7 @@ namespace YAMP
 
 			for(var i = 1; i <= vec.Length; i++)
 			{
-				temp = vec[i].Abs().Value;
+				temp = vec[i].Abs();
 
 				if (temp < min)
 				{

@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2012, Florian Rappl.
+	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Reflection;
 
 namespace YAMP
@@ -43,7 +42,7 @@ namespace YAMP
 		#region Members
 
 		IDictionary<string, Operator> operators;
-		IDictionary<Regex, Expression> expressions;
+		List<Expression> expressions;
 		IDictionary<string, Keyword> keywords;
 		
 		#endregion
@@ -53,7 +52,7 @@ namespace YAMP
 		Elements ()
 		{
 			operators = new Dictionary<string, Operator>();
-			expressions = new Dictionary<Regex, Expression>();
+			expressions = new List<Expression>();
 			keywords = new Dictionary<string, Keyword>();
 		}
 		
@@ -89,7 +88,14 @@ namespace YAMP
 					continue;
 
                 if (type.Name.EndsWith("Value"))
+                {
+                    var ctor = type.GetConstructor(Value.EmptyTypes);
+
+                    if (ctor != null)
+                        (ctor.Invoke(null) as IRegisterElement).RegisterElement();
+
                     continue;
+                }
 
 			    var interfaces = type.GetInterfaces();
 
@@ -130,150 +136,148 @@ namespace YAMP
 
 		#region Add elements
 		
+        /// <summary>
+        /// Adds an operator to the dictionary.
+        /// </summary>
+        /// <param name="pattern">The operator pattern, i.e. += for add and assign.</param>
+        /// <param name="op">The instance of the operator.</param>
 		public void AddOperator(string pattern, Operator op)
 		{
 			operators.Add(pattern, op);
 		}
 
-		public void AddExpression(string pattern, Expression exp)
+        /// <summary>
+        /// Adds an expression to the list of expressions.
+        /// </summary>
+        /// <param name="exp">The instance of the expression.</param>
+		public void AddExpression(Expression exp)
 		{
-			expressions.Add(new Regex("^" + pattern, RegexOptions.Singleline), exp);
+			expressions.Add(exp);
 		}
 
-		public void AddKeyword(string pattern, Keyword keyword)
-		{
-			keywords.Add(pattern, keyword);
-		}
+        /// <summary>
+        /// Adds a keyword to the dictionary.
+        /// </summary>
+        /// <param name="pattern">The exact keyword pattern, i.e. for for the for-loop.</param>
+        /// <param name="keyword">The instance of the keyword.</param>
+        public void AddKeyword(string pattern, Keyword keyword)
+        {
+            keywords.Add(pattern, keyword);
+        }
 		
 		#endregion
 
 		#region Find elements
 
 		/// <summary>
-		/// Finds the closest matching operator in a given dictionary of expressions and returns null when nothing is found.
-		/// </summary>
-		/// <param name="expressions">The pool of operators passed in a dictionary.</param>
-		/// <param name="context">The query's context.</param>
-		/// <param name="input">The current input.</param>
-		/// <returns>Operator that matches the beginning of the input string or null.</returns>
-		public static Operator FindOperator(IDictionary<string, Operator> operators, QueryContext context, string input)
-		{
-			var maxop = string.Empty;
-			var notfound = true;
-
-			foreach (var op in operators.Keys)
-			{
-				if (op.Length > input.Length)
-					continue;
-
-				if (op.Length <= maxop.Length)
-					continue;
-
-				notfound = false;
-
-				for (var i = 0; i < op.Length; i++)
-					if (notfound = (input[i] != op[i]))
-						break;
-
-				if (notfound == false)
-					maxop = op;
-			}
-
-			if (maxop.Length == 0)
-				return null;
-
-			return operators[maxop].Create(context);
-		}
-
-		/// <summary>
-		/// Finds the closest matching operator in the available pool and returns null when nothing is found.
-		/// </summary>
-		/// <param name="context">The query's context.</param>
-		/// <param name="input">The current input.</param>
-		/// <returns>Operator that matches the beginning of the input string or null.</returns>
-		public static Operator FindAvailableOperator(QueryContext context, string input)
-		{
-			return FindOperator(Instance.operators, context, input);
-		}
-
-		/// <summary>
 		/// Searches for the given keyword in the list of available keywords. Creates a class if the keyword is found.
 		/// </summary>
-		/// <param name="context">The current context.</param>
 		/// <param name="keyword">The keyword to look for.</param>
-		/// <returns>A freshly created instance of the found keyword object.</returns>
-		public Keyword FindKeyword(QueryContext context, string keyword)
-		{
-			if(keywords.ContainsKey(keyword))
-				return keywords[keyword].Create(context);
+		/// <returns>Keyword that matches the given keyword.</returns>
+        public Expression FindKeywordExpression(string keyword, ParseEngine engine)
+        {
+            if (keywords.ContainsKey(keyword))
+                return keywords[keyword].Scan(engine);
 
-			return null;
-		}
+            return null;
+        }
 
-		/// <summary>
-		/// Finds the closest matching operator and throws and exception when nothing is found.
-		/// </summary>
-		/// <param name="context">The query's context.</param>
-		/// <param name="input">The current input.</param>
-		/// <returns>Operator that matches the beginning of the input string.</returns>
-		public Operator FindOperator(QueryContext context, string input)
-		{
-			var op = FindOperator(operators, context, input);
+        /// <summary>
+        /// Finds the exact keyword by its type.
+        /// </summary>
+        /// <typeparam name="T">The type of the keyword.</typeparam>
+        /// <returns>The keyword or null.</returns>
+        public T FindKeywordExpression<T>() where T : Keyword
+        {
+            foreach (var keyword in keywords.Values)
+                if (keyword is T)
+                    return (T)keyword;
 
-			if (op == null)
-				throw new ParseException(input);
+            return null;
+        }
 
-			return op;
-		}
+        /// <summary>
+        /// Finds the closest matching expression.
+        /// </summary>
+        /// <param name="engine">The engine to parse the query.</param>
+        /// <returns>Expression that matches the current characters.</returns>
+        public Expression FindExpression(ParseEngine engine)
+        {
+            foreach (var origin in expressions)
+            {
+                var exp = origin.Scan(engine);
 
-		/// <summary>
-		/// Finds the closest matching expression in a given dictionary of expressions and returns null when nothing is found.
-		/// </summary>
-		/// <param name="expressions">The pool of expressions passed in a dictionary.</param>
-		/// <param name="context">The query's context.</param>
-		/// <param name="input">The current input.</param>
-		/// <returns>Expression that matches the beginning of the input string or null.</returns>
-		public static Expression FindExpression(IDictionary<Regex, Expression> expressions, QueryContext context, string input)
-		{
-			Match m = null;
+                if (exp != null)
+                    return exp;
+            }
 
-			foreach (var rx in expressions.Keys)
-			{
-				m = rx.Match(input);
+            return null;
+        }
 
-				if (m.Success)
-					return expressions[rx].Create(context, m);
-			}
+        /// <summary>
+        /// Finds the exact expression by its type.
+        /// </summary>
+        /// <typeparam name="T">The type of the expression.</typeparam>
+        /// <returns>The expression or null.</returns>
+        public T FindExpression<T>() where T : Expression
+        {
+            foreach (var exp in expressions)
+                if (exp is T)
+                    return (T)exp;
 
-			return null;
-		}
+            return null;
+        }
 
-		/// <summary>
-		/// Finds the closest matching expression in the available pool and returns null when nothing is found.
-		/// </summary>
-		/// <param name="context">The query's context.</param>
-		/// <param name="input">The current input.</param>
-		/// <returns>Expression that matches the beginning of the input string or null.</returns>
-		public static Expression FindAvailableExpression(QueryContext context, string input)
-		{
-			return FindExpression(Instance.expressions, context, input);
-		}
-		
-		/// <summary>
-		/// Finds the closest matching expression and throws and exception when nothing is found.
-		/// </summary>
-		/// <param name="context">The query's context.</param>
-		/// <param name="input">The current input.</param>
-		/// <returns>Expression that matches the beginning of the input string.</returns>
-		public Expression FindExpression(QueryContext context, string input)
-		{
-			var exp = FindExpression(expressions, context, input);
+        /// <summary>
+        /// Finds the closest matching operator.
+        /// </summary>
+        /// <param name="engine">The engine to parse the query.</param>
+        /// <returns>Operator that matches the current characters.</returns>
+        public Operator FindOperator(ParseEngine engine)
+        {
+            var maxop = string.Empty;
+            var notfound = true;
+            var chars = engine.Characters;
+            var ptr = engine.Pointer;
+            var rest = chars.Length - ptr;
+            
+            foreach (var op in operators.Keys)
+            {
+                if (op.Length > rest)
+                    continue;
 
-			if(exp == null)
-				throw new ExpressionNotFoundException(input);
+                if (op.Length <= maxop.Length)
+                    continue;
 
-			return exp;
-		}
+                notfound = false;
+
+                for (var i = 0; i < op.Length; i++)
+                    if (notfound = (chars[ptr + i] != op[i]))
+                        break;
+
+                if (notfound == false)
+                    maxop = op;
+            }
+
+            if (maxop.Length == 0)
+                return null;
+
+            return operators[maxop].Create(engine);
+        }
+
+        /// <summary>
+        /// Finds the exact operator by its type.
+        /// </summary>
+        /// <typeparam name="T">The type of the operator.</typeparam>
+        /// <returns>The operator or null.</returns>
+        public T FindOperator<T>() where T : Operator
+        {
+            foreach (var op in operators.Values)
+                if (op is T)
+                    return (T)op;
+
+            return null;
+        }
 		
 		#endregion
 

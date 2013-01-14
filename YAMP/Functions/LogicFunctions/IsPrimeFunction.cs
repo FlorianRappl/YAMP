@@ -8,7 +8,7 @@ namespace YAMP
     {
         protected override ScalarValue GetValue(ScalarValue value)
         {
-            return value.IsPrime();
+            return new ScalarValue(value.IsPrime);
         }
     }
 }

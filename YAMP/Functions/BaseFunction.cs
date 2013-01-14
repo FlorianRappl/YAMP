@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,23 @@ namespace YAMP
 	/// The abstract base class for StandardFunctions and ArgumentFunctions
 	/// </summary>
 	public abstract class BaseFunction : IFunction
-	{
+    {
+        #region Members
+
         string name;
 
-		public BaseFunction()
+        #endregion
+
+        #region ctor
+
+        public BaseFunction()
         {
             name = GetType().Name.RemoveFunctionConvention().ToLower();
         }
+
+        #endregion
+
+        #region Properties
 
         public string Name
         {
@@ -49,11 +59,17 @@ namespace YAMP
             }
         }
 
-		public abstract Value Perform(Value argument);
+        #endregion
+
+        #region Methods
+
+        public abstract Value Perform(Value argument);
 
 		public virtual Value Perform(ParseContext context, Value argument)
 		{
 			return Perform(argument);
-		}
-	}
+        }
+
+        #endregion
+    }
 }

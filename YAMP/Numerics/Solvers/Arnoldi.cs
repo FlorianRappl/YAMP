@@ -39,17 +39,18 @@ namespace YAMP.Numerics
             for (int i = 1; i <= j; i++)
             {
                 var w = v.GetColumnVector(i);
-                H[i, j] = right.Adjungate().Multiply(w) as ScalarValue;
+                H[i, j] = right.Adjungate().Dot(w);
                 sum = sum + H[i, j] * w;
             }
 
             var wj = right - sum;
             H[j + 1, j] = wj.Abs();
 
-            if (H[j + 1, j].Abs().Value == 0.0)
+            if (H[j + 1, j].Abs() == 0.0)
                 return true;
 
-            v.SetColumnVector(j + 1, wj.Divide(H[j + 1, j]) as MatrixValue);
+            var y = wj / H[j + 1, j];
+            v.SetColumnVector(j + 1, y);
             return false;
         }
     }

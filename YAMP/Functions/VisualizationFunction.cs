@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,10 @@ using System;
 
 namespace YAMP
 {
+    /// <summary>
+    /// The visualization function is a special kind of system function, which
+    /// takes care of the given plot (setting it as "LastPlot").
+    /// </summary>
     public abstract class VisualizationFunction : SystemFunction
     {
         public override Value Perform(Value argument)

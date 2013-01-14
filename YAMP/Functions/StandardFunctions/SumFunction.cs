@@ -29,7 +29,7 @@ namespace YAMP
 				}
 			}
 			
-			throw new OperationNotSupportedException("sum", argument);
+			throw new YAMPOperationInvalidException("sum", argument);
 		}
 
         [Description("Evaluates the vector(s) and outputs the sum(s) of the vector(s).")]

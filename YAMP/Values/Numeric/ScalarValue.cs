@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,9 @@ using System.Text;
 
 namespace YAMP
 {
+    /// <summary>
+    /// A scalar value, which is a complex double type.
+    /// </summary>
 	public class ScalarValue : NumericValue
     {
         #region Constants
@@ -177,7 +180,32 @@ namespace YAMP
 		{
 			get { return _imag; }
 			set { _imag = value; }
-		}
+        }
+
+        /// <summary>
+        /// Gets a boolean if the number is a real integer.
+        /// </summary>
+        public bool IsInt
+        {
+            get 
+            {
+                return (double)IntValue == Value && ImaginaryValue == 0.0;
+            }
+        }
+
+        /// <summary>
+        /// Gets a boolean if the number is real and a prime number.
+        /// </summary>
+        public bool IsPrime
+        {
+            get
+            {
+                if (IsInt && IntValue > 0)
+                    return IsPrimeNumber(IntValue);
+
+                return false;
+            }
+        }
 
         /// <summary>
         /// Gets a boolean if the number is real (imaginary part zero).
@@ -219,7 +247,29 @@ namespace YAMP
 
         #endregion
 
-        #region Methods
+        #region Geometry
+
+        /// <summary>
+        /// Resets the current value.
+        /// </summary>
+        public override void Clear()
+        {
+            this._real = 0.0;
+            this._imag = 0.0;
+        }
+
+        /// <summary>
+        /// Copies the current instance.
+        /// </summary>
+        /// <returns>A deep copy of the current scalar.</returns>
+        public virtual ScalarValue Clone()
+        {
+            return new ScalarValue(this);
+        }
+
+        #endregion
+
+        #region Mathematics
 
         /// <summary>
         /// Computes Atan2(imaginary, real), i.e. the angle in the complex (gaussian) plane.
@@ -231,40 +281,31 @@ namespace YAMP
         }
 
         /// <summary>
-        /// Computes z * z = z^2.
-        /// </summary>
-        /// <returns>The square of the current instance.</returns>
-		public ScalarValue Square()
-		{
-			return this * this;
-		}
-
-        /// <summary>
-        /// Copies the current instance.
-        /// </summary>
-        /// <returns>A deep copy of the current scalar.</returns>
-        public virtual ScalarValue Clone()
-		{
-			return new ScalarValue(this);
-		}
-		
-        /// <summary>
         /// Computes the absolute value of the current scalar.
         /// </summary>
         /// <returns>The absolute value, which is a real scalar.</returns>
-		public override ScalarValue Abs()
-		{
-			return new ScalarValue(abs());
-		}
+        public double Abs()
+        {
+            return Math.Sqrt(_real * _real + _imag * _imag);
+        }
 
         /// <summary>
         /// Computes the absolute value squared of the current scalar.
         /// </summary>
         /// <returns>The squared absolute value, which is a real scalar.</returns>
-        public override ScalarValue AbsSquare()
+        public double AbsSquare()
         {
-            return new ScalarValue(_real * _real + _imag * _imag);
+            return _real * _real + _imag * _imag;
         }
+
+        /// <summary>
+        /// Computes z * z = z^2.
+        /// </summary>
+        /// <returns>The square of the current instance.</returns>
+		public virtual ScalarValue Square()
+		{
+			return this * this;
+		}
 		
         /// <summary>
         /// Conjugates the current scalar value, i.e. switches the sign of the imaginary value.
@@ -274,149 +315,117 @@ namespace YAMP
 		{
 			return new ScalarValue(_real, -_imag);
 		}
-		
-		public override Value Add(Value right)
-		{
-			if(right is ScalarValue)
-			{
-				var r = (ScalarValue)right;
-                var re = _real + r._real;
-                var im = _imag + r._imag;
-                return new ScalarValue(re, im);
-            }
-            else if (right is MatrixValue)
-            {
-				var r = (MatrixValue)right;
-                return r.Add(this);
-            }
-			else if(right is StringValue)
-			{
-				var t = new StringValue(this.ToString());
-				return t.Add(right);
-			}
-			
-			throw new OperationNotSupportedException("+", right);
-		}
-		
-		public override Value Subtract(Value right)
-		{
-			if(right is ScalarValue)
-			{
-				var r = (ScalarValue)right;
-                var re = _real - r._real;
-                var im = _imag - r._imag;
-                return new ScalarValue(re, im);
-            }
-            else if (right is MatrixValue)
-            {
-				var r = (MatrixValue)right;
-				var m = new MatrixValue(r.DimensionY, r.DimensionX);
-				
-				for(var j = 1; j <= r.DimensionY; j++)
-					for(var i = 1; i <= r.DimensionX; i++)
-						m[j, i] = (ScalarValue)Subtract(r[j, i]);
-				
-				return m;
-            }
-			
-			throw new OperationNotSupportedException("-", right);
-		}
-		
-		public override Value Multiply(Value right)
-		{
-			if(right is ScalarValue)
-			{
-				var r = (ScalarValue)right;
 
-				if (IsZero)
-					return new ScalarValue();
-				else if (_real == 0.0)
-					return new ScalarValue(-_imag * r._imag, r._real * _imag);
-				else if (_imag == 0.0)
-					return new ScalarValue(_real * r._real, _real * r._imag);
+        /// <summary>
+        /// Raises the scalar to the specified power.
+        /// </summary>
+        /// <param name="exponent">The exponent for raising the scalar.</param>
+        /// <returns>A new scalar that represents the result of the operation.</returns>
+        public ScalarValue Pow(ScalarValue exponent)
+        {
+            if (Value == 0.0 && ImaginaryValue == 0.0)
+                return new ScalarValue();
 
-				var re = _real * r._real - _imag * r._imag;
-				var im = _real * r._imag + _imag * r._real;
-                return new ScalarValue(re, im);
-			}
-            else if (right is MatrixValue)
-            {
-				var r = (MatrixValue)right;
-                return r.Multiply(this);
-            }
-			
-			throw new OperationNotSupportedException("*", right);
-		}
-		
-		public override Value Divide(Value right)
-		{
-			if(right is ScalarValue)
-			{
-				var r = (ScalarValue)right;
+            var theta = _real == 0.0 ? Math.PI / 2 * Math.Sign(ImaginaryValue) : Math.Atan2(_imag, _real);
+            var L = _real / Math.Cos(theta);
+            var phi = Ln() * exponent._imag;
+            var R = (I * phi).Exp();
+            var alpha = _real == 0.0 ? 1.0 : Math.Pow(Math.Abs(L), exponent._real);
+            var beta = theta * exponent._real;
+            var _cos = Math.Cos(beta);
+            var _sin = Math.Sin(beta);
+            var re = alpha * (_cos * R._real - _sin * R._imag);
+            var im = alpha * (_cos * R._imag + _sin * R._real);
 
-				if (r.IsZero)
-				{
-					if (IsZero)
-						return new ScalarValue(1.0);
+            if (L < 0)
+                return new ScalarValue(-im, re);
 
-					return new ScalarValue(_real != 0.0 ? _real / 0.0 : 0.0, _imag != 0.0 ? _imag / 0.0 : 0.0);
-				}
+            return new ScalarValue(re, im);
+        }
 
-				r = r.Conjugate();
-                var q = r._real * r._real + r._imag * r._imag;
-                var re = (_real * r._real - _imag * r._imag) / q;
-                var im = (_real * r._imag + _imag * r._real) / q;
-				return new ScalarValue(re, im);
-			}
-			else if(right is MatrixValue)
-			{
-				var inv = ((MatrixValue)right).Inverse();
-				return this.Multiply(inv);
-			}
-			
-			throw new OperationNotSupportedException("/", right);
-		}
-		
-		public override Value Power(Value exponent)
-		{
-            if(exponent is ScalarValue)
-			{
-                if (Value == 0.0 && ImaginaryValue == 0.0)
-                    return new ScalarValue();
+        /// <summary>
+        /// Takes the square root of the scalar.
+        /// </summary>
+        /// <returns>The square root of the value.</returns>
+        public virtual ScalarValue Sqrt()
+        {
+            return Pow(new ScalarValue(0.5));
+        }
 
-				var exp = (ScalarValue)exponent;
-                var theta = _real == 0.0 ? Math.PI / 2 * Math.Sign(ImaginaryValue) : Math.Atan2(_imag, _real);
-                var L = _real / Math.Cos(theta);
-                var phi = Ln() * exp._imag;
-				var R = ((ScalarValue)I.Multiply(phi)).Exp();
-                var alpha = _real == 0.0 ? 1.0 : Math.Pow(Math.Abs(L), exp._real);
-                var beta = theta * exp._real;
-                var _cos = Math.Cos(beta);
-                var _sin = Math.Sin(beta);
-                var re = alpha * (_cos * R._real - _sin * R._imag);
-                var im = alpha * (_cos * R._imag + _sin * R._real);
+        /// <summary>
+        /// Takes the cosine of the scalar.
+        /// </summary>
+        /// <returns>The cosine of the value.</returns>
+        public virtual ScalarValue Cos()
+        {
+            var re = Math.Cos(_real) * Math.Cosh(_imag);
+            var im = -Math.Sin(_real) * Math.Sinh(_imag);
+            return new ScalarValue(re, im);
+        }
 
-                if (L < 0)
-                    return new ScalarValue(-im, re);
-                
-                return new ScalarValue(re, im);
-			}
-			else if(exponent is MatrixValue)
-			{
-				var b = (MatrixValue)exponent;
-				var m = new MatrixValue(b.DimensionY, b.DimensionX);
+        /// <summary>
+        /// Takes the sine of the scalar.
+        /// </summary>
+        /// <returns>The sine of the value.</returns>
+        public virtual ScalarValue Sin()
+        {
+            var re = Math.Sin(_real) * Math.Cosh(_imag);
+            var im = Math.Cos(_real) * Math.Sinh(_imag);
+            return new ScalarValue(re, im);
+        }
 
-				for(var i = 1; i <= b.DimensionX; i++)
-					for(var j = 1; j <= b.DimensionY; j++)
-						m[j, i] = (ScalarValue)Power(b[j, i]);
+        /// <summary>
+        /// Takes the exponential of the scalar.
+        /// </summary>
+        /// <returns>The exponential of the value.</returns>
+        public virtual ScalarValue Exp()
+        {
+            var f = Math.Exp(_real);
+            var re = f * Math.Cos(_imag);
+            var im = f * Math.Sin(_imag);
+            return new ScalarValue(re, im);
+        }
 
-				return m;
-			}
-			
-			throw new OperationNotSupportedException("^", exponent);
-		}
-		
-		public override byte[] Serialize()
+        /// <summary>
+        /// Takes the natural logarithm of the scalar.
+        /// </summary>
+        /// <returns>The natural logarithm of the value.</returns>
+        public virtual ScalarValue Ln()
+        {
+            var re = Math.Log(Abs());
+            var im = Arg();
+            return new ScalarValue(re, im);
+        }
+
+        /// <summary>
+        /// Takes the base-10 logarithm of the scalar.
+        /// </summary>
+        /// <returns>The base-10 logarithm of the value.</returns>
+        public virtual ScalarValue Log()
+        {
+            var re = Math.Log(Abs(), 10.0);
+            var im = Arg();
+            return new ScalarValue(re, im);
+        }
+
+        public ScalarValue Factorial()
+        {
+            var re = Factorial(_real);
+            var im = Factorial(_imag);
+
+            if (_imag == 0.0)
+                im = 0.0;
+            else if (_real == 0.0 && _imag != 0.0)
+                re = 0.0;
+
+            return new ScalarValue(re, im);
+        }
+
+        #endregion
+
+        #region Serialization
+
+        public override byte[] Serialize()
 		{
 			var re = BitConverter.GetBytes(_real);
 			var im = BitConverter.GetBytes(_imag);
@@ -433,66 +442,11 @@ namespace YAMP
 			return this;
 		}
 
-        public ScalarValue Sqrt()
-        {
-            return Power(new ScalarValue(0.5)) as ScalarValue;
-        }
-		
-		public ScalarValue Cos()
-		{
-			var re = Math.Cos(_real) * Math.Cosh(_imag);
-			var im = -Math.Sin(_real) * Math.Sinh(_imag);
-			return new ScalarValue(re, im);
-		}
-		
-		public ScalarValue Sin()
-		{
-			var re = Math.Sin(_real) * Math.Cosh(_imag);
-			var im = Math.Cos(_real) * Math.Sinh(_imag);
-			return new ScalarValue(re, im);
-		}
-		
-		public ScalarValue Exp()
-		{
-			var f = Math.Exp(_real);
-			var re = f * Math.Cos(_imag);
-			var im = f * Math.Sin(_imag);
-			return new ScalarValue(re, im);
-		}
-		
-		public ScalarValue Ln()
-		{
-			var re = Math.Log(abs());
-			var im = Arg();
-			return new ScalarValue(re, im);
-		}
-		
-		public ScalarValue Log()
-		{
-			var re = Math.Log(abs(), 10.0);
-			var im = Arg();
-			return new ScalarValue(re, im);
-		}
+        #endregion
 
-		public ScalarValue IsInt()
-		{
-			return new ScalarValue((double)IntValue == Value && ImaginaryValue == 0.0);
-		}
+        #region Math Helpers
 
-		public ScalarValue IsPrime()
-		{
-            if (IsInt().Value == 1)
-            {
-                var k = IntValue;
-
-				if(k > 0)
-					return new ScalarValue(IsPrime(k));
-            }
-
-			return new ScalarValue(false);
-		}
-
-		static bool IsPrime(int n)
+        static bool IsPrimeNumber(int n)
 		{
 			if (n < 8)
 				return ((n == 2) || (n == 3) || (n == 5) || (n == 7));
@@ -564,38 +518,47 @@ namespace YAMP
 
 			return Convert.ToInt32(rr);
 		}
-		
-		public ScalarValue Factorial()
-		{
-            var re = Factorial(_real);
-            var im = Factorial(_imag);
 
-            if (_imag == 0.0)
-                im = 0.0;
-            else if (_real == 0.0 && _imag != 0.0)
-                re = 0.0;
+        double Factorial(double r)
+        {
+            var k = (int)Math.Abs(r);
+            var value = r < 0 ? -1.0 : 1.0;
 
-			return new ScalarValue(re, im);
-		}
-		
-		double Factorial(double r)
+            while (k > 1)
+            {
+                value *= k;
+                k--;
+            }
+
+            return value;
+        }
+
+        #endregion
+
+        #region Comparison
+
+        public override bool Equals(object obj)
 		{
-			var k = (int)Math.Abs(r);
-			var value = r < 0 ? -1.0 : 1.0;
-			
-			while(k > 1)
+			if(obj is ScalarValue)
 			{
-				value *= k;
-				k--;
+				var sv = obj as ScalarValue;
+				return sv._real == _real && sv._imag == _imag;
 			}
 			
-			return value;
+			if(obj is double && _imag == 0.0)
+				return (double)obj == _real;
+			
+			return false;
+		}
+		
+		public override int GetHashCode()
+		{
+			return (_real + _imag).GetHashCode();
         }
 
-        double abs()
-        {
-            return Math.Sqrt(_real * _real + _imag * _imag);
-        }
+        #endregion
+
+        #region String Representations
 
         /// <summary>
         /// Use this string representation if you have a global exponent like
@@ -624,39 +587,16 @@ namespace YAMP
         {
             return ToString(context, 0);
         }
-		
-		public override bool Equals(object obj)
-		{
-			if(obj is ScalarValue)
-			{
-				var sv = obj as ScalarValue;
-				return sv._real == _real && sv._imag == _imag;
-			}
-			
-			if(obj is double && _imag == 0.0)
-				return (double)obj == _real;
-			
-			return false;
-		}
-		
-		public override int GetHashCode()
-		{
-			return (_real + _imag).GetHashCode();
-        }
-
-        public override void Clear()
-        {
-            this._real = 0.0;
-            this._imag = 0.0;
-        }
 
         #endregion
 
         #region Operators
 
-        public static ScalarValue operator +(ScalarValue a, ScalarValue b)
+        public static ScalarValue operator +(ScalarValue l, ScalarValue r)
         {
-            return a.Add(b) as ScalarValue;
+            var re = l._real + r._real;
+            var im = l._imag + r._imag;
+            return new ScalarValue(re, im);
         }
 
         public static ScalarValue operator +(ScalarValue a, double b)
@@ -669,9 +609,11 @@ namespace YAMP
             return a + b;
         }
 
-        public static ScalarValue operator -(ScalarValue a, ScalarValue b)
+        public static ScalarValue operator -(ScalarValue l, ScalarValue r)
         {
-            return a.Subtract(b) as ScalarValue;
+            var re = l._real - r._real;
+            var im = l._imag - r._imag;
+            return new ScalarValue(re, im);
         }
 
         public static ScalarValue operator -(ScalarValue a, double b)
@@ -684,9 +626,18 @@ namespace YAMP
             return new ScalarValue(b - a._real, a._imag);
         }
 
-        public static ScalarValue operator *(ScalarValue a, ScalarValue b)
+        public static ScalarValue operator *(ScalarValue l, ScalarValue r)
         {
-            return a.Multiply(b) as ScalarValue;
+            if (l.IsZero)
+                return new ScalarValue();
+            else if (l._real == 0.0)
+                return new ScalarValue(-l._imag * r._imag, r._real * l._imag);
+            else if (l._imag == 0.0)
+                return new ScalarValue(l._real * r._real, l._real * r._imag);
+
+            var re = l._real * r._real - l._imag * r._imag;
+            var im = l._real * r._imag + l._imag * r._real;
+            return new ScalarValue(re, im);
         }
 
         public static ScalarValue operator *(double b, ScalarValue a)
@@ -701,7 +652,7 @@ namespace YAMP
 				if(l._real < r._real)
 					return true;
 			}
-			else if(l.abs() < r.abs ())
+			else if(l.Abs() < r.Abs ())
 				return true;
 
 			return false;
@@ -714,7 +665,7 @@ namespace YAMP
 				if(l._real > r._real)
 					return true;
 			}
-			else if(l.abs() > r.abs ())
+			else if(l.Abs() > r.Abs ())
 				return true;
 			
 			return false;
@@ -727,7 +678,7 @@ namespace YAMP
                 if (l._real <= r._real)
                     return true;
             }
-            else if (l.abs() <= r.abs())
+            else if (l.Abs() <= r.Abs())
                 return true;
 
             return false;
@@ -740,7 +691,7 @@ namespace YAMP
                 if (l._real >= r._real)
                     return true;
             }
-            else if (l.abs() >= r.abs())
+            else if (l.Abs() >= r.Abs())
                 return true;
 
             return false;
@@ -762,8 +713,24 @@ namespace YAMP
 
             return true;
         }
+
+        public static bool operator ==(ScalarValue l, double r)
+        {
+            if(l.ImaginaryValue != 0.0)
+                return false;
+
+            if (l.Value == r)
+                return true;
+
+            return false;
+        }
 		
         public static bool operator !=(ScalarValue l, ScalarValue r)
+        {
+            return !(l == r);
+        }
+
+        public static bool operator !=(ScalarValue l, double r)
         {
             return !(l == r);
         }
@@ -773,9 +740,21 @@ namespace YAMP
             return new ScalarValue(a._real * b, a._imag * b);
         }
 
-        public static ScalarValue operator /(ScalarValue a, ScalarValue b)
+        public static ScalarValue operator /(ScalarValue l, ScalarValue r)
         {
-            return a.Divide(b) as ScalarValue;
+            if (r.IsZero)
+            {
+                if (l.IsZero)
+                    return new ScalarValue(1.0);
+
+                return new ScalarValue(l._real != 0.0 ? l._real / 0.0 : 0.0, l._imag != 0.0 ? l._imag / 0.0 : 0.0);
+            }
+
+            r = r.Conjugate();
+            var q = r._real * r._real + r._imag * r._imag;
+            var re = (l._real * r._real - l._imag * r._imag) / q;
+            var im = (l._real * r._imag + l._imag * r._real) / q;
+            return new ScalarValue(re, im);
         }
 
         public static ScalarValue operator /(double b, ScalarValue a)
@@ -794,6 +773,61 @@ namespace YAMP
         }
 
         #endregion
+
+        #region Register Operators
+
+        public override void RegisterElement()
+        {
+            RegisterPlus(typeof(ScalarValue), typeof(ScalarValue), Add);
+            RegisterMinus(typeof(ScalarValue), typeof(ScalarValue), Subtract);
+            RegisterMultiply(typeof(ScalarValue), typeof(ScalarValue), Multiply);
+            RegisterDivide(typeof(ScalarValue), typeof(ScalarValue), Divide);
+            RegisterPower(typeof(ScalarValue), typeof(ScalarValue), Pow);
+            RegisterModulo(typeof(ScalarValue), typeof(ScalarValue), Mod);
+        }
+
+        public static ScalarValue Add(Value left, Value right)
+        {
+            var l = (ScalarValue)left;
+            var r = (ScalarValue)right;
+            return l + r;
+        }
+
+        public static ScalarValue Subtract(Value left, Value right)
+        {
+            var l = (ScalarValue)left;
+            var r = (ScalarValue)right;
+            return l - r;
+        }
+
+        public static ScalarValue Multiply(Value left, Value right)
+        {
+            var l = (ScalarValue)left;
+            var r = (ScalarValue)right;
+            return l * r;
+        }
+
+        public static ScalarValue Divide(Value left, Value right)
+        {
+            var l = (ScalarValue)left;
+            var r = (ScalarValue)right;
+            return l / r;
+        }
+
+        public static ScalarValue Pow(Value basis, Value exponent)
+        {
+            var l = (ScalarValue)basis;
+            var r = (ScalarValue)exponent;
+            return l.Pow(r);
+        }
+
+        public static ScalarValue Mod(Value left, Value right)
+        {
+            var l = (ScalarValue)left;
+            var r = (ScalarValue)right;
+            return ModFunction.Mod(l, r);
+        }
+
+        #endregion
     }
 }
-

@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Collections;
 
 namespace YAMP
@@ -43,7 +42,6 @@ namespace YAMP
         IDictionary<string, IFunction> functions;
         IDictionary<string, IConstants> constants;
         ParseContext parent;
-        IFormatProvider numFormat;
         int? precision = 5;
         bool isReadOnly;
         PlotValue lastPlot;
@@ -83,13 +81,11 @@ namespace YAMP
 
             if (parent == null)
             {
-                numFormat = new CultureInfo("en-us").NumberFormat;
                 precision = 5;
                 displayStyle = DisplayStyle.Scientific;
             }
             else
             {
-                numFormat = parent.NumberFormat;
                 precision = parent.Precision;
                 displayStyle = parent.displayStyle;
             }
@@ -220,14 +216,6 @@ namespace YAMP
 
                 return vars;
             }
-        }
-
-        /// <summary>
-        /// Gets the standard number format (en-US).
-        /// </summary>
-        public IFormatProvider NumberFormat
-        {
-            get { return numFormat; }
         }
 
         /// <summary>
@@ -517,6 +505,18 @@ namespace YAMP
             var parser = Parser.Parse(this, query);
             parser.Execute(variables);
             return parser.Context;
+        }
+
+        public void Load(string fromFileName)
+        {
+            var lf = new LoadFunction();
+            lf.Context = this;
+            lf.Function(new StringValue(fromFileName));
+        }
+
+        public void Save(string toFileName)
+        {
+            SaveFunction.Save(toFileName, variables);
         }
 
         #endregion

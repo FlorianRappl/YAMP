@@ -24,7 +24,7 @@ namespace YAMP
 			
 			var s = (end.Value - start.Value) / (c - 1);
 			var r = new RangeValue(start.Value, end.Value, s);	
-			return basis.Power(r) as MatrixValue;
+			return MatrixValue.PowSM(basis, r);
 		}
 	}
 }

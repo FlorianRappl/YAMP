@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("YAMP")]
-[assembly: AssemblyDescription("Yet Another Math Parser")]
+[assembly: AssemblyDescription("Yet Another Math Parser (YAMP) Core System using YAMP-PE.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("rsi Software")]
+[assembly: AssemblyCompany("Florian Rappl")]
 [assembly: AssemblyProduct("YAMP")]
 [assembly: AssemblyCopyright("(c) Florian Rappl, rsi Software, 2012.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("1.2.0.*")]
-

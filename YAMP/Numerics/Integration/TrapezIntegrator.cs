@@ -15,7 +15,7 @@ namespace YAMP.Numerics
             var y = Values;
 
             if (x.Length != y.Length)
-                throw new DimensionException(x.Length, y.Length);
+                throw new YAMPDifferentLengthsException(x.Length, y.Length);
 
             var sum = (x[2].Value - x[1].Value) * y[1] + (x[N].Value - x[N - 1].Value) * y[N];
 

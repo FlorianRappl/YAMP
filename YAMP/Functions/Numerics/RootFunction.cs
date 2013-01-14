@@ -17,7 +17,7 @@ namespace YAMP
 				var sv = f.Perform(Context, new ScalarValue(t));
 
 				if (!(sv is ScalarValue))
-					throw new ArgumentTypeNotSupportedException("root", 1, sv.Header);
+					throw new YAMPArgumentInvalidException(Name, sv.Header, 1);
 
 				return ((ScalarValue)sv).Value;
 			};

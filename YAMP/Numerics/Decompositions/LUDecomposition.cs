@@ -47,7 +47,7 @@ namespace YAMP.Numerics
         public LUDecomposition(MatrixValue A)
         {
             // Use a "left-looking", dot-product, Crout / Doolittle algorithm.
-            LU = A.GetRealArray();
+            LU = A.GetRealMatrix();
             m = A.DimensionY;
             n = A.DimensionX;
             piv = new int[m];
@@ -213,7 +213,7 @@ namespace YAMP.Numerics
         public virtual double Determinant()
         {
             if (m != n)
-                throw new MatrixFormatException("square");
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.Square);
             
             var d = (double)pivsign;
 
@@ -231,14 +231,14 @@ namespace YAMP.Numerics
         public override MatrixValue Solve(MatrixValue B)
         {
             if (B.DimensionY != m)
-                throw new DimensionException(B.DimensionY, m);
+                throw new YAMPDifferentDimensionsException(B.DimensionY, 1, m, 1);
 
             if (!this.IsNonSingular)
-                throw new MatrixFormatException("non-singular");
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.NonSingular);
 
             // Copy right hand side with pivoting
             var nx = B.DimensionX;
-            var X = B.SubMatrix(piv, 0, nx).GetRealArray();
+            var X = B.GetSubMatrix(piv, 0, nx).GetRealMatrix();
 
             // Solve L*Y = B(piv,:)
             for (int k = 0; k < n; k++)

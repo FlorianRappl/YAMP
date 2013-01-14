@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,8 @@ namespace YAMP.Physics
         Dictionary<string, double> prefixes;
         double weight;
 
-        static Dictionary<string, PhysicalUnit> knownUnits = new Dictionary<string, PhysicalUnit>();
-        static Dictionary<string, CombinedUnit> combinedUnits = new Dictionary<string, CombinedUnit>();
+        protected static Dictionary<string, PhysicalUnit> knownUnits = new Dictionary<string, PhysicalUnit>();
+        protected static Dictionary<string, CombinedUnit> combinedUnits = new Dictionary<string, CombinedUnit>();
 
         #endregion
 

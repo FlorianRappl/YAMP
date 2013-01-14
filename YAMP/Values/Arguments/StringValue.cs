@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,10 @@ using System.Text;
 
 namespace YAMP
 {
-	public class StringValue : Value, IFunction
+    /// <summary>
+    /// The class for representing a string value.
+    /// </summary>
+	public sealed class StringValue : Value, IFunction
 	{
 		#region Members
 
@@ -61,34 +64,24 @@ namespace YAMP
 
 		#endregion
 
-		#region implemented abstract members of Value
+        #region Register Operator
 
-		public override Value Add (Value right)
-		{
-			return new StringValue(_value + right.ToString());
-		}
+        public override void RegisterElement()
+        {
+            PlusOperator.Register(typeof(StringValue), typeof(Value), Add);
+            PlusOperator.Register(typeof(Value), typeof(StringValue), Add);
+        }
 
-		public override Value Subtract (Value right)
-		{
-			throw new OperationNotSupportedException("-", this);
-		}
+        public static StringValue Add(Value left, Value right)
+        {
+            return new StringValue(left.ToString() + right.ToString());
+        }
 
-		public override Value Multiply (Value right)
-		{
-			throw new OperationNotSupportedException("*", this);
-		}
+        #endregion
 
-		public override Value Divide (Value denominator)
-		{
-			throw new OperationNotSupportedException("/", this);
-		}
+        #region Serialization
 
-		public override Value Power (Value exponent)
-		{
-			throw new OperationNotSupportedException("^", this);
-		}
-		
-		public override byte[] Serialize ()
+        public override byte[] Serialize ()
 		{
             using (var ms = Serializer.Create())
             {
@@ -164,7 +157,7 @@ namespace YAMP
                 return new StringValue(str);
             }
 
-            throw new OperationNotSupportedException("string-index", argument);
+            throw new YAMPOperationInvalidException("string-index", argument);
         }
 
         #endregion

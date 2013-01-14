@@ -43,7 +43,7 @@ namespace YAMP
 				if (l.Values[i] is MatrixValue)
 					values[i] = (MatrixValue)l.Values[i];
 				else
-					throw new OperationNotSupportedException("plot", l.Values[i]);
+					throw new YAMPOperationInvalidException("plot", l.Values[i]);
 			}
 
 			plot.AddPoints(m, n, values);

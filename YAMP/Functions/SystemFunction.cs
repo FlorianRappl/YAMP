@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,11 @@ using System;
 
 namespace YAMP
 {
+    /// <summary>
+    /// SystemFunction is a special kind of ArgumentFunction, which saves the
+    /// passed ParseContext in a variable, which can be accessed over the 
+    /// property Context.
+    /// </summary>
     public abstract class SystemFunction : ArgumentFunction
 	{
 		#region ctor

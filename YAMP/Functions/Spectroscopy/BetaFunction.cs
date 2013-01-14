@@ -18,11 +18,8 @@ namespace YAMP
         [Example("beta(1:5, 3:7)", "Evaluates the beta function at the points (1, 0), (2, 1), ... up to (5, 4).")]
         public MatrixValue Function(MatrixValue Z, MatrixValue W)
         {
-            if (Z.DimensionX != W.DimensionX)
-                throw new DimensionException(Z.DimensionX, W.DimensionX);
-
-            if (Z.DimensionY != W.DimensionY)
-                throw new DimensionException(Z.DimensionY, W.DimensionY);
+            if (Z.DimensionX != W.DimensionX || Z.DimensionY != W.DimensionY)
+                throw new YAMPDifferentDimensionsException(Z.DimensionY, Z.DimensionX, W.DimensionY, W.DimensionX);
 
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 

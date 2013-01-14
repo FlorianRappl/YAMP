@@ -16,7 +16,7 @@ namespace YAMP
 			for (int i = 1; i <= M.Length; i++)
 				deviation += (M[i] - mean).Square();
 
-			return (deviation.Abs() / M.Length).Sqrt();
+			return new ScalarValue(Math.Sqrt(deviation.Abs() / M.Length));
 		}
 	}
 }

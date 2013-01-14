@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using YAMP;
+using System.Linq;
 
 namespace YAMP.Physics
 {
@@ -41,10 +42,10 @@ namespace YAMP.Physics
         #region Members
 
         string lastAddedUnit;
-        int lastAddedFactor;
+        double lastAddedFactor;
         double factor;
         string unit;
-        Dictionary<string, int> units = new Dictionary<string, int>();
+        Dictionary<string, double> units = new Dictionary<string, double>();
         static CultureInfo numberFormat = new CultureInfo("en-us");
 
         #endregion
@@ -95,7 +96,7 @@ namespace YAMP.Physics
         /// <summary>
         /// Gets the underlying elementary units.
         /// </summary>
-        public Dictionary<string, int> ElementaryUnits
+        public Dictionary<string, double> ElementaryUnits
         {
             get
             {
@@ -106,6 +107,11 @@ namespace YAMP.Physics
         #endregion
 
         #region Methods
+
+        public override string ToString()
+        {
+            return Unit;
+        }
 
         /// <summary>
         /// Unpacks the given units, i.e. returns the representation of the unit in elementary units.
@@ -135,7 +141,7 @@ namespace YAMP.Physics
 
                 s.Append(pos);
 
-                if (units[pos] > 1)
+                if (units[pos] != 1.0)
                     s.Append("^").Append(units[pos]);
             }
 
@@ -160,7 +166,7 @@ namespace YAMP.Physics
 
                     s.Append(neg);
 
-                    if (-units[neg] > 1)
+                    if (units[neg] != -1.0)
                         s.Append("^").Append(-units[neg]);
                 }
 
@@ -169,6 +175,88 @@ namespace YAMP.Physics
             }
 
             return s.ToString();
+        }
+
+        /// <summary>
+        /// Tries to simplify the current expression by considering combined types.
+        /// </summary>
+        /// <returns>The current instance.</returns>
+        public CombinedUnit Simplify()
+        {
+            var minChanges = double.MaxValue;
+            var minUnit = string.Empty;
+            var isReversed = false;
+            var total = 0.0;
+            var i = 0;
+
+            do
+            {
+                //Criteria for cancelling: avoid MORE changes than last round
+                total = minChanges;
+
+                if (!string.IsNullOrEmpty(minUnit))
+                {
+                    var U = combinedUnits[minUnit];
+                    var sgn = isReversed ? -1.0 : 1.0;
+
+                    foreach (var unit in U.units)
+                        AddUnit(units, unit.Key, -sgn * unit.Value);
+
+                    factor /= U.factor;
+                    AddUnit(units, U.unit, sgn);
+                }
+
+                foreach (var cu in combinedUnits)
+                {
+                    var reversed = false;
+                    var changes = GetChanges(cu.Value, out reversed);
+
+                    if (changes < minChanges)
+                    {
+                        minChanges = changes;
+                        minUnit = cu.Key;
+                        isReversed = reversed;
+                    }
+                }
+            }
+            while(minChanges > 0 &&  minChanges < total && i++ < 8);
+
+            return this;
+        }
+
+        double GetChanges(CombinedUnit unit, out bool reversed)
+        {
+            var misses = 0.0;
+            var posCatches = 0.0;
+            var negCatches = 0.0;
+            reversed = false;
+
+            foreach (var b in unit.units)
+            {
+                var found = false;
+
+                foreach (var a in units)
+                {
+                    if (a.Key == b.Key)
+                    {
+                        found = true;
+                        posCatches += Math.Abs(b.Value - a.Value);
+                        negCatches += Math.Abs(b.Value + a.Value);
+                        break;
+                    }
+                }
+
+                if (!found)
+                    misses += Math.Abs(b.Value);
+            }
+
+            if (negCatches < posCatches)
+            {
+                reversed = true;
+                return misses + negCatches;
+            }
+
+            return misses + posCatches;
         }
 
         /// <summary>
@@ -184,7 +272,7 @@ namespace YAMP.Physics
             var source = units;
             var target = Parse(unit);
             var targetFactor = factor;
-            var bag = new Dictionary<string, int>();
+            var bag = new Dictionary<string, double>();
 
             //Calculation of new factor given by unit -- more to come below
             factor = sourceFactor / targetFactor;
@@ -213,7 +301,7 @@ namespace YAMP.Physics
             return list;
         }
 
-        string FindMapping(string source, Dictionary<string, int> target, int sign, List<Func<double, double>> list)
+        string FindMapping(string source, Dictionary<string, double> target, int sign, List<Func<double, double>> list)
         {
             var srcUnit = FindUnit(source);
 
@@ -267,9 +355,9 @@ namespace YAMP.Physics
 
         #region Parsing
 
-        void AddUnit(Dictionary<string, int> units, string unit, int exp)
+        void AddUnit(Dictionary<string, double> units, string unit, double exp)
         {
-            if (exp == 0)
+            if (exp == 0.0)
                 return;
 
             lastAddedUnit = unit;
@@ -284,11 +372,11 @@ namespace YAMP.Physics
                 units.Remove(unit);
         }
 
-        Dictionary<string, int> Parse(string unit)
+        Dictionary<string, double> Parse(string unit)
         {
             var reverseStack = new Stack<bool>();
             var reverse = false;
-            var units = new Dictionary<string, int>();
+            var units = new Dictionary<string, double>();
             var k = 0;
             var op = Token.Multiply;
             var tk = new Token[unit.Length + 1];
@@ -301,7 +389,7 @@ namespace YAMP.Physics
             var sum = Count(Token.OpenBracket, tk) - Count(Token.CloseBracket, tk);
 
             if (sum != 0)
-                throw new BracketException("(", unit);
+                throw new YAMPUnitBracketException(unit);
 
             for (var i = 0; i != unit.Length; i++)
             {
@@ -333,7 +421,7 @@ namespace YAMP.Physics
                     continue;
                 }
 
-                var r = reverse ? -1 : 1;
+                var r = reverse ? -1.0 : 1.0;
                 var current = tk[i];
                 var result = EatWhile(current, tk, unit, i);
 
@@ -345,7 +433,7 @@ namespace YAMP.Physics
                         else if (current == Token.Letter)
                             AddUnit(units, result, r);
                         else
-                            throw new ParseException(i, unit.Substring(i));
+                            throw new YAMPUnitParseException(i, unit.Substring(i));
                         break;
 
                     case Token.Divide:
@@ -354,14 +442,14 @@ namespace YAMP.Physics
                         else if (current == Token.Letter)
                             AddUnit(units, result, -r);
                         else
-                            throw new ParseException(i, unit.Substring(i));
+                            throw new YAMPUnitParseException(i, unit.Substring(i));
                         break;
 
                     case Token.Power:
                         if (current != Token.Number)
-                            throw new ParseException(i, unit.Substring(i));
+                            throw new YAMPUnitParseException(i, unit.Substring(i));
 
-                        var exp = ConvertToInteger(result);
+                        var exp = ConvertToDouble(result);
                         AddUnit(units, lastAddedUnit, lastAddedFactor * (exp - 1));
                         break;
                 }
@@ -424,12 +512,16 @@ namespace YAMP.Physics
             return sb.ToString();
         }
 
+        #endregion
+
+        #region Converters
+
         double ConvertToDouble(string s)
         {
             var sign = 1.0;
 
             if (s.LastIndexOf('-') > 0)
-                throw new ParseException(s);
+                throw new YAMPUnitConvertException(s);
 
             if (s[0] == '-')
             {
@@ -446,10 +538,10 @@ namespace YAMP.Physics
             var sign = 1;
 
             if (s.LastIndexOf('-') > 0)
-                throw new ParseException(s);
+                throw new YAMPUnitConvertException(s);
 
             if (s.LastIndexOf('.') >= 0)
-                throw new ParseException(s);
+                throw new YAMPUnitConvertException(s);
 
             if (s[0] == '-')
             {
@@ -460,6 +552,10 @@ namespace YAMP.Physics
             var d = int.Parse(s, numberFormat);
             return sign * d;
         }
+
+        #endregion
+
+        #region Token Management
 
         Token GetToken(char ch)
         {
@@ -501,11 +597,89 @@ namespace YAMP.Physics
 
         protected bool IsWhiteSpace(char ch)
         {
-            return (ch == 32) ||  // space
-                (ch == 9) ||      // horizontal tab
-                (ch == 0xB) ||	  // vertical tab
-                (ch == 0xC) ||	  // form feed / new page
-                (ch == 0xA0);	  // non-breaking space
+            return ParseEngine.IsWhiteSpace(ch);
+        }
+
+        #endregion
+
+        #region Modifying
+
+        /// <summary>
+        /// Multiplies the given combined unit with the string representation of another unit.
+        /// </summary>
+        /// <param name="unit">The unit to multiply the current unit with.</param>
+        /// <returns>The (current) modified unit.</returns>
+        public CombinedUnit Multiply(string unit)
+        {
+            var cu = Parse(unit);
+
+            foreach (var element in cu)
+                AddUnit(units, element.Key, element.Value);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Multiplies the given combined unit with another combined unit.
+        /// </summary>
+        /// <param name="unit">The combined unit which is multiplied to the current unit.</param>
+        /// <returns>The (current) modified unit.</returns>
+        public CombinedUnit Multiply(CombinedUnit unit)
+        {
+            foreach (var element in unit.ElementaryUnits)
+                AddUnit(units, element.Key, element.Value);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Divides the given combined unit by the string representation of another unit.
+        /// </summary>
+        /// <param name="unit">The combined unit to divide the current unit.</param>
+        /// <returns>The (current) modified unit.</returns>
+        public CombinedUnit Divide(string unit)
+        {
+            var cu = Parse(unit);
+
+            foreach (var element in cu)
+                AddUnit(units, element.Key, -element.Value);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Divides the given combined unit by another unit.
+        /// </summary>
+        /// <param name="unit">The combined unit to divide the current unit.</param>
+        /// <returns>The (current) modified unit.</returns>
+        public CombinedUnit Divide(CombinedUnit unit)
+        {
+            foreach (var element in unit.ElementaryUnits)
+                AddUnit(units, element.Key, -element.Value);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Raises the current unit to the specified power, i.e. kg*s --> raised to 2 is kg^2 * s^2.
+        /// </summary>
+        /// <param name="pwr">The power to raise the unit with.</param>
+        /// <returns>The (current) modified unit.</returns>
+        public CombinedUnit Raise(double pwr)
+        {
+            foreach (var element in units.Keys.ToArray())
+                units[element] *= pwr;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Takes the square root of the current unit, i.e. raises it to the power 1/2.
+        /// </summary>
+        /// <returns>The (current) modified unit.</returns>
+        public CombinedUnit Sqrt()
+        {
+            return Raise(0.5);
         }
 
         #endregion

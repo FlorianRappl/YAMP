@@ -46,7 +46,7 @@ namespace YAMP.Numerics
         {
             // Derived from LINPACK code.
             // Initialize.
-            var A = Arg.GetRealArray();
+            var A = Arg.GetRealMatrix();
             m = Arg.DimensionY;
             n = Arg.DimensionX;
             var nu = Math.Min(m, n);
@@ -82,7 +82,7 @@ namespace YAMP.Numerics
                     s[k] = 0;
 
                     for (int i = k; i < m; i++)
-                        s[k] = NumericHelpers.Hypot(s[k], A[i][k]);
+                        s[k] = Helpers.Hypot(s[k], A[i][k]);
                     
                     if (s[k] != 0.0)
                     {
@@ -135,7 +135,7 @@ namespace YAMP.Numerics
                     e[k] = 0;
 
                     for (int i = k + 1; i < n; i++)
-                        e[k] = NumericHelpers.Hypot(e[k], e[i]);
+                        e[k] = Helpers.Hypot(e[k], e[i]);
 
                     if (e[k] != 0.0)
                     {
@@ -349,7 +349,7 @@ namespace YAMP.Numerics
 
                             for (int j = p - 2; j >= k; j--)
                             {
-                                var t = NumericHelpers.Hypot(s[j], f);
+                                var t = Helpers.Hypot(s[j], f);
                                 var cs = s[j] / t;
                                 var sn = f / t;
                                 s[j] = t;
@@ -382,7 +382,7 @@ namespace YAMP.Numerics
 
                             for (int j = k; j < p; j++)
                             {
-                                var t = NumericHelpers.Hypot(s[j], f);
+                                var t = Helpers.Hypot(s[j], f);
                                 var cs = s[j] / t;
                                 var sn = f / t;
                                 s[j] = t;
@@ -433,7 +433,7 @@ namespace YAMP.Numerics
 
                             for (int j = k; j < p - 1; j++)
                             {
-                                var t = NumericHelpers.Hypot(f, g);
+                                var t = Helpers.Hypot(f, g);
                                 var cs = f / t;
                                 var sn = g / t;
 
@@ -455,7 +455,7 @@ namespace YAMP.Numerics
                                     }
                                 }
 
-                                t = NumericHelpers.Hypot(f, g);
+                                t = Helpers.Hypot(f, g);
                                 cs = f / t;
                                 sn = g / t;
                                 s[j] = t;

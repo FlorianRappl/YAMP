@@ -51,13 +51,13 @@ namespace YAMP
 			{
 				index++;
 
-				if(value is StringValue)
-				{
-					var str = value as StringValue;
-					sb.Append(Function(str));
-				}
-				else
-					throw new ArgumentException(Name, index, "String", value.Header);
+                if (value is StringValue)
+                {
+                    var str = value as StringValue;
+                    sb.Append(Function(str));
+                }
+                else
+                    throw new YAMPArgumentWrongTypeException(value.Header, "String", Name);
 			}
 
 			return new StringValue(sb.ToString());

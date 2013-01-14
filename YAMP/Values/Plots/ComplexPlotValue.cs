@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,11 +29,14 @@ using System;
 
 namespace YAMP
 {
-    public sealed class ComplexPlotValue : PlotValue
+    /// <summary>
+    /// Holds the complexplot data.
+    /// </summary>
+    public sealed class ComplexPlotValue : XYPlotValue
     {
         #region Members
 
-        IFunction f;
+        FunctionValue f;
 
         #endregion
 
@@ -65,7 +68,11 @@ namespace YAMP
 
         #region Methods
 
-        public void SetFunction(IFunction function)
+        /// <summary>
+        /// Sets the function to use for the complex plot.
+        /// </summary>
+        /// <param name="function">The function to consider.</param>
+        public void SetFunction(FunctionValue function)
         {
             f = function;
         }
@@ -81,11 +88,10 @@ namespace YAMP
 
         public override byte[] Serialize()
         {
-            //TODO The plot cannot be saved at the moment!
-
             using (var s = Serializer.Create())
             {
                 Serialize(s);
+                s.Serialize(f.Serialize());
                 return s.Value;
             }
         }
@@ -95,6 +101,8 @@ namespace YAMP
             using (var ds = Deserializer.Create(content))
             {
                 Deserialize(ds);
+                var ctn = ds.GetBytes();
+                f = new FunctionValue().Deserialize(ctn) as FunctionValue;
             }
 
             return this;

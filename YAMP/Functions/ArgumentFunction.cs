@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -35,12 +35,12 @@ namespace YAMP
     /// <summary>
     /// The abstract base class used for all argument functions. (provide all functions with the name function).
     /// </summary>
-	public abstract class ArgumentFunction : BaseFunction, IComparer<YParameters>
+	public abstract class ArgumentFunction : BaseFunction, IComparer<FunctionParameters>
 	{
 		#region Members
 
 		Value[] arguments;
-		readonly KeyValuePair<YParameters, MethodInfo>[] functions;
+		readonly KeyValuePair<FunctionParameters, MethodInfo>[] functions;
 
 		#endregion
 
@@ -50,7 +50,7 @@ namespace YAMP
 		{
 		    functions = (from method in GetType().GetMethods()
 		                 where method.Name.IsArgumentFunction()
-		                 select new KeyValuePair<YParameters, MethodInfo>(new YParameters(method.GetParameters(), method), method))
+		                 select new KeyValuePair<FunctionParameters, MethodInfo>(new FunctionParameters(method.GetParameters(), method), method))
 		        .OrderBy(kv => kv.Key, this).ToArray();
 		}
 
@@ -70,11 +70,22 @@ namespace YAMP
 
 		#region Methods
 
-		public int Compare(YParameters x, YParameters y)
+        /// <summary>
+        /// Compares to FunctionParameters to find out the equality factor.
+        /// </summary>
+        /// <param name="x">The source to compare with.</param>
+        /// <param name="y">The target to compare by.</param>
+        /// <returns>The computed equality factor, which is 0 if both paramter spaces are equal.</returns>
+		public int Compare(FunctionParameters x, FunctionParameters y)
 		{
 			return 100 * (y.Length - x.Length) + Math.Sign(y.Weight - x.Weight);
 		}
 
+        /// <summary>
+        /// Computes a boolean if the function can be executed with the number of parameters.
+        /// </summary>
+        /// <param name="args">The number of parameters independent of the specific types.</param>
+        /// <returns>A boolean indicating the status.</returns>
 		public bool CanExecute(int args)
 		{
 			foreach (var kv in functions)
@@ -103,37 +114,47 @@ namespace YAMP
 		Value Execute()
 		{
             var args = arguments.Length;
-            var exception = new ArgumentsException(Name, arguments.Length);
+            var expected = 0;
+            YAMPRuntimeException exception = null;
 
 			foreach(var kv in functions)
 			{
 			    var key = kv.Key;
 
+                if(key.MinimumArguments > expected && key.MinimumArguments < arguments.Length)
+                    expected = key.MinimumArguments;
+
 				if (args < key.MinimumArguments || args > key.MaximumArguments)
 					continue;
 
 				var f = kv.Value;
+                exception = BuildArguments(key);
 
-				if(BuildArguments(key, exception))
-				{
-					try
-					{
-						return f.Invoke(this, arguments) as Value;
-					}
-					catch (Exception ex)
-					{
-						throw ex.InnerException ?? ex;
-					}
-				}
-			}
+                if (exception == null)
+                {
+                    try
+                    {
+                        return f.Invoke(this, arguments) as Value;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex.InnerException != null)
+                            throw ex.InnerException;
+
+                        throw;
+                    }
+                }
+            }
+
+            if (exception != null)
+                throw exception;
             
-			throw exception;
+			throw new YAMPArgumentNumberException(Name, arguments.Length, expected);
 		}
 
-		bool BuildArguments(YParameters yp, Exception exception)
+		YAMPRuntimeException BuildArguments(FunctionParameters yp)
 		{
 			var attrs = yp.OptionalArguments;
-			var success = true;
 			var values = new List<Value>();
 
 			for (var i = 0; i < arguments.Length; i++)
@@ -156,9 +177,7 @@ namespace YAMP
 							for (var k = 0; k < pt; k++)
 							{
 								for (var l = 0; l < attr.StepArguments; l++)
-								{
 									av.Insert(arguments[i++]);
-								}
 							}
 
 							values.Add(av);
@@ -172,25 +191,17 @@ namespace YAMP
 					var idx = values.Count;
 
 					if (!yp.ParameterTypes[idx].IsInstanceOfType(arguments[idx]))
-					{
-						exception = new ArgumentTypeNotSupportedException(Name, idx, yp.ParameterTypes[idx]);
-						success = false;
-						break;
-					}
+                        return new YAMPArgumentInvalidException(Name, yp.ParameterTypes[idx].Name.RemoveValueConvention(), idx);
 
 					values.Add(arguments[i]);
 				}
 			}
 
-			if (success)
-			{
-				while (values.Count < yp.ParameterTypes.Length)
-					values.Add(new ArgumentsValue());
+			while (values.Count < yp.ParameterTypes.Length)
+				values.Add(new ArgumentsValue());
 
-				arguments = values.ToArray();
-			}
-
-			return success;
+			arguments = values.ToArray();
+			return null;
 		}
 
 		#endregion

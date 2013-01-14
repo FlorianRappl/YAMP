@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,16 +29,11 @@ using System;
 
 namespace YAMP
 {
+    /// <summary>
+    /// Base class for numeric classes.
+    /// </summary>
     public abstract class NumericValue : Value
     {
-        public abstract ScalarValue Abs();
-
-        public virtual ScalarValue AbsSquare()
-        {
-            var abs = Abs();
-            return new ScalarValue(abs.Value * abs.Value);
-        }
-
         public abstract void Clear();
     }
 }

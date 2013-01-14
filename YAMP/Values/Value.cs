@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -27,16 +27,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 
 namespace YAMP
 {
-	public abstract class Value
+    /// <summary>
+    /// Abstract base value for any value type.
+    /// </summary>
+	public abstract class Value : IRegisterElement
     {
         #region Members
 
         static readonly Value _empty = new ScalarValue();
+        static readonly NumberFormatInfo numberFormat = new CultureInfo("en-US").NumberFormat;
 
         public static readonly Type[] EmptyTypes = new Type[0];
 
@@ -70,47 +75,6 @@ namespace YAMP
             return (int)Math.Floor(log);
         }
 
-        public abstract Value Add(Value right);
-		
-		public abstract Value Subtract(Value right);
-		
-		public abstract Value Multiply(Value right);
-		
-		public abstract Value Divide(Value denominator);
-		
-		public abstract Value Power(Value exponent);
-
-		public abstract byte[] Serialize();
-
-		public abstract Value Deserialize(byte[] content);
-
-		internal static Value Deserialize(string name, byte[] content)
-		{
-			name = name + "Value";
-			var types = Assembly.GetCallingAssembly().GetTypes();
-
-			foreach(var target in types)
-			{
-				if(target.Name.Equals(name))
-				{
-                    var value = target.GetConstructor(EmptyTypes).Invoke(null) as Value;
-					return value.Deserialize(content);
-				}
-			}
-
-			return Value.Empty;
-		}
-
-        public override string ToString()
-        {
-            return ToString(ParseContext.Default);
-        }
-
-        public virtual string ToString(ParseContext context)
-        {
-            return string.Empty;
-        }
-
         protected static int[] BuildIndex(Value arg, int max)
         {
             if (arg is ScalarValue)
@@ -136,6 +100,49 @@ namespace YAMP
             }
 
             return idx.ToArray();
+        }
+
+        public virtual void RegisterElement()
+        {
+        }
+
+        #endregion
+
+        #region Serialization
+
+        public abstract byte[] Serialize();
+
+		public abstract Value Deserialize(byte[] content);
+
+		internal static Value Deserialize(string name, byte[] content)
+		{
+			name = name + "Value";
+			var types = Assembly.GetCallingAssembly().GetTypes();
+
+			foreach(var target in types)
+			{
+				if(target.Name.Equals(name))
+				{
+                    var value = target.GetConstructor(EmptyTypes).Invoke(null) as Value;
+					return value.Deserialize(content);
+				}
+			}
+
+			return Value.Empty;
+		}
+
+        #endregion
+
+        #region String Representation
+
+        public override string ToString()
+        {
+            return ToString(ParseContext.Default);
+        }
+
+        public virtual string ToString(ParseContext context)
+        {
+            return string.Empty;
         }
 
         #endregion
@@ -242,11 +249,11 @@ namespace YAMP
             string f = "0:F";
 
             if (exponent == 0)
-                return string.Format(context.NumberFormat, "{" + f + decimals + "}", sign * v);
+                return string.Format(numberFormat, "{" + f + decimals + "}", sign * v);
             else if (context.CustomExponent)
-                return string.Format(context.NumberFormat, "{" + f + decimals + "}{1}", sign * v, ToSuperScript(expsign * exponent));
+                return string.Format(numberFormat, "{" + f + decimals + "}{1}", sign * v, ToSuperScript(expsign * exponent));
             
-            return string.Format(context.NumberFormat, "{" + f + decimals + "}e{1}", sign * v, expsign * exponent);
+            return string.Format(numberFormat, "{" + f + decimals + "}e{1}", sign * v, expsign * exponent);
         }
 
         static string ToSuperScript(int exp)
@@ -277,6 +284,40 @@ namespace YAMP
             }
 
             return sb.ToString();
+        }
+
+        #endregion
+
+        #region Register Operators
+
+        protected static void RegisterPlus(Type left, Type right, Func<Value, Value, Value> add)
+        {
+            PlusOperator.Register(left, right, add);
+        }
+
+        protected static void RegisterMultiply(Type left, Type right, Func<Value, Value, Value> multiply)
+        {
+            MultiplyOperator.Register(left, right, multiply);
+        }
+
+        protected static void RegisterDivide(Type left, Type right, Func<Value, Value, Value> divide)
+        {
+            RightDivideOperator.Register(left, right, divide);
+        }
+
+        protected static void RegisterMinus(Type left, Type right, Func<Value, Value, Value> sub)
+        {
+            MinusOperator.Register(left, right, sub);
+        }
+
+        protected static void RegisterPower(Type left, Type right, Func<Value, Value, Value> power)
+        {
+            PowerOperator.Register(left, right, power);
+        }
+
+        protected static void RegisterModulo(Type left, Type right, Func<Value, Value, Value> mod)
+        {
+            ModuloOperator.Register(left, right, mod);
         }
 
         #endregion

@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -32,10 +32,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("The physics library extends YAMP with constants and functions that play an important role in general physics.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Florian Rappl")]
-[assembly: AssemblyProduct("YAMPPhysics")]
+[assembly: AssemblyProduct("YAMP.Physics")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("9fef9aa6-d07c-483a-a19a-e8919018c2a8")]
-[assembly: AssemblyVersion("0.6.0.*")]
+[assembly: AssemblyVersion("0.8.0.*")]

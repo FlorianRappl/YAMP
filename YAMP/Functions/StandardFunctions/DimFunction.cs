@@ -27,7 +27,7 @@ namespace YAMP
 				dimy = 1;
 			}
 			else if(!(argument is ScalarValue))
-				throw new OperationNotSupportedException("length", argument);
+				throw new YAMPOperationInvalidException("length", argument);
 
 			m[1, 1] = new ScalarValue(dimy);
 			m[1, 2] = new ScalarValue(dimx);

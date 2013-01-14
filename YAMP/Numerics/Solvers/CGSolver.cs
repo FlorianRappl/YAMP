@@ -15,10 +15,8 @@ namespace YAMP.Numerics
 
             if (x == null)
                 x = new MatrixValue(b.DimensionY, b.DimensionX);
-            else if (x.DimensionX != b.DimensionX)
-                throw new DimensionException(x.DimensionX, b.DimensionX);
-            else if (x.DimensionY != b.DimensionY)
-                throw new DimensionException(x.DimensionY, b.DimensionY);
+            else if (x.DimensionX != b.DimensionX || x.DimensionY != b.DimensionY)
+                throw new YAMPDifferentDimensionsException(x.DimensionY, x.DimensionX, b.DimensionY, b.DimensionX);
 
             var r = b - A * x;
             var p = r.Clone();
@@ -33,7 +31,7 @@ namespace YAMP.Numerics
                 r = r - alpha * Ap;
                 var rsnew = Dot(r, r);
 
-                if (rsnew.Abs().Value < Tolerance)
+                if (rsnew.Abs() < Tolerance)
                     break;
 
                 p = r + rsnew / rsold * p;
@@ -45,7 +43,7 @@ namespace YAMP.Numerics
 
         private ScalarValue Dot(MatrixValue l, MatrixValue r)
         {
-            return l.Adjungate().Multiply(r) as ScalarValue;
+            return l.Adjungate().Dot(r);
         }
     }
 }

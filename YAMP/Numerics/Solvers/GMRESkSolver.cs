@@ -33,10 +33,8 @@ namespace YAMP.Numerics
 
             if (X0 == null)
                 X0 = new MatrixValue(b.DimensionY, b.DimensionX);
-            else if (X0.DimensionX != b.DimensionX)
-                throw new DimensionException(X0.DimensionX, b.DimensionX);
-            else if (X0.DimensionY != b.DimensionY)
-                throw new DimensionException(X0.DimensionY, b.DimensionY);
+            else if (X0.DimensionX != b.DimensionX || X0.DimensionY != b.DimensionY)
+                throw new YAMPDifferentDimensionsException(X0, b);
 
             H = new MatrixValue(k + 1, k);
             V = new MatrixValue(X0.DimensionY, k);
@@ -60,7 +58,7 @@ namespace YAMP.Numerics
                 c.Clear();
                 s.Clear();
 
-                V.SetColumnVector(1, r0.Divide(beta) as MatrixValue);
+                V.SetColumnVector(1, r0 / beta);
 
                 if (beta.Value < Tolerance)
                     break;
@@ -77,7 +75,7 @@ namespace YAMP.Numerics
                     }
 
                     Rotate(j);
-                    beta = gamma[j + 1].Abs();
+                    beta = new ScalarValue(gamma[j + 1].Abs());
 
                     if (beta.Value < Tolerance)
                     {
@@ -120,7 +118,7 @@ namespace YAMP.Numerics
                 H[i + 1, j] = c[i] * v2 - s[i] * v1;
             }
 
-            var beta = new ScalarValue(Math.Sqrt(H[j, j].AbsSquare().Value + H[j + 1, j].AbsSquare().Value));
+            var beta = new ScalarValue(Math.Sqrt(H[j, j].AbsSquare() + H[j + 1, j].AbsSquare()));
 
             s[j] = H[j + 1, j] / beta;
             c[j] = H[j, j] / beta;

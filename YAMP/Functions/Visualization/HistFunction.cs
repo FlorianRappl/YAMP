@@ -69,10 +69,10 @@ namespace YAMP
 			return bp;
 		}
 
-		MatrixValue Histogram(MatrixValue v, double[] centers)
+		static MatrixValue Histogram(MatrixValue v, double[] centers)
 		{
-			if (centers.Length == 0)
-				throw new YAMPException("The given vector for the center bins must have at least 1 element.");
+            if (centers.Length == 0)
+                throw new YAMPWrongLengthException(0, 1);
 
 			var H = new MatrixValue(centers.Length, 1);
 			var N = new int[centers.Length];
@@ -112,7 +112,7 @@ namespace YAMP
 			return H;
 		}
 
-		MatrixValue Histogram(MatrixValue v, int nbins)
+		static MatrixValue Histogram(MatrixValue v, int nbins)
 		{
 			var min = double.MaxValue;
 			var max = double.MinValue;

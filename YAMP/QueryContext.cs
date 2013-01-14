@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2012, Florian Rappl.
+	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -37,9 +37,10 @@ namespace YAMP
 	{
 		#region Members
 
-		string _original;
 		string _input;
-		ParseTreeCollection statements;
+        bool _stop;
+        ParseEngine parser;
+        Statement currentStatement;
 
 		#endregion
 
@@ -52,7 +53,7 @@ namespace YAMP
 		public QueryContext(string input)
 		{
 			Input = input;
-			statements = new ParseTreeCollection(this);
+            parser = new ParseEngine(this);
 		}
 
 		/// <summary>
@@ -62,6 +63,7 @@ namespace YAMP
 		internal QueryContext(QueryContext query) : this(query.Input)
 		{
 			Parent = query;
+            parser.Parent = query.Parser;
 			Context = new ParseContext(query.Context);
 		}
 
@@ -112,19 +114,14 @@ namespace YAMP
 		}
 
 		/// <summary>
-		/// Gets the input that is being used by the parser.
+		/// Gets or sets the input that is being used by the parser.
 		/// </summary>
 		public string Input
 		{
 			get { return _input; }
 			set
 			{
-				_original = value;
-
-				if (value == null)
-					value = string.Empty;
-
-				_input = value;
+				_input = value ?? string.Empty;
 			}
 		}
 
@@ -134,14 +131,6 @@ namespace YAMP
 		public bool IsMuted
 		{
 			get { return Output == null; }
-		}
-
-		/// <summary>
-		/// Gets the original passed input.
-		/// </summary>
-		public string Original
-		{
-			get { return _original; }
 		}
 
 		/// <summary>
@@ -157,25 +146,76 @@ namespace YAMP
 		/// <summary>
 		/// Gets the statements generated for this query.
 		/// </summary>
-		public ParseTreeCollection Statements
+		public IEnumerable<Statement> Statements
 		{
-			get { return statements; }
+			get { return parser.Statements; }
 		}
+
+        /// <summary>
+        /// Gets the currently executed statement.
+        /// </summary>
+        public Statement CurrentStatement
+        {
+            get { return currentStatement; }
+        }
+
+        /// <summary>
+        /// Gets the parser for this query.
+        /// </summary>
+        public ParseEngine Parser
+        {
+            get { return parser; }
+        }
 
 		#endregion
 
-		#region Methods
+        #region Methods
 
 		internal void Interpret(Dictionary<string, Value> values)
 		{
-			Output = Statements.Run(values);
+            if (!parser.CanRun)
+            {
+                if (!parser.IsParsed)
+                    parser.Parse();
+
+                if (parser.HasErrors)
+                    throw new YAMPParseException(parser);
+            }
+
+            currentStatement = null;
+            _stop = false;
+
+            foreach (var statement in parser.Statements)
+            {
+                if (_stop)
+                    break;
+
+                currentStatement = statement;
+                Output = statement.Interpret(values);
+            }
+
+            if (currentStatement != null && Output != null)
+            {
+                if (!currentStatement.IsAssignment)
+                {
+                    if (Output is ArgumentsValue)
+                        Output = ((ArgumentsValue)Output).First();
+
+                    Context.AssignVariable("$", Output);
+                }
+            }
 		}
+
+        internal void Stop()
+        {
+            _stop = true;
+        }
 
 		public override string ToString()
 		{
-			return string.Format("{0} ={1}{2}", Input, Environment.NewLine, Statements);
+			return string.Format("{0} = {1}{2}", Input, Environment.NewLine, Output);
 		}
 
 		#endregion
-	}
+    }
 }

@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **1.1.2**. A NuGet package (current version 1.1.2) is
+The current version number is **1.2.0**. A NuGet package (current version 1.1.2) is
 available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code -
 since the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -37,6 +37,26 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**1.2.0:**
+- Rewrote the parser; it is now twice as fast and returns accurate errors
+- Included the Zeta function
+- Improved the Gamma function
+- Completed a lot of the documentation work
+- Physics plugin reached version 0.8 (includes Psi_0(x), working unit converter)
+- Improved the operator system by allowing arbitrary operations through mapping
+- Added new visualization features like `subplot()`, `errorbars()` or `hist()`
+- Added lots of new value types for plotting
+- Rewrote the complete Exception handling - most important feature is the difference
+  between runtime and parsing
+- Scripting is now fully functional and can be enabled by using `Parser.UseScripting = true`
+- Improved the console demo application, as well as the benchmarks and tests
+- Added the possibility of annotations in plots
+- A complex plot is available by using `cplot()`
+- A function plot can also be done by using `fplot()`
+- Added `Block` and `Statement` classes to distinguish between atomic blocks and
+  whole statements
+- `Expression` and `Operator` instances are blocks, with `Keywords` being of type `Expression`
+
 **1.1.2:**
 - Improved physics plugin (unit conversations done)
 - Extended `contourplot`, `polarplot` and fixed the color palette
@@ -308,24 +328,10 @@ If you know some feature that YAMP is currently missing, and you are willing to 
 the feature, then your contribution is more than welcome! Also if you have a really cool
 idea - do not be shy, I'd like to hear it.
 
-What the project could possibly achieve
--------------------------------------------------------
-
-From my current point of view there is no reason why YAMP should not be able to do more
-sophisticated (analytical) mathematics. Things like derivations or integrals with
-symbols could be possible. I've already implemented derivations before, with the parser
-already present this is highly possible. Including integrals is a different matter: I've
-spent some time in the past, thinking about a proper implementations. What I think right
-now is that the parser matters a lot. Once you normalize this process the integral
-implemention is just a big database (integral table), with some (only basic) rules defined.
-
-What is more likely is that the project goes in direction of a C# kind of MATLAB (more
-lightweight). But time will tell!
-
 Some legal stuff
 ------------------
 
-Copyright (c) 2012, Florian Rappl.
+Copyright (c) 2012-2013, Florian Rappl and collaborators.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 ﻿/*
-	Copyright (c) 2012, Florian Rappl.
+	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,10 @@ using YAMP.Converter;
 
 namespace YAMP
 {
-	public sealed class Plot2DValue : PlotValue
+    /// <summary>
+    /// Is the type for basic 2D plotting.
+    /// </summary>
+    public sealed class Plot2DValue : XYPlotValue
 	{
 		#region ctor
 
@@ -47,6 +50,9 @@ namespace YAMP
 
 		#region Properties
 
+        /// <summary>
+        /// Gets the status of the x-axis - is it logarithmic?
+        /// </summary>
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]
 		public bool IsLogX
@@ -55,6 +61,9 @@ namespace YAMP
 			set;
 		}
 
+        /// <summary>
+        /// Gets the status of the y-axis - is it logarithmic?
+        /// </summary>
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]
 		public bool IsLogY

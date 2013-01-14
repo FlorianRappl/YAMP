@@ -41,7 +41,7 @@ namespace YAMP.Numerics
 			if (z.Value < 0.0)
 				throw new ArgumentOutOfRangeException("z");
 
-			if (z.Abs().Value > 15.0)
+			if (z.Abs() > 15.0)
 				return LogGamma_Stirling(z);
 
 			return LanczosLogGamma(z);
@@ -64,7 +64,7 @@ namespace YAMP.Numerics
 				xp *= xsqu;
 			}
 
-			throw new NonconvergenceException();
+            throw new YAMPNotConvergedException("gamma");
 		}
 
 		static ScalarValue LogGamma_Stirling(ScalarValue z)
@@ -91,7 +91,7 @@ namespace YAMP.Numerics
 				zp = zp * zsqu;
 			}
 
-			throw new NonconvergenceException();
+            throw new YAMPNotConvergedException("gamma");
 		}
 
 		static double LanczosLogGamma(double x)
@@ -173,7 +173,7 @@ namespace YAMP.Numerics
 				xp *= xsqu;
 			}
 
-			throw new NonconvergenceException();
+            throw new YAMPNotConvergedException("gamma");
 		}
 
 		public static double Beta(double a, double b)

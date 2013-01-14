@@ -42,7 +42,7 @@ namespace YAMP.Numerics
         public CholeskyDecomposition(MatrixValue Arg)
         {
             // Initialize.
-            double[][] A = Arg.GetRealArray();
+            double[][] A = Arg.GetRealMatrix();
             n = Arg.DimensionY;
             L = new double[n][];
 
@@ -120,13 +120,13 @@ namespace YAMP.Numerics
         public override MatrixValue Solve(MatrixValue B)
         {
             if (B.DimensionY != n)
-                throw new DimensionException(n, B.DimensionY);
+                throw new YAMPDifferentDimensionsException(n, 1, B.DimensionY, 1);
 
             if (!isspd)
-                throw new MatrixFormatException("symmetric positive definite");
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.SymmetricPositiveDefinite);
 
             // Copy right hand side.
-            double[][] X = B.GetRealArray();
+            double[][] X = B.GetRealMatrix();
             int nx = B.DimensionX;
 
             // Solve L*Y = B;

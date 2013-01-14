@@ -26,7 +26,7 @@ namespace YAMP
 				for (var i = 1; i <= M.Length; i++)
 					s *= M[i];
 
-				return (ScalarValue)s.Power(new ScalarValue(1.0 / M.Length));
+				return s.Pow(new ScalarValue(1.0 / M.Length));
 			}
 			else
 			{
@@ -40,7 +40,7 @@ namespace YAMP
 						s[1, j] *= M[i, j];
 
 				for (int j = 1; j <= s.DimensionX; j++)
-					s[1, j] = (ScalarValue)s[1, j].Power(new ScalarValue(1.0 / M.DimensionY));
+					s[1, j] = s[1, j].Pow(new ScalarValue(1.0 / M.DimensionY));
 
 				return s;
 			}

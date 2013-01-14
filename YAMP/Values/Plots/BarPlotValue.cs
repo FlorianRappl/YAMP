@@ -1,5 +1,5 @@
 ﻿/*
-	Copyright (c) 2012, Florian Rappl.
+	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -30,17 +30,19 @@ using YAMP.Converter;
 
 namespace YAMP
 {
-	public sealed class BarPlotValue : PlotValue
+    /// <summary>
+    /// Contains the data for barplots.
+    /// </summary>
+    public sealed class BarPlotValue : XYPlotValue
 	{
-		#region Members
-
-		#endregion
-
 		#region ctor
 
 		public BarPlotValue()
-		{
-
+        {
+            MinX = 1.0;
+            MaxX = 1.0;
+            MinY = 0.0;
+            MaxY = 0.0;
 		}
 
 		#endregion
@@ -49,31 +51,48 @@ namespace YAMP
 
 		public override void AddPoints(MatrixValue m)
 		{
-			MinX = 1.0;
-			MaxX = 1.0;
-			MinY = 0.0;
-			MaxY = 0.0;
+            if (m.IsVector)
+                AddSingleSeries(m);
+            else
+            {
+                if (m.DimensionX < m.DimensionY)
+                    m = m.Transpose();
 
-			for (var i = 1; i <= m.Length; i++)
-			{
-				var value = 0.0;
-
-				if (m[i].IsComplex)
-					value = m[i].Abs().Value;
-				else
-					value = m[i].Value;
-
-				if (value < MinY)
-					MinY = value;
-				else if (value > MaxY)
-					MaxY = value;
-
-				if (i > MaxX)
-					MaxX = i;
-
-				AddSeries(new BarPoint(value));
-			}
+                //From here on m.DimensionX >= m.DimensionY !
+                for (var j = 1; j <= m.DimensionY; j++)
+                {
+                    var vec = m.GetRowVector(j);
+                    AddSingleSeries(vec);
+                }
+            }
 		}
+
+        public void AddSingleSeries(MatrixValue vec)
+        {
+            var values = new BarPoints();
+
+            for (var i = 1; i <= vec.Length; i++)
+            {
+                var value = 0.0;
+
+                if (vec[i].IsComplex)
+                    value = vec[i].Abs();
+                else
+                    value = vec[i].Value;
+
+                if (value < MinY)
+                    MinY = value;
+                else if (value > MaxY)
+                    MaxY = value;
+
+                if (i > MaxX)
+                    MaxX = i;
+
+                values.Add(value);
+            }
+
+            AddSeries(values);
+        }
 
 		#endregion
 
@@ -89,8 +108,12 @@ namespace YAMP
 				for (var i = 0; i < Count; i++)
 				{
 					var points = this[i];
-					points.Serialize(s);
-					s.Serialize(points.Value);
+                    points.Serialize(s);
+                    s.Serialize(points.Count);
+
+                    for(var j = 0; j < points.Count; j++)
+					    s.Serialize(points[j]);
+
 					s.Serialize(points.BarWidth);
 				}
 
@@ -107,9 +130,13 @@ namespace YAMP
 
 				for (var i = 0; i < length; i++)
 				{
-					var points = new BarPoint();
+					var points = new BarPoints();
 					points.Deserialize(ds);
-					points.Value = ds.GetDouble();
+                    var count = ds.GetInt();
+
+                    for(var j = 0; j < count; j++)
+					    points.Add(ds.GetDouble());
+
 					points.BarWidth = ds.GetDouble();
 					AddSeries(points);
 				}
@@ -122,29 +149,11 @@ namespace YAMP
 
 		#region Nested Type
 
-		public class BarPoint : Points<double>
+		public class BarPoints : Points<double>
 		{
-			public BarPoint()
+			public BarPoints()
 			{
 				BarWidth = 1.0;
-			}
-
-			public BarPoint(double y) : this()
-			{
-				Add(y);
-			}
-
-			[ScalarToDoubleConverter]
-			public double Value
-			{
-				get { return Count > 0 ? this[0] : 0.0; }
-				set
-				{
-					if (Count > 0)
-						this[0] = value;
-					else
-						Add(value);
-				}
 			}
 
 			[ScalarToDoubleConverter]
@@ -159,11 +168,11 @@ namespace YAMP
 
 		#region Index
 
-		public BarPoint this[int index]
+		public BarPoints this[int index]
 		{
 			get
 			{
-				return base.GetSeries(index) as BarPoint;
+				return base.GetSeries(index) as BarPoints;
 			}
 		}
 

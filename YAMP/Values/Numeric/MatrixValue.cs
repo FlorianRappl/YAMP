@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2012, Florian Rappl.
+	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,9 @@ using System.IO;
 
 namespace YAMP
 {
+    /// <summary>
+    /// The class for representing a matrix value.
+    /// </summary>
 	public class MatrixValue : NumericValue, IFunction, ISetFunction
 	{
 		#region Members
@@ -44,7 +47,28 @@ namespace YAMP
 
 		#endregion
 
-		#region Properties
+        #region Properties
+
+        /// <summary>
+        /// Gets the maximum length of a cell in the default string representation.
+        /// </summary>
+        public int MaximumLength
+        {
+            get
+            {
+                var max = 0;
+
+                foreach (var el in _values.Values)
+                {
+                    var length = el.Length;
+
+                    if (length > max)
+                        max = length;
+                }
+
+                return max;
+            }
+        }
 
         /// <summary>
         /// Gets a boolean if the matrix is only 1x1.
@@ -164,8 +188,8 @@ namespace YAMP
 
                 var exp = int.MinValue;
 
-                foreach (var value in _values)
-                    exp = Math.Max(value.Value.Exponent, exp);
+                foreach (var value in _values.Values)
+                    exp = Math.Max(value.Exponent, exp);
 
                 return exp;
             }
@@ -178,7 +202,7 @@ namespace YAMP
         /// <summary>
         /// Constructs a new matrix.
         /// </summary>
-		public MatrixValue ()
+		public MatrixValue()
 		{
 			_values = new Dictionary<MatrixIndex, ScalarValue>();
 		}
@@ -259,20 +283,30 @@ namespace YAMP
 
 		#region Statics
 
+        /// <summary>
+        /// Creates a new matrix with the help of a specified value.
+        /// </summary>
+        /// <param name="value">The value to initialize the matrix with.</param>
+        /// <returns>A matrix containing the given value.</returns>
 		public static MatrixValue Create(Value value)
 		{
 			if(value is MatrixValue)
-				return value as MatrixValue;
+                return (MatrixValue)value;
 			else if(value is ScalarValue)
 			{
 				var m = new MatrixValue();
-				m[1, 1] = value as ScalarValue;
+				m[1, 1] = (ScalarValue)value;
 				return m;
 			}
 			
-			throw new ArgumentException("matrix");
+			throw new YAMPNonNumericException();
 		}
 
+        /// <summary>
+        /// Creates a new identity matrix of the given dimension.
+        /// </summary>
+        /// <param name="dimension">The rank of the identity matrix.</param>
+        /// <returns>A new identity matrix.</returns>
 		public static MatrixValue One(int dimension)
 		{
 			var m = new MatrixValue(dimension, dimension);
@@ -283,6 +317,12 @@ namespace YAMP
 			return m;
 		}
 
+        /// <summary>
+        /// Creates a matrix containing only ones.
+        /// </summary>
+        /// <param name="rows">The number of rows in the new matrix.</param>
+        /// <param name="cols">The number of columns in the new matrix.</param>
+        /// <returns>A new matrix containing only ones.</returns>
 		public static MatrixValue Ones(int rows, int cols)
 		{
 			var m = new MatrixValue(rows, cols);
@@ -296,28 +336,138 @@ namespace YAMP
 
 		#endregion
 
-		#region Methods
+        #region Serialization
 
-        /// <summary>
-        /// Gets the maximum length of a cell in the default string representation.
-        /// </summary>
-		public int MaximumLength
-		{
-			get
-			{
-				var max = 0;
+        public override byte[] Serialize()
+        {
+            byte[] content;
 
-                foreach (var el in _values.Values)
+            using (var ms = new MemoryStream())
+            {
+                var dy = BitConverter.GetBytes(dimY);
+                ms.Write(dy, 0, dy.Length);
+                var dx = BitConverter.GetBytes(dimX);
+                ms.Write(dx, 0, dx.Length);
+                var count = BitConverter.GetBytes(_values.Count);
+                ms.Write(count, 0, count.Length);
+
+                foreach (var entry in _values)
                 {
-                    var length = el.Length;
-
-                    if (length > max)
-                        max = length;
+                    var j = BitConverter.GetBytes(entry.Key.Row);
+                    var i = BitConverter.GetBytes(entry.Key.Column);
+                    var buffer = entry.Value.Serialize();
+                    ms.Write(j, 0, j.Length);
+                    ms.Write(i, 0, i.Length);
+                    ms.Write(buffer, 0, buffer.Length);
                 }
 
-				return max;
-			}
-		}
+                content = ms.ToArray();
+            }
+
+            return content;
+        }
+
+        public override Value Deserialize(byte[] content)
+        {
+            dimY = BitConverter.ToInt32(content, 0);
+            dimX = BitConverter.ToInt32(content, 4);
+            var count = BitConverter.ToInt32(content, 8);
+            var pos = 12;
+
+            for (var i = 0; i < count; i++)
+            {
+                var row = BitConverter.ToInt32(content, pos);
+                var col = BitConverter.ToInt32(content, pos + 4);
+                var re = BitConverter.ToDouble(content, pos + 8);
+                var im = BitConverter.ToDouble(content, pos + 16);
+                _values.Add(new MatrixIndex
+                {
+                    Column = col,
+                    Row = row
+                }, new ScalarValue(re, im));
+
+                pos += 24;
+            }
+
+            return this;
+        }
+
+        #endregion
+
+        #region Geometry
+
+        public override void Clear()
+        {
+            for (var i = 1; i <= DimensionX; i++)
+                for (var j = 1; j <= DimensionY; j++)
+                    this[j, i].Clear();
+        }
+
+        public MatrixValue AddColumn(Value value)
+        {
+            var that = Clone();
+
+            if (value is MatrixValue)
+            {
+                var t = value as MatrixValue;
+                int j, i = 1, offset = DimensionX + 1;
+
+                for (var k = 1; k <= t.DimensionY; k++)
+                {
+                    j = offset;
+
+                    for (var l = 1; l <= t.DimensionX; l++)
+                        that[i, j++] = t[k, l];
+
+                    i++;
+                }
+
+                return that;
+            }
+            else if (value is ScalarValue)
+            {
+                var t = value as ScalarValue;
+                that[1, DimensionX + 1] = t;
+                return that;
+            }
+
+            throw new YAMPOperationInvalidException(",", value);
+        }
+
+        public MatrixValue AddRow(Value value)
+        {
+            var that = Clone();
+
+            if (value is MatrixValue)
+            {
+                var t = value as MatrixValue;
+                int j, i = DimensionY + 1;
+
+                for (var k = 1; k <= t.DimensionY; k++)
+                {
+                    j = 1;
+
+                    for (var l = 1; l <= t.DimensionX; l++)
+                        that[i, j++] = t[k, l];
+
+                    i++;
+                }
+
+                return that;
+            }
+            else if (value is ScalarValue)
+            {
+                var t = value as ScalarValue;
+                that[DimensionY + 1, 1] = t;
+                return that;
+            }
+
+            throw new YAMPOperationInvalidException(";", value);
+        }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Gets the maximum length of cell by considering the given context.
@@ -339,6 +489,11 @@ namespace YAMP
             return max;
         }
 
+        /// <summary>
+        /// Sorts the values of the matrix and outputs the values in a
+        /// new vector.
+        /// </summary>
+        /// <returns>The matrix instance holding the sorted values as a vector.</returns>
 		public MatrixValue VectorSort()
 		{
 			var v = new MatrixValue(1, Length);
@@ -365,23 +520,10 @@ namespace YAMP
 			return v;
 		}
 
-		public ScalarValue Sum()
-		{
-			var s = new ScalarValue();
-
-			foreach (var entry in _values)
-				s += entry.Value;
-
-			return s;
-		}
-
-		public override void Clear()
-		{
-			for (var i = 1; i <= DimensionX; i++)
-				for (var j = 1; j <= DimensionY; j++)
-					this[j, i].Clear();
-		}
-
+        /// <summary>
+        /// Creates a deep copy of the matrix.
+        /// </summary>
+        /// <returns>A clone of the current instance.</returns>
 		public virtual MatrixValue Clone()
 		{
 			var m = new MatrixValue();
@@ -393,366 +535,56 @@ namespace YAMP
 			m.dimY = dimY;
 			return m;
 		}
-		
-		public MatrixValue AddColumn(Value value)
-		{
-			var that = Clone();
 
-			if(value is MatrixValue)
-			{
-				var t = value as MatrixValue;				
-				int j, i = 1, offset = DimensionX + 1;
-				
-				for(var k = 1; k <= t.DimensionY; k++)
-				{
-					j = offset;
-					
-					for(var l = 1; l <= t.DimensionX; l++)
-						that[i, j++] = t[k, l];
-					
-					i++;
-				}
+        #endregion
 
-				return that;
-			}
-			else if(value is ScalarValue)
-			{
-				var t = value as ScalarValue;
-				that[1, DimensionX + 1] = t;
-				return that;
-			}
-			
-			throw new OperationNotSupportedException(",", value);
-		}
-		
-		public MatrixValue AddRow(Value value)
-		{
-			var that = Clone();
+        #region String Representation
 
-			if(value is MatrixValue)
-			{
-				var t = value as MatrixValue;				
-				int j, i = DimensionY + 1;
-				
-				for(var k = 1; k <= t.DimensionY; k++)
-				{
-					j = 1;
-					
-					for(var l = 1; l <= t.DimensionX; l++)
-						that[i, j++] = t[k, l];
-					
-					i++;
-				}
+        public override string ToString(ParseContext context)
+        {
+            var sb = new StringBuilder();
 
-				return that;
-			}
-			else if(value is ScalarValue)
-			{
-				var t = value as ScalarValue;
-				that[DimensionY + 1, 1] = t;
-				return that;
-			}
-			
-			throw new OperationNotSupportedException(";", value);
-		}
-	
-		public override Value Add(Value right)
-		{
-			if(right is MatrixValue)
-			{
-				var r = (MatrixValue)right;
-				
-				if(r.DimensionX != DimensionX)
-					throw new DimensionException(DimensionX, r.DimensionX);
-				
-				if(r.DimensionY != DimensionY)
-					throw new DimensionException(DimensionY, r.DimensionY);
-				
-				var m = new MatrixValue(DimensionY, DimensionX);
-				
-				for(var j = 1; j <= DimensionY; j++)
-					for(var i = 1; i <= DimensionX; i++)
-						m[j, i] = this[j, i].Add(r[j, i]) as ScalarValue;				
-				
-				return m;
-			}
-			else if (right is ScalarValue)
-			{
-				var m = new MatrixValue(DimensionY, DimensionX);
+            for (var j = 1; j <= DimensionY; j++)
+            {
+                for (var i = 1; i <= DimensionX; i++)
+                {
+                    sb.Append(this[j, i].ToString(context));
 
-				for(var j = 1; j <= DimensionY; j++)
-					for(var i = 1; i <= DimensionX; i++)
-						m[j, i] = (ScalarValue)this[j, i].Add(right);
+                    if (i < DimensionX)
+                        sb.Append("\t");
+                }
 
-				return m;
-			}
-			
-			throw new OperationNotSupportedException("+", right);
-		}
-		
-		public override Value Power(Value exponent)
-		{
-			if (DimensionX != DimensionY)
-				throw new DimensionException(DimensionX, DimensionY);
+                if (j < DimensionY)
+                    sb.AppendLine();
+            }
 
-			if (exponent is ScalarValue)
-			{
-				if (DimensionX == 1)
-					return this[1, 1].Power(exponent);
+            return sb.ToString();
+        }
 
-				var exp = (ScalarValue)exponent;
-				
-				if(exp.ImaginaryValue != 0.0 || Math.Floor(exp.Value) != exp.Value)
-					throw new OperationNotSupportedException("^", exponent);
+        #endregion
 
-				var eye = MatrixValue.One(DimensionX);
-				var multiplier = this;
-				var count = (int)Math.Abs(exp.Value);
+        #region Special Matrix operations
 
-				if (exp.Value < 0)
-					multiplier = this.Inverse();
+        public MatrixValue Inverse()
+        {
+            var target = One(DimensionX);
 
-				for (var i = 0; i < count; i++)
-					eye = (MatrixValue)eye.Multiply(multiplier);
-
-				return eye;
-			}
-
-			throw new OperationNotSupportedException("^", exponent);
-		}
-		
-		public override Value Subtract(Value right)
-		{
-			if(right is MatrixValue)
-			{
-				var r = (MatrixValue)right;
-				
-				if(r.DimensionX != DimensionX)
-					throw new DimensionException(DimensionX, r.DimensionX);
-				
-				if(r.DimensionY != DimensionY)
-					throw new DimensionException(DimensionY, r.DimensionY);
-				
-				var m = new MatrixValue(DimensionY, DimensionX);
-				
-				for(var j = 1; j <= DimensionY; j++)
-					for(var i = 1; i <= DimensionX; i++)
-						m[j, i] = (ScalarValue)this[j, i].Subtract(r[j, i]);				
-				
-				return m;
-			}
-			else if (right is ScalarValue)
-			{
-				var m = new MatrixValue(DimensionY, DimensionX);
-
-				for(var j = 1; j <= DimensionY; j++)
-					for(var i = 1; i <= DimensionX; i++)
-						m[j, i] = (ScalarValue)this[j, i].Subtract(right);
-
-				return m;
-			}
-			
-			throw new OperationNotSupportedException("-", right);
-		}
-
-		public override Value Multiply(Value right)
-		{	
-			if(right is MatrixValue)
-			{
-				var A = this;
-				var B = right as MatrixValue;
-				
-				if(A.DimensionX != B.DimensionY)
-					throw new DimensionException(A.DimensionX, B.DimensionY);
-				
-				var M = new MatrixValue(A.DimensionY, B.DimensionX);
-				
-				for(var j = 1; j <= B.DimensionX; j++)
-				{					
-					for(var i = 1; i <= A.DimensionY; i++)
-					{						
-						for(var k = 1; k <= A.DimensionX; k++)
-							M[i, j] = (ScalarValue)M[i, j].Add(A[i, k].Multiply(B[k, j]));
-						
-						if(A.DimensionY == B.DimensionX && A.DimensionY == 1)
-							return M[1, 1];
-					}
-				}
-				
-				return M;
-			}
-			else if(right is ScalarValue)
-			{
-				var A = new MatrixValue(DimensionY, DimensionX);
-
-				for(var i = 1; i <= DimensionX; i++)
-					for(var j = 1; j <= DimensionY; j++)
-						A[j, i] = (ScalarValue)this[j, i].Multiply(right);
-
-				return A;
-			}
-			
-			throw new OperationNotSupportedException("*", right);
-		}
-
-		public override Value Divide(Value denominator)
-		{
-			if(denominator is ScalarValue)
-			{
-				var m = new MatrixValue(DimensionY, DimensionX);
-				
-				for(var j = 1; j <= DimensionY; j++)
-					for(var i = 1; i <= DimensionX; i++)
-						m[j, i] = (ScalarValue)this[j, i].Divide(denominator);
-				
-				return m;
-			}
-			else if (denominator is MatrixValue)
-			{
-				var Q = (MatrixValue)denominator;
-				
-				if(DimensionX != Q.DimensionX)
-					throw new DimensionException(DimensionX, Q.DimensionX);
-				
-				return this.Multiply(Q.Inverse());
-			}
-			
-			throw new OperationNotSupportedException("/", denominator);
-		}
-		
-		public override byte[] Serialize()
-		{
-		    byte[] content;
-
-		    using (var ms = new MemoryStream())
-		    {
-		        var dy = BitConverter.GetBytes(dimY);
-		        ms.Write(dy, 0, dy.Length);
-		        var dx = BitConverter.GetBytes(dimX);
-		        ms.Write(dx, 0, dx.Length);
-				var count = BitConverter.GetBytes(_values.Count);
-				ms.Write(count, 0, count.Length);
-
-		        foreach(var entry in _values)
-		        {
-					var j = BitConverter.GetBytes(entry.Key.Row);
-					var i = BitConverter.GetBytes(entry.Key.Column);
-					var buffer = entry.Value.Serialize();
-					ms.Write(j, 0, j.Length);
-					ms.Write(i, 0, i.Length);
-					ms.Write(buffer, 0, buffer.Length);
-		        }
-
-		        content = ms.ToArray();
-		    }
-
-		    return content;
-		}
-
-		public override Value Deserialize(byte[] content)
-		{
-			dimY = BitConverter.ToInt32 (content, 0);
-			dimX = BitConverter.ToInt32(content, 4);
-			var count = BitConverter.ToInt32(content, 8);
-			var pos = 12;
-
-			for(var i = 0; i < count; i++)
-			{
-				var row = BitConverter.ToInt32(content, pos);
-				var col = BitConverter.ToInt32(content, pos + 4);
-				var re = BitConverter.ToDouble(content, pos + 8);
-				var im = BitConverter.ToDouble(content, pos + 16);
-				_values.Add(new MatrixIndex
-				{
-					Column = col,
-					Row = row
-				}, new ScalarValue(re, im));
-
-				pos += 24;
-			}
-
-			return this;
-		}
-		
-		public MatrixValue Inverse()
-		{
-			var target = One(DimensionX);
-
-			if(DimensionX < 32)
-			{
-				var lu = new YAMP.Numerics.LUDecomposition(this);
-				return lu.Solve(target);
-			}
+            if (DimensionX < 24)
+            {
+                var lu = new YAMP.Numerics.LUDecomposition(this);
+                return lu.Solve(target);
+            }
             else if (IsSymmetric)
             {
                 var cho = new YAMP.Numerics.CholeskyDecomposition(this);
                 return cho.Solve(target);
             }
 
-			var qr = new YAMP.Numerics.QRDecomposition(this);
-			return qr.Solve(target);
-		}
-		
-		public override string ToString(ParseContext context)
-		{			
-			var sb = new StringBuilder();
-			
-			for(var j = 1; j <= DimensionY; j++)
-			{
-				for(var i = 1; i <= DimensionX; i++)
-				{
-					sb.Append(this[j, i].ToString(context));
-					
-					if(i < DimensionX)
-						sb.Append("\t");
-				}
-				
-				if(j < DimensionY)
-					sb.AppendLine();
-			}
-			
-			return sb.ToString();
-		}
+            var qr = new YAMP.Numerics.QRDecomposition(this);
+            return qr.Solve(target);
+        }
 
-		public MatrixValue GetRowVector(int j)
-		{
-			var m = new MatrixValue(1, DimensionX);
-
-			for (var i = 1; i <= DimensionX; i++)
-				m[1, i] = this[j, i].Clone();
-
-			return m;
-		}
-
-		public void SetRowVector(int j, MatrixValue m)
-		{
-			if (m.Length != DimensionX)
-				throw new DimensionException(m.Length, DimensionX);
-
-			for (var i = 1; i <= DimensionX; i++)
-				this[j, i] = m[i].Clone();
-		}
-
-		public MatrixValue GetColumnVector(int i)
-		{
-			var m = new MatrixValue(DimensionY, 1);
-
-			for (var j = 1; j <= DimensionY; j++)
-				m[j, 1] = this[j, i].Clone();
-
-			return m;
-		}
-
-		public void SetColumnVector(int i, MatrixValue m)
-		{
-			if (m.Length != DimensionY)
-				throw new DimensionException(m.Length, DimensionY);
-
-			for (var j = 1; j <= DimensionY; j++)
-				this[j, i] = m[j].Clone();
-		}
-
-		public MatrixValue Adjungate()
+        public MatrixValue Adjungate()
 		{
 			var m = Transpose();
 
@@ -780,17 +612,6 @@ namespace YAMP
 			m.dimX = dimY;
 			m.dimY = dimX;
 			return m;
-		}
-
-		public override ScalarValue Abs()
-		{
-			var sum = 0.0;
-
-			for (var i = 1; i <= DimensionX; i++)
-				for (var j = 1; j <= DimensionY; j++)
-					sum += this[j, i].AbsSquare().Value;
-
-			return new ScalarValue(Math.Sqrt(sum));
 		}
 
 		public ScalarValue Trace()
@@ -825,10 +646,23 @@ namespace YAMP
 				}
 				else if (n == 4)
 				{
-					return this[1, 1] * (this[2, 2] * (this[3, 3] * this[4, 4] - this[3, 4] * this[4, 3]) + this[2, 3] * (this[3, 4] * this[4, 2] - this[3, 2] * this[4, 4]) + this[2, 4] * (this[3, 2] * this[4, 3] - this[3, 3] * this[4, 2])) -
-							this[1, 2] * (this[2, 1] * (this[3, 3] * this[4, 4] - this[3, 4] * this[4, 3]) + this[2, 3] * (this[3, 4] * this[4, 1] - this[3, 1] * this[4, 4]) + this[2, 4] * (this[3, 1] * this[4, 3] - this[3, 3] * this[4, 1])) +
-							this[1, 3] * (this[2, 1] * (this[3, 2] * this[4, 4] - this[3, 4] * this[4, 2]) + this[2, 2] * (this[3, 4] * this[4, 1] - this[3, 1] * this[4, 4]) + this[2, 4] * (this[3, 1] * this[4, 2] - this[3, 2] * this[4, 1])) -
-							this[1, 4] * (this[2, 1] * (this[3, 2] * this[4, 3] - this[3, 3] * this[4, 2]) + this[2, 2] * (this[3, 3] * this[4, 1] - this[3, 1] * this[4, 3]) + this[2, 3] * (this[3, 1] * this[4, 2] - this[3, 2] * this[4, 1]));
+                    //I guess that's right
+					return this[1, 1] * (this[2, 2] * 
+                                (this[3, 3] * this[4, 4] - this[3, 4] * this[4, 3]) + this[2, 3] * 
+                                    (this[3, 4] * this[4, 2] - this[3, 2] * this[4, 4]) + this[2, 4] * 
+                                        (this[3, 2] * this[4, 3] - this[3, 3] * this[4, 2])) -
+							this[1, 2] * (this[2, 1] * 
+                                (this[3, 3] * this[4, 4] - this[3, 4] * this[4, 3]) + this[2, 3] * 
+                                    (this[3, 4] * this[4, 1] - this[3, 1] * this[4, 4]) + this[2, 4] * 
+                                        (this[3, 1] * this[4, 3] - this[3, 3] * this[4, 1])) +
+							this[1, 3] * (this[2, 1] * 
+                                (this[3, 2] * this[4, 4] - this[3, 4] * this[4, 2]) + this[2, 2] * 
+                                    (this[3, 4] * this[4, 1] - this[3, 1] * this[4, 4]) + this[2, 4] * 
+                                        (this[3, 1] * this[4, 2] - this[3, 2] * this[4, 1])) -
+							this[1, 4] * (this[2, 1] * 
+                                (this[3, 2] * this[4, 3] - this[3, 3] * this[4, 2]) + this[2, 2] * 
+                                    (this[3, 3] * this[4, 1] - this[3, 1] * this[4, 3]) + this[2, 3] * 
+                                        (this[3, 1] * this[4, 2] - this[3, 2] * this[4, 1]));
 				}
 
 				var lu = new YAMP.Numerics.LUDecomposition(this);
@@ -838,7 +672,11 @@ namespace YAMP
 			return new ScalarValue();
 		}
 
-		public override int GetHashCode()
+        #endregion
+
+        #region Comparison
+
+        public override int GetHashCode()
 		{
 			return dimX + dimY;
 		}
@@ -868,6 +706,18 @@ namespace YAMP
 			return false;
 		}
 
+        #endregion
+
+        #region Submatrices and extractions
+
+        /// <summary>
+        /// Gets a real vector of a submatrix.
+        /// </summary>
+        /// <param name="yoffset">The offset in rows.</param>
+        /// <param name="ylength">The length in rows.</param>
+        /// <param name="xoffset">The offset in columns.</param>
+        /// <param name="xlength">The length in columns.</param>
+        /// <returns>The double array (real vector).</returns>
         public double[] GetRealVector(int yoffset, int ylength, int xoffset, int xlength)
         {
             var k = 0;
@@ -882,6 +732,10 @@ namespace YAMP
             return array;
         }
 
+        /// <summary>
+        /// Gets a real vector of the complete matrix.
+        /// </summary>
+        /// <returns>A double array (real vector).</returns>
 		public double[] GetRealVector()
 		{
 			var array = new double[Length];
@@ -892,7 +746,11 @@ namespace YAMP
 			return array;
 		}
 
-		public double[][] GetRealArray()
+        /// <summary>
+        /// Gets a real matrix of the complete matrix.
+        /// </summary>
+        /// <returns>A jagged 2D array.</returns>
+		public double[][] GetRealMatrix()
 		{
 			var array = new double[DimensionY][];
 
@@ -907,7 +765,15 @@ namespace YAMP
 			return array;
 		}
 
-		public MatrixValue SubMatrix(int yoffset, int yfinal, int xoffset, int xfinal)
+        /// <summary>
+        /// Creates a sub matrix of the given instance.
+        /// </summary>
+        /// <param name="yoffset">Vertical offset in rows.</param>
+        /// <param name="yfinal">Final row-index.</param>
+        /// <param name="xoffset">Horizontal offset in columns.</param>
+        /// <param name="xfinal">Final column-index.</param>
+        /// <returns>The new instance with the corresponding entries.</returns>
+		public MatrixValue GetSubMatrix(int yoffset, int yfinal, int xoffset, int xfinal)
 		{
 			var X = new MatrixValue(yfinal - yoffset, xfinal - xoffset);
 
@@ -918,7 +784,14 @@ namespace YAMP
 			return X;
 		}
 
-		public MatrixValue SubMatrix(int[] y, int xoffset, int xfinal)
+        /// <summary>
+        /// Creates a sub matrix of the given instance.
+        /// </summary>
+        /// <param name="y">Row-indices to consider.</param>
+        /// <param name="xoffset">Horizontal offset in columns.</param>
+        /// <param name="xfinal">Final column-index.</param>
+        /// <returns>The new instance with the corresponding entries.</returns>
+		public MatrixValue GetSubMatrix(int[] y, int xoffset, int xfinal)
 		{
 			var X = new MatrixValue(y.Length, xfinal - xoffset);
 
@@ -929,16 +802,148 @@ namespace YAMP
 			return X;
 		}
 
-		#endregion
+        #endregion
 
-		#region Indexers
+        #region Vectors
 
-		public virtual ScalarValue this[int j, int i]
+        /// <summary>
+        /// Gets the j-th row vector, i.e. a vector which is spanned over all columns of one row.
+        /// </summary>
+        /// <param name="j">The index of the row to get the vector from.</param>
+        /// <returns>The extracted row vector.</returns>
+        public MatrixValue GetRowVector(int j)
+        {
+            var m = new MatrixValue(1, DimensionX);
+
+            for (var i = 1; i <= DimensionX; i++)
+                m[1, i] = this[j, i].Clone();
+
+            return m;
+        }
+
+        /// <summary>
+        /// Sets the j-th row vector to be of the given matrix.
+        /// </summary>
+        /// <param name="j">The index of the row to set the vector to.</param>
+        /// <param name="m">The matrix with values to set the j-th row to.</param>
+        /// <returns>The current instance.</returns>
+        public MatrixValue SetRowVector(int j, MatrixValue m)
+        {
+            for (var i = 1; i <= m.Length; i++)
+                this[j, i] = m[i].Clone();
+
+            return this;
+        }
+
+        /// <summary>
+        /// Gets the i-th column vector, i.e. a vector which is spanned over all rows of one column.
+        /// </summary>
+        /// <param name="i">The index of the column to get the vector from.</param>
+        /// <returns>The extracted column vector.</returns>
+        public MatrixValue GetColumnVector(int i)
+        {
+            var m = new MatrixValue(DimensionY, 1);
+
+            for (var j = 1; j <= DimensionY; j++)
+                m[j, 1] = this[j, i].Clone();
+
+            return m;
+        }
+
+        /// <summary>
+        /// Sets the i-th column vector to be of the given matrix.
+        /// </summary>
+        /// <param name="j">The index of the column to set the vector to.</param>
+        /// <param name="m">The matrix with values to set the i-th column to.</param>
+        /// <returns>The current instance.</returns>
+        public MatrixValue SetColumnVector(int i, MatrixValue m)
+        {
+            for (var j = 1; j <= m.Length; j++)
+                this[j, i] = m[j].Clone();
+
+            return this;
+        }
+
+        #endregion
+
+        #region Other operations
+
+        /// <summary>
+        /// Computes the L2-Norm of the matrix (seen as a vector).
+        /// </summary>
+        /// <returns>Returns a scalar value that is the square root of the absolute squared values.</returns>
+        public ScalarValue Abs()
+        {
+            var sum = 0.0;
+
+            for(var i = 1; i <= DimensionX; i++)
+                for(var j = 1; j <= DimensionY; j++)
+                    sum += this[j, i].AbsSquare();
+
+            return new ScalarValue(Math.Sqrt(sum));
+        }
+
+        /// <summary>
+        /// Computes the sum of all entries.
+        /// </summary>
+        /// <returns>Returns the sum of all entries.</returns>
+        public ScalarValue Sum()
+        {
+            var s = new ScalarValue();
+
+            for (var i = 1; i <= DimensionX; i++)
+                for (var j = 1; j <= DimensionY; j++)
+                    s += this[j, i];
+
+            return s;
+        }
+
+        /// <summary>
+        /// Produces a dot product of the given instance
+        /// (seen as a vector) with another vector.
+        /// </summary>
+        /// <param name="w">The second operand of the dot-product.</param>
+        /// <returns>The resulting scalar.</returns>
+        public ScalarValue Dot(MatrixValue w)
+        {
+            var length = Math.Min(Length, w.Length);
+            var sum = new ScalarValue();
+
+            for (var i = 1; i <= length; i++)
+                sum += this[i] * w[i];
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Produces a complex dot (this operand is c.c.) product of the
+        /// given instance (seen as a vector) with another vector.
+        /// </summary>
+        /// <param name="w">The second operand of the complex dot-product.</param>
+        /// <returns>The resulting scalar.</returns>
+        public ScalarValue ComplexDot(MatrixValue w)
+        {
+            var length = Math.Min(Length, w.Length);
+            var sum = new ScalarValue();
+
+            for (var i = 1; i <= length; i++)
+                sum += this[i].Conjugate() * w[i];
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Indexers
+
+        public virtual ScalarValue this[int j, int i]
 		{
 			get
 			{
-				if (i > dimX || i < 1 || j > dimY || j < 1)
-					throw new ArgumentOutOfRangeException("Access in Matrix out of bounds.");
+				if (i > dimX || i < 1)
+					throw new YAMPIndexOutOfBoundException(i, 1, dimX);
+                else if (j > dimY || j < 1)
+                    throw new YAMPIndexOutOfBoundException(j, 1, dimY);
 
 				var index = new MatrixIndex();
 				index.Column = i;
@@ -950,9 +955,11 @@ namespace YAMP
 				return new ScalarValue();
 			}
 			set
-			{
-				if(i < 1 || j < 1)
-					throw new ArgumentOutOfRangeException("Access in Matrix out of bounds.");
+            {
+                if (i < 1)
+                    throw new YAMPIndexOutOfBoundException(i, 1);
+                else if (j < 1)
+                    throw new YAMPIndexOutOfBoundException(j, 1);
 
 				if (i > dimX)
 					dimX = i;
@@ -981,15 +988,15 @@ namespace YAMP
 			get
 			{
 				if(i > Length || i < 1)
-					throw new ArgumentOutOfRangeException("Access in Matrix out of bounds.");
+                    throw new YAMPIndexOutOfBoundException(i, 1, Length);
 
                 var index = GetIndex(i);
                 return this[index.Row, index.Column];
 			}
 			set
 			{
-				if(i < 1)
-					throw new ArgumentOutOfRangeException("Access in Matrix out of bounds.");
+                if (i < 1)
+                    throw new YAMPIndexOutOfBoundException(i, 1);
 
                 var index = GetIndex(i);
 				this[index.Row, index.Column] = value;
@@ -1021,31 +1028,80 @@ namespace YAMP
 
 		#endregion
         
-		#region Operators
+		#region Standard Operators
 
-		public static MatrixValue operator *(MatrixValue a, MatrixValue b)
+		public static MatrixValue operator *(MatrixValue A, MatrixValue B)
 		{
-			return a.Multiply(b) as MatrixValue;
+            if (A.DimensionX != B.DimensionY)
+                throw new YAMPMatrixMultiplyException(A.DimensionX, B.DimensionY);
+
+            var M = new MatrixValue(A.DimensionY, B.DimensionX);
+
+            for (var j = 1; j <= B.DimensionX; j++)
+            {
+                for (var i = 1; i <= A.DimensionY; i++)
+                {
+                    for (var k = 1; k <= A.DimensionX; k++)
+                        M[i, j] = M[i, j] + (A[i, k] * B[k, j]);
+                }
+            }
+
+            return M;
 		}
 
-		public static MatrixValue operator *(ScalarValue a, MatrixValue b)
-		{
-			return b.Multiply(a) as MatrixValue;
+		public static MatrixValue operator *(ScalarValue s, MatrixValue M)
+        {
+            var A = new MatrixValue(M.DimensionY, M.DimensionX);
+
+            for (var i = 1; i <= M.DimensionX; i++)
+                for (var j = 1; j <= M.DimensionY; j++)
+                    A[j, i] = M[j, i] * s;
+
+            return A;
 		}
 
-		public static MatrixValue operator /(MatrixValue a, MatrixValue b)
+		public static MatrixValue operator /(MatrixValue l, MatrixValue r)
 		{
-			return a.Divide(b) as MatrixValue;
+            return l * r.Inverse();
 		}
 
-		public static MatrixValue operator -(MatrixValue a, MatrixValue b)
+        public static MatrixValue operator /(MatrixValue l, ScalarValue r)
+        {
+            var m = new MatrixValue(l.DimensionY, l.DimensionX);
+
+            for (var j = 1; j <= l.DimensionY; j++)
+                for (var i = 1; i <= l.DimensionX; i++)
+                    m[j, i] = l[j, i] / r;
+
+            return m;
+        }
+
+		public static MatrixValue operator -(MatrixValue l, MatrixValue r)
 		{
-			return a.Subtract(b) as MatrixValue;
+            if (r.DimensionX != l.DimensionX || r.DimensionY != l.DimensionY)
+                throw new YAMPDifferentDimensionsException(l, r);
+
+            var m = new MatrixValue(l.DimensionY, l.DimensionX);
+
+            for (var j = 1; j <= l.DimensionY; j++)
+                for (var i = 1; i <= l.DimensionX; i++)
+                    m[j, i] = l[j, i] - r[j, i];
+
+            return m;
 		}
 
-		public static MatrixValue operator +(MatrixValue a, MatrixValue b)
-		{
-			return a.Add(b) as MatrixValue;
+		public static MatrixValue operator +(MatrixValue l, MatrixValue r)
+        {
+            if (r.DimensionX != l.DimensionX || r.DimensionY != l.DimensionY)
+                throw new YAMPDifferentDimensionsException(l, r);
+
+            var m = new MatrixValue(l.DimensionY, l.DimensionX);
+
+            for (var j = 1; j <= l.DimensionY; j++)
+                for (var i = 1; i <= l.DimensionX; i++)
+                    m[j, i] = l[j, i] + r[j, i];
+
+            return m;
 		}
 
 		public static bool operator ==(MatrixValue l, MatrixValue r)
@@ -1077,12 +1133,184 @@ namespace YAMP
 
 		#endregion
 
+        #region Register Operators
+
+        public override void RegisterElement()
+        {
+            PlusOperator.Register(typeof(MatrixValue), typeof(MatrixValue), AddMM);
+            PlusOperator.Register(typeof(MatrixValue), typeof(ScalarValue), AddMS);
+            PlusOperator.Register(typeof(ScalarValue), typeof(MatrixValue), AddSM);
+
+            MinusOperator.Register(typeof(MatrixValue), typeof(MatrixValue), SubtractMM);
+            MinusOperator.Register(typeof(MatrixValue), typeof(ScalarValue), SubtractMS);
+            MinusOperator.Register(typeof(ScalarValue), typeof(MatrixValue), SubtractSM);
+
+            MultiplyOperator.Register(typeof(MatrixValue), typeof(MatrixValue), MultiplyMM);
+            MultiplyOperator.Register(typeof(ScalarValue), typeof(MatrixValue), MultiplySM);
+            MultiplyOperator.Register(typeof(MatrixValue), typeof(ScalarValue), MultiplyMS);
+
+            RightDivideOperator.Register(typeof(MatrixValue), typeof(MatrixValue), DivideMM);
+            RightDivideOperator.Register(typeof(ScalarValue), typeof(MatrixValue), DivideSM);
+            RightDivideOperator.Register(typeof(MatrixValue), typeof(ScalarValue), DivideMS);
+
+            PowerOperator.Register(typeof(MatrixValue), typeof(ScalarValue), PowMS);
+            PowerOperator.Register(typeof(ScalarValue), typeof(MatrixValue), PowSM);
+
+            ModuloOperator.Register(typeof(ScalarValue), typeof(MatrixValue), ModuloSM);
+            ModuloOperator.Register(typeof(MatrixValue), typeof(ScalarValue), ModuloMS);
+        }
+
+        public static MatrixValue AddMM(Value left, Value right)
+        {
+            var l = (MatrixValue)left;
+            var r = (MatrixValue)right;
+            return l + r;
+        }
+
+        public static MatrixValue AddSM(Value left, Value right)
+        {
+            var s = (ScalarValue)left;
+            var m = (MatrixValue)right;
+            var M = new MatrixValue(m.DimensionY, m.DimensionX);
+
+            for (var j = 1; j <= m.DimensionY; j++)
+                for (var i = 1; i <= m.DimensionX; i++)
+                    M[j, i] = m[j, i] + s;
+
+            return M;
+        }
+
+        public static MatrixValue AddMS(Value left, Value right)
+        {
+            return AddSM(right, left);
+        }
+
+        public static Value SubtractMM(Value left, Value right)
+        {
+            var l = (MatrixValue)left;
+            var r = (MatrixValue)right;
+            return l - r;
+        }
+
+        public static MatrixValue SubtractMS(Value left, Value right)
+        {
+            return SubtractSM(right, left);
+        }
+
+        public static MatrixValue SubtractSM(Value left, Value right)
+        {
+            var s = (ScalarValue)left;
+            var r = (MatrixValue)right;
+            var m = new MatrixValue(r.DimensionY, r.DimensionX);
+
+            for (var j = 1; j <= r.DimensionY; j++)
+                for (var i = 1; i <= r.DimensionX; i++)
+                    m[j, i] = s - r[j, i];
+
+            return m;
+        }
+
+        public static Value MultiplyMM(Value left, Value right)
+        {
+            var A = (MatrixValue)left;
+            var B = (MatrixValue)right;
+            var C = A * B;
+
+            if(1 == C.DimensionX && C.DimensionY == 1)
+                return C[1, 1];
+
+            return C;
+        }
+
+        public static MatrixValue MultiplyMS(Value left, Value right)
+        {
+            return MultiplySM(right, left);
+        }
+
+        public static MatrixValue MultiplySM(Value left, Value right)
+        {
+            var l = (ScalarValue)left;
+            var r = (MatrixValue)right;
+            return l * r;
+        }
+
+        public static MatrixValue PowMS(Value basis, Value exponent)
+        {
+            var l = (MatrixValue)basis;
+            var exp = (ScalarValue)exponent;
+
+            if (l.DimensionX != l.DimensionY)
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.Square);
+
+            if (exp.ImaginaryValue != 0.0 || Math.Floor(exp.Value) != exp.Value)
+                throw new YAMPOperationInvalidException("^", exponent);
+
+            var eye = MatrixValue.One(l.DimensionX);
+            var multiplier = exp.Value < 0 ? l.Inverse() : l;
+            var count = (int)Math.Abs(exp.Value);
+
+            for (var i = 0; i < count; i++)
+                eye = eye * multiplier;
+
+            return eye;
+        }
+
+        public static MatrixValue PowSM(Value basis, Value exponent)
+        {
+            var l = (ScalarValue)basis;
+            var r = (MatrixValue)exponent;
+            var m = new MatrixValue(r.DimensionY, r.DimensionX);
+
+            for (var i = 1; i <= r.DimensionX; i++)
+                for (var j = 1; j <= r.DimensionY; j++)
+                    m[j, i] = l.Pow(r[j, i]);
+
+            return m;
+        }
+
+        public static MatrixValue DivideMS(Value left, Value right)
+        {
+            var l = (MatrixValue)left;
+            var r = (ScalarValue)right;
+            return l / r;
+        }
+
+        public static MatrixValue DivideSM(Value left, Value right)
+        {
+            var l = (ScalarValue)left;
+            var r = (MatrixValue)right;
+            return l * r.Inverse();
+        }
+
+        public static MatrixValue DivideMM(Value left, Value right)
+        {
+            var L = (MatrixValue)left;
+            var Q = (MatrixValue)right;
+            return L / Q;
+        }
+
+        public static MatrixValue ModuloMS(Value left, Value right)
+        {
+            var l = (MatrixValue)left;
+            var r = (ScalarValue)right;
+            return ModFunction.Mod(l, r);
+        }
+
+        public static MatrixValue ModuloSM(Value left, Value right)
+        {
+            var l = (ScalarValue)left;
+            var r = (MatrixValue)right;
+            return ModFunction.Mod(l, r);
+        }
+
+        #endregion
+
         #region Behavior as method
 
         public Value Perform(ParseContext context, Value argument, Value values)
         {
             if (!(values is NumericValue))
-                throw new OperationNotSupportedException("matrix-set", values);
+                throw new YAMPOperationInvalidException("Matrix", values);
 
             var indices = new List<MatrixIndex>();
 
@@ -1093,7 +1321,7 @@ namespace YAMP
                 if (ags.Length == 1)
                     return Perform(context, ags[1], values);
                 else if (ags.Length > 2)
-                    throw new ArgumentsException("matrix-index", 3);
+                    throw new YAMPArgumentNumberException("Matrix", ags.Length, 2);
 
                 var rows = BuildIndex(ags[1], DimensionY);
                 var columns = BuildIndex(ags[2], DimensionX);
@@ -1129,7 +1357,7 @@ namespace YAMP
                 }
             }
             else
-                throw new OperationNotSupportedException("matrix-index", argument);
+                throw new YAMPOperationInvalidException("Matrix", argument);
 
             if (values is MatrixValue)
             {
@@ -1137,7 +1365,7 @@ namespace YAMP
                 var m = (MatrixValue)values;
 
                 if (m.Length != indices.Count)
-                    throw new DimensionException(m.Length, indices.Count);
+                    throw new YAMPDifferentLengthsException(m.Length, indices.Count);
 
                 foreach (var mi in indices)
                     this[mi.Row, mi.Column] = m[index++];
@@ -1161,8 +1389,8 @@ namespace YAMP
 
                 if (ags.Length == 1)
                     return Perform(context, ags[1]);
-                else if(ags.Length > 2)
-                    throw new ArgumentsException("matrix-index", 3);
+                else if (ags.Length > 2)
+                    throw new YAMPArgumentNumberException("Matrix", ags.Length, 2);
 
                 var rows = BuildIndex(ags[1], DimensionY);
                 var columns = BuildIndex(ags[2], DimensionX);
@@ -1201,7 +1429,7 @@ namespace YAMP
                 return m;
             }
 
-            throw new OperationNotSupportedException("matrix-index", argument);
+            throw new YAMPOperationInvalidException("Matrix", argument);
         }
 
         MatrixValue LogicalSubscripting(MatrixValue m)
@@ -1238,6 +1466,5 @@ namespace YAMP
         }
 
         #endregion
-	}
+    }
 }
-

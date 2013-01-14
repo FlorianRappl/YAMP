@@ -149,15 +149,15 @@ namespace YAMP
 						}
 					}
 
-					if (content == null)
-						throw new ArgumentException(Name, Length, "[ " + string.Join(", ", possible.ToArray()) + " ]", value.Header);
+                    if (content == null)
+                        throw new YAMPArgumentWrongTypeException(value.Header, possible.ToArray(), Name);
 
 					prop.SetValue(parent, content, null);
 					return;
 				}
 			}
 
-			throw new PropertyNotFoundException(name, available.ToArray());
+            throw new YAMPPropertyMissingException(name, available.ToArray());
 		}
 	}
 }

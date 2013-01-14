@@ -23,14 +23,14 @@ namespace YAMP
 				return gmres.Solve(phi);
 			}
 
-			return M.Inverse().Multiply(phi) as MatrixValue;
+			return M.Inverse() * phi;
 		}
 
 		[Description("Searches a solution vector x for the scalar a and the source b.")]
 		[Example("solve(a, b)", "Solves the equation a * x = b for a scalar a and a source b.")]
 		public ScalarValue Function(ScalarValue a, ScalarValue b)
 		{
-			return a.Divide(b) as ScalarValue;
+			return a / b;
 		}
 	}
 }

@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,30 +29,34 @@ using System;
 
 namespace YAMP.Physics
 {
+    [Description("")]
+    [Kind(PopularKinds.Function)]
     class ConvertFunction : ArgumentFunction
     {
+        [Description("Converts the given value of the source unit to the target unit.")]
+        [Example("convert(1, \"m/s\", \"km/h\")", "Converts 1 m/s to km/h resulting in 3.6 km/h.")]
         public UnitValue Function(ScalarValue value, StringValue from, StringValue to)
         {
-            return Function(new UnitValue(value, from), to);
+            return Convert(new UnitValue(value, from), to.Value);
         }
 
+        [Description("Convert the given unit value to the target unit.")]
+        [Example("convert(unit(5, \"yd\"), \"ft\")", "Converts the unit value 5 yards to feet. This yields 15 ft.")]
         public UnitValue Function(UnitValue value, StringValue to)
         {
-            var cu = new CombinedUnit(value.Unit);
-            var conversations = cu.ConvertTo(to.Value);
-            var re = value.Value;
-            var im = value.ImaginaryValue;
+            return Convert(value, to.Value);
+        }
+
+        public static UnitValue Convert(UnitValue fromValue, string targetUnit)
+        {
+            var cu = new CombinedUnit(fromValue.Unit);
+            var conversations = cu.ConvertTo(targetUnit);
+            var re = fromValue.Value;
 
             foreach (var conversation in conversations)
-            {
                 re = conversation(re);
-                im = conversation(im);
-            }
 
-            if (value.ImaginaryValue == 0.0)
-                im = 0.0;
-
-            return new UnitValue(cu.Factor * re, cu.Factor * im, cu.Unit);
+            return new UnitValue(cu.Factor * re, cu.Unit);
         }
     }
 }

@@ -11,12 +11,12 @@ namespace YAMP
 		public ArgumentsValue Function(MatrixValue M)
 		{
 			if (M.DimensionX != 2 && M.DimensionY != 2)
-				throw new OperationNotSupportedException("lsq", "because exactly two rows or columns are required.");
+				throw new YAMPOperationInvalidException("lsq", "because exactly two rows or columns are required.");
 
 			if (M.DimensionX > M.DimensionY)
-				return Function(M.SubMatrix(0, 1, 0, M.DimensionX), M.SubMatrix(1, 2, 0, M.DimensionX));
+				return Function(M.GetSubMatrix(0, 1, 0, M.DimensionX), M.GetSubMatrix(1, 2, 0, M.DimensionX));
 
-			return Function(M.SubMatrix(0, M.DimensionY, 0, 1), M.SubMatrix(0, M.DimensionY, 1, 2));
+			return Function(M.GetSubMatrix(0, M.DimensionY, 0, 1), M.GetSubMatrix(0, M.DimensionY, 1, 2));
 		}
 
 		[Description("In statistics and mathematics, linear least squares is an approach to fitting a mathematical or statistical model to data in cases where the idealized value provided by the model for any data point is expressed linearly in terms of the unknown parameters of the model.")]
@@ -24,7 +24,7 @@ namespace YAMP
 		public ArgumentsValue Function(MatrixValue X, MatrixValue Y)
 		{
 			if (X.Length != Y.Length)
-				throw new DimensionException(X.Length, Y.Length);
+				throw new YAMPDifferentLengthsException(X.Length, Y.Length);
 
 			var x1 = new ScalarValue();
 			var y1 = new ScalarValue();

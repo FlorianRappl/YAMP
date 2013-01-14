@@ -45,7 +45,7 @@ namespace YAMP.Numerics
         public QRDecomposition(MatrixValue A)
         {
             // Initialize.
-            QR = A.GetRealArray();
+            QR = A.GetRealMatrix();
             m = A.DimensionY;
             n = A.DimensionX;
             Rdiag = new double[n];
@@ -57,7 +57,7 @@ namespace YAMP.Numerics
                 var nrm = 0.0;
 
                 for (int i = k; i < m; i++)
-                    nrm = NumericHelpers.Hypot(nrm, QR[i][k]);
+                    nrm = Helpers.Hypot(nrm, QR[i][k]);
 
                 if (nrm != 0.0)
                 {
@@ -214,14 +214,14 @@ namespace YAMP.Numerics
         public override MatrixValue Solve(MatrixValue B)
         {
             if (B.DimensionY != m)
-                throw new DimensionException(B.DimensionY, m);
+                throw new YAMPDifferentDimensionsException(m, 1, B.DimensionY, 1);
 
             if (!this.FullRank)
-                throw new MatrixFormatException("full rank");
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.NonSingular);
 
             // Copy right hand side
             var nx = B.DimensionX;
-            var X = B.GetRealArray();
+            var X = B.GetRealMatrix();
 
             // Compute Y = transpose(Q)*B
             for (int k = 0; k < n; k++)
@@ -253,7 +253,7 @@ namespace YAMP.Numerics
                 }
             }
 
-            return new MatrixValue(X, n, nx).SubMatrix(0, n, 0, nx);
+            return new MatrixValue(X, n, nx).GetSubMatrix(0, n, 0, nx);
         }
 
         #endregion //  Public Methods

@@ -1,5 +1,5 @@
 ﻿/*
-	Copyright (c) 2012, Florian Rappl.
+	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,10 @@ using YAMP.Converter;
 
 namespace YAMP
 {
-	public sealed class Plot3DValue : PlotValue
+    /// <summary>
+    /// Container for 3D plots.
+    /// </summary>
+	public sealed class Plot3DValue : XYZPlotValue
 	{
 		#region ctor
 
@@ -45,6 +48,9 @@ namespace YAMP
 
 		#region Properties
 
+        /// <summary>
+        /// Gets the status of the x-axis - is it logarithmic?
+        /// </summary>
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]
 		public bool IsLogX
@@ -53,6 +59,9 @@ namespace YAMP
 			internal set;
 		}
 
+        /// <summary>
+        /// Gets the status of the y-axis - is it logarithmic?
+        /// </summary>
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]
 		public bool IsLogY
@@ -61,6 +70,9 @@ namespace YAMP
 			internal set;
 		}
 
+        /// <summary>
+        /// Gets the status of the z-axis - is it logarithmic?
+        /// </summary>
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]
 		public bool IsLogZ
@@ -69,54 +81,9 @@ namespace YAMP
 			internal set;
 		}
 
-		[StringToStringConverter]
-		public string ZLabel
-		{
-			get;
-			set;
-		}
-
-		[ScalarToDoubleConverter]
-		public double MinZ
-		{
-			get;
-			set;
-		}
-
-		[ScalarToDoubleConverter]
-		public double MaxZ
-		{
-			get;
-			set;
-		}
-
-		[MatrixToDoubleArrayConverter]
-		public double[] ZRange
-		{
-			get { return new double[] { MinZ, MaxZ }; }
-			set
-			{
-				MinZ = value[0];
-				MaxZ = value[1];
-			}
-		}
-
 		#endregion
 
 		#region Methods
-
-		protected override void InitializeBoundaries()
-		{
-			base.InitializeBoundaries();
-			MinZ = double.MaxValue;
-			MaxZ = double.MinValue;
-		}
-
-		public void SetZRange(double min, double max)
-		{
-			MinZ = min;
-			MaxZ = max;
-		}
 
 		public override void AddPoints(MatrixValue m)
 		{
@@ -286,9 +253,6 @@ namespace YAMP
 			using (var s = Serializer.Create())
 			{
 				Serialize(s);
-				s.Serialize(MinZ);
-				s.Serialize(MaxZ);
-				s.Serialize(ZLabel);
 				s.Serialize(IsLogX);
 				s.Serialize(IsLogY);
 				s.Serialize(IsLogZ);
@@ -317,9 +281,6 @@ namespace YAMP
 			using (var ds = Deserializer.Create(content))
 			{
 				Deserialize(ds);
-				MinZ = ds.GetDouble();
-				MaxZ = ds.GetDouble();
-				ZLabel = ds.GetString();
 				IsLogX = ds.GetBoolean();
 				IsLogY = ds.GetBoolean();
 				IsLogZ = ds.GetBoolean();

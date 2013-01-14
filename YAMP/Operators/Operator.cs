@@ -1,3 +1,30 @@
+/*
+	Copyright (c) 2012-2013, Florian Rappl.
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+		* Redistributions of source code must retain the above copyright
+		  notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright
+		  notice, this list of conditions and the following disclaimer in the
+		  documentation and/or other materials provided with the distribution.
+		* Neither the name of the YAMP team nor the names of its contributors
+		  may be used to endorse or promote products derived from this
+		  software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -5,12 +32,14 @@ using System.Collections;
 
 namespace YAMP
 {
-	public abstract class Operator : IRegisterElement
+    /// <summary>
+    /// The abstract base class for any operator (unary, binary, ...).
+    /// </summary>
+	public abstract class Operator : Block, IRegisterElement
 	{
 		#region Members
 
 		string _op;
-		Type _dependency;
 
 		#endregion
 
@@ -26,23 +55,23 @@ namespace YAMP
 		
 		public Operator (string op, int level, bool expect)
 		{
-			_dependency = typeof(TreeExpression);
 			_op = op;
 			Level = level;
 			ExpectExpression = expect;
+            Length = op.Length;
 		}
 
 		#endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// Gets the input passed to this operator.
-		/// </summary>
-		public virtual string Input
-		{
-			get { return _op; }
-		}
+        /// <summary>
+        /// Gets a dummy operator for doing nothing.
+        /// </summary>
+        public static Operator Void
+        {
+            get { return new VoidOperator(); }
+        }
 		
 		/// <summary>
 		/// Gets the operator's string.
@@ -77,7 +106,7 @@ namespace YAMP
 		{
 			get;
 			protected set;
-		}
+        }
 
 		#endregion
 
@@ -85,39 +114,36 @@ namespace YAMP
 
 		public abstract Value Evaluate(Expression[] expressions, Dictionary<string, Value> symbols);
 
-		public virtual string Set(string input)
-		{
-			if (input.Length < _op.Length)
-				return input;
+        public abstract Operator Create();
 
-			for(var i = 0; i < _op.Length; i++)
-			{
-				if (input[i] != _op[i])
-					return input;
-			}
-
-			return input.Substring(_op.Length);
-		}
-
-		public virtual Operator Create(QueryContext query)
-		{
-			return this;
-		}
-
-		public virtual Operator Create(QueryContext query, Expression premise)
-		{
-			return Create(query);
-		}
+        public virtual Operator Create(ParseEngine engine)
+        {
+            var op = Create();
+            op.Query = engine.Query;
+            op.StartColumn = engine.CurrentColumn;
+            op.StartLine = engine.CurrentLine;
+            engine.Advance(Op.Length);
+            return op;
+        }
 		
 		public virtual void RegisterElement()
 		{
 			Elements.Instance.AddOperator(_op, this);
+        }
+
+        #endregion
+
+        #region String Representations
+
+        public override string ToString()
+        {
+            return string.Format("({0}, {1}) {2}", StartLine, StartColumn, GetType().Name.RemoveOperatorConvention());
 		}
-		
-		public override string ToString()
-		{
-			return GetType().Name.Replace("Operator", string.Empty);
-		}
+
+        public override string ToCode()
+        {
+            return _op;
+        }
 
 		#endregion
 	}

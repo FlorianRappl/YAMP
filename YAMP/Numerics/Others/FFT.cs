@@ -5,12 +5,22 @@ namespace YAMP.Numerics
 {
     public class FFT
     {
+        #region Members
+
         MatrixValue _values;
+
+        #endregion
+
+        #region ctor
 
         public FFT(MatrixValue values)
         {
             _values = values;
         }
+
+        #endregion
+
+        #region Methods
 
         public MatrixValue Transform1D()
         {
@@ -22,6 +32,10 @@ namespace YAMP.Numerics
             return ifft2d(_values);
         }
 
+        #endregion
+
+        #region Calculations
+
         MatrixValue fft(MatrixValue x)
         {
             var length = x.Length;
@@ -31,7 +45,7 @@ namespace YAMP.Numerics
 
             // Cooley-Tukey FFT
             if (length % 2 != 0) 
-                throw new MatrixFormatException("length != 2^n");
+                throw new YAMPDifferentLengthsException(length, "2^n");
 
             // even fft
             var even = new MatrixValue(length / 2, 1);
@@ -69,7 +83,7 @@ namespace YAMP.Numerics
 
             // Cooley-Tukey FFT
             if (length % 2 != 0)
-                throw new MatrixFormatException("length != 2^n");
+                throw new YAMPDifferentLengthsException(length, "2^n");
 
             var y = new MatrixValue(length, 1);
 
@@ -156,5 +170,7 @@ namespace YAMP.Numerics
 
             return output;
         }
+
+        #endregion
     }
 }

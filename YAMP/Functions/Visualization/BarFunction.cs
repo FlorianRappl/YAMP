@@ -7,7 +7,8 @@ namespace YAMP
     class BarFunction : VisualizationFunction
     {
         [Description("This function draws one bar for each element in Y.")]
-        [Example("bar([5, 2, 9, 6, 19])", "")]
+        [Example("bar([5, 2, 9, 6, 19])", "Creates a new bar plot consisting of 5 bars.")]
+        [Example("bar([4, 9; 5, 9; 4, 8; 3, 7])", "Creates a new bar plot consisting of 4 (stacked) bars with each one having 2 values, i.e. 2 series of bars.")]
         public BarPlotValue Function(MatrixValue Y)
         {
             var bp = new BarPlotValue();

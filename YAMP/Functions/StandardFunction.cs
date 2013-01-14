@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -51,9 +51,9 @@ namespace YAMP
                 return M;
             }
             else if (argument is ArgumentsValue)
-                throw new ArgumentsException(Name, (argument as ArgumentsValue).Length);
+                throw new YAMPArgumentNumberException(Name, (argument as ArgumentsValue).Length, 1);
 
-            throw new OperationNotSupportedException(Name, argument);
+            throw new YAMPOperationInvalidException(Name, argument);
         }
 
         protected virtual ScalarValue GetValue(ScalarValue value)

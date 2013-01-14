@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2012, Florian Rappl.
+	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -25,84 +25,84 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 using System;
-using System.Text;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace YAMP
 {
-	public abstract class Expression : IRegisterElement
+    /// <summary>
+    /// Represents the abstract base class for expressions.
+    /// </summary>
+	public abstract class Expression : Block, IRegisterElement
 	{
-		#region Members
-
-		string _pattern;
-		protected string _input;
-		protected Match mx;
-		int _offset;
-
-		#endregion
-
 		#region ctor
 
-		public Expression(string pattern)
+		public Expression()
 		{
-			_pattern = pattern;
 		}
+
+        public Expression(int line, int column)
+        {
+            StartLine = line;
+            StartColumn = column;
+        }
+
+        public Expression(QueryContext query)
+        {
+            Query = query;
+        }
+
+        public Expression(QueryContext query, int line, int column) : this(line, column)
+        {
+            Query = query;
+        }
+
+        public Expression(ParseEngine engine)
+            : this(engine.Query, engine.CurrentLine, engine.CurrentColumn)
+        {
+        }
 
 		#endregion
 
-		#region Properties
+        #region Properties
 
-		internal string Pattern
-		{
-			get { return _pattern; }
-		}
+        /// <summary>
+        /// Gets a dummy expression for doing nothing.
+        /// </summary>
+        public static Expression Empty
+        {
+            get { return new EmptyExpression(); }
+        }
 
-		internal Match Match
-		{
-			get { return mx; }
-		}
-		
-		internal int Offset
-		{
-			get { return _offset; }
-			set { _offset = value; }
-		}
-
-		internal virtual string Input
-		{
-			get { return _input; }
-		}
-
-		public ParseContext Context { get { return Query.Context; } }
-
-		public QueryContext Query { get; protected set; }
+        /// <summary>
+        /// Gets a value indicating if the expression is a whole statement.
+        /// </summary>
+        public bool IsSingleStatement
+        {
+            get;
+            protected set;
+        }
 
 		#endregion
 
 		#region Methods
-		
-		public abstract Value Interpret(Dictionary<string, Value> symbols);
 
-		public abstract Expression Create(QueryContext query, Match match);
+        public abstract Value Interpret(Dictionary<string, Value> symbols);
 
-		public virtual string Set(string input)
-		{
-			_input = mx.Value;
-			return input.Substring(_input.Length);
-		}
+        public abstract Expression Scan(ParseEngine engine);
 		
 		public virtual void RegisterElement()
 		{
-			Elements.Instance.AddExpression(_pattern, this);
+			Elements.Instance.AddExpression(this);
 		}
 
-		public override string ToString ()
+        #endregion
+
+        #region String Representations
+
+        public override string ToString ()
 		{
-            return GetType().Name.Replace("Expression", string.Empty);
+            return string.Format("({0}, {1}) {2}", StartLine, StartColumn, GetType().Name.RemoveExpressionConvention());
 		}
 
 		#endregion

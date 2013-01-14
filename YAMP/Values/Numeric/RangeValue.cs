@@ -31,7 +31,10 @@ using System.IO;
 
 namespace YAMP
 {
-	public class RangeValue : MatrixValue
+    /// <summary>
+    /// A special kind of matrix which is a range (vector).
+    /// </summary>
+	public sealed class RangeValue : MatrixValue
     {
         #region Members
 
@@ -51,9 +54,9 @@ namespace YAMP
             DimensionY = count;
 
 			if(count < 0)
-				throw new RangeException("Negative number of entries detected"); 
+				throw new YAMPRangeInvalidException("negative number of entries has been detected"); 
 			else if(count >= int.MaxValue / 10)
-				throw new RangeException("Too many entries in the range");
+                throw new YAMPRangeInvalidException("too many entries have been found");
 		}
 		
 		public RangeValue (double start, double step) : this(start, start, step)
@@ -135,7 +138,11 @@ namespace YAMP
             }
         }
 
-		public override byte[] Serialize()
+        #endregion
+
+        #region Serialization
+
+        public override byte[] Serialize()
 		{
 			var content = base.Serialize();
 

@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@ using YAMP;
 
 namespace YAMP.Physics
 {
-    class UnitValue : ScalarValue
+    public sealed class UnitValue : ScalarValue
     {
         #region Members
 
@@ -55,30 +55,20 @@ namespace YAMP.Physics
             unit = string.Empty;
         }
 
-        public UnitValue(double real, double imag) : base(real, imag)
-        {
-            unit = string.Empty;
-        }
-
         public UnitValue(double real, string unit) : base(real)
         {
             this.unit = unit;
         }
 
-        public UnitValue(double real, double imag, string unit) : base(real, imag)
-        {
-            this.unit = unit;
-        }
-
-        public UnitValue(ScalarValue value, string unit) : this(value.Value, value.ImaginaryValue, unit)
+        public UnitValue(ScalarValue value, string unit) : this(value.Value, unit)
         {
         }
 
-        public UnitValue(UnitValue value) : this(value.Value, value.ImaginaryValue, value.Unit)
+        public UnitValue(UnitValue value) : this(value.Value, value.Unit)
         {
         }
 
-        public UnitValue(ScalarValue value, StringValue unit) : this(value.Value, value.ImaginaryValue, unit.Value)
+        public UnitValue(ScalarValue value, StringValue unit) : this(value.Value, unit.Value)
         {
         }
 
@@ -101,37 +91,104 @@ namespace YAMP.Physics
 
         public override ScalarValue Clone()
         {
- 	         return new UnitValue(Value, ImaginaryValue, Unit);
-        }
-
-        public override Value Subtract(Value right)
-        {
-            return base.Subtract(right);
-        }
-
-        public override Value Power(Value exponent)
-        {
-            return base.Power(exponent);
-        }
-
-        public override Value Divide(Value right)
-        {
-            return base.Divide(right);
-        }
-
-        public override Value Multiply(Value right)
-        {
-            return base.Multiply(right);
-        }
-
-        public override Value Add(Value right)
-        {
-            return base.Add(right);
+ 	         return new UnitValue(Value, Unit);
         }
 
         public override string ToString(ParseContext context)
         {
             return base.ToString(context) + " " + unit;
+        }
+
+        public override ScalarValue Sqrt()
+        {
+            return new UnitValue(Math.Sqrt(Value), new CombinedUnit(unit).Sqrt().Unpack());
+        }
+
+        #endregion
+
+        #region Register Operators
+
+        public override void RegisterElement()
+        {
+            RegisterPlus(typeof(UnitValue), typeof(UnitValue), AddUU);
+            RegisterMinus(typeof(UnitValue), typeof(UnitValue), SubUU);
+
+            RegisterMultiply(typeof(UnitValue), typeof(UnitValue), MulUU);
+            RegisterMultiply(typeof(ScalarValue), typeof(UnitValue), MulSU);
+            RegisterMultiply(typeof(UnitValue), typeof(ScalarValue), MulUS);
+
+            RegisterDivide(typeof(UnitValue), typeof(UnitValue), DivUU);
+            RegisterDivide(typeof(ScalarValue), typeof(UnitValue), DivSU);
+            RegisterDivide(typeof(UnitValue), typeof(ScalarValue), DivUS);
+
+            RegisterPower(typeof(UnitValue), typeof(ScalarValue), PowUS);
+        }
+
+        public static UnitValue AddUU(Value a, Value b)
+        {
+            var left = (UnitValue)a;
+            var right = (UnitValue)b;
+            var target = ConvertFunction.Convert(right, left.Unit);
+            return new UnitValue(left + target, left.Unit);
+        }
+
+        public static UnitValue SubUU(Value a, Value b)
+        {
+            var left = (UnitValue)a;
+            var right = (UnitValue)b;
+            var target = ConvertFunction.Convert(right, left.Unit);
+            return new UnitValue(left - target, left.Unit);
+        }
+
+        public static UnitValue MulUU(Value a, Value b)
+        {
+            var left = (UnitValue)a;
+            var right = (UnitValue)b;
+            var unit = new CombinedUnit(left.Unit).Multiply(right.Unit).Simplify();
+            return new UnitValue(unit.Factor * left * right, unit.Unpack());
+        }
+
+        public static UnitValue DivUU(Value a, Value b)
+        {
+            var left = (UnitValue)a;
+            var right = (UnitValue)b;
+            var unit = new CombinedUnit(left.Unit).Divide(right.Unit).Simplify();
+            return new UnitValue(unit.Factor * left / right, unit.Unpack());
+        }
+
+        public static UnitValue MulSU(Value a, Value b)
+        {
+            var left = (ScalarValue)a;
+            var right = (UnitValue)b;
+            return new UnitValue(left * right, right.Unit);
+        }
+
+        public static UnitValue DivSU(Value a, Value b)
+        {
+            var left = (ScalarValue)a;
+            var right = (UnitValue)b;
+            return new UnitValue(left / right, right.Unit);
+        }
+
+        public static UnitValue MulUS(Value a, Value b)
+        {
+            var left = (UnitValue)a;
+            var right = (ScalarValue)b;
+            return new UnitValue(left * right, left.Unit);
+        }
+
+        public static UnitValue DivUS(Value a, Value b)
+        {
+            var left = (UnitValue)a;
+            var right = (ScalarValue)b;
+            return new UnitValue(left / right, left.Unit);
+        }
+
+        public static UnitValue PowUS(Value a, Value b)
+        {
+            var left = (UnitValue)a;
+            var right = (ScalarValue)b;
+            return new UnitValue(left.Pow(right), new CombinedUnit(left.unit).Raise(right.Value).Unpack());
         }
 
         #endregion

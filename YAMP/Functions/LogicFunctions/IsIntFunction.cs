@@ -8,7 +8,7 @@ namespace YAMP
     {
         protected override ScalarValue GetValue(ScalarValue value)
         {
-            return value.IsInt();
+            return new ScalarValue(value.IsInt);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012, Florian Rappl.
+    Copyright (c) 2012-2013, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,11 @@ using System.Collections.Generic;
 
 namespace YAMP
 {
-    public class FunctionValue : Value, IFunction
+    /// <summary>
+    /// A function value, i.e. a lambda expression or existing function
+    /// wrapped as a value that can be used within YAMP.
+    /// </summary>
+    public sealed class FunctionValue : Value, IFunction
     {
         #region Members
 
@@ -43,62 +47,59 @@ namespace YAMP
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new (dummy) instance of a FunctionValue.
+        /// </summary>
         public FunctionValue()
         {
             canSerialize = false;
+            //Dummy value - just identity.
             perform = (a, b) => b;
         }
 
+        /// <summary>
+        /// Creates a new FunctionValue with data to parse.
+        /// </summary>
+        /// <param name="arguments">The list of argument identifiers.</param>
+        /// <param name="body">The string representation of the body.</param>
         public FunctionValue(string[] arguments, string body)
         {
             this.arguments = arguments;
             this.body = body;
             canSerialize = true;
-            perform = (context, argument) => 
+
+            perform = (context, argument) =>
             {
-                var tree = new TreeExpression(QueryContext.Dummy(context));
-                tree.Set(body);
-                SetPerform(arguments, tree);
+                var query = QueryContext.Dummy(context);
+                query.Input = body;
+                var expression = query.Parser.ParseStatement().Container;
+                SetPerform(arguments, expression);
                 return Perform(context, argument);
             };
         }
 
+        /// <summary>
+        /// Creates a new FunctionValue with a parsed object.
+        /// </summary>
+        /// <param name="arguments">The list of argument identifiers.</param>
+        /// <param name="body">The Expression representation of the body.</param>
         internal FunctionValue(string[] arguments, Expression body) 
         {
             this.arguments = arguments;
-            this.body = body.Input;
+            this.body = body.ToCode();
             canSerialize = true;
             SetPerform(arguments, body);
         }
 
+        /// <summary>
+        /// Creates a new FunctionValue with a given class that contains
+        /// a perform method, i.e. implements the IFunction interface.
+        /// </summary>
+        /// <param name="function">The instance of the class implementing the IFunction interface.</param>
         public FunctionValue(IFunction function)
         {
             canSerialize = false;
             perform = function.Perform;
-        }
-
-        public FunctionValue(string[] arguments, ParseTree body)
-        {
-            this.arguments = arguments;
-            canSerialize = false;
-            perform = (context, argument) =>
-            {
-                var av = new ArgumentsValue();
-                var symbols = new Dictionary<string, Value>();
-
-                if (argument is ArgumentsValue)
-                    av = (ArgumentsValue)argument;
-                else
-                    av.Insert(argument);
-
-                if (av.Length != arguments.Length)
-                    throw new ArgumentsException("Function", av.Length);
-
-                for (var i = 0; i < arguments.Length; i++)
-                    symbols.Add(arguments[i], av.Values[i]);
-
-                return body.Interpret(symbols);
-            };
         }
 
         #endregion
@@ -118,7 +119,7 @@ namespace YAMP
                     av.Insert(argument);
 
                 if (av.Length != arguments.Length)
-                    throw new ArgumentsException("LambdaExpression", av.Length);
+                    throw new YAMPArgumentNumberException("Anonymous function", av.Length, arguments.Length);
 
                 for (var i = 0; i < arguments.Length; i++)
                     symbols.Add(arguments[i], av.Values[i]);
@@ -130,31 +131,6 @@ namespace YAMP
         public Value Perform(ParseContext context, Value argument)
         {
             return perform(context, argument);
-        }
-
-        public override Value Add(Value right)
-		{
-			throw new OperationNotSupportedException("+", this);
-        }
-
-        public override Value Subtract(Value right)
-		{
-			throw new OperationNotSupportedException("-", this);
-        }
-
-        public override Value Multiply(Value right)
-		{
-			throw new OperationNotSupportedException("*", this);
-        }
-
-        public override Value Divide(Value denominator)
-		{
-			throw new OperationNotSupportedException("/", this);
-        }
-
-        public override Value Power(Value exponent)
-		{
-			throw new OperationNotSupportedException("^", this);
         }
 
 		public override string ToString()

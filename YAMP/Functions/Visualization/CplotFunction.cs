@@ -28,7 +28,7 @@ namespace YAMP
             return Plot(f, minX.Value, maxX.Value, minY.Value, maxY.Value);
         }
 
-        ComplexPlotValue Plot(IFunction f, double minx, double maxx, double miny, double maxy)
+        public static ComplexPlotValue Plot(FunctionValue f, double minx, double maxx, double miny, double maxy)
         {
             var cp = new ComplexPlotValue();
             cp.SetFunction(f);

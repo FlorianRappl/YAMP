@@ -244,7 +244,7 @@ namespace YAMP.Numerics
 
                         var g = d[l];
                         var p = (d[l + 1] - g) / (2.0 * e[l]);
-                        var r = NumericHelpers.Hypot(p, 1.0);
+                        var r = Helpers.Hypot(p, 1.0);
 
                         if (p < 0)
                             r = -r;
@@ -276,7 +276,7 @@ namespace YAMP.Numerics
                             s2 = s;
                             g = c * e[i];
                             h = c * p;
-                            r = NumericHelpers.Hypot(p, e[i]);
+                            r = Helpers.Hypot(p, e[i]);
                             e[i + 1] = s * r;
                             s = e[i] / r;
                             c = p / r;
@@ -1007,7 +1007,7 @@ namespace YAMP.Numerics
         /// <returns>Structure to access D and V.</returns>
         public Eigenvalues(MatrixValue Arg)
         {
-            var A = Arg.GetRealArray();
+            var A = Arg.GetRealMatrix();
             n = Arg.DimensionX;
             V = new double[n][];
 

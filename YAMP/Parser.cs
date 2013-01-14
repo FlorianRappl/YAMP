@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2012, Florian Rappl.
+	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ namespace YAMP
 		public static Parser Parse(string input)
 		{
 			var p = new Parser(PrimaryContext, new QueryContext(input));
-			p.Build();
+            p._query.Parser.Parse();
 			return p;
 		}
 
@@ -86,7 +86,7 @@ namespace YAMP
 		public static Parser Parse(ParseContext context, string input)
 		{
 			var p = new Parser(context, new QueryContext(input));
-			p.Build();
+            p._query.Parser.Parse();
 			return p;
 		}
 
@@ -141,20 +141,10 @@ namespace YAMP
 		/// <value>
 		/// The current setting.
 		/// </value>
-		public static bool EnableScripting
+		public static bool UseScripting
 		{
 			get;
 			set;
-		}
-
-		#endregion
-
-		#region Expression Tree Creation
-
-		void Build()
-		{
-            var query = _query.Statements.ReplaceComments(_query.Input);
-			_query.Statements.Init(query);
 		}
 
 		#endregion
@@ -210,7 +200,7 @@ namespace YAMP
 					else if (s is string || s is char)
 						v = new StringValue(s.ToString());
 					else
-						throw new WrongArgumentsException(prop.Name, s.GetType().Name);
+						throw new ArgumentException("Cannot execute YAMP queries with a list of values that contains types, which are not of a Value, numeric (int, double, float, long) or string (char, stirng) type.", "values");
 
 					symbols.Add(prop.Name, v);
 

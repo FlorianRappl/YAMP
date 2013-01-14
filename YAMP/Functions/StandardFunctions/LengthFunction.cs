@@ -15,7 +15,7 @@ namespace YAMP
 			else if(argument is StringValue)
 				return new ScalarValue((argument as StringValue).Value.Length);
 
-			throw new OperationNotSupportedException("length", argument);
+			throw new YAMPOperationInvalidException("length", argument);
 		}
 
         [Description("Returns a scalar that is basically the number of rows times the number of columns.")]

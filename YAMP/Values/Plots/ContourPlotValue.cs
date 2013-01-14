@@ -1,5 +1,5 @@
 ﻿/*
-	Copyright (c) 2012, Florian Rappl.
+	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,10 @@ using YAMP.Converter;
 
 namespace YAMP
 {
-	public sealed class ContourPlotValue : PlotValue
+    /// <summary>
+    /// Contains the data for contourplot data.
+    /// </summary>
+    public sealed class ContourPlotValue : XYPlotValue
 	{
 		#region ctor
 

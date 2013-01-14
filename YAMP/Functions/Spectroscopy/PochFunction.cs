@@ -33,19 +33,16 @@ namespace YAMP.Functions
 
         [Description("Computes the Pochhammer symbol using the (in general complex) matrices Z and N, where poch(Z, N)(i, j) = Gamma(Z(i, j) + N(i, j)) / Gamma(Z(i, j)). The matrices Z and N must have equal dimensions.")]
         [Example("poch([1, 2, 3, 4, 5, 6], [0.1, 0.3, 0.5, 0.7, 0.9, 1.1])", "Evaluates gamma(1.1) / gamma(1), gamma(2.3) / gamma(2), gamma(3.5) / gamma(3), ... and returns the matrix containing the values.")]
-        public MatrixValue Function(MatrixValue z, MatrixValue n)
+        public MatrixValue Function(MatrixValue Z, MatrixValue N)
         {
-            if (z.DimensionY != n.DimensionY)
-                throw new DimensionException(z.DimensionY, n.DimensionY);
+            if (Z.DimensionY != N.DimensionY || Z.DimensionX != N.DimensionX)
+                throw new YAMPDifferentDimensionsException(Z, N);
 
-            if (z.DimensionX != n.DimensionX)
-                throw new DimensionException(z.DimensionX, n.DimensionX);
-
-            var M = new MatrixValue(z.DimensionY, z.DimensionX);
+            var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for(var i = 1; i <= M.DimensionX; i++)
                 for (var j = 1; j <= M.DimensionY; j++)
-                    M[j, i] = Gamma.LinearGamma(z[j, i] + n[j, i]) / Gamma.LinearGamma(z[j, i]);
+                    M[j, i] = Gamma.LinearGamma(Z[j, i] + N[j, i]) / Gamma.LinearGamma(Z[j, i]);
 
             return M;
         }

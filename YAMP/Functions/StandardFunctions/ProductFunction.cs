@@ -29,7 +29,7 @@ namespace YAMP
 				}
 			}
 			
-			throw new OperationNotSupportedException("product", argument);
+			throw new YAMPOperationInvalidException("product", argument);
 		}
 
         [Description("Evaluates the vector(s) and outputs the product(s) of the vector(s).")]

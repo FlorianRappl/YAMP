@@ -1,5 +1,5 @@
 ﻿/*
-	Copyright (c) 2012, Florian Rappl.
+	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,21 +27,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using YAMP.Converter;
 
 namespace YAMP
 {
+    /// <summary>
+    /// Abstract base class for any plot.
+    /// </summary>
 	public abstract class PlotValue : Value
 	{
-		#region Members
-
-		protected List<IPointSeries> points;
-
-		#endregion
-
 		#region Events
 
+        /// <summary>
+        /// The event that is invoked once the plot data has been changed.
+        /// </summary>
 		public event EventHandler<PlotEventArgs> OnPlotChanged;
 
 		#endregion
@@ -50,161 +49,34 @@ namespace YAMP
 
 		public PlotValue()
 		{
-			points = new List<IPointSeries>();
-			Title = string.Empty;
-			ShowLegend = true;
-			LegendBackground = "white";
-			LegendLineColor = "black";
-			LegendLineWidth = 1.0;
-			LegendPosition = YAMP.LegendPosition.RightTop;
-			XLabel = "x";
-			YLabel = "y";
-			Gridlines = false;
-			MinorGridlines = false;
+            Title = string.Empty;
 		}
 
 		#endregion
 
-		#region Properties
+        #region Properties
 
-		public int Count { get { return points.Count; } }
+        public abstract int Count { get; }
 
-		[ScalarToBooleanConverter]
-		[StringToBooleanConverter]
-		public bool Gridlines
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// Gets or sets the plot title.
+        /// </summary>
+        [StringToStringConverter]
+        public string Title
+        {
+            get;
+            set;
+        }
 
-		[ScalarToBooleanConverter]
-		[StringToBooleanConverter]
-		public bool MinorGridlines
-		{
-			get;
-			set;
-		}
-
-		[StringToStringConverter]
-		public string Title
-		{
-			get;
-			set;
-		}
-
-		[StringToStringConverter]
-		public string XLabel
-		{
-			get;
-			set;
-		}
-
-		[StringToStringConverter]
-		public string YLabel
-		{
-			get;
-			set;
-		}
-
-		[ScalarToDoubleConverter]
-		public double MinX
-		{
-			get;
-			set;
-		}
-
-		[ScalarToDoubleConverter]
-		public double MaxX
-		{
-			get;
-			set;
-		}
-
-		[MatrixToDoubleArrayConverter]
-		public double[] XRange
-		{
-			get { return new double[] { MinX, MaxX }; }
-			set
-			{
-				MinX = value[0];
-				MaxX = value[1];
-			}
-		}
-
-		[ScalarToDoubleConverter]
-		public double MinY
-		{
-			get;
-			set;
-		}
-
-		[ScalarToDoubleConverter]
-		public double MaxY
-		{
-			get;
-			set;
-		}
-
-		[MatrixToDoubleArrayConverter]
-		public double[] YRange
-		{
-			get { return new double[] { MinY, MaxY }; }
-			set
-			{
-				MinY = value[0];
-				MaxY = value[1];
-			}
-		}
-
-		[ScalarToBooleanConverter]
-		[StringToBooleanConverter]
-		public bool ShowLegend
-		{
-			get;
-			set;
-		}
-
-		[StringToEnumConverter(typeof(LegendPosition))]
-		public LegendPosition LegendPosition
-		{
-			get;
-			set;
-		}
-
-		[StringToStringConverter]
-		public string LegendBackground
-		{
-			get;
-			set;
-		}
-
-		[StringToStringConverter]
-		public string LegendLineColor
-		{
-			get;
-			set;
-		}
-
-		[ScalarToDoubleConverter]
-		public double LegendLineWidth
-		{
-			get;
-			set;
-		}
-
+        /// <summary>
+        /// Gets a list of standardcolors (those are just some suggestions, a lot
+        /// more colors are possible).
+        /// </summary>
 		public static string[] StandardColors { get { return standardColors; } }
 
 		#endregion
 
 		#region Methods
-
-		protected virtual void InitializeBoundaries()
-		{
-			MinX = double.MaxValue;
-			MaxX = double.MinValue;
-			MinY = double.MaxValue;
-			MaxY = double.MinValue;
-		}
 
 		internal void RaisePlotChanged(string property)
 		{
@@ -215,35 +87,37 @@ namespace YAMP
 			}
 		}
 
-		public abstract void AddPoints(MatrixValue m);
-
+        /// <summary>
+        /// Updates the data region, i.e. the complete plot.
+        /// </summary>
 		public void Update()
 		{
 			RaisePlotChanged("Data");
 		}
 
+        /// <summary>
+        /// Updates the properties of the plot series.
+        /// </summary>
 		public void UpdateProperties()
 		{
 			RaisePlotChanged("Properties");
 		}
 
+        /// <summary>
+        /// Updates the layout of the plot, i.e. the properties of the plot itself.
+        /// </summary>
 		public void UpdateLayout()
 		{
 			RaisePlotChanged("Layout");
 		}
 
-		public void SetXRange(double min, double max)
-		{
-			MinX = min;
-			MaxX = max;
-		}
-
-		public void SetYRange(double min, double max)
-		{
-			MinY = min;
-			MaxY = max;
-		}
-
+        /// <summary>
+        /// Generates an array of double values.
+        /// </summary>
+        /// <param name="minValue">The first value in the array.</param>
+        /// <param name="step">The difference between each element.</param>
+        /// <param name="count">The number of elements in the array.</param>
+        /// <returns>The double array containing the values.</returns>
 		protected double[] Generate(double minValue, double step, int count)
 		{
 			count = Math.Max(count, 0);
@@ -262,6 +136,13 @@ namespace YAMP
 			return values;
 		}
 
+        /// <summary>
+        /// Converts a given matrixvalue (seen as a vector) into a double array.
+        /// </summary>
+        /// <param name="m">The MatrixValue to convert.</param>
+        /// <param name="offset">The offset in the matrix (0 = start with 1st element).</param>
+        /// <param name="length">The number of elements to convert.</param>
+        /// <returns>The double array with the values.</returns>
 		protected double[] Convert(MatrixValue m, int offset, int length)
 		{
 			var values = new double[length];
@@ -270,13 +151,21 @@ namespace YAMP
 
 			for (int i = 0; i < length; i++)
 			{
-				values[i] = complex ? m[j].Abs().Value : m[j].Value;
+				values[i] = complex ? m[j].Abs() : m[j].Value;
 				j++;
 			}
 
 			return values;
 		}
 
+        /// <summary>
+        /// Converts only column values of the matrix into a double array.
+        /// </summary>
+        /// <param name="m">The MatrixValue to convert.</param>
+        /// <param name="dx">The offset in columns.</param>
+        /// <param name="length">The number of rows to consider.</param>
+        /// <param name="dy">The offset in rows.</param>
+        /// <returns>The double array with the values.</returns>
 		protected double[] ConvertX(MatrixValue m, int dx, int length, int dy)
 		{
 			var values = new double[length];
@@ -286,13 +175,21 @@ namespace YAMP
 
 			for (int i = 0; i < length; i++)
 			{
-				values[i] = complex ? m[j, k].Abs().Value : m[j, k].Value;
+				values[i] = complex ? m[j, k].Abs() : m[j, k].Value;
 				k++;
 			}
 
 			return values;
 		}
 
+        /// <summary>
+        /// Converts only row values of the matrix into a double array.
+        /// </summary>
+        /// <param name="m">The MatrixValue to convert.</param>
+        /// <param name="dy">The offset in rows.</param>
+        /// <param name="length">The number of columns to consider.</param>
+        /// <param name="dx">The offset in columns.</param>
+        /// <returns>The double array with the values.</returns>
 		protected double[] ConvertY(MatrixValue m, int dy, int length, int dx)
 		{
 			var values = new double[length];
@@ -302,22 +199,11 @@ namespace YAMP
 
 			for (int i = 0; i < length; i++)
 			{
-				values[i] = complex ? m[j, k].Abs().Value : m[j, k].Value;
+				values[i] = complex ? m[j, k].Abs() : m[j, k].Value;
 				j++;
 			}
 
 			return values;
-		}
-
-		public void AddSeries(IPointSeries series)
-		{
-			series.Color = StandardColors[Count % StandardColors.Length];
-			points.Add(series);
-		}
-
-		public IPointSeries GetSeries(int index)
-		{
-			return points[index];
 		}
 
 		#endregion
@@ -353,75 +239,6 @@ namespace YAMP
 			"tan",
 			"peachpuff"
 		};
-
-		#endregion
-
-		#region Operators
-
-		public override Value Add(Value right)
-		{
-			throw new OperationNotSupportedException("+", this);
-		}
-
-		public override Value Subtract(Value right)
-		{
-			throw new OperationNotSupportedException("-", this);
-		}
-
-		public override Value Multiply(Value right)
-		{
-			throw new OperationNotSupportedException("*", this);
-		}
-
-		public override Value Divide(Value denominator)
-		{
-			throw new OperationNotSupportedException("/", this);
-		}
-
-		public override Value Power(Value exponent)
-		{
-			throw new OperationNotSupportedException("^", this);
-		}
-
-		#endregion 
-
-		#region Serialization
-
-		internal void Serialize(Serializer s)
-		{
-			s.Serialize(Title);
-			s.Serialize(ShowLegend);
-			s.Serialize(LegendBackground);
-			s.Serialize(LegendLineColor);
-			s.Serialize(LegendLineWidth);
-			s.Serialize((int)LegendPosition);
-			s.Serialize(XLabel);
-			s.Serialize(YLabel);
-			s.Serialize(Gridlines);
-			s.Serialize(MinorGridlines);
-			s.Serialize(MinX);
-			s.Serialize(MaxX);
-			s.Serialize(MinY);
-			s.Serialize(MaxY);
-		}
-
-		internal void Deserialize(Deserializer ds)
-		{
-			Title = ds.GetString();
-			ShowLegend = ds.GetBoolean();
-			LegendBackground = ds.GetString();
-			LegendLineColor = ds.GetString();
-			LegendLineWidth = ds.GetDouble();
-			LegendPosition = (LegendPosition)ds.GetInt();
-			XLabel = ds.GetString();
-			YLabel = ds.GetString();
-			Gridlines = ds.GetBoolean();
-			MinorGridlines = ds.GetBoolean();
-			MinX = ds.GetDouble();
-			MaxX = ds.GetDouble();
-			MinY = ds.GetDouble();
-			MaxY = ds.GetDouble();
-		}
 
 		#endregion
 	}

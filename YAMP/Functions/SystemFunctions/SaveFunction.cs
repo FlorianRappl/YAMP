@@ -43,7 +43,7 @@ namespace YAMP
             return new StringValue(workspace.Count + " objects saved.");
         }
 
-		static void Save(string filename, IDictionary<string, Value> workspace)
+		public static void Save(string filename, IDictionary<string, Value> workspace)
 		{
 			using(var fs = File.Create(filename))
 			{

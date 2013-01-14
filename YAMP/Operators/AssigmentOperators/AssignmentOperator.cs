@@ -1,29 +1,59 @@
+/*
+	Copyright (c) 2012-2013, Florian Rappl.
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+		* Redistributions of source code must retain the above copyright
+		  notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright
+		  notice, this list of conditions and the following disclaimer in the
+		  documentation and/or other materials provided with the distribution.
+		* Neither the name of the YAMP team nor the names of its contributors
+		  may be used to endorse or promote products derived from this
+		  software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace YAMP
 {
+    /// <summary>
+    /// This class represents the basis of the assignment operators
+    /// as well as the simple assignment operator (=).
+    /// </summary>
 	class AssignmentOperator : BinaryOperator
-	{
-		protected ParseContext _context;
+    {
+        #region ctor
 
-		public AssignmentOperator () : this(ParseContext.Default, string.Empty)
+        public AssignmentOperator () : this(string.Empty)
 		{
 		}
 
-		public AssignmentOperator(ParseContext context, string prefix) : base(prefix + "=", -1)
-		{
-			_context = context;
-		}
-
-		public AssignmentOperator(ParseContext context) : this(context, string.Empty)
+		public AssignmentOperator(string prefix) : base(prefix + "=", -1)
 		{
 		}
 
-		public override Operator Create(QueryContext query)
+        #endregion
+
+        #region Methods
+
+        public override Operator Create()
 		{
-			return new AssignmentOperator(query.Context);
+			return new AssignmentOperator();
 		}
 
 		public override Value Handle(Expression left, Expression right, Dictionary<string, Value> symbols)
@@ -41,28 +71,32 @@ namespace YAMP
 		{
 			if (left is SymbolExpression)
 				return Assign(left as SymbolExpression, value);
-			else if(left is TreeExpression)
+			else if(left is ContainerExpression)
 			{
-				var tree = left as TreeExpression;
+                var tree = (ContainerExpression)left;
 
-				if (tree.Tree.Operator == null)
-					return Assign(tree.Tree.Expressions[0], value, symbols);
-				else if(tree.Tree.Operator is ArgsOperator)
+				if (tree.Operator == null)
+					return Assign(tree.Expressions[0], value, symbols);
+				else if(tree.Operator is ArgsOperator)
 				{
-					var ix = (ArgsOperator)tree.Tree.Operator;
-					return ix.Handle(tree.Tree.Expressions[0], value, symbols);
+					var ix = (ArgsOperator)tree.Operator;
+					return ix.Handle(tree.Expressions[0], value, symbols);
 				}
-                else if (tree.Tree.IsSymbolList)
+                else if (tree.IsSymbolList)
                 {
-                    var vars = GetSymbols(tree.Tree);
+                    var vars = tree.GetSymbols();
                     return HandleMultipleOutputs(value, vars);
                 }
                 else
-                    throw new AssignmentException(Op);
+                    throw new YAMPAssignmentException(Op);
 			}
 			
 			return value;
 		}
+
+        #endregion
+
+        #region Helpers
 
         Value HandleMultipleOutputs(Value value, SymbolExpression[] vars)
         {
@@ -86,26 +120,13 @@ namespace YAMP
             }
         }
 
-        SymbolExpression[] GetSymbols(ParseTree tree)
-        {
-            var list = new List<SymbolExpression>();
-
-            foreach (var expression in tree.Expressions)
-            {
-                if (expression is TreeExpression)
-                    list.AddRange(GetSymbols(((TreeExpression)expression).Tree));
-                else if (expression is SymbolExpression)
-                    list.Add((SymbolExpression)expression);
-            }
-
-            return list.ToArray();
-        }
-
 		Value Assign(SymbolExpression left, Value value)
 		{
-			_context.AssignVariable(left.SymbolName, value);
+            Context.AssignVariable(left.SymbolName, value);
 			return value;
-		}
-	}
+        }
+
+        #endregion
+    }
 }
 
