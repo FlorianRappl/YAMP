@@ -38,4 +38,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("9fef9aa6-d07c-483a-a19a-e8919018c2a8")]
-[assembly: AssemblyVersion("0.8.0.*")]
+[assembly: AssemblyVersion("0.9.0.*")]

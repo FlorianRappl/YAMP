@@ -47,6 +47,9 @@ namespace YAMP
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets if the x axis should be presented logarithmically.
+        /// </summary>
         [ScalarToBooleanConverter]
         [StringToBooleanConverter]
         public bool IsLogX
@@ -55,6 +58,9 @@ namespace YAMP
             set;
         }
 
+        /// <summary>
+        /// Gets or sets if the y axis should be presented logarithmically.
+        /// </summary>
         [ScalarToBooleanConverter]
         [StringToBooleanConverter]
         public bool IsLogY

@@ -2,7 +2,7 @@ using System;
 
 namespace YAMP
 {
-	public class YAMPAssignmentException : YAMPRuntimeException
+	class YAMPAssignmentException : YAMPRuntimeException
 	{
         public YAMPAssignmentException(string operation)
             : base("The left side of an assignment must be symbol.", operation)

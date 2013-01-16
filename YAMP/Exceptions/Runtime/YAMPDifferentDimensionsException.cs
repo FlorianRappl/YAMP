@@ -2,7 +2,10 @@
 
 namespace YAMP
 {
-    class YAMPDifferentDimensionsException : YAMPRuntimeException
+    /// <summary>
+    /// Class to use when two matrices (or objects) have different dimensions.
+    /// </summary>
+    public class YAMPDifferentDimensionsException : YAMPRuntimeException
     {
         public YAMPDifferentDimensionsException(int rowsA, int columnsA, int rowsB, int columnsB)
             : base("Cannot compute the value for two matrices with different dimensions, {0}x{1} and {2}x{3}.", rowsA, columnsA, rowsB, columnsB)

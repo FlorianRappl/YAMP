@@ -171,6 +171,10 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Begins the interpretation of the current parse tree.
+        /// </summary>
+        /// <param name="values">A dictionary with additional symbols to consider.</param>
 		internal void Interpret(Dictionary<string, Value> values)
 		{
             if (!parser.CanRun)
@@ -206,6 +210,9 @@ namespace YAMP
             }
 		}
 
+        /// <summary>
+        /// Stops the current interpretation.
+        /// </summary>
         internal void Stop()
         {
             _stop = true;

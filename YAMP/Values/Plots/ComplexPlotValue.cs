@@ -53,6 +53,9 @@ namespace YAMP
 
         #region Properties
 
+        /// <summary>
+        /// Gets the function to calculate the complex values.
+        /// </summary>
         public Func<ScalarValue, ScalarValue> Fz
         {
             get

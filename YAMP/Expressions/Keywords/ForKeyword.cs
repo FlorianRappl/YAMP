@@ -92,6 +92,7 @@ namespace YAMP
             {
                 kw.Initialization = engine.Advance().ParseStatement();
                 kw.Condition = engine.ParseStatement();
+                kw.Condition.IsMuted = false;
                 kw.End = engine.ParseStatement(')');
                 engine.InsertMarker(Marker.Breakable);
                 kw.Body = engine.ParseStatement();

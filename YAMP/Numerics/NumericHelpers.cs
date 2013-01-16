@@ -36,7 +36,11 @@ namespace YAMP.Numerics
     {
         #region Some numbers
 
-        public static readonly double[] twopi_pow = new double[] { 1.0,
+        /// <summary>
+        /// Provides access to (2*pi)^(10*n) with n = 0, ..., 17.
+        /// </summary>
+        public static readonly double[] twopi_pow = new double[] { 
+            1.0,
             9.589560061550901348e+007,
             9.195966217409212684e+015,
             8.818527036583869903e+023,
@@ -56,10 +60,137 @@ namespace YAMP.Numerics
             4.904306689854036836e+135
         };
 
+        /// <summary>
+        /// Provides access to the first 21 bernoulli numbers.
+        /// </summary>
+        public static readonly double[] bernoulli_numbers = new double[] {
+            1.0,
+            1.0 / 6.0,
+            -1.0 / 30.0, 
+            1.0 / 42.0,
+            -1.0 / 30.0,
+            5.0 / 66.0,
+            -691.0 / 2730.0,
+            7.0 / 6.0,
+            -3617.0 / 510.0,
+            43867.0 / 798.0,
+            -174611.0 / 330.0, 
+            854513.0 / 138.0,
+            -236364091.0 / 2730.0,
+            8553103.0 / 6.0, 
+            -23749461029.0 / 870.0,
+            8615841276005.0 / 14322.0,
+            -7709321041217.0 / 510.0,
+            2577687858367.0 / 6.0,
+            -26315271553053477373.0 / 1919190.0,
+            2929993913841559.0 / 6.0,
+            -261082718496449122051.0 / 13530.0
+        };
+
+        /// <summary>
+        /// Provides access do some Lanczos numbers.
+        /// </summary>
+        public static readonly double[] lanczosd = new double[] {
+             2.48574089138753565546e-5,
+             1.05142378581721974210,
+            -3.45687097222016235469,
+             4.51227709466894823700,
+            -2.98285225323576655721,
+             1.05639711577126713077,
+            -1.95428773191645869583e-1,
+             1.70970543404441224307e-2,
+            -5.71926117404305781283e-4,
+             4.63399473359905636708e-6,
+            -2.71994908488607703910e-9
+        };
+
+        public const double lanczosr = 10.900511;
+
+        public const double TwoPI = 2.0 * Math.PI;
+
+        public const double HalfPI = Math.PI / 2.0;
+
+        public static readonly double SqrtTwo = Math.Sqrt(2.0);
+
+        public static readonly double SqrtThree = Math.Sqrt(3.0);
+
+        public static readonly double SqrtPI = Math.Sqrt(Math.PI);
+
+        public static readonly double SqrtTwoPI = Math.Sqrt(2.0 * Math.PI);
+
+        public static readonly double LogTwo = Math.Log(2.0);
+
         #endregion
 
         #region Functions
 
+        /// <summary>
+        /// Computes a power of an integer in modular arithmetic.
+        /// </summary>
+        /// <param name="b">The base, which must be positive.</param>
+        /// <param name="e">The exponent, which must be positive.</param>
+        /// <param name="m">The modulus, which must be positive.</param>
+        /// <returns>The value of b<sup>e</sup> mod m.</returns>
+        public static int PowMod(int b, int e, int m)
+        {
+            if (b < 0)
+                throw new YAMPArgumentRangeException("b", -1);
+
+            if (e < 1)
+                throw new YAMPArgumentRangeException("e", 0);
+
+            if (m < 1)
+                throw new YAMPArgumentRangeException("m", 0);
+
+            long bb = Convert.ToInt64(b);
+            long mm = Convert.ToInt64(m);
+            long rr = 1;
+
+            while (e > 0)
+            {
+                if ((e & 1) == 1)
+                    rr = checked((rr * bb) % mm);
+
+                e = e >> 1;
+                bb = checked((bb * bb) % mm);
+            }
+
+            return Convert.ToInt32(rr);
+        }
+
+        /// <summary>
+        /// Computes the greatest common divisor of two numbers.
+        /// </summary>
+        /// <param name="A">The first number.</param>
+        /// <param name="B">The second number.</param>
+        /// <returns>The greatest common divisor.</returns>
+        public static int GCD(int A, int B)
+        {
+            if (A == B)
+                return A;
+
+            if (A == 1 || B == 1)
+                return 1;
+
+            if ((A % 2 == 0) && (B % 2 == 0))
+                return 2 * GCD(A / 2, B / 2);
+            else if ((A % 2 == 0) && (B % 2 != 0))
+                return GCD(A / 2, B);
+            else if ((A % 2 != 0) && (B % 2 == 0))
+                return GCD(A, B / 2);
+
+            if (A > B)
+                return GCD((A - B) / 2, B);
+
+            return GCD(A, (B - A) / 2);
+        }  
+
+        /// <summary>
+        /// Computes the length of a right triangle's hypotenuse.
+        /// </summary>
+        /// <param name="a">The length of one side.</param>
+        /// <param name="b">The length of another side.</param>
+        /// <returns>The length of the hypotenuse, sqrt(x<sup>2</sup> + y<sup>2</sup>).</returns>
         public static double Hypot(double a, double b)
         {
             var r = 0.0;
@@ -78,42 +209,81 @@ namespace YAMP.Numerics
             return r;
         }
 
-        public static double Factorial(int arg)
+        /// <summary>
+        /// Computes the factorial of an integer and returns a double with the result.
+        /// </summary>
+        /// <param name="n">The argument to take the factorial.</param>
+        /// <returns>A double with the result of n!.</returns>
+        public static double Factorial(int n)
         {
-            var res = 1;
+            var res = 1.0;
 
-            while (arg > 1)
-                res *= arg--;
+            while (n > 1)
+                res *= n--;
 
             return res;
         }
 
-        public static ScalarValue BinomialCoefficient(ScalarValue x, ScalarValue y)
+        /// <summary>
+        /// Computes the complex binomial coefficient (very general) given two values, n choose k.
+        /// </summary>
+        /// <param name="n">We have n elements.</param>
+        /// <param name="k">We choose k elements.</param>
+        /// <returns>The binomial coefficient.</returns>
+        public static ScalarValue BinomialCoefficient(ScalarValue n, ScalarValue k)
         {
-            return Gamma.LinearGamma(x + 1) / (Gamma.LinearGamma(y + 1) * Gamma.LinearGamma(x - y + 1));
+            return Gamma.LinearGamma(n + 1) / (Gamma.LinearGamma(k + 1) * Gamma.LinearGamma(n - k + 1));
         }
 
-        public static ScalarValue Power(ScalarValue x, int power)
+        /// <summary>
+        /// Takes the power of z to an integer n.
+        /// </summary>
+        /// <param name="z">The complex value z in C.</param>
+        /// <param name="n">The power n in N.</param>
+        /// <returns>The result of z^n.</returns>
+        public static ScalarValue Power(ScalarValue z, int n)
         {
-            if (power == 0)
+            if (n == 0)
                 return new ScalarValue(1);
 
-            if (power > 0)
+            if (n > 0)
             {
-                var result = x;
+                var result = z;
 
-                for (int i = 1; i < power; i++)
-                    result *= x;
+                for (int i = 1; i < n; i++)
+                    result *= z;
 
                 return result;
             }
 
-            var inv = 1 / x;
+            var inv = 1 / z;
 
-            if (power < -1)
-                return Power(inv, -power);
+            if (n < -1)
+                return Power(inv, -n);
 
             return inv;
+        }
+
+        /// <summary>
+        /// computes the N-th roots of unity, which are the factors in a length-N Fourier transform.
+        /// </summary>
+        /// <param name="N">What number of roots.</param>
+        /// <param name="sign">The sign to take.</param>
+        /// <returns>The number roots, i.e. a N  + 1 size array.</returns>
+        public static ScalarValue[] ComputeRoots(int N, int sign)
+        {
+            var u = new ScalarValue[N + 1];
+            double t = sign * TwoPI / N;
+            u[0] = new ScalarValue(1.0);
+
+            for (int r = 1; r < N; r++)
+            {
+                double rt = r * t;
+                u[r] = new ScalarValue(Math.Cos(rt), Math.Sin(rt));
+            }
+
+            u[N] = new ScalarValue(1.0);
+            return u;
         }
 
         public static double ChebEval(ChebSeries cs, double x)

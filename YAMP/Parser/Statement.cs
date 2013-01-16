@@ -72,6 +72,15 @@ namespace YAMP
         }
 
         /// <summary>
+        /// Gets a boolean if the statement was actually muted (terminated with a colon ;).
+        /// </summary>
+        public bool IsMuted 
+        { 
+            get; 
+            internal set; 
+        }
+
+        /// <summary>
         /// Gets a value indicating if the statement consists of one keyword.
         /// </summary>
         public bool IsFinished { get; private set; }
@@ -233,9 +242,7 @@ namespace YAMP
                 _container = new ContainerExpression(left, right, op);
             }
             else if (_expressions.Count == 1)
-            {
                 _container = new ContainerExpression(_expressions.Pop());
-            }
             else
                 _container = new ContainerExpression();
 
@@ -251,7 +258,10 @@ namespace YAMP
         public Value Interpret(Dictionary<string, Value> symbols)
         {
             if (finalized)
-                return _container.Interpret(symbols);
+            {
+                var val = _container.Interpret(symbols);
+                return IsMuted ? null : val;
+            }
 
             return null;
         }
@@ -260,11 +270,19 @@ namespace YAMP
 
         #region General stuff
 
+        /// <summary>
+        /// Returns the string representation of the included objects.
+        /// </summary>
+        /// <returns>The string representation.</returns>
         public override string ToString()
         {
             return _container.ToString();
         }
 
+        /// <summary>
+        /// Transforms the statement into executable code.
+        /// </summary>
+        /// <returns>The code of the statement as a string.</returns>
         public string ToCode()
         {
             return Container.ToCode() + ";";

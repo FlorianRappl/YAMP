@@ -61,6 +61,7 @@ namespace YAMP
             var kw = new ReturnKeyword(engine.CurrentLine, engine.CurrentColumn, engine.Query);
             engine.Advance(Token.Length);
             kw.Body = engine.ParseStatement();
+            kw.Body.IsMuted = false;
             kw.Length = engine.Pointer - start;
             return kw;
         }
@@ -87,6 +88,7 @@ namespace YAMP
         void StopAllContexts(QueryContext context)
         {
             context.Stop();
+            context.CurrentStatement.IsMuted = false;
 
             if(context.CurrentStatement.IsKeyword<BreakableKeyword>())
                 context.CurrentStatement.GetKeyword<BreakableKeyword>().Break();

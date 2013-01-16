@@ -396,13 +396,21 @@ namespace YAMP
 
         #region Geometry
 
+        /// <summary>
+        /// Clears all entries.
+        /// </summary>
         public override void Clear()
         {
-            for (var i = 1; i <= DimensionX; i++)
-                for (var j = 1; j <= DimensionY; j++)
-                    this[j, i].Clear();
+            _values.Clear();
         }
 
+        /// <summary>
+        /// Adds a column specified by the type of the value to
+        /// add-in. If it is a scalar value, then it is quite simple.
+        /// For a matrix the geometry is important.
+        /// </summary>
+        /// <param name="value">The value to add in another column.</param>
+        /// <returns>The new matrix with the added column.</returns>
         public MatrixValue AddColumn(Value value)
         {
             var that = Clone();
@@ -434,6 +442,14 @@ namespace YAMP
             throw new YAMPOperationInvalidException(",", value);
         }
 
+        /// <summary>
+        /// Creates a new matrix with another row. The row is
+        /// either simply a number (in this case the value is 
+        /// just inserted) or a matrix (then the geometry is
+        /// important).
+        /// </summary>
+        /// <param name="value">The value to append as a row.</param>
+        /// <returns>The new matrix with the added row.</returns>
         public MatrixValue AddRow(Value value)
         {
             var that = Clone();
@@ -535,6 +551,48 @@ namespace YAMP
 			m.dimY = dimY;
 			return m;
 		}
+
+        /// <summary>
+        /// Gets the index for the maximum entry in the matrix.
+        /// </summary>
+        /// <returns>The index of the maximum entry.</returns>
+        public virtual MatrixIndex Max()
+        {
+            var maxIndex = new MatrixIndex();
+            var max = new ScalarValue(double.MinValue);
+
+            foreach (var _value in _values)
+            {
+                if (_value.Value > max)
+                {
+                    maxIndex = _value.Key;
+                    max = _value.Value;
+                }
+            }
+
+            return maxIndex;
+        }
+
+        /// <summary>
+        /// Gets the index for the minimum entry in the matrix.
+        /// </summary>
+        /// <returns>The index of the minimum entry.</returns>
+        public virtual MatrixIndex Min()
+        {
+            var minIndex = new MatrixIndex();
+            var min = new ScalarValue(double.MaxValue);
+
+            foreach (var _value in _values)
+            {
+                if (_value.Value < min)
+                {
+                    minIndex = _value.Key;
+                    min = _value.Value;
+                }
+            }
+
+            return minIndex;
+        }
 
         #endregion
 
@@ -671,6 +729,84 @@ namespace YAMP
 
 			return new ScalarValue();
 		}
+
+        #endregion
+
+        #region Norms
+        
+        /// <summary>
+        /// Computes the 1-norm of the matrix.
+        /// </summary>
+        /// <returns>||M||<sub>1</sub></returns>
+        /// <remarks>
+        /// <para>The 1-norm of a matrix is the largest column sum.</para>
+        /// </remarks>
+        public virtual double OneNorm()
+        {
+            // one-norm is maximum column sum
+            double norm = 0.0;
+
+            for (int c = 1; c <= DimensionX; c++)
+            {
+                double csum = 0.0;
+
+                for (int r = 1; r <= DimensionY; r++)
+                    csum += this[r, c].Abs();
+
+                if (csum > norm) 
+                    norm = csum;
+            }
+
+            return norm;
+        }
+        
+        /// <summary>
+        /// Computes the &#x221E;-norm of the matrix.
+        /// </summary>
+        /// <returns>||M||<sub>&#x221E;</sub></returns>
+        /// <remarks>
+        /// <para>The &#x221E;-norm of a matrix is the largest row sum.</para>
+        /// </remarks>
+        public virtual double InfinityNorm()
+        {
+            // infinity-norm is maximum row sum
+            double norm = 0.0;
+
+            for (int r = 1; r <= DimensionY; r++)
+            {
+                double rsum = 0.0;
+
+                for (int c = 1; c <= DimensionX; c++)
+                    rsum += this[r, c].Abs();
+
+                if (rsum > norm) 
+                    norm = rsum;
+            }
+
+            return norm;
+        }
+
+        /// <summary>
+        /// Computes the Frobenius-norm of the matrix.
+        /// </summary>
+        /// <returns>||M||<sub>F</sub></returns>
+        /// <remarks>
+        /// <para>The Frobenius-norm of a matrix the square root of the sum of the squares
+        /// of all the elements. In the case of a row or column vector, this reduces
+        /// to the Euclidean vector norm.</para>
+        /// </remarks>
+        public virtual double FrobeniusNorm()
+        {
+            double norm = 0.0;
+
+            for (int r = 1; r <= DimensionY; r++)
+            {
+                for (int c = 1; c <= DimensionX; c++)
+                    norm += this[r, c].AbsSquare();
+            }
+
+            return Math.Sqrt(norm);
+        }
 
         #endregion
 
@@ -936,6 +1072,12 @@ namespace YAMP
 
         #region Indexers
 
+        /// <summary>
+        /// Gets the element of the j-th row and i-th column.
+        /// </summary>
+        /// <param name="j">The 1-based row index.</param>
+        /// <param name="i">The 1-based column index.</param>
+        /// <returns>The entry of the specified row and column.</returns>
         public virtual ScalarValue this[int j, int i]
 		{
 			get
@@ -983,6 +1125,11 @@ namespace YAMP
 			}
 		}
 		
+        /// <summary>
+        /// Gets or sets the i-th element of the matrix (counted rows-first).
+        /// </summary>
+        /// <param name="i">The 1-based index.</param>
+        /// <returns>The entry i = n * rows + j * columns.</returns>
 		public virtual ScalarValue this[int i]
 		{
 			get
@@ -1003,11 +1150,23 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Does the matrix contain this index? If not then
+        /// the value is zero.
+        /// </summary>
+        /// <param name="index">The matrix-index (row, column).</param>
+        /// <returns>A boolean.</returns>
 		protected bool ContainsIndex(MatrixIndex index)
 		{
 			return _values.ContainsKey(index);
 		}
 
+        /// <summary>
+        /// Gets the matrix-index (row, column) of the 1-based 1-dim.
+        /// index i.
+        /// </summary>
+        /// <param name="i">The 1-based index. The i-th element is requested.</param>
+        /// <returns>The mapping of i-th entry to (j, k)-th element (j = row, k = column).</returns>
         protected MatrixIndex GetIndex(int i)
         {
             var dimY = Math.Max(1, this.dimY);
@@ -1021,6 +1180,13 @@ namespace YAMP
             };
         }
 
+        /// <summary>
+        /// Gets the entry of the specified matrix-index entry
+        /// in the dictionary. Please check if the element
+        /// is in the dictionary anyway (ContainsIndex).
+        /// </summary>
+        /// <param name="index">The matrix-index (row, column).</param>
+        /// <returns>The entry at the specified index.</returns>
 		protected ScalarValue GetIndex(MatrixIndex index)
 		{
 			return _values[index];
@@ -1135,6 +1301,9 @@ namespace YAMP
 
         #region Register Operators
 
+        /// <summary>
+        /// Registers all operators that are associated with the matrix.
+        /// </summary>
         public override void RegisterElement()
         {
             PlusOperator.Register(typeof(MatrixValue), typeof(MatrixValue), AddMM);
@@ -1305,7 +1474,7 @@ namespace YAMP
 
         #endregion
 
-        #region Behavior as method
+        #region Functional behavior
 
         public Value Perform(ParseContext context, Value argument, Value values)
         {

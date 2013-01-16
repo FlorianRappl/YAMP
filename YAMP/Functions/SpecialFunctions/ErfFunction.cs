@@ -9,7 +9,7 @@ namespace YAMP
 	{
 		protected override ScalarValue GetValue(ScalarValue value)
 		{
-			return new ScalarValue(ErrorFunction.Normal(value.Value), -ErrorFunction.Normal(value.ImaginaryValue));
+			return ErrorFunction.Erf(value);
 		}
 	}
 }

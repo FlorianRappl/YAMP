@@ -152,7 +152,7 @@ namespace YAMPConsole
             Test("real(2+5i)", 2.0);
             Test("imag(2+5i)", 5.0);
             Test("bessel(2, 4.5)", 0.21784898358785076);
-            Test("erf(1.4)", 0.95228511976264874);
+            Test("erf(1.4)", 0.9522851197626383);
             Test("x = round(sum(sum([1, 0; 0, 100] * Jackknife([3 + randn(1000, 1), 10 + 2 * randn(1000, 1)], 10, avg)))); sum([x < 29, x > 18]) / 2", 1.0);
             Test("x = round(sum(sum([1, 0; 0, 10] * Jackknife([3 + randn(1000, 1), 10 + 2 * randn(1000, 1)], 10, var)*[10,0;0,1]))); sum([x < 24, x > 16]) / 2", 1.0);
             Test("sum(sum(round(cor([3 + randn(100, 1), 10 + 2 * randn(100, 1)]))))", 2.0);

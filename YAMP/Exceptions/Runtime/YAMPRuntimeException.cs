@@ -30,9 +30,9 @@ using System;
 namespace YAMP
 {
     /// <summary>
-    /// The abstract base class for any runtime exception. 
+    /// The base class for any runtime exception. 
     /// </summary>
-    public abstract class YAMPRuntimeException : YAMPException
+    public class YAMPRuntimeException : YAMPException
     {
         public YAMPRuntimeException(string msg)
             : base(msg)

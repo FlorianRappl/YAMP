@@ -243,6 +243,17 @@ namespace YAMP
         /// <returns>The current parse engine.</returns>
         internal ParseEngine AddError(YAMPParseError error)
         {
+            if (errors.Count != 0)
+            {
+                var lerr = errors[errors.Count - 1];
+
+                if (lerr.Column == error.Column && lerr.Line == error.Line)
+                {
+                    Advance();
+                    return this;
+                }
+            }
+
             errors.Add(error);
             return this;
         }
@@ -292,6 +303,10 @@ namespace YAMP
             return this;
         }
 
+        /// <summary>
+        /// Standard parsing of a statement (ends with ; or }).
+        /// </summary>
+        /// <returns>The finalized statment.</returns>
         internal Statement ParseStatement()
         {
             var statement = new Statement();
@@ -311,6 +326,7 @@ namespace YAMP
                 }
                 else if (characters[ptr] == ';')
                 {
+                    statement.IsMuted = true;
                     currentColumn++;
                     ptr++;
                     break;
@@ -339,6 +355,12 @@ namespace YAMP
             return statement.Finalize(this);
         }
 
+        /// <summary>
+        /// More custom parsing of a statement (ends with a custom termination char).
+        /// </summary>
+        /// <param name="termination">The custom termination character (e.g. ; for the standard case).</param>
+        /// <param name="handleCharacter">An optional function that is invoked for every character.</param>
+        /// <returns>The finalized statement.</returns>
         internal Statement ParseStatement(char termination, Func<char, Statement, bool> handleCharacter = null)
         {
             var terminated = false;
@@ -387,6 +409,11 @@ namespace YAMP
             return statement.Finalize(this);
         }
         
+        /// <summary>
+        /// Parses a block and adds the block to the current statement.
+        /// </summary>
+        /// <param name="statement">The statement that should get the block.</param>
+        /// <returns>The statement again (allows chaining).</returns>
         internal Statement ParseBlock(Statement statement)
         {
             if (statement.IsOperator)
@@ -411,6 +438,12 @@ namespace YAMP
             return statement;
         }
 
+        /// <summary>
+        /// Parses a block with a default operator if no operator has been found.
+        /// </summary>
+        /// <param name="statement">The statement that should get the block.</param>
+        /// <param name="defaultOperator">The default operator if no operator has been found.</param>
+        /// <returns>The statement again (allows chaining).</returns>
         internal Statement ParseBlock(Statement statement, Operator defaultOperator)
         {
             if (statement.IsOperator)

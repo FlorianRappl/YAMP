@@ -167,6 +167,9 @@ namespace YAMP
 
 		#region Properties
 
+        /// <summary>
+        /// Gets or sets if the different level labels should be shown.
+        /// </summary>
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]
 		public bool ShowLevel
@@ -175,6 +178,9 @@ namespace YAMP
 			set;
 		}
 
+        /// <summary>
+        /// Gets or sets the color palette to use.
+        /// </summary>
 		[StringToEnumConverter(typeof(ColorPalettes))]
 		public ColorPalettes ColorPalette
 		{
@@ -182,6 +188,10 @@ namespace YAMP
 			set;
 		}
 
+        /// <summary>
+        /// Gets or sets the various levels to use for the contour lines.
+        /// </summary>
+        [MatrixToDoubleArrayConverter]
 		public double[] Levels
 		{
 			get;

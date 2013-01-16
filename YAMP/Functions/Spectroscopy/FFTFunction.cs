@@ -8,16 +8,36 @@ namespace YAMP
 	class FFTFunction : ArgumentFunction
 	{
 		[Description("Fourier transforms a matrix of elements.")]
-		[Example("fft([0,1,0,5])", "Uses FFT on the vector [0,1,0,5]")]
-		public MatrixValue Function(MatrixValue argument)
+		[Example("fft([0,1,0,5])", "Uses FFT on the vector [0,1,0,5].")]
+		public MatrixValue Function(MatrixValue M)
 		{
-			var m = argument as MatrixValue;
-			var fft = new FFT(m);
+            bool transpose = false;
 
-			if (m.DimensionX == 1 || m.DimensionY == 1)
-				return fft.Transform1D();
+            if (M.DimensionX > M.DimensionY)
+            {
+                transpose = true;
+                M = M.Transpose();
+            }
 
-			return fft.Transform2D();
+            var fft = new Fourier(M.DimensionY);
+
+            for (var i = 1; i <= M.DimensionX; i++)
+            {
+                var values = new ScalarValue[M.DimensionY];
+
+                for (var j = 1; j <= M.DimensionY; j++)
+                    values[j] = M[j, i];
+
+                values = fft.Transform(values);
+
+                for (var j = 1; j <= M.DimensionY; j++)
+                    M[j, i] = values[j];
+            }
+
+            if (transpose)
+                return M.Transpose();
+
+            return M;
 		}
 	}
 }

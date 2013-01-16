@@ -3,6 +3,9 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// A simple FFT implemention that uses Cooley-Tukey FFT (i.e. 2^n elements required).
+    /// </summary>
     public class FFT
     {
         #region Members

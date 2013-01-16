@@ -81,6 +81,18 @@ namespace YAMPConsole
                             Console.Write(result.Parser);
                         }
                     }
+                    catch (YAMPParseException parseex)
+                    {
+                        Console.WriteLine(parseex.Message);
+                        Console.WriteLine("---");
+                        Console.Write(parseex.ToString());
+                        Console.WriteLine("---");
+                    }
+                    catch (YAMPRuntimeException runex)
+                    {
+                        Console.WriteLine("An exception during runtime occured:");
+                        Console.WriteLine(runex.Message);
+                    }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);

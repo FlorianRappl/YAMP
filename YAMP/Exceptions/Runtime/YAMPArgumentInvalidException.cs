@@ -2,7 +2,10 @@
 
 namespace YAMP
 {
-    class YAMPArgumentInvalidException : YAMPRuntimeException
+    /// <summary>
+    /// Class to use for invalid arguments (type-wise or value-wise).
+    /// </summary>
+    public class YAMPArgumentInvalidException : YAMPRuntimeException
     {
         public YAMPArgumentInvalidException(string function, string argument)
             : base("The argument {0} provided for the function {1} is not valid.", function, argument)

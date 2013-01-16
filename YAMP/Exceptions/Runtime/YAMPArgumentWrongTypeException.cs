@@ -2,7 +2,10 @@
 
 namespace YAMP
 {
-    class YAMPArgumentWrongTypeException : YAMPRuntimeException
+    /// <summary>
+    /// Class to use when an argument has the wrong-type and some other type was expected.
+    /// </summary>
+    public class YAMPArgumentWrongTypeException : YAMPRuntimeException
     {
         public YAMPArgumentWrongTypeException(string argumentType, string expectedType, string function)
             : base("The argument supplied for the function {2} of type {0} is not supported. Expected was a value of type {1}.", 

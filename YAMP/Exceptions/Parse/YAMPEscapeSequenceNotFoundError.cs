@@ -2,7 +2,7 @@
 
 namespace YAMP
 {
-	public class YAMPEscapeSequenceNotFoundError : YAMPParseError
+	class YAMPEscapeSequenceNotFoundError : YAMPParseError
 	{
 		public YAMPEscapeSequenceNotFoundError(int line, int column, char sequence) 
             : base(line, column, "The escape sequence \\{0} is not recognized.", sequence)

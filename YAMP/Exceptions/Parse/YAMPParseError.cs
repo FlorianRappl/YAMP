@@ -29,10 +29,20 @@ using System;
 
 namespace YAMP
 {
+    /// <summary>
+    /// Any error during parsing will be noted as an instance of this class.
+    /// </summary>
     public abstract class YAMPParseError
     {
         #region ctor
 
+        /// <summary>
+        /// Creates a new parse error.
+        /// </summary>
+        /// <param name="line">The line of the error.</param>
+        /// <param name="column">The column of the error.</param>
+        /// <param name="message">The message for the error.</param>
+        /// <param name="args">The arguments for formatting the message.</param>
         public YAMPParseError(int line, int column, string message, params object[] args)
         {
             Line = line;
@@ -44,22 +54,40 @@ namespace YAMP
 
         #region Properties
 
+        /// <summary>
+        /// Gets the message for this error.
+        /// </summary>
         public string Message
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets the line for this error.
+        /// </summary>
         public int Line
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets the column for this error.
+        /// </summary>
         public int Column
         {
             get;
             private set;
+        }
+
+        #endregion
+
+        #region Methods
+
+        public override string ToString()
+        {
+            return string.Format("Line {0:000}, Pos. {1:000} : {2}", Line, Column, Message);
         }
 
         #endregion

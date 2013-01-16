@@ -2,7 +2,7 @@
 
 namespace YAMP
 {
-	public class YAMPIfRequiredError : YAMPParseError
+	class YAMPIfRequiredError : YAMPParseError
 	{
 		public YAMPIfRequiredError(int line, int column) 
             : base(line, column, "An else block requires an if statement.")

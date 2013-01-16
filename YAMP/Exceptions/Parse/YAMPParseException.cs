@@ -53,10 +53,7 @@ namespace YAMP
             var sb = new StringBuilder();
 
             foreach (var error in Errors)
-            {
-                sb.AppendFormat("Ln {0} Col {1}: {2}", error.Line, error.Column, error.Message);
-                sb.AppendLine();
-            }
+                sb.AppendLine(error.ToString());
             
             return sb.ToString();
         }

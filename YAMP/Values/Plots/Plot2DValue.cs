@@ -51,7 +51,7 @@ namespace YAMP
 		#region Properties
 
         /// <summary>
-        /// Gets the status of the x-axis - is it logarithmic?
+        /// Gets or sets the status of the x-axis - is it logarithmic?
         /// </summary>
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]
@@ -62,7 +62,7 @@ namespace YAMP
 		}
 
         /// <summary>
-        /// Gets the status of the y-axis - is it logarithmic?
+        /// Gets or sets the status of the y-axis - is it logarithmic?
         /// </summary>
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]

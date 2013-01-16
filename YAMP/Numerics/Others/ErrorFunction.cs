@@ -1,4 +1,5 @@
 ﻿using System;
+using YAMP;
 
 namespace YAMP.Numerics
 {
@@ -123,6 +124,62 @@ namespace YAMP.Numerics
 			return y;
 		}
 
+        public static ScalarValue Erf(ScalarValue z)
+        {
+            if (z.Abs() < 4.0)
+                return Erf_Series(z);
+            else if (z.Re < 0.0)
+                return (-z * z).Exp() * Faddeeva(-ScalarValue.I * z) - 1.0;
+            
+            return 1.0 - (-z * z).Exp() * Faddeeva(ScalarValue.I * z);
+        }
+
+        public static ScalarValue Erfc(ScalarValue z)
+        {
+            return Erf(1.0 - z);
+        }
+
+        public static ScalarValue Faddeeva(ScalarValue z)
+        {
+            if (z.Im < 0.0) 
+                return 2.0 * (-z * z).Exp() - Faddeeva(-z);
+
+            if (z.Re < 0.0)
+                return Faddeeva(-z.Conjugate()).Conjugate();
+
+            var r = z.Abs();
+
+            if (r < 2.0)
+                return (-z * z).Exp() * (1.0 - Erf_Series(-ScalarValue.I * z));
+            else if ((z.Im < 0.1) && (z.Re < 30.0))
+                return Faddeeva_Taylor(new ScalarValue(z.Re), Math.Exp(-z.Re * z.Re) + 2.0 * Dawson.DawsonIntegral(z.Re) / Helpers.SqrtPI * ScalarValue.I, new ScalarValue(0.0, z.Im));
+            else if (r > 7.0)
+                return Faddeeva_ContinuedFraction(z);
+            
+            return Faddeeva_Weideman(z);
+        }
+
+        #region Sub-Algorithms
+
+        static ScalarValue Erf_Series(ScalarValue z)
+        {
+            var zp = 2.0 / Helpers.SqrtPI * z;
+            var zz = -z * z;
+            var f = zp;
+
+            for (int k = 1; k < 250; k++)
+            {
+                var f_old = f;
+                zp *= zz / k;
+                f += zp / (2 * k + 1);
+
+                if (f == f_old)
+                    return (f);
+            }
+
+            throw new YAMPNotConvergedException("Erf");
+        }
+
 		static double polevl(double x, double[] coef, int N)
 		{
 			var ans = coef[0];
@@ -141,6 +198,132 @@ namespace YAMP.Numerics
 				ans = ans * x + coef[i];
 
 			return ans;
-		}
-	}
+        }
+
+        #endregion
+
+        #region Weideman Functions
+
+        static ScalarValue Faddeeva_Weideman(ScalarValue z)
+        {
+            var ZN = Faddeeva_Weideman_L + ScalarValue.I * z;
+            var ZD = Faddeeva_Weideman_L - ScalarValue.I * z;
+            var ZQ = ZN / ZD;
+            var f = new ScalarValue(Faddeeva_Weideman_Coefficients[40]);
+
+            for (int k = 39; k > 0; k--)
+                f = f * ZQ + Faddeeva_Weideman_Coefficients[k];
+
+            var ZP = ZN * ZD;
+            return 2.0 / ZP * f * ZQ + 1.0 / Helpers.SqrtPI / ZD;
+        }
+
+        static ScalarValue Faddeeva_ContinuedFraction(ScalarValue z)
+        {
+            var a = 1.0;			// a_1
+            var b = z;	            // b_1
+            var D = 1.0 / b;		// D_1 = b_0/b_1
+            var Df = a / b;		    // Df_1 = f_1 - f_0
+            var f = 0.0 + Df;		// f_1 = f_0 + Df_1 = b_0 + Df_1
+
+            for (int k = 1; k < 250; k++)
+            {
+                var f_old = f;
+                a = -k / 2.0;
+                D = 1.0 / (b + a * D);
+                Df = (b * D - 1.0) * Df;
+                f += Df;
+
+                if (f == f_old)
+                    return ScalarValue.I / Helpers.SqrtPI * f;
+            }
+
+            throw new YAMPNotConvergedException("Erf");
+        }
+
+        static ScalarValue Faddeeva_Taylor(ScalarValue z0, ScalarValue w0, ScalarValue dz)
+        {
+            // first order Taylor expansion
+            var wp_old = w0;
+            var wp = 2.0 * (ScalarValue.I / Helpers.SqrtPI - z0 * w0);
+            var zz = dz;
+            var w = w0 + wp * dz;
+
+            // higher orders
+            for (int k = 2; k < 250; k++)
+            {
+                // remmeber the current value
+                var w_old = w;
+
+                // compute the next derivative
+                var wp_new = -2.0 * (z0 * wp + (k - 1) * wp_old);
+
+                wp_old = wp;
+                wp = wp_new;
+
+                // use it to generate the next term in the Taylor expansion
+                zz = zz * dz / k;
+                w = w_old + wp * zz;
+
+                // test whether we have converged
+                if (w == w_old)
+                    return w;
+            }
+
+            throw new YAMPNotConvergedException("Erf");
+        }
+
+        #endregion
+
+        #region Weideman Numbers
+
+        static readonly double Faddeeva_Weideman_L = Math.Sqrt(40.0 / Math.Sqrt(2.0));
+
+        static readonly double[] Faddeeva_Weideman_Coefficients = new double[]
+        {
+            3.0005271472811341147438, // 0
+            2.899624509389705247492,
+            2.616054152761860368947,
+            2.20151379487831192991,
+            1.725383084817977807050,
+            1.256381567576513235243, // 5
+            0.847217457659381821530,
+            0.52665289882770863869581,
+            0.2998943799615006297951,
+            0.1550426380247949427170,
+            0.0718236177907433682806, // 10
+            0.0292029164712418670902,
+            0.01004818624278342412539,
+            0.002705405633073791311865,
+            0.000439807015986966782752,
+            -0.0000393936314548956872961, // 15
+            -0.0000559130926424831822323,
+            -0.00001800744714475095715480,
+            -1.066013898494714388844e-6,
+            1.483566113220077986810e-6,
+            5.91213695189949384568e-7, // 20
+            1.419864239993567456648e-8,
+            -6.35177348504429108355e-8,
+            -1.83156167830404631847e-8,
+            3.24974651804369739084e-9,
+            3.01778054000907084962e-9, // 25
+            2.10860063470665179035e-10,
+            -3.56323398659765326830e-10,
+            -9.05512445092829268740e-11,
+            3.47272670930455000726e-11,
+            1.771449521401119186147e-11, // 30
+            -2.72760231582004518397e-12,
+            -2.90768834218286692054e-12,
+            1.203145821938798755342e-13,
+            4.53296667826067277389e-13,
+            1.372562058671550042872e-14, // 35
+            -7.07408626028685552231e-14,
+            -5.40931028288214223366e-15,
+            1.135768719899924165040e-14,
+            1.128073562364402060469e-15,
+            -1.89969494739492699566e-15 // 40
+        };
+
+        #endregion
+    }
 }

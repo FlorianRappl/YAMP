@@ -29,7 +29,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("YAMP")]
-[assembly: AssemblyDescription("Yet Another Math Parser (YAMP) Core System using YAMP-PE.")]
+[assembly: AssemblyDescription("Yet Another Math Parser (YAMP) Core System using YAMP-PE v1.2.0 released on the 15th of January 2013.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Florian Rappl")]
 [assembly: AssemblyProduct("YAMP")]

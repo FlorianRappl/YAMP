@@ -53,6 +53,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Attributes\KindAttribute.cs" />
     <Compile Include="Attributes\Converter\ValueConverterAttribute.cs" />
     <Compile Include="Attributes\ReturnsAttribute.cs" />
+    <Compile Include="Exceptions\Parse\YAMPBracketEmptyError.cs" />
     <Compile Include="Exceptions\Parse\YAMPDoWhileNotEmptyError.cs" />
     <Compile Include="Exceptions\Parse\YAMPFunctionArgumentsMissing.cs" />
     <Compile Include="Exceptions\Parse\YAMPFunctionArgumentsSymbols.cs" />
@@ -80,15 +82,19 @@
     <Compile Include="Exceptions\Parse\YAMPForArgumentsMissing.cs" />
     <Compile Include="Exceptions\Runtime\YAMPArgumentInvalidException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPArgumentNumberException.cs" />
+    <Compile Include="Exceptions\Runtime\YAMPArgumentRangeException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPArgumentWrongTypeException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPDifferentDimensionsException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPDifferentLengthsException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPExpressionNoFunctionException.cs" />
+    <Compile Include="Exceptions\Runtime\YAMPFileFormatNotSupportedException.cs" />
+    <Compile Include="Exceptions\Runtime\YAMPFileNotFoundException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPFunctionMissingException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPIndexOutOfBoundException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPMatrixMultiplyException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPNonNumericException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPNumericOverflowException.cs" />
+    <Compile Include="Exceptions\Runtime\YAMPPixelFormatNotSupportedException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPRangeInvalidException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPRuntimeException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPWrongLengthException.cs" />
@@ -96,7 +102,26 @@
     <Compile Include="Expressions\Keywords\BodyKeyword.cs" />
     <Compile Include="Expressions\Keywords\ReturnKeyword.cs" />
     <Compile Include="Functions\SpecialFunctions\ZetaFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\ImageDataToRGBFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\RGBToImageDataFunction.cs" />
+    <Compile Include="Functions\Visualization\HeatmapFunction.cs" />
     <Compile Include="Functions\Visualization\SubplotFunction.cs" />
+    <Compile Include="Numerics\Matrices\BlasL1.cs" />
+    <Compile Include="Numerics\Matrices\BlasL2.cs" />
+    <Compile Include="Numerics\Others\Dawson.cs" />
+    <Compile Include="Numerics\Spectroscopy\BluesteinTransformlet.cs" />
+    <Compile Include="Numerics\Spectroscopy\Fourier.cs" />
+    <Compile Include="Numerics\Spectroscopy\FourierNormalization.cs" />
+    <Compile Include="Numerics\Spectroscopy\FourierSign.cs" />
+    <Compile Include="Numerics\Spectroscopy\RadixFiveTransformlet.cs" />
+    <Compile Include="Numerics\Spectroscopy\RadixFourTransformlet.cs" />
+    <Compile Include="Numerics\Spectroscopy\RadixSevenTransformlet.cs" />
+    <Compile Include="Numerics\Spectroscopy\RadixThreeTransformlet.cs" />
+    <Compile Include="Numerics\Spectroscopy\RadixTwoTransformlet.cs" />
+    <Compile Include="Numerics\Spectroscopy\Transformlet.cs" />
+    <Compile Include="Operators\UnaryOperators\DecrementOperator.cs" />
+    <Compile Include="Operators\UnaryOperators\IncrementOperator.cs" />
+    <Compile Include="Values\Plots\HeatmapPlotValue.cs" />
     <Compile Include="Values\Plots\XYPlotValue.cs" />
     <Compile Include="Numerics\Others\Zeta.cs" />
     <Compile Include="Operators\PseudoOperators\InvOperator.cs" />
@@ -272,7 +297,7 @@
     <Compile Include="Numerics\Decompositions\SingularValueDecomposition.cs" />
     <Compile Include="Numerics\NumericHelpers.cs" />
     <Compile Include="Numerics\Others\ErrorFunction.cs" />
-    <Compile Include="Numerics\Others\FFT.cs" />
+    <Compile Include="Numerics\Spectroscopy\FFT.cs" />
     <Compile Include="Numerics\Others\Gamma.cs" />
     <Compile Include="Numerics\Others\Mandelbrot.cs" />
     <Compile Include="Numerics\Random\BinomialDistribution.cs" />

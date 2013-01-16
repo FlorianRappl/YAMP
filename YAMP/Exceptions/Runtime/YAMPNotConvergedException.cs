@@ -2,6 +2,9 @@
 
 namespace YAMP
 {
+    /// <summary>
+    /// Class to use for numeric non-convergence exceptions.
+    /// </summary>
 	public class YAMPNotConvergedException : YAMPRuntimeException
 	{
         public YAMPNotConvergedException(string function)

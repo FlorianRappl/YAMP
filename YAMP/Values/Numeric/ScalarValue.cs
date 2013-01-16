@@ -299,13 +299,22 @@ namespace YAMP
         }
 
         /// <summary>
-        /// Computes z * z = z^2.
+        /// Computes z x z = z^2.
         /// </summary>
         /// <returns>The square of the current instance.</returns>
 		public virtual ScalarValue Square()
 		{
 			return this * this;
 		}
+
+        /// <summary>
+        /// Computes z^* x z = |z|^2, which is AbsSquare().
+        /// </summary>
+        /// <returns>The absolute square of the current instance.</returns>
+        public virtual ScalarValue ComplexSquare()
+        {
+            return new ScalarValue(_real * _real + _imag * _imag);
+        }
 		
         /// <summary>
         /// Conjugates the current scalar value, i.e. switches the sign of the imaginary value.
