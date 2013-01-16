@@ -69,6 +69,7 @@
     <Compile Include="Attributes\Converter\ValueConverterAttribute.cs" />
     <Compile Include="Attributes\ReturnsAttribute.cs" />
     <Compile Include="Exceptions\Parse\YAMPBracketEmptyError.cs" />
+    <Compile Include="ParseContext.IO.cs" />
     <Compile Include="Exceptions\Parse\YAMPDoWhileNotEmptyError.cs" />
     <Compile Include="Exceptions\Parse\YAMPFunctionArgumentsMissing.cs" />
     <Compile Include="Exceptions\Parse\YAMPFunctionArgumentsSymbols.cs" />

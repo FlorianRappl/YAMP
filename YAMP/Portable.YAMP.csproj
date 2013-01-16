@@ -235,10 +235,8 @@
     <Compile Include="Functions\SystemFunctions\DateFunction.cs" />
     <Compile Include="Functions\SystemFunctions\FormatFunction.cs" />
     <Compile Include="Functions\SystemFunctions\HelpFunction.cs" />
-    <Compile Include="Functions\SystemFunctions\LoadFunction.Fake.cs" />
     <Compile Include="Functions\SystemFunctions\PrecisionFunction.cs" />
     <Compile Include="Functions\SystemFunctions\PrintfFunction.cs" />
-    <Compile Include="Functions\SystemFunctions\SaveFunction.Fake.cs" />
     <Compile Include="Functions\SystemFunctions\SleepFunction.cs" />
     <Compile Include="Functions\SystemFunctions\TimeFunction.cs" />
     <Compile Include="Functions\SystemFunctions\TimerFunction.cs" />

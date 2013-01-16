@@ -34,7 +34,7 @@ namespace YAMP
     /// <summary>
     /// Class that describes the current parse context (available functions, constants, variables, ...).
     /// </summary>
-    public sealed class ParseContext
+    public sealed partial class ParseContext
     {
         #region Members
 
@@ -505,18 +505,6 @@ namespace YAMP
             var parser = Parser.Parse(this, query);
             parser.Execute(variables);
             return parser.Context;
-        }
-
-        public void Load(string fromFileName)
-        {
-            var lf = new LoadFunction();
-            lf.Context = this;
-            lf.Function(new StringValue(fromFileName));
-        }
-
-        public void Save(string toFileName)
-        {
-            SaveFunction.Save(toFileName, variables);
         }
 
         #endregion
