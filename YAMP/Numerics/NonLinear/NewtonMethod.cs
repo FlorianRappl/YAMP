@@ -5,12 +5,17 @@ using System.Text;
 
 namespace YAMP.Numerics.Optimization
 {
+    /// <summary>
+    /// Represents the Newton method.
+    /// </summary>
    public class NewtonMethod : NonLinearBase
     {
         /// <summary>
-        /// Description constructor
+        /// Creates a new instance.
         /// </summary>
-        /// <param name="function">Function to be solved delegate</param>
+        /// <param name="f">Function to be solved delegate.</param>
+        /// <param name="x">The starting point.</param>
+        /// <param name="d">The spacing to use.</param>
         public NewtonMethod(Func<double, double> f, double x, double d) : base(f, d)
         {
             Result = new double[1, 2];

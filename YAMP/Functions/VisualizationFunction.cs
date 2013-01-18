@@ -35,10 +35,18 @@ namespace YAMP
     /// </summary>
     public abstract class VisualizationFunction : SystemFunction
     {
+        /// <summary>
+        /// Performs the function and takes the result (PlotValue) as LastPlot.
+        /// </summary>
+        /// <param name="argument">The argument for invoking the function.</param>
+        /// <returns>The result of the function</returns>
         public override Value Perform(Value argument)
         {
             Value value = base.Perform(argument);
-            Context.LastPlot = value as PlotValue;
+
+            if(value is PlotValue)
+                Context.LastPlot = (PlotValue)value;
+
             return value;
         }
     }

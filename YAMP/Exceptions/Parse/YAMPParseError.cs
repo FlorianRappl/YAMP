@@ -85,6 +85,10 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Converts to error to a string.
+        /// </summary>
+        /// <returns>The string with the error.</returns>
         public override string ToString()
         {
             return string.Format("Line {0:000}, Pos. {1:000} : {2}", Line, Column, Message);

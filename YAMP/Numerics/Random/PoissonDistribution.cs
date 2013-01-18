@@ -57,18 +57,18 @@ namespace YAMP.Numerics
 
 		#region construction
 		/// <summary>
-        /// Initializes a new instance of the <see cref="PoissonDistribution"/> class, using a 
-        ///   <see cref="StandardGenerator"/> as underlying random number generator.
+        /// Initializes a new instance of the PoissonDistribution class, using a 
+        /// StandardGenerator as underlying random number generator.
 		/// </summary>
         public PoissonDistribution()
 		{
 		}
 		
 		/// <summary>
-        /// Initializes a new instance of the <see cref="PoissonDistribution"/> class, using the specified 
-        ///   <see cref="Generator"/> as underlying random number generator.
+        /// Initializes a new instance of the PoissonDistribution class, using the specified 
+        /// Generator as underlying random number generator.
         /// </summary>
-        /// <param name="generator">A <see cref="Generator"/> object.</param>
+        /// <param name="generator">A Generator object.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="generator"/> is NULL (<see langword="Nothing"/> in Visual Basic).
         /// </exception>

@@ -44,6 +44,9 @@ namespace YAMP
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public SubPlotValue()
         {
             subplots = new List<SubPlot>();
@@ -85,12 +88,27 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Adds a new subplot to the container.
+        /// </summary>
+        /// <param name="row">The 1-based row index.</param>
+        /// <param name="column">The 1-based column index.</param>
+        /// <param name="plot">The plot to add.</param>
+        /// <param name="rowSpan">The row span.</param>
+        /// <param name="columnSpan">The column span.</param>
+        /// <returns>The current instance.</returns>
         public SubPlotValue AddSubPlot(int row, int column, PlotValue plot, int rowSpan = 1, int columnSpan = 1)
         {
             if (row < 1 || row > Rows)
                 throw new YAMPIndexOutOfBoundException(row, 1, Rows);
             else if (column < 1 || column > Columns)
                 throw new YAMPIndexOutOfBoundException(column, 1, Columns);
+
+            for (var i = subplots.Count - 1; i >= 0; i--)
+            {
+                if (subplots[i].Column == column && subplots[i].Row == row)
+                    subplots.RemoveAt(i);
+            }
 
             subplots.Add(new SubPlot
             {
@@ -109,6 +127,10 @@ namespace YAMP
 
         #region Serialization
 
+        /// <summary>
+        /// Takes the current instance into binary form.
+        /// </summary>
+        /// <returns>The binary content.</returns>
         public override byte[] Serialize()
         {
             using (var s = Serializer.Create())
@@ -132,6 +154,11 @@ namespace YAMP
             }
         }
 
+        /// <summary>
+        /// Creates a new instance from a given binary content.
+        /// </summary>
+        /// <param name="content">The binary content.</param>
+        /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
             using (var ds = Deserializer.Create(content))
@@ -161,23 +188,64 @@ namespace YAMP
 
         #region Nested
 
+        /// <summary>
+        /// Container for subplot information.
+        /// </summary>
         public class SubPlot
         {
+            /// <summary>
+            /// Gets or sets the specified row (1-based).
+            /// </summary>
             public int Row { get; set; }
 
+            /// <summary>
+            /// Gets or sets the specified column (1-based).
+            /// </summary>
             public int Column { get; set; }
 
+            /// <summary>
+            /// Gets or sets the rowspan.
+            /// </summary>
             public int RowSpan { get; set; }
 
+            /// <summary>
+            /// Gets or sets the columnspan.
+            /// </summary>
             public int ColumnSpan { get; set; }
 
+            /// <summary>
+            /// Gets or sets the contained plot value.
+            /// </summary>
             public PlotValue Plot { get; set; }
+        }
+
+        #endregion
+
+        #region Index
+
+        /// <summary>
+        /// Gets the i-th subplot, where i is the index in the list of subplots.
+        /// </summary>
+        /// <param name="index">The index i, which is greater or equal to 0 and lighter than Count.</param>
+        /// <returns>The subplot.</returns>
+        public SubPlot this[int index]
+        {
+            get
+            {
+                return subplots[index];
+            }
         }
 
         #endregion
 
         #region Function Behavior
 
+        /// <summary>
+        /// Gets a (sub) plot from this container.
+        /// </summary>
+        /// <param name="context">The context from which this is going on.</param>
+        /// <param name="argument">The indices as arguments.</param>
+        /// <returns>The subplot.</returns>
         public Value Perform(ParseContext context, Value argument)
         {
             if (argument is ScalarValue)
@@ -227,6 +295,13 @@ namespace YAMP
             throw new YAMPWrongTypeSuppliedException(argument.Header, "Scalar");
         }
 
+        /// <summary>
+        /// Sets a subplot by specifying some indices and the value.
+        /// </summary>
+        /// <param name="context">The context where this is happening.</param>
+        /// <param name="indices">The indices to set it (1-dim or 2-dim).</param>
+        /// <param name="values">The subplot to set.</param>
+        /// <returns>The current instance.</returns>
         public Value Perform(ParseContext context, Value indices, Value values)
         {
             if (values is PlotValue)
@@ -247,8 +322,19 @@ namespace YAMP
                     InspectIndex(av[2], out colIndex, out colSpan);
                     return AddSubPlot(rowIndex, colIndex, (PlotValue)values, rowSpan, colSpan);
                 }
+                else if (indices is ScalarValue)
+                {
+                    var index = ((ScalarValue)indices).IntValue;
 
-                throw new YAMPArgumentNumberException("SubPlot", 1, 2);
+                    if (index < 1 || index > Rows * Columns)
+                        throw new YAMPIndexOutOfBoundException(index, 1, Rows * Columns);
+
+                    var rowIndex = (index - 1) % Rows + 1;
+                    var colIndex = (index - 1) / Columns + 1;
+                    return AddSubPlot(rowIndex, colIndex, (PlotValue)values);
+                }
+
+                throw new YAMPWrongTypeSuppliedException(indices.Header, "Scalar");
             }
 
             throw new YAMPWrongTypeSuppliedException(values.Header, "Plot");

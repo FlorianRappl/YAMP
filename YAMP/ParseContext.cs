@@ -51,8 +51,25 @@ namespace YAMP
 
         #region Events
 
+        /// <summary>
+        /// If an existing variable changed, this event is executed.
+        /// </summary>
         public event EventHandler<VariableEventArgs> OnVariableChanged;
-        public event EventHandler<PlotEventArgs> OnPlotCreated;
+
+        /// <summary>
+        /// If a new variable is added, this event is executed.
+        /// </summary>
+        public event EventHandler<VariableEventArgs> OnVariableCreated;
+
+        /// <summary>
+        /// If an existing variable is removed, this event is executed.
+        /// </summary>
+        public event EventHandler<VariableEventArgs> OnVariableRemoved;
+
+        /// <summary>
+        /// If the last plot variable is changed, this event is executed.
+        /// </summary>
+        public event EventHandler<PlotEventArgs> OnLastPlotChanged;
 
         #endregion
 
@@ -258,7 +275,7 @@ namespace YAMP
                     return;
 
                 lastPlot = value;
-                RaisePlotCreated(value);
+                RaiseLastPlotChanged(value);
             }
         }
 
@@ -414,7 +431,6 @@ namespace YAMP
                 context = this;
 
             AssignVariable(context, name, value);
-            RaiseVariableChanged(name, value);
             return this;
         }
 
@@ -423,14 +439,23 @@ namespace YAMP
             if (value != null)
             {
                 if (context.variables.ContainsKey(name))
+                {
                     context.variables[name] = value;
+                    context.RaiseVariableChanged(name, value);
+                }
                 else
+                {
                     context.variables.Add(name, value);
+                    context.RaiseVariableCreated(name, value);
+                }
             }
             else
             {
                 if (context.variables.ContainsKey(name))
+                {
                     context.variables.Remove(name);
+                    context.RaiseVariableRemoved(name, value);
+                }
             }
         }
 
@@ -452,6 +477,11 @@ namespace YAMP
             return null;
         }
 
+        /// <summary>
+        /// Gets the exact context of the given variable.
+        /// </summary>
+        /// <param name="name">The name of the variable.</param>
+        /// <returns>The context or NULL if nothing was found.</returns>
         public ParseContext GetVariableContext(string name)
         {
             if (variables.ContainsKey(name))
@@ -507,6 +537,10 @@ namespace YAMP
             return parser.Context;
         }
 
+        /// <summary>
+        /// Loads the workspace from the given file.
+        /// </summary>
+        /// <param name="fromFileName">The path to the file.</param>
         public void Load(string fromFileName)
         {
             var lf = new LoadFunction();
@@ -514,6 +548,10 @@ namespace YAMP
             lf.Function(new StringValue(fromFileName));
         }
 
+        /// <summary>
+        /// Saves the workspace in the given file.
+        /// </summary>
+        /// <param name="toFileName">The path to the file.</param>
         public void Save(string toFileName)
         {
             SaveFunction.Save(toFileName, variables);
@@ -523,6 +561,11 @@ namespace YAMP
 
         #region Event Methods
 
+        /// <summary>
+        /// This is raised when a variable has changed.
+        /// </summary>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The value of the variable.</param>
         internal void RaiseVariableChanged(string name, Value value)
         {
             if (OnVariableChanged != null)
@@ -532,12 +575,44 @@ namespace YAMP
             }
         }
 
-        internal void RaisePlotCreated(PlotValue plot)
+        /// <summary>
+        /// This is raised when a variable has been created.
+        /// </summary>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The value of the variable.</param>
+        internal void RaiseVariableCreated(string name, Value value)
         {
-            if (OnPlotCreated != null)
+            if (OnVariableCreated != null)
+            {
+                var args = new VariableEventArgs(name, value);
+                OnVariableCreated(this, args);
+            }
+        }
+
+        /// <summary>
+        /// This is raised when a variable has been removed.
+        /// </summary>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The value of the variable.</param>
+        internal void RaiseVariableRemoved(string name, Value value)
+        {
+            if (OnVariableRemoved != null)
+            {
+                var args = new VariableEventArgs(name, value);
+                OnVariableRemoved(this, args);
+            }
+        }
+
+        /// <summary>
+        /// This is raised when the last plot has been changed.
+        /// </summary>
+        /// <param name="plot"></param>
+        internal void RaiseLastPlotChanged(PlotValue plot)
+        {
+            if (OnLastPlotChanged != null)
             {
                 var args = new PlotEventArgs(plot, string.Empty);
-                OnPlotCreated(this, args);
+                OnLastPlotChanged(this, args);
             }
         }
 

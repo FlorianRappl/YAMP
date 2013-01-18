@@ -7,16 +7,32 @@ namespace YAMP
     /// </summary>
     public class YAMPArgumentInvalidException : YAMPRuntimeException
     {
+        /// <summary>
+        /// Creates a new argument invalid exception.
+        /// </summary>
+        /// <param name="function">The function where this happened.</param>
+        /// <param name="argument">The given argument.</param>
         public YAMPArgumentInvalidException(string function, string argument)
             : base("The argument {0} provided for the function {1} is not valid.", function, argument)
         {
         }
 
+        /// <summary>
+        /// Creates a new argument invalid exception.
+        /// </summary>
+        /// <param name="function">The function where this happened.</param>
+        /// <param name="argumentType">The type of argument.</param>
+        /// <param name="argumentNumber">The number of the argument.</param>
         public YAMPArgumentInvalidException(string function, string argumentType, int argumentNumber)
             : base("The argument #{0} of type {2}, provided for the function {1}, is not valid.", function, argumentNumber, argumentType)
         {
         }
 
+        /// <summary>
+        /// Creates a new argument invalid exception.
+        /// </summary>
+        /// <param name="function">The function where this happened.</param>
+        /// <param name="argumentNumber">The number of the argument.</param>
         public YAMPArgumentInvalidException(string function, int argumentNumber)
             : base("The argument #{0} provided for the function {1} is not valid.", function, argumentNumber)
         {

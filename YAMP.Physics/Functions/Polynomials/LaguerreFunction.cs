@@ -74,6 +74,8 @@ namespace YAMP.Physics
             return Function(n, new ScalarValue(), Z);
         }
 
+        #region Algorithm
+
         /// <summary>
         /// Returns the Laguerre polynomial of order n with parameters alpha and beta of the specified number.
         /// </summary>
@@ -95,5 +97,7 @@ namespace YAMP.Physics
 
             return p;
         }
+
+        #endregion
     }
 }

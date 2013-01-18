@@ -40,20 +40,59 @@ namespace YAMP
 
 		string _value;
 
-		#endregion
+        #endregion
+
+        #region ctor
+
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        public StringValue()
+            : this(string.Empty)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance and sets the value.
+        /// </summary>
+        /// <param name="value">The string where this value is based on.</param>
+        public StringValue(string value)
+        {
+            _value = value;
+        }
+
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="str">The given character array.</param>
+        public StringValue(char[] str)
+            : this(new string(str))
+        {
+        }
+
+        #endregion
 
 		#region Properties
 
+        /// <summary>
+        /// Gets the string value.
+        /// </summary>
 		public string Value
 		{
 			get { return _value; }
 		}
 
+        /// <summary>
+        /// Gets the length of string value.
+        /// </summary>
 		public int Length
 		{
 			get { return _value.Length; }
 		}
 
+        /// <summary>
+        /// Gets the number of lines in the string value.
+        /// </summary>
 		public int Lines
 		{
 			get
@@ -66,12 +105,21 @@ namespace YAMP
 
         #region Register Operator
 
-        public override void RegisterElement()
+        /// <summary>
+        /// Registers the allowed operations.
+        /// </summary>
+        protected override void RegisterOperators()
         {
             PlusOperator.Register(typeof(StringValue), typeof(Value), Add);
             PlusOperator.Register(typeof(Value), typeof(StringValue), Add);
         }
 
+        /// <summary>
+        /// Performs the addition str + x or x + str.
+        /// </summary>
+        /// <param name="left">An arbitrary value.</param>
+        /// <param name="right">Another arbitrary value.</param>
+        /// <returns>The result of the operation.</returns>
         public static StringValue Add(Value left, Value right)
         {
             return new StringValue(left.ToString() + right.ToString());
@@ -81,6 +129,10 @@ namespace YAMP
 
         #region Serialization
 
+        /// <summary>
+        /// Converts the given value into binary data.
+        /// </summary>
+        /// <returns>The bytes array containing the data.</returns>
         public override byte[] Serialize ()
 		{
             using (var ms = Serializer.Create())
@@ -90,6 +142,11 @@ namespace YAMP
             }
 		}
 
+        /// <summary>
+        /// Creates a new string value from the binary content.
+        /// </summary>
+        /// <param name="content">The data which contains the content.</param>
+        /// <returns>The new instance.</returns>
 		public override Value Deserialize (byte[] content)
 		{
             using(var ds = Deserializer.Create(content))
@@ -102,25 +159,13 @@ namespace YAMP
 
 		#endregion
 
-		#region ctor
-
-		public StringValue () : this(string.Empty)
-		{
-		}
-
-		public StringValue (string value)
-		{
-			_value = value;
-		}
-
-        public StringValue(char[] str) : this(new string(str))
-        {
-        }
-
-		#endregion
-
         #region Conversations
 
+        /// <summary>
+        /// Explicit conversation from a string to a scalar.
+        /// </summary>
+        /// <param name="value">The stringvalue that will be casted.</param>
+        /// <returns>The scalar with Re = sum over all characters and Im = length of the string.</returns>
         public static explicit operator ScalarValue(StringValue value)
         {
             var sum = 0.0;
@@ -135,6 +180,11 @@ namespace YAMP
 
         #region Overrides
 
+        /// <summary>
+        /// Returns the string content of this instance.
+        /// </summary>
+        /// <param name="context">The context of the invocation.</param>
+        /// <returns>The value of the string.</returns>
         public override string ToString (ParseContext context)
 		{
 			return _value;
@@ -142,8 +192,14 @@ namespace YAMP
 
 		#endregion
 
-        #region Behavior as method
+        #region Functional behavior
 
+        /// <summary>
+        /// If invoked like a function the function reacts like this.
+        /// </summary>
+        /// <param name="context">The context of invocation.</param>
+        /// <param name="argument">The argument(s) that have been given.</param>
+        /// <returns>The subset of the string.</returns>
         public Value Perform(ParseContext context, Value argument)
         {
             if (argument is NumericValue)
@@ -157,7 +213,7 @@ namespace YAMP
                 return new StringValue(str);
             }
 
-            throw new YAMPOperationInvalidException("string-index", argument);
+            throw new YAMPArgumentWrongTypeException(argument.Header, new [] { "Matrix", "Scalar" }, "String");
         }
 
         #endregion

@@ -50,6 +50,9 @@ namespace YAMP
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new statement.
+        /// </summary>
         public Statement()
         {
             maxLevel = -100;

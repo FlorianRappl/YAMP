@@ -2,6 +2,9 @@
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// Possible normalization values for the fourier transformation.
+    /// </summary>
     public enum FourierNormalization
     {
         /// <summary>

@@ -3,6 +3,9 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// Represents the Secant method for determining the closest root.
+    /// </summary>
     public class SecantMethod : NonLinearBase
     {
         /// <summary>
@@ -13,9 +16,11 @@ namespace YAMP.Numerics
         //const double delta = 0.0001f;
 
         /// <summary>
-        /// Description constructor
+        /// Cretes a new instance.
         /// </summary>
-        /// <param name="function">Function to be solved delegate</param>
+        /// <param name="f">Function to be solved delegate</param>
+        /// <param name="shag">The spacing to use.</param>
+        /// <param name="delta">The function values to use.</param>
         public SecantMethod(Func<double, double> f, double shag, double delta) : base(f, shag)
         {
             Result = new double[2, 1];
@@ -28,10 +33,10 @@ namespace YAMP.Numerics
         }
 
         /// <summary>
-        /// Description SecantMethod
+        /// Performs an iteration.
         /// </summary>
-        /// <param name="x0">Initial value</param>
-        /// <param name="f">Function to be solved delegate</param>
+        /// <param name="x0">Initial value.</param>
+        /// <param name="delta">The gap.</param>
         void Perform(double x0, double delta)
         {
             int j = 0;

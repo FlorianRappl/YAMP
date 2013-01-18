@@ -35,9 +35,6 @@ namespace YAMP.Physics
     [Kind(PopularKinds.Function)]
     class YlmFunction : ArgumentFunction
     {
-        static readonly double lnpi = Math.Log(Math.PI);
-        static readonly double fourpi = (4.0 * Math.PI);
-
         [Description("Computes the spherical harmonics at given l, m with values for theta and phi. This results in the value of Ylm with the given l, m at the given angles.")]
         [Example("ylm(0, 0, 0, 0)", "Computes the spherical harmonics Ylm(theta, phi) at l = 0, m = 0 - which gives the constant expression 1/2 * sqrt(1/pi) independent of theta and phi.")]
         [Example("ylm(1, 1, pi / 2, 0)", "Evaluates the spherical harmonics Ylm(theta ,phi) with l = 1, m = 1, theta = pi / 2 and phi = 0.")]
@@ -227,8 +224,8 @@ namespace YAMP.Physics
                 double y_mmp1_factor = x * sqrt(2.0 * m + 3.0);
                 double lncirc = Math.Log(1 - x * x);
                 double lnpoch = Gamma.LogGamma(m + 0.5) - Gamma.LogGamma(m);
-                double expf = Math.Exp(0.5 * (lnpoch + m * lncirc) - 0.25 * lnpi);
-                double sr = sqrt((2.0 + 1.0 / m) / fourpi);
+                double expf = Math.Exp(0.5 * (lnpoch + m * lncirc) - 0.25 * Helpers.LogPI);
+                double sr = sqrt((2.0 + 1.0 / m) / Helpers.FourPI);
                 double y_mm = sgn * sr * expf;
                 double y_mmp1 = y_mmp1_factor * y_mm;
 

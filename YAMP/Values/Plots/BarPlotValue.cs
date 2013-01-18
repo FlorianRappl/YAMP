@@ -37,6 +37,9 @@ namespace YAMP
 	{
 		#region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
 		public BarPlotValue()
         {
             MinX = 1.0;
@@ -49,6 +52,10 @@ namespace YAMP
 
 		#region Methods
 
+        /// <summary>
+        /// Adds (multiple) series in form of a matrix.
+        /// </summary>
+        /// <param name="m">The matrix which contains the values.</param>
 		public override void AddPoints(MatrixValue m)
 		{
             if (m.IsVector)
@@ -67,6 +74,10 @@ namespace YAMP
             }
 		}
 
+        /// <summary>
+        /// Adds a single series explicitly.
+        /// </summary>
+        /// <param name="vec">The matrix seen as a vector.</param>
         public void AddSingleSeries(MatrixValue vec)
         {
             var values = new BarPoints();
@@ -98,6 +109,10 @@ namespace YAMP
 
 		#region Serialization
 
+        /// <summary>
+        /// Converts the given instance to an array of bytes.
+        /// </summary>
+        /// <returns>The binary representation of this instance.</returns>
 		public override byte[] Serialize()
 		{
 			using (var s = Serializer.Create())
@@ -121,6 +136,11 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Converts a set of bytes to a new instance.
+        /// </summary>
+        /// <param name="content">The binary representation.</param>
+        /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
 		{
 			using (var ds = Deserializer.Create(content))
@@ -149,13 +169,22 @@ namespace YAMP
 
 		#region Nested Type
 
+        /// <summary>
+        /// The representation of one series.
+        /// </summary>
 		public class BarPoints : Points<double>
 		{
+            /// <summary>
+            /// Creates a new bar series.
+            /// </summary>
 			public BarPoints()
 			{
 				BarWidth = 1.0;
 			}
 
+            /// <summary>
+            /// Gets or sets the relative width of the bars.
+            /// </summary>
 			[ScalarToDoubleConverter]
 			public double BarWidth
 			{
@@ -168,6 +197,11 @@ namespace YAMP
 
 		#region Index
 
+        /// <summary>
+        /// Gets the series at the specified index.
+        /// </summary>
+        /// <param name="index">The 0-based index of the series.</param>
+        /// <returns>The series (list of points and properties).</returns>
 		public BarPoints this[int index]
 		{
 			get
@@ -176,6 +210,12 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Gets a certain point of the specified series.
+        /// </summary>
+        /// <param name="index">The 0-based index of the series.</param>
+        /// <param name="point">The 0-based index of the point.</param>
+        /// <returns>The point.</returns>
 		public double this[int index, int point]
 		{
 			get

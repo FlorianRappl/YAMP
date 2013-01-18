@@ -35,6 +35,12 @@ namespace YAMP
     /// </summary>
     abstract class BreakableKeyword : BodyKeyword
     {
+        #region Members
+
+        bool hasMarker;
+
+        #endregion
+
         #region ctor
 
         public BreakableKeyword(string token)
@@ -50,6 +56,20 @@ namespace YAMP
         /// Breaks the execution of the breakable block.
         /// </summary>
         public abstract void Break();
+
+        protected void SetMarker(ParseEngine engine)
+        {
+            hasMarker = engine.HasMarker(Marker.Breakable);
+
+            if (!hasMarker)
+                engine.InsertMarker(Marker.Breakable);
+        }
+
+        protected void UnsetMarker(ParseEngine engine)
+        {
+            if (!hasMarker)
+                engine.RemoveMarker(Marker.Breakable);
+        }
 
         #endregion
     }

@@ -87,6 +87,10 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Initializes the values StartColumn, StartLine and Query.
+        /// </summary>
+        /// <param name="engine">The engine to use for initialization.</param>
         protected void Init(ParseEngine engine)
         {
             StartColumn = engine.CurrentColumn;
@@ -94,6 +98,10 @@ namespace YAMP
             Query = engine.Query;
         }
 
+        /// <summary>
+        /// Converts the given block to a valid part of a query.
+        /// </summary>
+        /// <returns>The string that represents the part of the query.</returns>
         public abstract string ToCode();
 
         #endregion

@@ -34,8 +34,14 @@ namespace YAMP
     /// </summary>
     public interface IConstants
     {
+        /// <summary>
+        /// The name of the constant.
+        /// </summary>
 		string Name { get; }
 
+        /// <summary>
+        /// The value of the constant.
+        /// </summary>
 		Value Value { get; }
     }
 }

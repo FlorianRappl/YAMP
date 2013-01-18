@@ -3,11 +3,25 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// This class contains everything about the error function.
+    /// </summary>
 	public static class ErrorFunction
-	{
-		const double MAXLOG = -7.09782712893383996732e2;
+    {
+        #region Constants
 
-		public static double Normal(double x)
+        const double MAXLOG = -7.09782712893383996732e2;
+
+        #endregion
+
+        #region Real Methods
+
+        /// <summary>
+        /// Computes the normal error function erf(x).
+        /// </summary>
+        /// <param name="x">The argument.</param>
+        /// <returns>The value of the error function.</returns>
+        public static double Erf(double x)
 		{
 			double y, z;
 
@@ -28,14 +42,19 @@ namespace YAMP.Numerics
 			};
 
 			if (Math.Abs(x) > 1.0)
-				return 1.0 - Complementary(x);
+				return 1.0 - Erfc(x);
 
 			z = x * x;
 			y = x * polevl(z, T, 4) / p1evl(z, U, 5);
 			return y;
 		}
 
-		public static double Complementary(double a)
+        /// <summary>
+        /// Computes the complementary error function erfc(x).
+        /// </summary>
+        /// <param name="a">The argument.</param>
+        /// <returns>The value of the compl. error function.</returns>
+		public static double Erfc(double a)
 		{
 			double x, y, z, p, q;
 
@@ -83,7 +102,7 @@ namespace YAMP.Numerics
 			x = Math.Abs(a);
 
 			if (x < 1.0) 
-				return 1.0 - Normal(a);
+				return 1.0 - Erf(a);
 
 			z = -a * a;
 
@@ -124,6 +143,15 @@ namespace YAMP.Numerics
 			return y;
 		}
 
+        #endregion
+
+        #region Complex Methods
+
+        /// <summary>
+        /// Computes the complex error function erf(z).
+        /// </summary>
+        /// <param name="z">The complex argument.</param>
+        /// <returns>The value of erf(z).</returns>
         public static ScalarValue Erf(ScalarValue z)
         {
             if (z.Abs() < 4.0)
@@ -134,11 +162,25 @@ namespace YAMP.Numerics
             return 1.0 - (-z * z).Exp() * Faddeeva(ScalarValue.I * z);
         }
 
+        /// <summary>
+        /// Computes the complex complementary error function erfc(z).
+        /// </summary>
+        /// <param name="z">The complex argument.</param>
+        /// <returns>The value of erfc(z).</returns>
         public static ScalarValue Erfc(ScalarValue z)
         {
             return Erf(1.0 - z);
         }
 
+        #endregion
+
+        #region Other
+
+        /// <summary>
+        /// The Faddeeva function or Kramp function is a scaled complex complementary error function.
+        /// </summary>
+        /// <param name="z">The argument z.</param>
+        /// <returns>The evaluated value.</returns>
         public static ScalarValue Faddeeva(ScalarValue z)
         {
             if (z.Im < 0.0) 
@@ -152,12 +194,14 @@ namespace YAMP.Numerics
             if (r < 2.0)
                 return (-z * z).Exp() * (1.0 - Erf_Series(-ScalarValue.I * z));
             else if ((z.Im < 0.1) && (z.Re < 30.0))
-                return Faddeeva_Taylor(new ScalarValue(z.Re), Math.Exp(-z.Re * z.Re) + 2.0 * Dawson.DawsonIntegral(z.Re) / Helpers.SqrtPI * ScalarValue.I, new ScalarValue(0.0, z.Im));
+                return Taylor(new ScalarValue(z.Re), Math.Exp(-z.Re * z.Re) + 2.0 * Dawson.DawsonIntegral(z.Re) / Helpers.SqrtPI * ScalarValue.I, new ScalarValue(0.0, z.Im));
             else if (r > 7.0)
-                return Faddeeva_ContinuedFraction(z);
+                return ContinuedFraction(z);
             
-            return Faddeeva_Weideman(z);
+            return Weideman(z);
         }
+
+        #endregion
 
         #region Sub-Algorithms
 
@@ -204,21 +248,21 @@ namespace YAMP.Numerics
 
         #region Weideman Functions
 
-        static ScalarValue Faddeeva_Weideman(ScalarValue z)
+        static ScalarValue Weideman(ScalarValue z)
         {
-            var ZN = Faddeeva_Weideman_L + ScalarValue.I * z;
-            var ZD = Faddeeva_Weideman_L - ScalarValue.I * z;
+            var ZN = WeidemanL + ScalarValue.I * z;
+            var ZD = WeidemanL - ScalarValue.I * z;
             var ZQ = ZN / ZD;
-            var f = new ScalarValue(Faddeeva_Weideman_Coefficients[40]);
+            var f = new ScalarValue(WeidemanCoefficients[40]);
 
             for (int k = 39; k > 0; k--)
-                f = f * ZQ + Faddeeva_Weideman_Coefficients[k];
+                f = f * ZQ + WeidemanCoefficients[k];
 
             var ZP = ZN * ZD;
             return 2.0 / ZP * f * ZQ + 1.0 / Helpers.SqrtPI / ZD;
         }
 
-        static ScalarValue Faddeeva_ContinuedFraction(ScalarValue z)
+        static ScalarValue ContinuedFraction(ScalarValue z)
         {
             var a = 1.0;			// a_1
             var b = z;	            // b_1
@@ -241,7 +285,7 @@ namespace YAMP.Numerics
             throw new YAMPNotConvergedException("Erf");
         }
 
-        static ScalarValue Faddeeva_Taylor(ScalarValue z0, ScalarValue w0, ScalarValue dz)
+        static ScalarValue Taylor(ScalarValue z0, ScalarValue w0, ScalarValue dz)
         {
             // first order Taylor expansion
             var wp_old = w0;
@@ -277,9 +321,9 @@ namespace YAMP.Numerics
 
         #region Weideman Numbers
 
-        static readonly double Faddeeva_Weideman_L = Math.Sqrt(40.0 / Math.Sqrt(2.0));
+        static readonly double WeidemanL = Math.Sqrt(40.0 / Math.Sqrt(2.0));
 
-        static readonly double[] Faddeeva_Weideman_Coefficients = new double[]
+        static readonly double[] WeidemanCoefficients = new double[]
         {
             3.0005271472811341147438, // 0
             2.899624509389705247492,

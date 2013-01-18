@@ -3,8 +3,13 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// Basic class for a GMRES(k) (with restarts) solver.
+    /// </summary>
     public class GMRESkSolver : IterativeSolver
     {
+        #region Members
+
         int i = 0;
         MatrixValue H;
         MatrixValue V;
@@ -12,10 +17,23 @@ namespace YAMP.Numerics
         MatrixValue c;
         MatrixValue s;
 
+        #endregion
+
+        #region ctor
+
+        /// <summary>
+        /// Creates the class for a GMRES(k) solver.
+        /// </summary>
+        /// <param name="A">The matrix A to solve.</param>
         public GMRESkSolver(MatrixValue A) : this(A, false)
         {
         }
 
+        /// <summary>
+        /// Creates the class for a GMRES(k) solver.
+        /// </summary>
+        /// <param name="A">The matrix A to consider as system of linear equations.</param>
+        /// <param name="restart">Should restarts be executed?</param>
         public GMRESkSolver(MatrixValue A, bool restart) : base(A)
         {
             if(restart)
@@ -24,8 +42,24 @@ namespace YAMP.Numerics
                 Restart = MaxIterations;
         }
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets if restarts should be performed.
+        /// </summary>
         public int Restart { get; set; }
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Solves the system of linear equations.
+        /// </summary>
+        /// <param name="b">The vector b in A * x = b.</param>
+        /// <returns>The solution vector x.</returns>
         public override MatrixValue Solve(MatrixValue b)
         {
             var k = Restart;
@@ -127,5 +161,7 @@ namespace YAMP.Numerics
             gamma[j + 1] = -(s[j] * gamma[j]);
             gamma[j] = c[j].Conjugate() * gamma[j];
         }
+
+        #endregion
     }
 }

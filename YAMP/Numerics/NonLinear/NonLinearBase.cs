@@ -3,18 +3,32 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// Abstract base class for all non-linear algorithms to determine the closest root.
+    /// </summary>
     public abstract class NonLinearBase
     {
-        /// <summary>
-        /// Equation solution
-        /// </summary>
-        public double[,] Result { get; protected set; }
+        #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="f">The function to consider.</param>
+        /// <param name="d">The spacing to use.</param>
         public NonLinearBase(Func<double, double> f, double d)
         {
             this.f = f;
             this.d = d;
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the equation's solution.
+        /// </summary>
+        public double[,] Result { get; protected set; }
 
         /// <summary>
         /// Gets the function to use.
@@ -34,13 +48,19 @@ namespace YAMP.Numerics
             private set;
         }
 
+        #endregion
+
+        #region Helpers
+
         /// <summary>
         /// Computes the derivative
         /// </summary>
         /// <param name="x">Point</param>
-        public double fprime(double x)
+        protected double fprime(double x)
         {
             return (f(x + d) - f(x)) / d;
         }
+
+        #endregion
     }
 }

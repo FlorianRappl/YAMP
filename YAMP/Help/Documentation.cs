@@ -58,6 +58,11 @@ namespace YAMP.Help
 
 		#region Construction
 
+        /// <summary>
+        /// Creates a new documention instance from the given context.
+        /// </summary>
+        /// <param name="context">The context to use.</param>
+        /// <returns>The documention.</returns>
 		public static Documentation Create(ParseContext context)
 		{
 			var docu = new Documentation(context);
@@ -65,6 +70,11 @@ namespace YAMP.Help
 			return docu;
 		}
 
+        /// <summary>
+        /// Gives an overview over the included functions and constants within the context.
+        /// </summary>
+        /// <param name="context">The context to investigate.</param>
+        /// <returns>The list with help topics.</returns>
 		public static List<HelpTopic> Overview(ParseContext context)
 		{
 			var topics = new List<HelpTopic>();
@@ -88,6 +98,9 @@ namespace YAMP.Help
 
 		#region Members
 
+        /// <summary>
+        /// Gets the access to an enumerable of all the HelpSections within the documention.
+        /// </summary>
 		public IEnumerable<HelpSection> Sections
 		{
 			get
@@ -98,6 +111,9 @@ namespace YAMP.Help
 			}
 		}
 
+        /// <summary>
+        /// Gets the access to an enumerable of all HelpTopics within the documention.
+        /// </summary>
 		public IEnumerable<HelpTopic> Topics
 		{
 			get
@@ -106,6 +122,11 @@ namespace YAMP.Help
 			}
 		}
 
+        /// <summary>
+        /// Looks if a certain topic is contained within the documention.
+        /// </summary>
+        /// <param name="topic">The topic to look for.</param>
+        /// <returns>The result of the search.</returns>
 		public bool ContainsTopic(string topic)
 		{
 			foreach (var tp in topics)
@@ -115,6 +136,11 @@ namespace YAMP.Help
 			return false;
 		}
 
+        /// <summary>
+        /// Looks if a certain entry is contained within the documention.
+        /// </summary>
+        /// <param name="entry">The entry's name to look for.</param>
+        /// <returns>The result of the search.</returns>
 		public bool ContainsEntry(string entry)
 		{
 			foreach (var tp in topics)
@@ -125,6 +151,11 @@ namespace YAMP.Help
 			return false;
 		}
 
+        /// <summary>
+        /// Finds the closest entry to the given entry.
+        /// </summary>
+        /// <param name="entry">The (probably) mispelled entry's name.</param>
+        /// <returns>The name of a correct entry that seems to be fairly close.</returns>
 		public string ClosestEntry(string entry)
 		{
 			var term = entry.ToLower();
@@ -156,6 +187,11 @@ namespace YAMP.Help
 			}
 		}
 
+        /// <summary>
+        /// Gets the HelpSection that belongs to the name of the given entry.
+        /// </summary>
+        /// <param name="entry">The name of the entry to retrieve.</param>
+        /// <returns>The HelpSection instance.</returns>
 		public HelpSection Get(string entry)
 		{
 			var topic = topics.SelectMany(m => m.Where(n => n.Name.Equals(entry, StringComparison.CurrentCultureIgnoreCase)).Select(n => n)).FirstOrDefault();

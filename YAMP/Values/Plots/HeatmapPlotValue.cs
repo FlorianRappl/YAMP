@@ -37,15 +37,24 @@ namespace YAMP
     {
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public HeatmapPlotValue()
         {
             ColorPalette = ColorPalettes.Hot;
+            XLabel = "Column";
+            YLabel = "Row";
         }
 
         #endregion
 
         #region Methods
 
+        /// <summary>
+        /// Inspects the given matrix and sets the series to this matrix M.
+        /// </summary>
+        /// <param name="M">The matrix to investigate.</param>
         public override void AddPoints(MatrixValue M)
         {
             var p = new Points<HeatPoint>();
@@ -116,12 +125,24 @@ namespace YAMP
 
         #region Nested types
 
+        /// <summary>
+        /// Represents one point in the heatmap.
+        /// </summary>
         public struct HeatPoint
         {
+            /// <summary>
+            /// Gets the column index.
+            /// </summary>
             public int Column;
 
+            /// <summary>
+            /// Gets the row index.
+            /// </summary>
             public int Row;
 
+            /// <summary>
+            /// Gets the magnitude (0..1) of this entry.
+            /// </summary>
             public double Magnitude;
         }
 
@@ -129,6 +150,10 @@ namespace YAMP
 
         #region Serialization
 
+        /// <summary>
+        /// Converts the given instance to an array of bytes.
+        /// </summary>
+        /// <returns>The binary representation of this instance.</returns>
         public override byte[] Serialize()
         {
             using (var s = Serializer.Create())
@@ -157,6 +182,11 @@ namespace YAMP
             }
         }
 
+        /// <summary>
+        /// Converts a set of bytes to a new instance.
+        /// </summary>
+        /// <param name="content">The binary representation.</param>
+        /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
             using (var ds = Deserializer.Create(content))
@@ -199,6 +229,11 @@ namespace YAMP
 
         #region Index
 
+        /// <summary>
+        /// Gets a series of HeatPoints (here we have only 1 series).
+        /// </summary>
+        /// <param name="index">The index (only 0 is valid).</param>
+        /// <returns>The series of points.</returns>
         public Points<HeatPoint> this[int index]
         {
             get
@@ -207,6 +242,12 @@ namespace YAMP
             }
         }
 
+        /// <summary>
+        /// Gets one particular point of a heatmap series (we only have 1 heatmap series!).
+        /// </summary>
+        /// <param name="index">The index of the heatmap series (only 0 is valid).</param>
+        /// <param name="point">The point to get (0.. N - 1, where N is the number of points).</param>
+        /// <returns>The specified heatmap value.</returns>
         public HeatPoint this[int index, int point]
         {
             get

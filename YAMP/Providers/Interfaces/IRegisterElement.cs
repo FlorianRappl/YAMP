@@ -35,6 +35,9 @@ namespace YAMP
     /// </summary>
 	interface IRegisterElement
 	{
+        /// <summary>
+        /// Register an element somewhere automatically.
+        /// </summary>
 		void RegisterElement();
 	}
 }

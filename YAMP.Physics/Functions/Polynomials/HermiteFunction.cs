@@ -60,6 +60,8 @@ namespace YAMP.Physics
             return M;
         }
 
+        #region ALgorithm
+
         /// <summary>
         /// Returns the Hermite polynomials of order m.
         /// </summary>
@@ -82,8 +84,9 @@ namespace YAMP.Physics
                 two_z_to_the_n_minus_2_times_m *= two_z_squared;
             }
 
-            p *= Helpers.Factorial(m);
-            return p; 
+            return p * Helpers.Factorial(m);
         }
+
+        #endregion
     }
 }

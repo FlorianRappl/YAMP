@@ -35,6 +35,8 @@ namespace YAMP
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public class DescriptionAttribute : Attribute
     {
+        #region ctor
+
         /// <summary>
         /// Creates a new attribute for storing descriptions.
         /// </summary>
@@ -44,9 +46,15 @@ namespace YAMP
             Description = description;
         }
 
+        #endregion
+
+        #region Properties
+
         /// <summary>
         /// Gets the description.
         /// </summary>
         public string Description { get; private set; }
+
+        #endregion
     }
 }

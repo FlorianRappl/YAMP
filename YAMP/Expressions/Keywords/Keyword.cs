@@ -37,6 +37,10 @@ namespace YAMP
     {
         #region ctor
 
+        /// <summary>
+        /// Creates a new keyword instance.
+        /// </summary>
+        /// <param name="keyword">The keyword to use (token).</param>
         public Keyword(string keyword)
 		{
             Token = keyword;
@@ -56,6 +60,9 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Registers the element at the factory.
+        /// </summary>
 		public override void RegisterElement()
 		{
 			Elements.Instance.AddKeyword(Token, this);

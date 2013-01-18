@@ -69,19 +69,19 @@ namespace YAMP.Numerics
 		#region construction, destruction
 		/// <summary>
         /// Initializes a new instance of the <see cref="LaplaceDistribution"/> class, using a 
-        ///   <see cref="StandardGenerator"/> as underlying random number generator.
+        /// StandardGenerator as underlying random number generator.
 		/// </summary>
         public LaplaceDistribution()
 		{
 		}
 
 		/// <summary>
-        /// Initializes a new instance of the <see cref="LaplaceDistribution"/> class, using the specified 
-        ///   <see cref="Generator"/> as underlying random number generator.
+        /// Initializes a new instance of the LaplaceDistribution class, using the specified 
+        /// Generator as underlying random number generator.
         /// </summary>
         /// <param name="generator">A <see cref="Generator"/> object.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is NULL (<see langword="Nothing"/> in Visual Basic).
+        /// Generator is NULL (Nothing in Visual Basic).
         /// </exception>
         public LaplaceDistribution(Generator generator)
             : base(generator)

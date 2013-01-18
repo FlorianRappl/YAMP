@@ -33,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
+    <DocumentationFile>bin\Release\YAMP.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Benchmarks|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -101,8 +102,11 @@
     <Compile Include="Exceptions\Runtime\YAMPWrongTypeSuppliedException.cs" />
     <Compile Include="Expressions\Keywords\BodyKeyword.cs" />
     <Compile Include="Expressions\Keywords\ReturnKeyword.cs" />
+    <Compile Include="Functions\SpecialFunctions\Faddeeva.cs" />
     <Compile Include="Functions\SpecialFunctions\ZetaFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\CastFunction.cs" />
     <Compile Include="Functions\SystemFunctions\ImageDataToRGBFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\PromptFunction.cs" />
     <Compile Include="Functions\SystemFunctions\RGBToImageDataFunction.cs" />
     <Compile Include="Functions\Visualization\HeatmapFunction.cs" />
     <Compile Include="Functions\Visualization\SubplotFunction.cs" />
@@ -121,6 +125,10 @@
     <Compile Include="Numerics\Spectroscopy\Transformlet.cs" />
     <Compile Include="Operators\UnaryOperators\DecrementOperator.cs" />
     <Compile Include="Operators\UnaryOperators\IncrementOperator.cs" />
+    <Compile Include="Providers\Enumerations\NotificationType.cs" />
+    <Compile Include="Providers\Enumerations\PopularKinds.cs" />
+    <Compile Include="Providers\EventArgs\NotificationEventArgs.cs" />
+    <Compile Include="Providers\EventArgs\UserInputEventArgs.cs" />
     <Compile Include="Values\Plots\HeatmapPlotValue.cs" />
     <Compile Include="Values\Plots\XYPlotValue.cs" />
     <Compile Include="Numerics\Others\Zeta.cs" />
@@ -167,8 +175,8 @@
     <Compile Include="Functions\ArgumentFunctions\NcrFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\RandeFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\DiagFunction.cs" />
-    <Compile Include="Functions\ArgumentFunctions\SimpsFunction.cs" />
-    <Compile Include="Functions\ArgumentFunctions\TrapzFunction.cs" />
+    <Compile Include="Functions\Numerics\SimpsFunction.cs" />
+    <Compile Include="Functions\Numerics\TrapzFunction.cs" />
     <Compile Include="Functions\BaseFunction.cs" />
     <Compile Include="Functions\ContainerFunction.cs" />
     <Compile Include="Functions\Fractals\MandelbrotFunction.cs" />
@@ -222,7 +230,6 @@
     <Compile Include="Functions\SystemFunctions\TimeFunction.cs" />
     <Compile Include="Functions\SystemFunctions\TypeFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\CGFunction.cs" />
-    <Compile Include="Functions\LinearAlgebra\EigenFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\EigValFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\EigVecFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\GMRESFunction.cs" />
@@ -234,7 +241,6 @@
     <Compile Include="Functions\SystemFunction.cs" />
     <Compile Include="Functions\SystemFunctions\ClearFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\EigFunction.cs" />
-    <Compile Include="Functions\LinearAlgebra\EvFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\TraceFunction.cs" />
     <Compile Include="Functions\LogicFunctions\IsIntFunction.cs" />
     <Compile Include="Functions\LogicFunctions\IsPrimeFunction.cs" />
@@ -473,6 +479,7 @@
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
 xcopy /y "$(TargetPath)" "$(SolutionDir)\Nuget\lib\net35\"
+xcopy /y "$(TargetDir)YAMP.XML" "$(SolutionDir)\Nuget\lib\net35\"
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>

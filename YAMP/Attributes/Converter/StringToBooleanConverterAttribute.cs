@@ -33,7 +33,10 @@ namespace YAMP.Converter
     /// String to boolean (on, off) converter.
     /// </summary>
 	public class StringToBooleanConverterAttribute : ValueConverterAttribute
-	{
+    {
+        /// <summary>
+        /// Creates a new String To Bool Converter.
+        /// </summary>
 		public StringToBooleanConverterAttribute()
 			: base(typeof(StringValue), v => {
 				var str = (v as StringValue).Value.ToLower();

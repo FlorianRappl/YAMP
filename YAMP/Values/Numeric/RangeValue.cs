@@ -44,6 +44,12 @@ namespace YAMP
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new range value with the specified steps.
+        /// </summary>
+        /// <param name="start">The starting value.</param>
+        /// <param name="end">The ending value.</param>
+        /// <param name="step">The step value.</param>
         public RangeValue(double start, double end, double step)
 		{
 			Start = start;
@@ -59,11 +65,19 @@ namespace YAMP
                 throw new YAMPRangeInvalidException("too many entries have been found");
 		}
 		
+        /// <summary>
+        /// Creates a new range value from some point to the end of the matrix.
+        /// </summary>
+        /// <param name="start">The starting value.</param>
+        /// <param name="step">The step value.</param>
 		public RangeValue (double start, double step) : this(start, start, step)
 		{
 			All = true;
 		}
 
+        /// <summary>
+        /// Standard operator - Start at 1, Step 1 and till the end of the matrix.
+        /// </summary>
 		public RangeValue () : this(1, 1)
 		{
         }
@@ -97,6 +111,10 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Clones the given range.
+        /// </summary>
+        /// <returns>A new matrix value (range).</returns>
         public override MatrixValue Clone()
         {
             var m = new MatrixValue(DimensionY, DimensionX);
@@ -113,6 +131,12 @@ namespace YAMP
             return new ScalarValue(Start + (i - 1) * Step);
         }
 
+        /// <summary>
+        /// Gets or sets an entry in the range.
+        /// </summary>
+        /// <param name="j">The 1-based row-index.</param>
+        /// <param name="i">The 1-based column-index.</param>
+        /// <returns>The value behind the index.</returns>
         public override ScalarValue this[int j, int i]
         {
             get
@@ -142,6 +166,10 @@ namespace YAMP
 
         #region Serialization
 
+        /// <summary>
+        /// Tries to serialize the contents into bytes.
+        /// </summary>
+        /// <returns>The raw data.</returns>
         public override byte[] Serialize()
 		{
 			var content = base.Serialize();
@@ -166,6 +194,11 @@ namespace YAMP
 			return content;
 		}
 
+        /// <summary>
+        /// Tries to create a new instance from the given bytes.
+        /// </summary>
+        /// <param name="content">The binary content.</param>
+        /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
 		{
 			base.Deserialize(content);

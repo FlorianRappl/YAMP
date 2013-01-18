@@ -35,6 +35,11 @@ namespace YAMP
     /// </summary>
     public abstract class StandardFunction : BaseFunction
     {
+        /// <summary>
+        /// Performs the function - maps each entry of a matrix to a matrix.
+        /// </summary>
+        /// <param name="argument">Either a Scalar or a Matrix.</param>
+        /// <returns>The scalar or matrix.</returns>
         public override Value Perform(Value argument)
         {
             if (argument is ScalarValue)
@@ -56,21 +61,40 @@ namespace YAMP
             throw new YAMPOperationInvalidException(Name, argument);
         }
 
+        /// <summary>
+        /// Gets a single value.
+        /// </summary>
+        /// <param name="value">The argument (single value).</param>
+        /// <returns>The result (single value).</returns>
         protected virtual ScalarValue GetValue(ScalarValue value)
         {
             return value;
 		}
 
+        #region Documentation Helpers
+
+        /// <summary>
+        /// Documentation helper - overload ONLY to do some documention.
+        /// </summary>
+        /// <param name="x">Scalar</param>
+        /// <returns>Scalar</returns>
 		[Description("Computes the value and returns the result.")]
 		public virtual ScalarValue Function(ScalarValue x)
 		{
 			return x;
 		}
 
+        /// <summary>
+        /// Documentation helper - overload ONLY to do some documention.
+        /// </summary>
+        /// <param name="x">Matrix</param>
+        /// <returns>Matrix</returns>
 		[Description("Computes the value of each entry of the given matrix and returns a matrix with the same dimension.")]
 		public virtual MatrixValue Function(MatrixValue x)
 		{
 			return x;
-		}
+        }
+
+        #endregion
     }
 }

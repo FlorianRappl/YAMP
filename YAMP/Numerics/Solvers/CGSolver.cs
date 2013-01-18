@@ -3,12 +3,24 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// Basic class for a Conjugant Gradient solver.
+    /// </summary>
     public class CGSolver : IterativeSolver
     {
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="A">The matrix A for which to solve.</param>
         public CGSolver(MatrixValue A) : base(A)
         {
         }
 
+        /// <summary>
+        /// Solves a system of linear equation using the given matrix A.
+        /// </summary>
+        /// <param name="b">The source vector b, i.e. A * x = b.</param>
+        /// <returns>The solution vector x.</returns>
         public override MatrixValue Solve(MatrixValue b)
         {
             MatrixValue x = X0;
@@ -21,15 +33,15 @@ namespace YAMP.Numerics
             var r = b - A * x;
             var p = r.Clone();
             var l = Math.Max(A.Length, MaxIterations);
-            var rsold = Dot(r, r);
+            var rsold = r.ComplexDot(r);
 
             for(var i = 1; i < l; i++)
             {
                 var Ap = A * p;
-                var alpha = rsold / Dot(p, Ap);
+                var alpha = rsold / p.ComplexDot(Ap);
                 x = x + alpha * p;
                 r = r - alpha * Ap;
-                var rsnew = Dot(r, r);
+                var rsnew = r.ComplexDot(r);
 
                 if (rsnew.Abs() < Tolerance)
                     break;
@@ -39,11 +51,6 @@ namespace YAMP.Numerics
             }
 
             return x;
-        }
-
-        private ScalarValue Dot(MatrixValue l, MatrixValue r)
-        {
-            return l.Adjungate().Dot(r);
         }
     }
 }

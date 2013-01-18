@@ -80,8 +80,8 @@ namespace YAMP.Numerics
 
         #region construction
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContinuousUniformDistribution"/> class, using a 
-        ///   <see cref="StandardGenerator"/> as underlying random number generator. 
+        /// Initializes a new instance of the ContinuousUniformDistribution class, using a 
+        /// StandardGenerator as underlying random number generator. 
         /// </summary>
         public ContinuousUniformDistribution()
 		{
@@ -91,7 +91,7 @@ namespace YAMP.Numerics
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContinuousUniformDistribution"/> class, using the specified 
+        /// Initializes a new instance of the ContinuousUniformDistribution class, using the specified 
         ///   <see cref="Generator"/> as underlying random number generator.
         /// </summary>
         /// <param name="generator">A <see cref="Generator"/> object.</param>

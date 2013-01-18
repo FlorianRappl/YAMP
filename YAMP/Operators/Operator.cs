@@ -45,14 +45,29 @@ namespace YAMP
 
 		#region ctor
 
+        /// <summary>
+        /// Creates a new operator given the string for the operator.
+        /// </summary>
+        /// <param name="op">The operator string like +.</param>
 		public Operator (string op) : this(op, 0, true)
 		{
 		}
 
+        /// <summary>
+        /// Creates a new operator given the string and level for the operator.
+        /// </summary>
+        /// <param name="op">The operator string like +.</param>
+        /// <param name="level">The operator level like 100.</param>
 		public Operator (string op, int level) : this(op, level, true)
 		{
 		}
 		
+        /// <summary>
+        /// Creates a new operator given the string and level for the operator.
+        /// </summary>
+        /// <param name="op">The operator string like +.</param>
+        /// <param name="level">The operator level like 100.</param>
+        /// <param name="expect">Does the operator expect another expression? Unary operators want this to be false.</param>
 		public Operator (string op, int level, bool expect)
 		{
 			_op = op;
@@ -112,10 +127,25 @@ namespace YAMP
 
 		#region Methods
 
+        /// <summary>
+        /// Begins the evaluation of given expressions.
+        /// </summary>
+        /// <param name="expressions">The expressions to evaluate.</param>
+        /// <param name="symbols">External symbols to consider.</param>
+        /// <returns>The result of the evaluation.</returns>
 		public abstract Value Evaluate(Expression[] expressions, Dictionary<string, Value> symbols);
 
+        /// <summary>
+        /// Creates a new instance of the current operator.
+        /// </summary>
+        /// <returns>The new instance.</returns>
         public abstract Operator Create();
 
+        /// <summary>
+        /// Creates a new instance of the current operator.
+        /// </summary>
+        /// <param name="engine">The engine that is used for parsing the query.</param>
+        /// <returns>The new instance.</returns>
         public virtual Operator Create(ParseEngine engine)
         {
             var op = Create();
@@ -126,6 +156,9 @@ namespace YAMP
             return op;
         }
 		
+        /// <summary>
+        /// Registers the operator at its factory.
+        /// </summary>
 		public virtual void RegisterElement()
 		{
 			Elements.Instance.AddOperator(_op, this);
@@ -135,11 +168,19 @@ namespace YAMP
 
         #region String Representations
 
+        /// <summary>
+        /// Returns the string representation of the operator.
+        /// </summary>
+        /// <returns>A string.</returns>
         public override string ToString()
         {
             return string.Format("({0}, {1}) {2}", StartLine, StartColumn, GetType().Name.RemoveOperatorConvention());
 		}
 
+        /// <summary>
+        /// The code representation of the operator, which is usually just the operator itself.
+        /// </summary>
+        /// <returns>A valid part of a YAMP query.</returns>
         public override string ToCode()
         {
             return _op;

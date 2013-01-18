@@ -51,22 +51,42 @@ namespace YAMP
 
         #region ctors
 
+        /// <summary>
+        /// Creates a new empty scalar value.
+        /// </summary>
         public ScalarValue () : this(0.0, 0.0)
 		{
 		}
 
+        /// <summary>
+        /// Creates a new scalar value from a boolean, i.e. 1.0 or 0.0.
+        /// </summary>
+        /// <param name="boolean">True for 1.0, False for 0.0.</param>
 		public ScalarValue(bool boolean) : this(boolean ? 1.0 : 0.0, 0.0)
 		{
 		}
 		
+        /// <summary>
+        /// Creates a new scalar value which is real.
+        /// </summary>
+        /// <param name="real">The real value.</param>
 		public ScalarValue(double real) : this(real, 0.0)
 		{
 		}
 		
+        /// <summary>
+        /// Creates a new scalar value from the given one.
+        /// </summary>
+        /// <param name="value">Copies the contents of the given value.</param>
 		public ScalarValue(ScalarValue value) : this(value._real, value._imag)
 		{
 		}
 		
+        /// <summary>
+        /// Creates a new scalar value with the given complex parameters.
+        /// </summary>
+        /// <param name="real">The real part of the complex scalar.</param>
+        /// <param name="imag">The imaginary part of the complex scalar.</param>
 		public ScalarValue(double real, double imag)
 		{
 			_real = real;
@@ -240,6 +260,10 @@ namespace YAMP
 
         static readonly ScalarValue _I = new ScalarValue(0.0, 1.0);
 
+        /// <summary>
+        /// Gets the imaginary unit, which is just i.
+        /// Real: 0, Imaginary: 1
+        /// </summary>
         public static ScalarValue I
         {
             get { return _I; }
@@ -417,6 +441,10 @@ namespace YAMP
             return new ScalarValue(re, im);
         }
 
+        /// <summary>
+        /// Computes the factorial of the scalar.
+        /// </summary>
+        /// <returns>The factorial of the scalar x!+iy!.</returns>
         public ScalarValue Factorial()
         {
             var re = Factorial(_real);
@@ -434,6 +462,10 @@ namespace YAMP
 
         #region Serialization
 
+        /// <summary>
+        /// Transforms the instance into a binary representation.
+        /// </summary>
+        /// <returns>The binary representation.</returns>
         public override byte[] Serialize()
 		{
 			var re = BitConverter.GetBytes(_real);
@@ -444,6 +476,11 @@ namespace YAMP
 			return ov;
 		}
 
+        /// <summary>
+        /// Transforms a binary representation into a new instance.
+        /// </summary>
+        /// <param name="content">The binary data.</param>
+        /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
 		{
 			_real = BitConverter.ToDouble(content, 0);
@@ -546,6 +583,11 @@ namespace YAMP
 
         #region Comparison
 
+        /// <summary>
+        /// Is the given object equal to this.
+        /// </summary>
+        /// <param name="obj">The compare object.</param>
+        /// <returns>A boolean.</returns>
         public override bool Equals(object obj)
 		{
 			if(obj is ScalarValue)
@@ -560,6 +602,10 @@ namespace YAMP
 			return false;
 		}
 		
+        /// <summary>
+        /// Computes the hashcode of the value inside.
+        /// </summary>
+        /// <returns>The hash code.</returns>
 		public override int GetHashCode()
 		{
 			return (_real + _imag).GetHashCode();
@@ -592,6 +638,11 @@ namespace YAMP
             return string.Format("{0}{2}{1}", re, im, ImaginaryValue < 0.0 ? string.Empty : "+");
         }
 
+        /// <summary>
+        /// Uses the standard string representation.
+        /// </summary>
+        /// <param name="context">The context to use.</param>
+        /// <returns>The string representation.</returns>
         public override string ToString(ParseContext context)
         {
             return ToString(context, 0);
@@ -601,6 +652,12 @@ namespace YAMP
 
         #region Operators
 
+        /// <summary>
+        /// l + r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator +(ScalarValue l, ScalarValue r)
         {
             var re = l._real + r._real;
@@ -608,16 +665,34 @@ namespace YAMP
             return new ScalarValue(re, im);
         }
 
+        /// <summary>
+        /// a + b.
+        /// </summary>
+        /// <param name="a">Left operand</param>
+        /// <param name="b">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator +(ScalarValue a, double b)
         {
             return new ScalarValue(a._real + b, a._imag);
         }
 
+        /// <summary>
+        /// b + a.
+        /// </summary>
+        /// <param name="b">Left operand</param>
+        /// <param name="a">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator +(double b, ScalarValue a)
         {
             return a + b;
         }
 
+        /// <summary>
+        /// l - r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator -(ScalarValue l, ScalarValue r)
         {
             var re = l._real - r._real;
@@ -625,16 +700,34 @@ namespace YAMP
             return new ScalarValue(re, im);
         }
 
+        /// <summary>
+        /// a - b.
+        /// </summary>
+        /// <param name="a">Left operand</param>
+        /// <param name="b">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator -(ScalarValue a, double b)
         {
             return new ScalarValue(a._real - b, a._imag);
         }
 
+        /// <summary>
+        /// b - a.
+        /// </summary>
+        /// <param name="b">Left operand</param>
+        /// <param name="a">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator -(double b, ScalarValue a)
         {
             return new ScalarValue(b - a._real, a._imag);
         }
 
+        /// <summary>
+        /// l * r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator *(ScalarValue l, ScalarValue r)
         {
             if (l.IsZero)
@@ -649,11 +742,23 @@ namespace YAMP
             return new ScalarValue(re, im);
         }
 
+        /// <summary>
+        /// b * a.
+        /// </summary>
+        /// <param name="b">Left operand</param>
+        /// <param name="a">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator *(double b, ScalarValue a)
         {
             return a * b;
         }
 
+        /// <summary>
+        /// l lighter than r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static bool operator <(ScalarValue l, ScalarValue r)
 		{
 			if(l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
@@ -667,6 +772,12 @@ namespace YAMP
 			return false;
 		}
 
+        /// <summary>
+        /// l greater than r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static bool operator >(ScalarValue l, ScalarValue r)
 		{
 			if(l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
@@ -680,6 +791,12 @@ namespace YAMP
 			return false;
         }
 
+        /// <summary>
+        /// l ligher or equal than r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static bool operator <=(ScalarValue l, ScalarValue r)
         {
             if (l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
@@ -693,6 +810,12 @@ namespace YAMP
             return false;
         }
 
+        /// <summary>
+        /// l greater or equal than r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static bool operator >=(ScalarValue l, ScalarValue r)
         {
             if (l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
@@ -706,6 +829,12 @@ namespace YAMP
             return false;
         }
 
+        /// <summary>
+        /// l == r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static bool operator ==(ScalarValue l, ScalarValue r)
         {
             if (ReferenceEquals(l, r))
@@ -723,6 +852,12 @@ namespace YAMP
             return true;
         }
 
+        /// <summary>
+        /// l == r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static bool operator ==(ScalarValue l, double r)
         {
             if(l.ImaginaryValue != 0.0)
@@ -733,22 +868,46 @@ namespace YAMP
 
             return false;
         }
-		
+
+        /// <summary>
+        /// l != r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static bool operator !=(ScalarValue l, ScalarValue r)
         {
             return !(l == r);
         }
 
+        /// <summary>
+        /// l != r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static bool operator !=(ScalarValue l, double r)
         {
             return !(l == r);
         }
 
+        /// <summary>
+        /// a * b.
+        /// </summary>
+        /// <param name="a">Left operand</param>
+        /// <param name="b">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator *(ScalarValue a, double b)
         {
             return new ScalarValue(a._real * b, a._imag * b);
         }
 
+        /// <summary>
+        /// l / r.
+        /// </summary>
+        /// <param name="l">Left operand</param>
+        /// <param name="r">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator /(ScalarValue l, ScalarValue r)
         {
             if (r.IsZero)
@@ -766,16 +925,33 @@ namespace YAMP
             return new ScalarValue(re, im);
         }
 
+        /// <summary>
+        /// b / a.
+        /// </summary>
+        /// <param name="b">Left operand</param>
+        /// <param name="a">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator /(double b, ScalarValue a)
         {
             return new ScalarValue(b, 0.0) / a;
         }
 
+        /// <summary>
+        /// a / b.
+        /// </summary>
+        /// <param name="a">Left operand</param>
+        /// <param name="b">Right operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator /(ScalarValue a, double b)
         {
             return new ScalarValue(a._real / b, a._imag / b);
         }
 
+        /// <summary>
+        /// -a.
+        /// </summary>
+        /// <param name="a">Unary operand</param>
+        /// <returns>The result.</returns>
         public static ScalarValue operator -(ScalarValue a)
         {
             return new ScalarValue(-a._real, -a._imag);
@@ -785,7 +961,10 @@ namespace YAMP
 
         #region Register Operators
 
-        public override void RegisterElement()
+        /// <summary>
+        /// Registers all operators that are associated with the scalar.
+        /// </summary>
+        protected override void RegisterOperators()
         {
             RegisterPlus(typeof(ScalarValue), typeof(ScalarValue), Add);
             RegisterMinus(typeof(ScalarValue), typeof(ScalarValue), Subtract);
@@ -795,6 +974,12 @@ namespace YAMP
             RegisterModulo(typeof(ScalarValue), typeof(ScalarValue), Mod);
         }
 
+        /// <summary>
+        /// Scalar + Scalar
+        /// </summary>
+        /// <param name="left">Must be a scalar.</param>
+        /// <param name="right">Must be a scalar.</param>
+        /// <returns>The new scalar.</returns>
         public static ScalarValue Add(Value left, Value right)
         {
             var l = (ScalarValue)left;
@@ -802,6 +987,12 @@ namespace YAMP
             return l + r;
         }
 
+        /// <summary>
+        /// Scalar - Scalar
+        /// </summary>
+        /// <param name="left">Must be a scalar.</param>
+        /// <param name="right">Must be a scalar.</param>
+        /// <returns>The new scalar.</returns>
         public static ScalarValue Subtract(Value left, Value right)
         {
             var l = (ScalarValue)left;
@@ -809,6 +1000,12 @@ namespace YAMP
             return l - r;
         }
 
+        /// <summary>
+        /// Scalar * Scalar
+        /// </summary>
+        /// <param name="left">Must be a scalar.</param>
+        /// <param name="right">Must be a scalar.</param>
+        /// <returns>The new scalar.</returns>
         public static ScalarValue Multiply(Value left, Value right)
         {
             var l = (ScalarValue)left;
@@ -816,6 +1013,12 @@ namespace YAMP
             return l * r;
         }
 
+        /// <summary>
+        /// Scalar / Scalar
+        /// </summary>
+        /// <param name="left">Must be a scalar.</param>
+        /// <param name="right">Must be a scalar.</param>
+        /// <returns>The new scalar.</returns>
         public static ScalarValue Divide(Value left, Value right)
         {
             var l = (ScalarValue)left;
@@ -823,6 +1026,12 @@ namespace YAMP
             return l / r;
         }
 
+        /// <summary>
+        /// Scalar ^ Scalar
+        /// </summary>
+        /// <param name="basis">Must be a scalar.</param>
+        /// <param name="exponent">Must be a scalar.</param>
+        /// <returns>The new scalar.</returns>
         public static ScalarValue Pow(Value basis, Value exponent)
         {
             var l = (ScalarValue)basis;
@@ -830,6 +1039,12 @@ namespace YAMP
             return l.Pow(r);
         }
 
+        /// <summary>
+        /// Scalar % Scalar
+        /// </summary>
+        /// <param name="left">Must be a scalar.</param>
+        /// <param name="right">Must be a scalar.</param>
+        /// <returns>The new scalar.</returns>
         public static ScalarValue Mod(Value left, Value right)
         {
             var l = (ScalarValue)left;

@@ -34,6 +34,11 @@ namespace YAMP
     /// </summary>
     public class VariableEventArgs : EventArgs
     {
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The value of the variable.</param>
         public VariableEventArgs(string name, Value value)
         {
             Name = name;

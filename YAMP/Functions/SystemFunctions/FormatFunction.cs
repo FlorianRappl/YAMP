@@ -22,7 +22,8 @@ namespace YAMP
             var stec = new StringToEnumConverter(typeof(DisplayStyle));
             var value = stec.Convert(type);
             Context.DefaultDisplayStyle = (DisplayStyle)value;
-            return new StringValue("Display format changed to " + value + ".");
+            Parser.RaiseNotification("format", new NotificationEventArgs(NotificationType.Information, "Display format changed to " + value + "."));
+            return null;
         }
     }
 }

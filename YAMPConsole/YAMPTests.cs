@@ -121,7 +121,7 @@ namespace YAMPConsole
             Test("abs(3+4i)", 5.0);
             Test("eig([1,2;4,5])(1)(1)", 3.0 - Math.Sqrt(12));
             Test("eigval([1,2;4,5])(1)", 3.0 - Math.Sqrt(12));
-            Test("abs(ev([1,2;4,5])(1:2))", 1.0);
+            Test("abs(eigval([1,2;4,5])(1:2))", 6.48074069840786);
             Test("abs(eigvec([1,2;4,5])(1:2))", 1.0);
             Test("|[2 3 4]|", Math.Sqrt(29.0));
             Test("[2 3 4\n1 2 3](2, 2)", 2.0);
@@ -161,6 +161,8 @@ namespace YAMPConsole
             Test("x = 9; y = 5; if(x > y) { t = x; x = y; y = t; } y - x", 4.0);
             Test("x = [3 + randn(100, 1), 10 + 2 * randn(100, 1)]; sum(sum(Bootstrap(x, 200, avg) - Jackknife(x, 20, avg))) < 0.1", 1.0);
             Test("sum(dim([\n1 2 3 4\n5 6 7 8]))", 6.0);
+            Test("zeta(0.5)", -1.4603545088095868);
+            Test("zeta(0)", -0.49999999999999994);
 
             sw.Stop();
 

@@ -49,6 +49,10 @@ namespace YAMP
             stream = new MemoryStream();
         }
 
+        /// <summary>
+        /// Creates a new instance of the binary serializer helper.
+        /// </summary>
+        /// <returns>The new instance.</returns>
         public static Serializer Create()
         {
             return new Serializer();
@@ -58,6 +62,9 @@ namespace YAMP
 
         #region Properties
 
+        /// <summary>
+        /// The binary value of the serialization.
+        /// </summary>
         public byte[] Value
         {
             get
@@ -70,6 +77,11 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Serializes a string value.
+        /// </summary>
+        /// <param name="value">The value to serialize</param>
+        /// <returns>The current instance.</returns>
         public Serializer Serialize(string value)
         {
             var bytes = Encoding.Unicode.GetBytes(value);
@@ -79,6 +91,11 @@ namespace YAMP
             return this;
         }
 
+        /// <summary>
+        /// Serializes a bool value.
+        /// </summary>
+        /// <param name="value">The value to serialize</param>
+        /// <returns>The current instance.</returns>
         public Serializer Serialize(bool value)
         {
             var bytes = BitConverter.GetBytes(value);
@@ -86,6 +103,11 @@ namespace YAMP
             return this;
         }
 
+        /// <summary>
+        /// Serializes an integer value.
+        /// </summary>
+        /// <param name="value">The value to serialize</param>
+        /// <returns>The current instance.</returns>
         public Serializer Serialize(int value)
         {
             var bytes = BitConverter.GetBytes(value);
@@ -93,6 +115,11 @@ namespace YAMP
             return this;
         }
 
+        /// <summary>
+        /// Serializes a double value.
+        /// </summary>
+        /// <param name="value">The value to serialize</param>
+        /// <returns>The current instance.</returns>
         public Serializer Serialize(double value)
         {
             var bytes = BitConverter.GetBytes(value);
@@ -100,6 +127,11 @@ namespace YAMP
             return this;
         }
 
+        /// <summary>
+        /// Serializes a float value.
+        /// </summary>
+        /// <param name="value">The value to serialize</param>
+        /// <returns>The current instance.</returns>
         public Serializer Serialize(float value)
         {
             var bytes = BitConverter.GetBytes(value);
@@ -107,6 +139,11 @@ namespace YAMP
             return this;
         }
 
+        /// <summary>
+        /// Serializes a long value.
+        /// </summary>
+        /// <param name="value">The value to serialize</param>
+        /// <returns>The current instance.</returns>
         public Serializer Serialize(long value)
         {
             var bytes = BitConverter.GetBytes(value);
@@ -114,6 +151,11 @@ namespace YAMP
             return this;
         }
 
+        /// <summary>
+        /// Serializes a scalar (2 doubles) value.
+        /// </summary>
+        /// <param name="value">The value to serialize</param>
+        /// <returns>The current instance.</returns>
         public Serializer Serialize(ScalarValue value)
         {
             var real = BitConverter.GetBytes(value.Value);
@@ -123,6 +165,11 @@ namespace YAMP
             return this;
         }
 
+        /// <summary>
+        /// Serializes a raw byte array value.
+        /// </summary>
+        /// <param name="content">The value to serialize</param>
+        /// <returns>The current instance.</returns>
         public Serializer Serialize(byte[] content)
         {
             Serialize(content.Length);
@@ -134,6 +181,9 @@ namespace YAMP
 
         #region Cleanup
 
+        /// <summary>
+        /// Cleans up the mess.
+        /// </summary>
         public void Dispose()
         {
             stream.Dispose();

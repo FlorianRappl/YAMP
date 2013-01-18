@@ -34,13 +34,35 @@ namespace YAMP
     /// which is essentially a binary operator.
     /// </summary>
     public abstract class LogicOperator : BinaryOperator
-	{
-		public LogicOperator (string op) : base(op, 4)
+    {
+        #region ctor
+
+        /// <summary>
+        /// Creates a new logic operator (like ==, ~=, ...).
+        /// </summary>
+        /// <param name="op">The operator string.</param>
+        public LogicOperator (string op) : base(op, 4)
 		{
 		}
 
-		public abstract ScalarValue Compare(ScalarValue left, ScalarValue right);
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Method to implement, which compares two scalars.
+        /// </summary>
+        /// <param name="left">The left one.</param>
+        /// <param name="right">The right one.</param>
+        /// <returns>The result of the comparison.</returns>
+        public abstract ScalarValue Compare(ScalarValue left, ScalarValue right);
 		
+        /// <summary>
+        /// Performs the logic operation with two values.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
+        /// <returns>The result of the operation.</returns>
 		public override Value Perform (Value left, Value right)
 		{
 			if(!(left is ScalarValue || left is MatrixValue))
@@ -93,7 +115,9 @@ namespace YAMP
 				
 				return m;
 			}
-		}
-	}
+        }
+
+        #endregion
+    }
 }
 

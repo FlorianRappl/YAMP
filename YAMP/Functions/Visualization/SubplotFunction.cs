@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Subplot divides the current figure into rectangular panes that are numbered rowwise. Each pane contains an axes object. Subsequent plots are output to the current pane.")]
     [Kind(PopularKinds.Plot)]
-    public class SubplotFunction : VisualizationFunction
+    class SubplotFunction : VisualizationFunction
     {
         [Description("Creates a uniform subplot grid with the specified number of rows and columns.")]
         [Example("a = subplot(4, 3)", "Creates a uniform 4x3 plot-grid and saves the grid in the variable a. See the other examples for usage information.")]

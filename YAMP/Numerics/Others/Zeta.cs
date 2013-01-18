@@ -3,11 +3,14 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// Provides access to the useful Riemann-Zeta function.
+    /// </summary>
     public static class Zeta
     {
         #region Constants
 
-        static readonly double[] zeta_xgt1_data = new double[] {
+        static readonly double[] zetaGreater1 = new double[] {
            19.3918515726724119415911269006,
             9.1525329692510756181581271500,
             0.2427897658867379985365270155,
@@ -40,7 +43,7 @@ namespace YAMP.Numerics
             7.8473570134636044722154797225e-17
         };
 
-        static readonly double[] zeta_xlt1_data = new double[] {
+        static readonly double[] zetaLighter1 = new double[] {
            1.48018677156931561235192914649,
            0.25012062539889426471999938167,
            0.00991137502135360774243761467,
@@ -61,6 +64,11 @@ namespace YAMP.Numerics
 
         #region Methods
 
+        /// <summary>
+        /// Computes the complex Riemann Zeta function.
+        /// </summary>
+        /// <param name="s">The complex argument.</param>
+        /// <returns>The (in general complex) value.</returns>
         public static ScalarValue RiemannZeta(ScalarValue s)
         {
             if (s == 1.0)
@@ -72,16 +80,15 @@ namespace YAMP.Numerics
                 //See real zeta function for more information
                 var zeta_one_minus_s = RiemannZeta1msLt0(s);
                 var sin_term = (0.5 * Math.PI * s).Sin() / Math.PI;
+                var sabs = s.Abs();
 
                 if (sin_term == 0.0)
                     return new ScalarValue();
-                else if (s.Re > -170)
+                else if (sabs < 170)
                 {
                     //See below
-                    int n = (int)Math.Floor((-s.Re) / 10.0);
-                    int m = (int)Math.Floor((-s.Im) / 10.0);
-                    var p = Math.Pow(2.0 * Math.PI, s.Re + 10.0 * n) / Helpers.twopi_pow[n];
-                    var q = Math.Pow(2.0 * Math.PI, s.Im + 10.0 * m) / Helpers.twopi_pow[m];
+                    int n = (int)Math.Floor(sabs / 10.0);
+                    var p = new ScalarValue(2.0 * Math.PI).Pow(s + 10.0 * n) / Helpers.TwoPIpow[n];
                     var g = Gamma.LinearGamma(1.0 - s);
                     return p * g * sin_term * zeta_one_minus_s;
                 }
@@ -90,6 +97,11 @@ namespace YAMP.Numerics
             }
         }
 
+        /// <summary>
+        /// Computes the real Riemann Zeta function.
+        /// </summary>
+        /// <param name="s">The real argument</param>
+        /// <returns>The real value.</returns>
         public static double RiemannZeta(double s)
         {
             if (s == 1.0)
@@ -103,9 +115,7 @@ namespace YAMP.Numerics
                 var sin_term = ((s % 2.0) == 0.0) ? 0.0 : Math.Sin(0.5 * Math.PI * (s % 4.0)) / Math.PI;
 
                 if (sin_term == 0.0)
-                {
                     return 0.0;
-                }
                 else if (s > -170)
                 {
                     /* We have to be careful about losing digits
@@ -116,7 +126,7 @@ namespace YAMP.Numerics
                      */
                     int n = (int)Math.Floor((-s) / 10.0);
                     var fs = s + 10.0 * n;
-                    var p = Math.Pow(2.0 * Math.PI, fs) / Helpers.twopi_pow[n];
+                    var p = Math.Pow(2.0 * Math.PI, fs) / Helpers.TwoPIpow[n];
                     var g = Gamma.LinearGamma(1.0 - s);
                     return p * g * sin_term * zeta_one_minus_s;
                 }
@@ -124,6 +134,10 @@ namespace YAMP.Numerics
                     throw new YAMPNumericOverflowException("Zeta");
             }
         }
+
+        #endregion
+
+        #region Algorithms
 
         static ScalarValue RiemannZetaGt0(ScalarValue s)
         {
@@ -213,7 +227,7 @@ namespace YAMP.Numerics
 
         static Helpers.ChebSeries zetaLt1 = new Helpers.ChebSeries
         {
-            Coefficients = zeta_xlt1_data,
+            Coefficients = zetaLighter1,
             Order = 13,
             LowerPoint = -1,
             UpperPoint = 1,
@@ -222,7 +236,7 @@ namespace YAMP.Numerics
 
         static Helpers.ChebSeries zetaGt1 = new Helpers.ChebSeries
         {
-            Coefficients = zeta_xgt1_data,
+            Coefficients = zetaGreater1,
             Order = 29,
             LowerPoint = -1,
             UpperPoint = 1,

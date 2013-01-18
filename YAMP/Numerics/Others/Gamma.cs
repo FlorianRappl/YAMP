@@ -8,8 +8,15 @@ namespace YAMP.Numerics
     /// and logarithmic ones.
     /// </summary>
 	public static class Gamma
-	{
-		public static double LinearGamma(double x)
+    {
+        #region Linear 
+
+        /// <summary>
+        /// Computes the real (linear) gamma function.
+        /// </summary>
+        /// <param name="x">The argument.</param>
+        /// <returns>The evaluated value.</returns>
+        public static double LinearGamma(double x)
 		{
 			if (x <= 0.0)
 			{
@@ -22,6 +29,11 @@ namespace YAMP.Numerics
 			return Math.Exp(LogGamma(x));
 		}
 
+        /// <summary>
+        /// Computes the complex (linear) gamma function.
+        /// </summary>
+        /// <param name="z">The complex argument.</param>
+        /// <returns>The evaluated value.</returns>
 		public static ScalarValue LinearGamma(ScalarValue z)
 		{
 			if (z.Re < 0.5)
@@ -30,7 +42,16 @@ namespace YAMP.Numerics
 			return LogGamma(z).Exp();
 		}
 
-		public static double LogGamma(double x)
+        #endregion
+
+        #region Log
+
+        /// <summary>
+        /// Computes the real (log) gamma function.
+        /// </summary>
+        /// <param name="x">The argument.</param>
+        /// <returns>The evaluated value.</returns>
+        public static double LogGamma(double x)
 		{
             if (x <= 0.0)
                 return double.PositiveInfinity;
@@ -40,6 +61,11 @@ namespace YAMP.Numerics
 			return LanczosLogGamma(x);
 		}
 
+        /// <summary>
+        /// Computes the complex (log) gamma function.
+        /// </summary>
+        /// <param name="z">The complex argument.</param>
+        /// <returns>The evaluated value.</returns>
 		public static ScalarValue LogGamma(ScalarValue z)
 		{
             if (z.Re < 0.0)
@@ -51,7 +77,61 @@ namespace YAMP.Numerics
 			return LanczosLogGamma(z);
 		}
 
-		static double LogGamma_Stirling(double x)
+        #endregion
+
+        #region Beta
+
+        /// <summary>
+        /// Computes the real beta function, Gamma(a) * Gamma(b) / Gamma(a+b).
+        /// </summary>
+        /// <param name="a">The first parameter.</param>
+        /// <param name="b">The second parameter.</param>
+        /// <returns>The evaluated value.</returns>
+        public static double Beta(double a, double b)
+        {
+            return Math.Exp(LogGamma(a) + LogGamma(b) - LogGamma(a + b));
+        }
+
+        /// <summary>
+        /// Computes the complex beta function, Gamma(a) * Gamma(b) / Gamma(a+b).
+        /// </summary>
+        /// <param name="a">The first complex parameter.</param>
+        /// <param name="b">The second complex parameter.</param>
+        /// <returns>The evaluated value.</returns>
+        public static ScalarValue Beta(ScalarValue a, ScalarValue b)
+        {
+            return (LogGamma(a) + LogGamma(b) - LogGamma(a + b)).Exp();
+        }
+
+        #endregion
+
+        #region Psi
+
+        /// <summary>
+        /// Computes the real psi, usually called the digamma function, which is defined as the logarithmic derivative of the gamma function.
+        /// </summary>
+        /// <param name="x">The real argument.</param>
+        /// <returns>The value.</returns>
+        public static double Psi(double x)
+        {
+            if (x <= 0.0)
+            {
+                if (x == Math.Ceiling(x))
+                    return Double.NaN;
+
+                return Psi(1.0 - x) - Math.PI / Math.Tan(Math.PI * x);
+            }
+            else if (x > 16.0)
+                return Psi_Stirling(x);
+
+            return LanczosPsi(x);
+        }
+
+        #endregion
+
+        #region Helpers
+
+        static double LogGamma_Stirling(double x)
 		{
 			var f = (x - 0.5) * Math.Log(x) - x + Math.Log(2.0 * Math.PI) / 2.0;
 			var xsqu = x * x;
@@ -60,7 +140,7 @@ namespace YAMP.Numerics
 			for (int i = 1; i < 10; i++)
 			{
 				var f_old = f;
-                f += Helpers.bernoulli_numbers[i] / (2 * i) / (2 * i - 1) / xp;
+                f += Helpers.BernoulliNumbers[i] / (2 * i) / (2 * i - 1) / xp;
 
 				if (f == f_old)
 					return (f);
@@ -87,7 +167,7 @@ namespace YAMP.Numerics
             for (int i = 1; i < 10; i++)
 			{
 				var f_old = f.Clone();
-                f += Helpers.bernoulli_numbers[i] / (2 * i) / (2 * i - 1) / zp;
+                f += Helpers.BernoulliNumbers[i] / (2 * i) / (2 * i - 1) / zp;
 
 				if (f == f_old)
 					return (f);
@@ -100,62 +180,47 @@ namespace YAMP.Numerics
 
 		static double LanczosLogGamma(double x)
 		{
-            var sum = Helpers.lanczosd[0];
+            var sum = Helpers.LanczosD[0];
 
-            for (int i = 1; i < Helpers.lanczosd.Length; i++)
-                sum += Helpers.lanczosd[i] / (x + i);
+            for (int i = 1; i < Helpers.LanczosD.Length; i++)
+                sum += Helpers.LanczosD[i] / (x + i);
 
 			sum = 2.0 / Math.Sqrt(Math.PI) * sum / x;
 			var xshift = x + 0.5;
-            var t = xshift * Math.Log(xshift + Helpers.lanczosr) - x;
+            var t = xshift * Math.Log(xshift + Helpers.LanczosR) - x;
 
 			return t + Math.Log(sum);
 		}
 
 		static ScalarValue LanczosLogGamma(ScalarValue z)
 		{
-            var sum = new ScalarValue(Helpers.lanczosd[0], 0.0);
+            var sum = new ScalarValue(Helpers.LanczosD[0], 0.0);
 
-            for (int i = 1; i < Helpers.lanczosd.Length; i++)
-                sum += Helpers.lanczosd[i] / (z + i);
+            for (int i = 1; i < Helpers.LanczosD.Length; i++)
+                sum += Helpers.LanczosD[i] / (z + i);
 
 			sum = (2.0 / Math.Sqrt(Math.PI)) * (sum / z);
 			var zshift = z + 0.5;
-            var t = zshift * (zshift + Helpers.lanczosr).Ln() - z;
+            var t = zshift * (zshift + Helpers.LanczosR).Ln() - z;
 
 			return t + sum.Ln();
 		}
 
-		public static double Psi(double x)
-		{
-			if (x <= 0.0)
-			{
-				if (x == Math.Ceiling(x))
-					return Double.NaN;
-
-				return Psi(1.0 - x) - Math.PI / Math.Tan(Math.PI * x);
-			}
-			else if (x > 16.0)
-				return Psi_Stirling(x);
-
-			return LanczosPsi(x);
-		}
-
 		static double LanczosPsi(double x)
 		{
-            var s0 = Helpers.lanczosd[0];
+            var s0 = Helpers.LanczosD[0];
 			var s1 = 0.0;
 
-            for (int i = 1; i < Helpers.lanczosd.Length; i++)
+            for (int i = 1; i < Helpers.LanczosD.Length; i++)
 			{
 				var xi = x + i;
-                var st = Helpers.lanczosd[i] / xi;
+                var st = Helpers.LanczosD[i] / xi;
 				s0 += st;
 				s1 += st / xi;
 			}
 
-			var xx = x + Helpers.lanczosr + 0.5;
-            var t = Math.Log(xx) - Helpers.lanczosr / xx - 1.0 / x;
+			var xx = x + Helpers.LanczosR + 0.5;
+            var t = Math.Log(xx) - Helpers.LanczosR / xx - 1.0 / x;
 
 			return (t - s1 / s0);
 		}
@@ -169,7 +234,7 @@ namespace YAMP.Numerics
 			for (int i = 1; i < 10; i++)
 			{
 				var f_old = f;
-                f -= Helpers.bernoulli_numbers[i] / (2 * i) / xp;
+                f -= Helpers.BernoulliNumbers[i] / (2 * i) / xp;
 
 				if (f == f_old)
 					return (f);
@@ -178,11 +243,8 @@ namespace YAMP.Numerics
 			}
 
             throw new YAMPNotConvergedException("gamma");
-		}
+        }
 
-		public static double Beta(double a, double b)
-		{
-			return Math.Exp(LogGamma(a) + LogGamma(b) - LogGamma(a + b));
-		}
-	}
+        #endregion
+    }
 }

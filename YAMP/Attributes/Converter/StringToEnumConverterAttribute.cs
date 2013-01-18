@@ -37,6 +37,10 @@ namespace YAMP.Converter
     /// </summary>
     public class StringToEnumConverter : ValueConverterAttribute
     {
+        /// <summary>
+        /// Creates a new String to Enumeration (value) converter.
+        /// </summary>
+        /// <param name="enumType">The enumeration which contains the possible values.</param>
         public StringToEnumConverter(Type enumType) : base(typeof(StringValue))
         {
             Converter = w =>

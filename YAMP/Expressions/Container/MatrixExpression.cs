@@ -37,10 +37,21 @@ namespace YAMP
     {
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public MatrixExpression()
 		{
 		}
 
+        /// <summary>
+        /// Creates a new instance with some parameters.
+        /// </summary>
+        /// <param name="line">The line where the matrix expression starts.</param>
+        /// <param name="column">The column in the line where the matrix exp. starts.</param>
+        /// <param name="length">The length of the matrix expression.</param>
+        /// <param name="query">The associated query context.</param>
+        /// <param name="child">The child containing the column and rows.</param>
         public MatrixExpression(int line, int column, int length, QueryContext query, ContainerExpression child)
             : base(child, query, line, column)
 		{
@@ -51,11 +62,21 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Begins interpreting the matrix expression.
+        /// </summary>
+        /// <param name="symbols">External symbols to load.</param>
+        /// <returns>The evaluated matrix value.</returns>
         public override Value Interpret(Dictionary<string, Value> symbols)
         {
             return base.Interpret(symbols) ?? new MatrixValue();
         }
 
+        /// <summary>
+        /// Scans the current parse engine for a matrix expression.
+        /// </summary>
+        /// <param name="engine">The parse engine to use.</param>
+        /// <returns>The found expression or NULL.</returns>
         public override Expression Scan(ParseEngine engine)
         {
             var column = engine.CurrentColumn;
@@ -131,6 +152,10 @@ namespace YAMP
 
         #region String Representations
 
+        /// <summary>
+        /// Transforms the expression into YAMP query code.
+        /// </summary>
+        /// <returns>The string representation of the part of the query.</returns>
         public override string ToCode()
         {
             return "[" + base.ToCode() + "]";

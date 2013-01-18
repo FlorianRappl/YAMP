@@ -26,12 +26,12 @@ namespace YAMP
                 var values = new ScalarValue[M.DimensionY];
 
                 for (var j = 1; j <= M.DimensionY; j++)
-                    values[j] = M[j, i];
+                    values[j - 1] = M[j, i];
 
                 values = fft.Transform(values);
 
                 for (var j = 1; j <= M.DimensionY; j++)
-                    M[j, i] = values[j];
+                    M[j, i] = values[j - 1];
             }
 
             if (transpose)

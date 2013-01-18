@@ -26,37 +26,38 @@
 */
 
 using System;
+using YAMP;
+using YAMP.Numerics;
 
 namespace YAMP.Physics
 {
-    [Description("")]
+    [Description("In integral calculus, elliptic integrals originally arose in connection with the problem of giving the arc length of an ellipse. They were first studied by Giulio Fagnano and Leonhard Euler. The incomplete elliptic integral of the first kind F is evaluated by this function.")]
     [Kind(PopularKinds.Function)]
-    class ConvertFunction : ArgumentFunction
+    class EllipticFFunction : ArgumentFunction
     {
-        [Description("Converts the given value of the source unit to the target unit.")]
-        [Example("convert(1, \"m/s\", \"km/h\")", "Converts 1 m/s to km/h resulting in 3.6 km/h.")]
-        public UnitValue Function(ScalarValue value, StringValue from, StringValue to)
+        [Description("Computes the incomplete elliptic integral of the first kind at the arguments phi and k.")]
+        [Example("ellipticf(pi / 2, 1)", "Evaluates the incomplete elliptic integral at phi = pi / 2 and k = 1.")]
+        public ScalarValue Function(ScalarValue phi, ScalarValue k)
         {
-            return Convert(new UnitValue(value, from), to.Value);
+            return new ScalarValue(EllipticF(phi.Re, k.Re));
         }
 
-        [Description("Convert the given unit value to the target unit.")]
-        [Example("convert(unit(5, \"yd\"), \"ft\")", "Converts the unit value 5 yards to feet. This yields 15 ft.")]
-        public UnitValue Function(UnitValue value, StringValue to)
+        #region Algorithm
+
+        public static double EllipticF(double phi, double k)
         {
-            return Convert(value, to.Value);
+            if (Math.Abs(phi) > Helpers.HalfPI) 
+                throw new YAMPArgumentRangeException("phi", -Helpers.HalfPI, Helpers.HalfPI);
+
+            if ((k < 0) || (k > 1.0))
+                throw new YAMPArgumentRangeException("k", 0, 1);
+
+            double s = Math.Sin(phi);
+            double c = Math.Cos(phi);
+            double z = s * k;
+            return s * CarlsonFFunction.CarlsonF(c * c, 1.0 - z * z, 1.0);
         }
 
-        public static UnitValue Convert(UnitValue fromValue, string targetUnit)
-        {
-            var cu = new CombinedUnit(fromValue.Unit);
-            var conversations = cu.ConvertTo(targetUnit);
-            var re = fromValue.Value;
-
-            foreach (var conversation in conversations)
-                re = conversation(re);
-
-            return new UnitValue(cu.Factor * re, cu.Unit);
-        }
+        #endregion
     }
 }

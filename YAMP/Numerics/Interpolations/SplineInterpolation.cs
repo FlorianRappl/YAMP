@@ -3,11 +3,18 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// Interpolation with the spline method.
+    /// </summary>
     public class SplineInterpolation : Interpolation
     {
         double[] a;
         double[] h;
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="samples">The Nx2 matrix containing the sample data.</param>
         public SplineInterpolation(MatrixValue samples) : base(samples)
         {
             a = new double[Np];
@@ -36,6 +43,11 @@ namespace YAMP.Numerics
             }
         }
 
+        /// <summary>
+        /// Computes a specific interpolated value f(x).
+        /// </summary>
+        /// <param name="x">The value where to interpolate.</param>
+        /// <returns>The computed value y = f(t).</returns>
         public override double ComputeValue(double x)
         {
             MatrixValue samples = Samples;

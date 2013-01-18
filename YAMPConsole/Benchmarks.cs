@@ -145,7 +145,7 @@ namespace YAMPConsole
             Benchmark("CalcEngine", lines, query => calcEngine.Evaluate(query));
 
             //http://ncalc.codeplex.com/
-            Benchmark("NCalc", lines, query => new NCalc.Expression(query, NCalc.EvaluateOptions.NoCache).Evaluate());
+            //Benchmark("NCalc", lines, query => new NCalc.Expression(query, NCalc.EvaluateOptions.NoCache).Evaluate());
         }
 
         #region Helpers

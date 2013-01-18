@@ -3,6 +3,9 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// Represents the Euler algorithm for computing ODEs.
+    /// </summary>
     public class Euler : ODEBase
     {
         /// <summary>
@@ -18,6 +21,9 @@ namespace YAMP.Numerics
         {
         }
 
+        /// <summary>
+        /// Computes the result.
+        /// </summary>
         protected override void Calculate()
         {
             double y = 0;

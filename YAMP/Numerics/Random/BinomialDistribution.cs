@@ -69,8 +69,7 @@ namespace YAMP.Numerics
 
 		#region construction
 		/// <summary>
-        /// Initializes a new instance of the <see cref="BinomialDistribution"/> class, using a 
-        ///   <see cref="StandardGenerator"/> as underlying random number generator.
+        /// Initializes a new instance of the class, using a as underlying random number generator.
 		/// </summary>
         public BinomialDistribution()
 		{

@@ -39,6 +39,9 @@ namespace YAMP
     {
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public XYZPlotValue()
         {
             ZLabel = "z";
@@ -96,6 +99,9 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Initializes the values MinX, MaxX, MinY, MaxY, MinZ and MaxZ.
+        /// </summary>
         protected override void InitializeBoundaries()
         {
             base.InitializeBoundaries();
@@ -103,6 +109,11 @@ namespace YAMP
             MaxZ = double.MinValue;
         }
 
+        /// <summary>
+        /// Sets the z-range (min and max) in one statement.
+        /// </summary>
+        /// <param name="min">The minimum for the z-axis.</param>
+        /// <param name="max">The maximum for the z-axis.</param>
         public void SetZRange(double min, double max)
         {
             MinZ = min;

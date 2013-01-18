@@ -3,12 +3,15 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// Access to the half division method for getting the closest root.
+    /// </summary>
     public class HalfDivisionMethod : NonLinearBase
     {
-        // <summary>
+        /// <summary>
         /// Description constructor
         /// </summary>
-        /// <param name="Fr">Function to be solved delegate</param>
+        /// <param name="f">Function to be solved delegate</param>
         /// <param name="x0">Interval start point value</param>
         /// <param name="x1">Interval end point value</param>
         /// <param name="d">Amount divisions of segment</param>

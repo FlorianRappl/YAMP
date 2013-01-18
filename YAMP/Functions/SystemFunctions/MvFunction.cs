@@ -13,7 +13,8 @@ namespace YAMP
 		public StringValue Function(StringValue source, StringValue target)
 		{
 			File.Move(source.Value, target.Value);
-			return new StringValue(string.Format("Moved {0} to {1}.", source.Value, target.Value));
+            Parser.RaiseNotification("mv", new NotificationEventArgs(NotificationType.Success, string.Format("Moved {0} to {1}.", source.Value, target.Value)));
+            return null;
 		}
 	}
 }

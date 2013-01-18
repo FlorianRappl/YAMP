@@ -34,8 +34,10 @@ namespace YAMP
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class ArgumentsAttribute : Attribute
-	{
-		/// <summary>
+    {
+        #region ctor
+
+        /// <summary>
 		/// Creates a new attribute to declare a container for optional arguments.
 		/// </summary>
 		/// <param name="index">The index that stores optional arguments.</param>
@@ -49,6 +51,10 @@ namespace YAMP
 			Index = index;
 			StepArguments = delta > 0 ? delta : 1;
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets the minimum number of arguments that need to be provided for the specified parameter.
@@ -70,5 +76,7 @@ namespace YAMP
 		/// Gets the index of the parameter that can contain optional arguments.
 		/// </summary>
 		public int Index { get; private set; }
-	}
+
+        #endregion
+    }
 }

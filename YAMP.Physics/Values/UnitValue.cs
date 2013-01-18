@@ -108,7 +108,7 @@ namespace YAMP.Physics
 
         #region Register Operators
 
-        public override void RegisterElement()
+        protected override void RegisterOperators()
         {
             RegisterPlus(typeof(UnitValue), typeof(UnitValue), AddUU);
             RegisterMinus(typeof(UnitValue), typeof(UnitValue), SubUU);

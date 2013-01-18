@@ -34,6 +34,9 @@ namespace YAMP.Converter
     /// </summary>
     public class ScalarToBooleanConverterAttribute : ValueConverterAttribute
     {
+        /// <summary>
+        /// Creates a new Scalar To Bool Converter.
+        /// </summary>
         public ScalarToBooleanConverterAttribute()
             : base(typeof(ScalarValue), v => (v as ScalarValue).IntValue == 1.0)
         {

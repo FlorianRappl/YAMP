@@ -52,6 +52,11 @@ namespace YAMP
             stream.Position = 0;
         }
 
+        /// <summary>
+        /// Creates a new instance of the deserialization helper.
+        /// </summary>
+        /// <param name="content">The content to deserialize.</param>
+        /// <returns>The new instance.</returns>
         public static Deserializer Create(byte[] content)
         {
             return new Deserializer(content);
@@ -61,6 +66,10 @@ namespace YAMP
 
         #region Members
 
+        /// <summary>
+        /// Reads the next bytes as boolean.
+        /// </summary>
+        /// <returns>The boolean.</returns>
         public bool GetBoolean()
         {
             var c = new byte[1];
@@ -68,6 +77,10 @@ namespace YAMP
             return BitConverter.ToBoolean(c, 0);
         }
 
+        /// <summary>
+        /// Reads the next bytes as float.
+        /// </summary>
+        /// <returns>The float.</returns>
         public float GetSingle()
         {
             var c = new byte[4];
@@ -75,6 +88,10 @@ namespace YAMP
             return BitConverter.ToSingle(c, 0);
         }
 
+        /// <summary>
+        /// Reads the next bytes as long.
+        /// </summary>
+        /// <returns>The long.</returns>
         public long GetLong()
         {
             var c = new byte[8];
@@ -82,6 +99,10 @@ namespace YAMP
             return BitConverter.ToInt64(c, 0);
         }
 
+        /// <summary>
+        /// Reads the next bytes as string.
+        /// </summary>
+        /// <returns>The string.</returns>
         public string GetString()
         {
             var buffer = new byte[4];
@@ -92,6 +113,10 @@ namespace YAMP
             return Encoding.Unicode.GetString(buffer, 0, buffer.Length);
         }
 
+        /// <summary>
+        /// Reads the next bytes as scalar (2 doubles).
+        /// </summary>
+        /// <returns>The scalar.</returns>
         public ScalarValue GetScalar()
         {
             var c = new byte[16];
@@ -101,6 +126,10 @@ namespace YAMP
             return new ScalarValue(real, imag);
         }
 
+        /// <summary>
+        /// Reads the next bytes as double.
+        /// </summary>
+        /// <returns>The double.</returns>
         public double GetDouble()
         {
             var c = new byte[8];
@@ -108,6 +137,10 @@ namespace YAMP
             return BitConverter.ToDouble(c, 0);
         }
 
+        /// <summary>
+        /// Reads the next bytes as integer.
+        /// </summary>
+        /// <returns>The integer.</returns>
         public int GetInt()
         {
             var c = new byte[4];
@@ -115,6 +148,10 @@ namespace YAMP
             return BitConverter.ToInt32(c, 0);
         }
 
+        /// <summary>
+        /// Reads the next bytes as raw bytes.
+        /// </summary>
+        /// <returns>The binary array.</returns>
         public byte[] GetBytes()
         {
             var length = GetInt();
@@ -127,6 +164,9 @@ namespace YAMP
 
         #region Cleanup
 
+        /// <summary>
+        /// Cleans up the mess.
+        /// </summary>
         public void Dispose()
         {
             stream.Dispose();

@@ -37,26 +37,48 @@ namespace YAMP
 	{
 		#region ctor
 
+        /// <summary>
+        /// Creates a new expression.
+        /// </summary>
 		public Expression()
 		{
 		}
 
+        /// <summary>
+        /// Creates a new expression.
+        /// </summary>
+        /// <param name="line">The line of beginning of the expression.</param>
+        /// <param name="column">The column in the line of the beginning of the expression.</param>
         public Expression(int line, int column)
         {
             StartLine = line;
             StartColumn = column;
         }
 
+        /// <summary>
+        /// Creates a new expression.
+        /// </summary>
+        /// <param name="query">The context of the expression.</param>
         public Expression(QueryContext query)
         {
             Query = query;
         }
 
+        /// <summary>
+        /// Creates a new expression.
+        /// </summary>
+        /// <param name="query">The context of the expression.</param>
+        /// <param name="line">The line of beginning of the expression.</param>
+        /// <param name="column">The column in the line of the beginning of the expression.</param>
         public Expression(QueryContext query, int line, int column) : this(line, column)
         {
             Query = query;
         }
 
+        /// <summary>
+        /// Creates a new expression.
+        /// </summary>
+        /// <param name="engine">The parse engine used for creating this expresssion.</param>
         public Expression(ParseEngine engine)
             : this(engine.Query, engine.CurrentLine, engine.CurrentColumn)
         {
@@ -87,10 +109,23 @@ namespace YAMP
 
 		#region Methods
 
+        /// <summary>
+        /// Begins interpreting the contents of the expression.
+        /// </summary>
+        /// <param name="symbols">The external symbols to consider.</param>
+        /// <returns>The evaluated value.</returns>
         public abstract Value Interpret(Dictionary<string, Value> symbols);
 
+        /// <summary>
+        /// Scans for an expression given the parse engine.
+        /// </summary>
+        /// <param name="engine">The engine which scans the query.</param>
+        /// <returns>The built expression.</returns>
         public abstract Expression Scan(ParseEngine engine);
 		
+        /// <summary>
+        /// Registers this element at some target.
+        /// </summary>
 		public virtual void RegisterElement()
 		{
 			Elements.Instance.AddExpression(this);
@@ -100,6 +135,10 @@ namespace YAMP
 
         #region String Representations
 
+        /// <summary>
+        /// Returns a string representation of the expression.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString ()
 		{
             return string.Format("({0}, {1}) {2}", StartLine, StartColumn, GetType().Name.RemoveExpressionConvention());
@@ -108,4 +147,3 @@ namespace YAMP
 		#endregion
 	}
 }
-
