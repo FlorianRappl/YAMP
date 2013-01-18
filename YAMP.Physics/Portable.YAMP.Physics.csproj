@@ -34,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="icon.png" />
@@ -46,124 +45,61 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants\CConstant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Constants\GaConstant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Constants\GConstant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Constants\HbarConstant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Constants\HConstant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Constants\KbConstant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Constants\MeConstant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Constants\NaConstant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Constants\QConstant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Constants\RConstant.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Functions\ChebyshevFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Functions\ClebschFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Functions\ConvertFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Functions\HermiteFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Functions\JacobiFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Functions\LaguerreFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Functions\LegendreFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Constants\CConstant.cs" />
+    <Compile Include="Constants\GaConstant.cs" />
+    <Compile Include="Constants\GConstant.cs" />
+    <Compile Include="Constants\HbarConstant.cs" />
+    <Compile Include="Constants\HConstant.cs" />
+    <Compile Include="Constants\KbConstant.cs" />
+    <Compile Include="Constants\MeConstant.cs" />
+    <Compile Include="Constants\NaConstant.cs" />
+    <Compile Include="Constants\QConstant.cs" />
+    <Compile Include="Constants\RConstant.cs" />
+    <Compile Include="Exceptions\YAMPUnitBracketException.cs" />
+    <Compile Include="Exceptions\YAMPUnitConvertException.cs" />
+    <Compile Include="Exceptions\YAMPUnitParseException.cs" />
+    <Compile Include="Functions\ChebyshevFunction.cs" />
+    <Compile Include="Functions\ClebschFunction.cs" />
+    <Compile Include="Functions\ConvertFunction.cs" />
+    <Compile Include="Functions\GegenbauerFunction.cs" />
+    <Compile Include="Functions\HermiteFunction.cs" />
+    <Compile Include="Functions\JacobiFunction.cs" />
+    <Compile Include="Functions\LaguerreFunction.cs" />
+    <Compile Include="Functions\LegendreFunction.cs" />
+    <Compile Include="Functions\Psi0Function.cs" />
     <Compile Include="Functions\SincFunction.cs" />
-    <Compile Include="Functions\UnitFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Functions\YlmFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Helpers.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Units\AUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Units\cdUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Units\CombinedUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Units\ConversationUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Units\CUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Functions\SpenceFunction.cs" />
+    <Compile Include="Functions\UnitFunction.cs" />
+    <Compile Include="Functions\YlmFunction.cs" />
+    <Compile Include="Functions\ZernikeFunction.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Units\AUnit.cs" />
+    <Compile Include="Units\cdUnit.cs" />
+    <Compile Include="Units\CombinedUnit.cs" />
+    <Compile Include="Units\ConversationUnit.cs" />
+    <Compile Include="Units\CUnit.cs" />
     <Compile Include="Units\dynUnit.cs" />
     <Compile Include="Units\ergUnit.cs" />
-    <Compile Include="Units\eVUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Units\eVUnit.cs" />
     <Compile Include="Units\FUnit.cs" />
-    <Compile Include="Units\gUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Units\gUnit.cs" />
     <Compile Include="Units\HUnit.cs" />
     <Compile Include="Units\HzUnit.cs" />
-    <Compile Include="Units\JUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Units\KUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Units\molUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Units\mUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Units\JUnit.cs" />
+    <Compile Include="Units\KUnit.cs" />
+    <Compile Include="Units\molUnit.cs" />
+    <Compile Include="Units\mUnit.cs" />
     <Compile Include="Units\NUnit.cs" />
-    <Compile Include="Units\PhysicalUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Units\PhysicalUnit.cs" />
     <Compile Include="Units\statCUnit.cs" />
-    <Compile Include="Units\sUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Units\sUnit.cs" />
     <Compile Include="Units\TUnit.cs" />
-    <Compile Include="Units\VUnit.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Units\VUnit.cs" />
     <Compile Include="Units\WbUnit.cs" />
     <Compile Include="Units\WUnit.cs" />
     <Compile Include="Units\ħUnit.cs" />
     <Compile Include="Units\ΩUnit.cs" />
-    <Compile Include="Values\UnitValue.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Values\UnitValue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

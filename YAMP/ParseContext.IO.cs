@@ -25,15 +25,35 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System.Reflection;
-using System.Runtime.InteropServices;
+namespace YAMP
+{
+    /// <summary>
+    /// Class that describes the current parse context (available functions, constants, variables, ...).
+    /// </summary>
+    public sealed partial class ParseContext
+    {
+        #region Comfort Methods
 
-[assembly: AssemblyTitle("Physics")]
-[assembly: AssemblyDescription("The physics library extends YAMP with constants and functions that play an important role in general physics.")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Florian Rappl")]
-[assembly: AssemblyProduct("YAMP.Physics")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.9.0.*")]
+        /// <summary>
+        /// Loads the workspace from the given file.
+        /// </summary>
+        /// <param name="fromFileName">The path to the file.</param>
+        public void Load(string fromFileName)
+        {
+            var lf = new LoadFunction();
+            lf.Context = this;
+            lf.Function(new StringValue(fromFileName));
+        }
+
+        /// <summary>
+        /// Saves the workspace in the given file.
+        /// </summary>
+        /// <param name="toFileName">The path to the file.</param>
+        public void Save(string toFileName)
+        {
+            SaveFunction.Save(toFileName, variables);
+        }
+
+        #endregion
+    }
+}
