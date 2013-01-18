@@ -34,6 +34,9 @@ namespace YAMP.Converter
     /// </summary>
     public class MatrixToDoubleArrayConverterAttribute : ValueConverterAttribute
     {
+        /// <summary>
+        /// Creates a new Matrix To Double Converter.
+        /// </summary>
         public MatrixToDoubleArrayConverterAttribute()
             : base(typeof(MatrixValue))
         {

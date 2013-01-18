@@ -40,6 +40,9 @@ namespace YAMP
     {
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public Points()
 		{
 			Color = "black";
@@ -54,6 +57,9 @@ namespace YAMP
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets if the points are connected.
+        /// </summary>
         [ScalarToBooleanConverter]
 		[StringToBooleanConverter]
 		public bool Lines
@@ -62,6 +68,9 @@ namespace YAMP
 			set;
 		}
 
+        /// <summary>
+        /// Gets or sets the width of the connected line.
+        /// </summary>
 		[ScalarToDoubleConverter]
 		public double LineWidth
 		{
@@ -69,6 +78,9 @@ namespace YAMP
 			set;
 		}
 
+        /// <summary>
+        /// Gets or sets the symbol for the points.
+        /// </summary>
 		[StringToEnumConverter(typeof(PointSymbol))]
 		public PointSymbol Symbol
 		{
@@ -76,6 +88,9 @@ namespace YAMP
 			set;
 		}
 
+        /// <summary>
+        /// Gets or sets the status for visibility of the label.
+        /// </summary>
 		[ScalarToBooleanConverter]
 		[StringToBooleanConverter]
 		public bool ShowLabel
@@ -84,6 +99,9 @@ namespace YAMP
 			set;
 		}
 
+        /// <summary>
+        /// Gets or sets the color.
+        /// </summary>
 		[StringToStringConverter]
 		public string Color
 		{
@@ -91,6 +109,9 @@ namespace YAMP
 			set;
 		}
         
+        /// <summary>
+        /// Gets or sets the label for the series.
+        /// </summary>
 		[StringToStringConverter]
 		public string Label
 		{

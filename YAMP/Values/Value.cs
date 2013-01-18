@@ -42,13 +42,20 @@ namespace YAMP
 
         static readonly Value _empty = new ScalarValue();
         static readonly NumberFormatInfo numberFormat = new CultureInfo("en-US").NumberFormat;
+        static readonly Dictionary<string, Value> knownTypes = new Dictionary<string, Value>();
 
+        /// <summary>
+        /// A little helper for reflection (same as Type.Empty in the full .NET stack).
+        /// </summary>
         public static readonly Type[] EmptyTypes = new Type[0];
 
         #endregion
 
         #region Properties
 
+        /// <summary>
+        /// Gets the empty value (a simple scalar).
+        /// </summary>
         public static Value Empty
 		{
 			get
@@ -57,6 +64,9 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Gets the name of the type (just removes the Value convention).
+        /// </summary>
 		public string Header
 		{
 			get
@@ -69,12 +79,38 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// This represents a save cast from a string to a double.
+        /// </summary>
+        /// <param name="value">The string value.</param>
+        /// <returns>The double value (or NaN if it could not been casted).</returns>
+        public static double CastStringToDouble(string value)
+        {
+            double x;
+
+            if(double.TryParse(value, NumberStyles.Float, numberFormat, out x))
+                return x;
+
+            return double.NaN;
+        }
+
+        /// <summary>
+        /// Gets the exponent (10^n) of a double value.
+        /// </summary>
+        /// <param name="value">The value to get the exponent from.</param>
+        /// <returns>The exponent n (10^n) of the double value.</returns>
         protected int GetExponent(double value)
         {
             var log = Math.Log10(Math.Abs(value));
             return (int)Math.Floor(log);
         }
 
+        /// <summary>
+        /// Builds the index from the given value.
+        /// </summary>
+        /// <param name="arg">The argument to inspect.</param>
+        /// <param name="max">The maximum number of arguments.</param>
+        /// <returns></returns>
         protected static int[] BuildIndex(Value arg, int max)
         {
             if (arg is ScalarValue)
@@ -102,31 +138,48 @@ namespace YAMP
             return idx.ToArray();
         }
 
-        public virtual void RegisterElement()
+        /// <summary>
+        /// Registers the element at a certain point.
+        /// </summary>
+        public void RegisterElement()
         {
+            var name = Header;
+
+            if (!knownTypes.ContainsKey(name))
+                knownTypes.Add(name, this);
+
+            RegisterOperators();
+        }
+
+        /// <summary>
+        /// Registers the operators (if there are any).
+        /// </summary>
+        protected virtual void RegisterOperators()
+        {
+            //Nothing to register here.
         }
 
         #endregion
 
         #region Serialization
 
+        /// <summary>
+        /// Converts the instance to bytes.
+        /// </summary>
+        /// <returns>The binary content.</returns>
         public abstract byte[] Serialize();
 
+        /// <summary>
+        /// Creates a new instance from bytes.
+        /// </summary>
+        /// <param name="content">The binary content.</param>
+        /// <returns>The new instance.</returns>
 		public abstract Value Deserialize(byte[] content);
 
 		internal static Value Deserialize(string name, byte[] content)
 		{
-			name = name + "Value";
-			var types = Assembly.GetCallingAssembly().GetTypes();
-
-			foreach(var target in types)
-			{
-				if(target.Name.Equals(name))
-				{
-                    var value = target.GetConstructor(EmptyTypes).Invoke(null) as Value;
-					return value.Deserialize(content);
-				}
-			}
+            if (knownTypes.ContainsKey(name))
+                return knownTypes[name].Deserialize(content);
 
 			return Value.Empty;
 		}
@@ -135,11 +188,20 @@ namespace YAMP
 
         #region String Representation
 
+        /// <summary>
+        /// Returns a string representation of the value.
+        /// </summary>
+        /// <returns>The string.</returns>
         public override string ToString()
         {
             return ToString(ParseContext.Default);
         }
 
+        /// <summary>
+        /// Returns a string representation of the value.
+        /// </summary>
+        /// <param name="context">The calling context.</param>
+        /// <returns>The string representation.</returns>
         public virtual string ToString(ParseContext context)
         {
             return string.Empty;
@@ -149,6 +211,12 @@ namespace YAMP
 
         #region String Representation Helpers
 
+        /// <summary>
+        /// Formats a given double value with the rules of the context.
+        /// </summary>
+        /// <param name="context">The context with the rules.</param>
+        /// <param name="value">The double precision value.</param>
+        /// <returns>The string representation.</returns>
         public static string Format(ParseContext context, double value)
         {
             double amt;
@@ -290,31 +358,67 @@ namespace YAMP
 
         #region Register Operators
 
+        /// <summary>
+        /// Helper for registering a plus operator.
+        /// </summary>
+        /// <param name="left">The type on the left side.</param>
+        /// <param name="right">The type on the right side.</param>
+        /// <param name="add">The function to execute.</param>
         protected static void RegisterPlus(Type left, Type right, Func<Value, Value, Value> add)
         {
             PlusOperator.Register(left, right, add);
         }
 
+        /// <summary>
+        /// Helper for registering a multiplication operator.
+        /// </summary>
+        /// <param name="left">The type on the left side.</param>
+        /// <param name="right">The type on the right side.</param>
+        /// <param name="multiply">The function to execute.</param>
         protected static void RegisterMultiply(Type left, Type right, Func<Value, Value, Value> multiply)
         {
             MultiplyOperator.Register(left, right, multiply);
         }
 
+        /// <summary>
+        /// Helper for registering a division operator.
+        /// </summary>
+        /// <param name="left">The type on the left side.</param>
+        /// <param name="right">The type on the right side.</param>
+        /// <param name="divide">The function to execute.</param>
         protected static void RegisterDivide(Type left, Type right, Func<Value, Value, Value> divide)
         {
             RightDivideOperator.Register(left, right, divide);
         }
 
+        /// <summary>
+        /// Helper for registering a minus operator.
+        /// </summary>
+        /// <param name="left">The type on the left side.</param>
+        /// <param name="right">The type on the right side.</param>
+        /// <param name="sub">The function to execute.</param>
         protected static void RegisterMinus(Type left, Type right, Func<Value, Value, Value> sub)
         {
             MinusOperator.Register(left, right, sub);
         }
 
+        /// <summary>
+        /// Helper for registering a power operator.
+        /// </summary>
+        /// <param name="left">The type on the left side.</param>
+        /// <param name="right">The type on the right side.</param>
+        /// <param name="power">The function to execute.</param>
         protected static void RegisterPower(Type left, Type right, Func<Value, Value, Value> power)
         {
             PowerOperator.Register(left, right, power);
         }
 
+        /// <summary>
+        /// Helper for registering a modulo operator.
+        /// </summary>
+        /// <param name="left">The type on the left side.</param>
+        /// <param name="right">The type on the right side.</param>
+        /// <param name="mod">The function to execute.</param>
         protected static void RegisterModulo(Type left, Type right, Func<Value, Value, Value> mod)
         {
             ModuloOperator.Register(left, right, mod);

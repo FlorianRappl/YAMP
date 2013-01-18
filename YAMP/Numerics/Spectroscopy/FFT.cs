@@ -16,6 +16,10 @@ namespace YAMP.Numerics
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="values">The data.</param>
         public FFT(MatrixValue values)
         {
             _values = values;
@@ -25,11 +29,19 @@ namespace YAMP.Numerics
 
         #region Methods
 
+        /// <summary>
+        /// Transforms the data as 1D.
+        /// </summary>
+        /// <returns>The transformed values.</returns>
         public MatrixValue Transform1D()
         {
             return ifft(_values);
         }
 
+        /// <summary>
+        /// Transforms the data as 2D.
+        /// </summary>
+        /// <returns>The transformed values.</returns>
         public MatrixValue Transform2D()
         {
             return ifft2d(_values);

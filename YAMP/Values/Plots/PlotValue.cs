@@ -47,6 +47,9 @@ namespace YAMP
 
 		#region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
 		public PlotValue()
 		{
             Title = string.Empty;
@@ -56,6 +59,9 @@ namespace YAMP
 
         #region Properties
 
+        /// <summary>
+        /// Gets the number of series.
+        /// </summary>
         public abstract int Count { get; }
 
         /// <summary>

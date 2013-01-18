@@ -13,8 +13,9 @@ namespace YAMP.Numerics
 	public abstract class Distribution
     {
         #region instance fields
+
         /// <summary>
-        /// Gets or sets a <see cref="Generator"/> object that can be used as underlying random number generator.
+        /// Gets or sets a Generator object that can be used as underlying random number generator.
         /// </summary>
         protected Generator Generator
         {
@@ -29,13 +30,13 @@ namespace YAMP.Numerics
         }
 
         /// <summary>
-        /// Stores a <see cref="Generator"/> object that can be used as underlying random number generator.
+        /// Stores a Generator object that can be used as underlying random number generator.
         /// </summary>
-        private Generator generator;
+        Generator generator;
 
         /// <summary>
         /// Gets a value indicating whether the random number distribution can be reset, so that it produces the same 
-        ///   random number sequence again.
+        /// random number sequence again.
         /// </summary>
         public bool CanReset
         {
@@ -44,30 +45,32 @@ namespace YAMP.Numerics
                 return this.generator.CanReset;
             }
         }
+
         #endregion
 
         #region construction
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Distribution"/> class, using a 
-        ///   <see cref="StandardGenerator"/> as underlying random number generator.
+        /// Initializes a new instance of the Distribution class, using a 
+        /// StandardGenerator as underlying random number generator.
         /// </summary>
         protected Distribution() : this(new MT19937Generator())
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Distribution"/> class, using the specified 
+        /// Initializes a new instance of the Distribution class, using the specified 
         ///   <see cref="Generator"/> as underlying random number generator.
         /// </summary>
-        /// <param name="generator">A <see cref="Generator"/> object.</param>
+        /// <param name="generator">A Generator object.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is NULL (<see langword="Nothing"/> in Visual Basic).
+        /// Generator is NULL (Nothing in Visual Basic).
         /// </exception>
         protected Distribution(Generator generator)
         {
             this.generator = generator;
         }
+
         #endregion
 
         #region virtual instance methods

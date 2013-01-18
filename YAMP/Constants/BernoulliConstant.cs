@@ -12,7 +12,7 @@ namespace YAMP
 	{
 		public override Value Value
 		{
-            get { return new MatrixValue(Helpers.bernoulli_numbers); }
+            get { return new MatrixValue(Helpers.BernoulliNumbers); }
 		}
 	}
 }

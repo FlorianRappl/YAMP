@@ -37,6 +37,9 @@ namespace YAMP
 	{
 		#region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
 		public ContourPlotValue()
 		{
 			ShowLevel = true;
@@ -48,6 +51,10 @@ namespace YAMP
 
 		#region Methods
 
+        /// <summary>
+        /// Sets the levels automatically.
+        /// </summary>
+        /// <param name="n">The number of levels to set.</param>
 		public void SetLevels(int n)
 		{
 			if (Levels == null || Levels.Length == 0 || n < 2)
@@ -56,6 +63,10 @@ namespace YAMP
 			SetLevels(Levels[0], Levels[Levels.Length - 1], n);
 		}
 
+        /// <summary>
+        /// Sets the levels to the given values.
+        /// </summary>
+        /// <param name="v">A vector with the various levels.</param>
 		public void SetLevels(MatrixValue v)
 		{
 			if (v.Length < 1)
@@ -67,11 +78,23 @@ namespace YAMP
 				Levels[i - 1] = v[i].Value;
 		}
 
+        /// <summary>
+        /// Sets the n levels within zmin and zmax.
+        /// </summary>
+        /// <param name="zmin">The lowest level.</param>
+        /// <param name="zmax">The highest level.</param>
+        /// <param name="n">The number of levels (at least 2).</param>
 		public void SetLevels(double zmin, double zmax, int n)
 		{
 			Levels = Generate(zmin, (zmax - zmin) / (n - 1), n);
 		}
 
+        /// <summary>
+        /// Adds three vectors which represent X, Y and the values.
+        /// </summary>
+        /// <param name="X">A vector with the x values.</param>
+        /// <param name="Y">A vector with the y values.</param>
+        /// <param name="Z">A matrix with the x times y values for z.</param>
 		public void AddPoints(MatrixValue X, MatrixValue Y, MatrixValue Z)
 		{
 			var x = X.GetRealVector();
@@ -85,6 +108,10 @@ namespace YAMP
 			AddValues(x, y, z);
 		}
 
+        /// <summary>
+        /// Adds the series in form of a matrix. 
+        /// </summary>
+        /// <param name="M">The matrix which contains the values.</param>
 		public override void AddPoints(MatrixValue M)
 		{
 			var x = Generate(1, 1, M.DimensionX);
@@ -202,10 +229,24 @@ namespace YAMP
 
 		#region Nested types
 
+        /// <summary>
+        /// Represents one point in the contour.
+        /// </summary>
 		public struct ContourPoint
 		{
+            /// <summary>
+            /// The x value.
+            /// </summary>
 			public double X;
+
+            /// <summary>
+            /// The y value.
+            /// </summary>
 			public double Y;
+
+            /// <summary>
+            /// The magnitude.
+            /// </summary>
 			public double Magnitude;
 		}
 
@@ -213,6 +254,10 @@ namespace YAMP
 
 		#region Serialization
 
+        /// <summary>
+        /// Converts the given instance to an array of bytes.
+        /// </summary>
+        /// <returns>The binary representation of this instance.</returns>
 		public override byte[] Serialize()
 		{
 			using (var s = Serializer.Create())
@@ -245,6 +290,11 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Converts a set of bytes to a new instance.
+        /// </summary>
+        /// <param name="content">The binary representation.</param>
+        /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
 		{
 			using (var ds = Deserializer.Create(content))
@@ -290,6 +340,11 @@ namespace YAMP
 
 		#region Index
 
+        /// <summary>
+        /// Gets the series at the specified index.
+        /// </summary>
+        /// <param name="index">The 0-based index of the series.</param>
+        /// <returns>The series (list of points and properties).</returns>
 		public Points<ContourPoint> this[int index]
 		{
 			get
@@ -298,6 +353,12 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Gets a certain point of the specified series.
+        /// </summary>
+        /// <param name="index">The 0-based index of the series.</param>
+        /// <param name="point">The 0-based index of the point.</param>
+        /// <returns>The point.</returns>
 		public ContourPoint this[int index, int point]
 		{
 			get

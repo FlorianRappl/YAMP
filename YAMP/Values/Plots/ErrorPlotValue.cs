@@ -37,6 +37,9 @@ namespace YAMP
     {
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public ErrorPlotValue()
         {
             IsLogX = false;
@@ -73,6 +76,10 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Adds (multiple) series in form of a matrix. 
+        /// </summary>
+        /// <param name="m">The matrix which contains the values.</param>
         public override void AddPoints(MatrixValue m)
         {
             if (m.DimensionY == 0 || m.DimensionX == 0)
@@ -106,6 +113,11 @@ namespace YAMP
             }
         }
 
+        /// <summary>
+        /// Adds a single series to the plot.
+        /// </summary>
+        /// <param name="y">The y values.</param>
+        /// <param name="err">The y errors.</param>
         public void AddPoints(MatrixValue y, MatrixValue err)
         {
             var x = new MatrixValue(Math.Max(y.DimensionY, y.DimensionX), 1);
@@ -116,6 +128,12 @@ namespace YAMP
             AddPoints(x, y, err);
         }
 
+        /// <summary>
+        /// Adds a single series to the plot.
+        /// </summary>
+        /// <param name="x">The x values.</param>
+        /// <param name="y">The y values.</param>
+        /// <param name="err">The (x and y) errors.</param>
         public void AddPoints(MatrixValue x, MatrixValue y, MatrixValue err)
         {
             if (x.IsVector)
@@ -207,11 +225,29 @@ namespace YAMP
 
         #region Nested types
 
+        /// <summary>
+        /// Represents an error point.
+        /// </summary>
         public struct ErrorPointPair
         {
+            /// <summary>
+            /// The x value.
+            /// </summary>
             public double X;
+
+            /// <summary>
+            /// The y value.
+            /// </summary>
             public double Y;
+
+            /// <summary>
+            /// The x error.
+            /// </summary>
             public double Xerr;
+
+            /// <summary>
+            /// The y error.
+            /// </summary>
             public double Yerr;
         }
 
@@ -219,6 +255,10 @@ namespace YAMP
 
         #region Serialization
 
+        /// <summary>
+        /// Converts the given instance to an array of bytes.
+        /// </summary>
+        /// <returns>The binary representation of this instance.</returns>
         public override byte[] Serialize()
         {
             using (var s = Serializer.Create())
@@ -247,6 +287,11 @@ namespace YAMP
             }
         }
 
+        /// <summary>
+        /// Converts a set of bytes to a new instance.
+        /// </summary>
+        /// <param name="content">The binary representation.</param>
+        /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
             using (var ds = Deserializer.Create(content))
@@ -289,6 +334,11 @@ namespace YAMP
 
         #region Index
 
+        /// <summary>
+        /// Gets the series at the specified index.
+        /// </summary>
+        /// <param name="index">The 0-based index of the series.</param>
+        /// <returns>The series (list of points and properties).</returns>
         public Points<ErrorPointPair> this[int index]
         {
             get
@@ -297,6 +347,12 @@ namespace YAMP
             }
         }
 
+        /// <summary>
+        /// Gets a certain point of the specified series.
+        /// </summary>
+        /// <param name="index">The 0-based index of the series.</param>
+        /// <param name="point">The 0-based index of the point.</param>
+        /// <returns>The point.</returns>
         public ErrorPointPair this[int index, int point]
         {
             get

@@ -36,6 +36,13 @@ namespace YAMP
     /// </summary>
     public interface ISetFunction
     {
+        /// <summary>
+        /// Invokes the function to set a certain value.
+        /// </summary>
+        /// <param name="context">The context where the invocation takes place.</param>
+        /// <param name="indices">The parameter containing the indices.</param>
+        /// <param name="values">The parameter containing the value(s).</param>
+        /// <returns>Usually the modified instance is returned.</returns>
         Value Perform(ParseContext context, Value indices, Value values);
     }
 }

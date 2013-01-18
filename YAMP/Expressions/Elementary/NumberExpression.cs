@@ -57,7 +57,7 @@ namespace YAMP
 
         public override Value Interpret(Dictionary<string, Value> symbols)
 		{
-            return value;
+            return value.Clone();
 		}
 
         public override Expression Scan(ParseEngine engine)

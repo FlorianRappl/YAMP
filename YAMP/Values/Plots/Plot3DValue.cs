@@ -39,6 +39,9 @@ namespace YAMP
 	{
 		#region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
 		public Plot3DValue()
 		{
 			InitializeBoundaries();
@@ -85,6 +88,10 @@ namespace YAMP
 
 		#region Methods
 
+        /// <summary>
+        /// Adds a series with points given in a matrix m.
+        /// </summary>
+        /// <param name="m">The matrix with the points (requires at least an Nx3 or 3xN matrix).</param>
 		public override void AddPoints(MatrixValue m)
 		{
 			if (m.DimensionY == 0 || m.DimensionX == 0)
@@ -108,6 +115,12 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Adds a series with points given by 3 matrices.
+        /// </summary>
+        /// <param name="x">The vector with the x values.</param>
+        /// <param name="y">The vector with the y values.</param>
+        /// <param name="z">The vector with the z values.</param>
 		public void AddPoints(MatrixValue x, MatrixValue y, MatrixValue z)
 		{
 			var _x = Convert(x, 0, x.Length);
@@ -116,6 +129,12 @@ namespace YAMP
 			AddValues(_x, _y, _z);
 		}
 
+        /// <summary>
+        /// Adds points to the plot. Either by falling back to x, y, z (requires 3 vectors),
+        /// or by considering each one to be a matrix (of all the given values).
+        /// </summary>
+        /// <param name="x">Either the x values given in a vector or one series.</param>
+        /// <param name="zs">Either 2 vector or multiple atomic series.</param>
 		public void AddPoints(MatrixValue x, params MatrixValue[] zs)
 		{
 			double[] vx = null;
@@ -138,7 +157,6 @@ namespace YAMP
 
 				return;
 			}
-
 
 			for(int i = 0; i < zs.Length; i++)
 			{
@@ -237,10 +255,24 @@ namespace YAMP
 
 		#region Nested Type
 
+        /// <summary>
+        /// Represents a 3D point.
+        /// </summary>
 		public struct PointTriple
 		{
+            /// <summary>
+            /// The x value.
+            /// </summary>
 			public double X;
+
+            /// <summary>
+            /// The y value.
+            /// </summary>
 			public double Y;
+
+            /// <summary>
+            /// The z value.
+            /// </summary>
 			public double Z;
 		}
 
@@ -248,6 +280,10 @@ namespace YAMP
 
 		#region Serialization
 
+        /// <summary>
+        /// Converts the given instance to an array of bytes.
+        /// </summary>
+        /// <returns>The binary representation of this instance.</returns>
 		public override byte[] Serialize()
 		{
 			using (var s = Serializer.Create())
@@ -276,6 +312,11 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Converts a set of bytes to a new instance.
+        /// </summary>
+        /// <param name="content">The binary representation.</param>
+        /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
 		{
 			using (var ds = Deserializer.Create(content))
@@ -317,6 +358,11 @@ namespace YAMP
 
 		#region Index
 
+        /// <summary>
+        /// Gets the series at the specified index.
+        /// </summary>
+        /// <param name="index">The 0-based index of the series.</param>
+        /// <returns>The series (list of points and properties).</returns>
 		public Points<PointTriple> this[int index]
 		{
 			get
@@ -325,6 +371,12 @@ namespace YAMP
 			}
 		}
 
+        /// <summary>
+        /// Gets a certain point of the specified series.
+        /// </summary>
+        /// <param name="index">The 0-based index of the series.</param>
+        /// <param name="point">The 0-based index of the point.</param>
+        /// <returns>The point.</returns>
 		public PointTriple this[int index, int point]
 		{
 			get

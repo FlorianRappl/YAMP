@@ -38,10 +38,20 @@ namespace YAMP
     {
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public TreeExpression()
         {
         }
 
+        /// <summary>
+        /// Creates a new instance with some parameters.
+        /// </summary>
+        /// <param name="child">The child to add.</param>
+        /// <param name="query">The associated query context.</param>
+        /// <param name="line">The line where the tree expression starts.</param>
+        /// <param name="column">The column in the line where the tree exp. starts.</param>
         public TreeExpression(ContainerExpression child, QueryContext query, int line, int column)
             : base(child)
         {
@@ -50,6 +60,11 @@ namespace YAMP
             StartLine = line;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="child">The child to add.</param>
+        /// <param name="engine">The engine that has been used.</param>
         public TreeExpression(ContainerExpression child, ParseEngine engine)
             : this(child, engine.Query, engine.CurrentLine, engine.CurrentColumn)
         {
@@ -59,6 +74,9 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Registers the element.
+        /// </summary>
         public override void RegisterElement()
         {
             Elements.Instance.AddExpression(this);

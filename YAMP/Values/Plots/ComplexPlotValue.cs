@@ -42,6 +42,9 @@ namespace YAMP
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new complex plot.
+        /// </summary>
         public ComplexPlotValue()
         {
             XLabel = "Real";
@@ -80,6 +83,11 @@ namespace YAMP
             f = function;
         }
 
+        /// <summary>
+        /// A complex plot cannot have any points assigned. You have to
+        /// assign a function instead.
+        /// </summary>
+        /// <param name="m">Useless.</param>
         public override void AddPoints(MatrixValue m)
         {
             //Leave empty
@@ -89,6 +97,10 @@ namespace YAMP
 
         #region Serialization
 
+        /// <summary>
+        /// Converts the instance into bytes.
+        /// </summary>
+        /// <returns>The binary content of this instance.</returns>
         public override byte[] Serialize()
         {
             using (var s = Serializer.Create())
@@ -99,6 +111,11 @@ namespace YAMP
             }
         }
 
+        /// <summary>
+        /// Creates a new instance from the given bytes.
+        /// </summary>
+        /// <param name="content">The binary content to create a new instance from.</param>
+        /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
             using (var ds = Deserializer.Create(content))

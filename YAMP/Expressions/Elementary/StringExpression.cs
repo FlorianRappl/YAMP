@@ -39,7 +39,7 @@ namespace YAMP
         #region Members
 
         bool literal;
-        StringValue value;
+        string value;
 
         #endregion
 
@@ -72,7 +72,7 @@ namespace YAMP
 
 		public override Value Interpret(Dictionary<string, Value> symbols)
 		{
-            return value;
+            return new StringValue(value);
 		}
 
         public override Expression Scan(ParseEngine engine)
@@ -137,7 +137,7 @@ namespace YAMP
                 if (!terminated)
                     engine.AddError(new YAMPStringNotTerminatedError(engine));
 
-                exp.value = new StringValue(sb.ToString());
+                exp.value = sb.ToString();
                 exp.Length = index - start;
                 engine.SetPointer(index);
                 return exp;
@@ -153,13 +153,13 @@ namespace YAMP
         public override string ToCode()
         {
             if(IsLiteral)
-                return "@\"" + value.Value + '"';
+                return "@\"" + value + '"';
 
             return '"' + 
-                     value.Value.Replace("\t", "\\t")
-                                .Replace("\n", "\\n")
-                                .Replace("\\", "\\\\")
-                                .Replace("\"", "\\\"")
+                     value.Replace("\t", "\\t")
+                          .Replace("\n", "\\n")
+                          .Replace("\\", "\\\\")
+                          .Replace("\"", "\\\"")
                     + '"';
         }
 

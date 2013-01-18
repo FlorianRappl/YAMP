@@ -3,12 +3,24 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// The Newton polynomial interpolation method.
+    /// </summary>
     public class NewtonInterpolation : Interpolation
     {
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="vector">The Nx2 vector with the samples.</param>
         public NewtonInterpolation(MatrixValue vector) : base(vector)
         {
         }
 
+        /// <summary>
+        /// Computes a value f(t) at t.
+        /// </summary>
+        /// <param name="t">The t value.</param>
+        /// <returns>Returns the interpolated y = f(t) value.</returns>
         public override double ComputeValue(double t)
         {
             double F, LN, XX, X = 1;

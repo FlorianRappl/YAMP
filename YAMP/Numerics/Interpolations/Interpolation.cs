@@ -17,6 +17,11 @@ namespace YAMP.Numerics
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="samples">The given sample values - the matrix has to be Nx2 with the
+        /// first column for the x values and the second column for the y values.</param>
         public Interpolation(MatrixValue samples)
         {
             _samples = samples;
@@ -67,6 +72,14 @@ namespace YAMP.Numerics
         /// <returns>The corresponding y-value.</returns>
         public abstract double ComputeValue(double x);
 
+        /// <summary>
+        /// Solves the system of linear equations for a tri-diagonal A in A * x = b.
+        /// </summary>
+        /// <param name="sub">The lower diagonal of A.</param>
+        /// <param name="diag">The diagonal itself of A.</param>
+        /// <param name="sup">The upper diagonal of A.</param>
+        /// <param name="b">The vector b in A * x = b.</param>
+        /// <param name="n">The length of the diagonal.</param>
         protected void SolveTridiag(double[] sub, double[] diag, double[] sup, ref double[] b, int n)
         {
             int i;

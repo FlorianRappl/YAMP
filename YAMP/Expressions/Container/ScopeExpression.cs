@@ -38,10 +38,20 @@ namespace YAMP
     {
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public ScopeExpression()
 		{
 		}
 
+        /// <summary>
+        /// Creates a new instance with some parameters.
+        /// </summary>
+        /// <param name="line">The line where the scope expression starts.</param>
+        /// <param name="column">The column in the line where the scope exp. starts.</param>
+        /// <param name="length">The length of the scope expression.</param>
+        /// <param name="scope">The associated query context (scope).</param>
         public ScopeExpression(int line, int column, int length, QueryContext scope)
             : base(scope.Parent, line, column)
 		{
@@ -101,6 +111,10 @@ namespace YAMP
 
         #region String Representations
 
+        /// <summary>
+        /// Transforms the expression into YAMP query code.
+        /// </summary>
+        /// <returns>The string representation of the part of the query.</returns>
         public override string ToCode()
         {
             var sb = new StringBuilder();

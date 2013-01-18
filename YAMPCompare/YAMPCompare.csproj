@@ -54,9 +54,6 @@
     <Optimize>False</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr3.Runtime">
-      <HintPath>bin\Antlr3.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -96,26 +93,6 @@
     <Compile Include="MathParserNet\Exceptions\NoSuchFunctionException.cs" />
     <Compile Include="MathParserNet\Exceptions\NoSuchVariableException.cs" />
     <Compile Include="MathParserNet\Exceptions\VariableAlreadyDefinedException.cs" />
-    <Compile Include="NCalc\Domain\BinaryExpression.cs" />
-    <Compile Include="NCalc\Domain\EvaluationVisitor.cs" />
-    <Compile Include="NCalc\Domain\Function.cs" />
-    <Compile Include="NCalc\Domain\LogicalExpression.cs" />
-    <Compile Include="NCalc\Domain\LogicalExpressionVisitor.cs" />
-    <Compile Include="NCalc\Domain\Parameter.cs" />
-    <Compile Include="NCalc\Domain\SerializationVisitor.cs" />
-    <Compile Include="NCalc\Domain\TernaryExpression.cs" />
-    <Compile Include="NCalc\Domain\UnaryExpression.cs" />
-    <Compile Include="NCalc\Domain\Value.cs" />
-    <Compile Include="NCalc\EvaluateFunctionHandler.cs" />
-    <Compile Include="NCalc\EvaluateParameterHandler.cs" />
-    <Compile Include="NCalc\EvaluationException.cs" />
-    <Compile Include="NCalc\EvaluationOption.cs" />
-    <Compile Include="NCalc\Expression.cs" />
-    <Compile Include="NCalc\FunctionArgs.cs" />
-    <Compile Include="NCalc\NCalcLexer.cs" />
-    <Compile Include="NCalc\NCalcParser.cs" />
-    <Compile Include="NCalc\Numbers.cs" />
-    <Compile Include="NCalc\ParameterArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathParserNet\StringResources.resx" />

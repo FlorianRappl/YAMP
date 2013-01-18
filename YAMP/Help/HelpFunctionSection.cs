@@ -36,6 +36,9 @@ namespace YAMP.Help
     /// </summary>
 	public class HelpFunctionSection : HelpSection
 	{
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
 		public HelpFunctionSection()
 		{
 			Usages = new List<HelpFunctionUsage>();

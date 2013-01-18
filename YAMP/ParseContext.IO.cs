@@ -34,6 +34,10 @@ namespace YAMP
     {
         #region Comfort Methods
 
+        /// <summary>
+        /// Loads the workspace from the given file.
+        /// </summary>
+        /// <param name="fromFileName">The path to the file.</param>
         public void Load(string fromFileName)
         {
             var lf = new LoadFunction();
@@ -41,6 +45,10 @@ namespace YAMP
             lf.Function(new StringValue(fromFileName));
         }
 
+        /// <summary>
+        /// Saves the workspace in the given file.
+        /// </summary>
+        /// <param name="toFileName">The path to the file.</param>
         public void Save(string toFileName)
         {
             SaveFunction.Save(toFileName, variables);

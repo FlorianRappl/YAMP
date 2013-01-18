@@ -26,6 +26,7 @@
 */
 
 using System;
+using System.Diagnostics;
 using System.Text;
 using YAMP;
 
@@ -35,15 +36,31 @@ namespace YAMPConsole
     {
         public static void Run()
         {
+            var query = string.Empty;
             var buffer = new StringBuilder();
             var context = Parser.PrimaryContext;
-            Console.WriteLine("Enter your own statements now (exit with the command 'exit'):");
-            Console.WriteLine();
-            var query = string.Empty;
 
+            Console.WriteLine();
+            Console.WriteLine("*****************************************************************");
+            Console.WriteLine("*                                                               *");
+            Console.WriteLine("*                                                               *");
+            Console.WriteLine("* Enter your own statements now (exit with the command 'exit'). *");
+            Console.WriteLine("*                                                               *");
+            Console.WriteLine("*                                                               *");
+            Console.WriteLine("* You are in interactive mode with scripting being enabled.     *");
+            Console.WriteLine("*                                                               *");
+            Console.WriteLine("*                                                               *");
+            Console.WriteLine("*****************************************************************");
+            Console.WriteLine();
+
+            Parser.InteractiveMode = true;
             Parser.UseScripting = true;
+
             Parser.AddCustomFunction("G", v => new ScalarValue((v as ScalarValue).Value * Math.PI));
             Parser.AddCustomConstant("R", 2.53);
+
+            Parser.OnNotificationReceived += OnNotified;
+            Parser.OnUserInputRequired += OnUserPrompt;
 
             while (true)
             {
@@ -99,6 +116,19 @@ namespace YAMPConsole
                     }
                 }
             }
+        }
+
+        static void OnUserPrompt(object sender, UserInputEventArgs e)
+        {
+            Console.WriteLine();
+            Console.Write(e.Message);
+            Console.Write(": ");
+            e.Continue(Console.ReadLine());
+        }
+
+        static void OnNotified(object sender, NotificationEventArgs e)
+        {
+            Trace.WriteLine(e.Message);
         }
     }
 }

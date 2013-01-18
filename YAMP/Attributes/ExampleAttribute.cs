@@ -36,6 +36,8 @@ namespace YAMP
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class ExampleAttribute : Attribute
     {
+        #region ctor
+
         /// <summary>
         /// Creates a new example attribute with the specified example string.
         /// </summary>
@@ -55,6 +57,10 @@ namespace YAMP
         {
         }
 
+        #endregion
+
+        #region Properties
+
         /// <summary>
         /// Gets the example.
         /// </summary>
@@ -64,5 +70,7 @@ namespace YAMP
         /// Gets the description of the example.
         /// </summary>
         public string Description { get; private set; }
+
+        #endregion
     }
 }

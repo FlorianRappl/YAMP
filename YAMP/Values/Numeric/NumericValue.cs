@@ -34,6 +34,9 @@ namespace YAMP
     /// </summary>
     public abstract class NumericValue : Value
     {
+        /// <summary>
+        /// Clears the contents of the numeric value.
+        /// </summary>
         public abstract void Clear();
     }
 }

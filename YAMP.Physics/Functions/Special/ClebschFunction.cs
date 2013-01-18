@@ -56,7 +56,7 @@ namespace YAMP.Physics
 
                     for (var j = Math.Abs(m); j <= ja; j += 1.0)
                     {
-                        var v = Coeff(j1.Value, j2.Value, j, m1, m2);
+                        var v = CGCoefficients(j1.Value, j2.Value, j, m1, m2);
                         M[l, 1] = new ScalarValue(m);
                         M[l, 2] = new ScalarValue(m1);
                         M[l, 3] = new ScalarValue(m2);
@@ -70,7 +70,9 @@ namespace YAMP.Physics
             return M;
         }
 
-        double Coeff(double j1, double j2, double j, double m1, double m2)
+        #region Clebsch-Gordon Algorithm
+
+        public static double CGCoefficients(double j1, double j2, double j, double m1, double m2)
         {
             if (j2 == 0.0)
                 return (m2 == 0.0 && j1 == j) ? 1.0 : 0.0;
@@ -78,10 +80,10 @@ namespace YAMP.Physics
             double m = m1 + m2;
 
             if(m < 0)
-                return sign(j, j1, j2) * Coeff(j1, j2, j, -m1, -m2);
+                return sign(j, j1, j2) * CGCoefficients(j1, j2, j, -m1, -m2);
 
             if(j1 < j2)
-                return sign(j, j1, j2) * Coeff(j2, j1, j, m1, m2);
+                return sign(j, j1, j2) * CGCoefficients(j2, j1, j, m1, m2);
 
             var f1 = factorial(1 + j1 + j2 + j) / (factorial(j1 + j2 - j) * factorial(j1 - j2 + j) * factorial(j - j1 + j2));
             var f2 = factorial(j1 + m1) * factorial(j1 - m1) * factorial(j + m) * factorial(j - m) * (2.0 * j + 1.0);
@@ -99,12 +101,12 @@ namespace YAMP.Physics
             return Math.Sqrt(f1 * f2 / f3) * f4;
         }
 
-        double sign(double j, double j1, double j2)
+        static double sign(double j, double j1, double j2)
         {
             return Math.Pow(-1.0, j - j1 - j2);
         }
 
-        double factorial(double arg)
+        static double factorial(double arg)
         {
             var res = 1.0;
 
@@ -114,9 +116,11 @@ namespace YAMP.Physics
             return res;
         }
 
-        bool isNotHalf(ScalarValue j)
+        static bool isNotHalf(ScalarValue j)
         {
             return Math.IEEERemainder(j.Value, 0.5) != 0.0;
         }
+
+        #endregion
     }
 }

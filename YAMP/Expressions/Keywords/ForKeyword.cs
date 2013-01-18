@@ -94,9 +94,9 @@ namespace YAMP
                 kw.Condition = engine.ParseStatement();
                 kw.Condition.IsMuted = false;
                 kw.End = engine.ParseStatement(')');
-                engine.InsertMarker(Marker.Breakable);
+                SetMarker(engine);
                 kw.Body = engine.ParseStatement();
-                engine.RemoveMarker(Marker.Breakable);
+                UnsetMarker(engine);
             }
             else
             {

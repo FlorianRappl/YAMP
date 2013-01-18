@@ -3,8 +3,20 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// The golden section search is a technique for finding the extremum (minimum or maximum) of a
+    /// strictly unimodal function by successively narrowing the range of values inside which the extremum
+    /// is known to exist.
+    /// </summary>
     public class GoldenSection : OptimizationBase
     {
+        /// <summary>
+        /// Creates a new golden section search instance.
+        /// </summary>
+        /// <param name="f">The function to optimize.</param>
+        /// <param name="a">The start value.</param>
+        /// <param name="b">The end value.</param>
+        /// <param name="n">The number of points.</param>
         public GoldenSection(Func<double, double> f, double a, double b, int n) : base(f, a, b, n)
         {
             int i = 0;
@@ -46,6 +58,9 @@ namespace YAMP.Numerics
             AlternativeResult = b;
         }
 
+        /// <summary>
+        /// Gets the alternative result.
+        /// </summary>
         public double AlternativeResult
         {
             get; private set;

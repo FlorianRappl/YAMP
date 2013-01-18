@@ -34,8 +34,17 @@ namespace YAMP
     /// </summary>
     public enum DisplayStyle
     {
+        /// <summary>
+        /// The default style.
+        /// </summary>
         Default,
+        /// <summary>
+        /// The scientific style.
+        /// </summary>
         Scientific,
+        /// <summary>
+        /// The engineering style.
+        /// </summary>
         Engineering
     }
 }

@@ -73,7 +73,8 @@ namespace YAMP
             if (error)
                 throw new YAMPFileFormatNotSupportedException(filename.Value);
 
-			return new StringValue(count + " objects loaded.");
+            Notify(count);
+			return null;
 		}
 
         [Description("Tries to load the file as the specified file type.")]
@@ -145,7 +146,8 @@ namespace YAMP
             if (error)
                 throw new YAMPFileFormatNotSupportedException(filename.Value);
 
-            return new StringValue(count + " objects loaded.");
+            Notify(count);
+            return null;
         }
 
         [Description("Loads specified variables found in the file, if the file contains YAMP variables. Else it treats the file as an ASCII data table or an image file and stores the content as a matrix with the name of the first variable.")]
@@ -236,10 +238,18 @@ namespace YAMP
             if (error)
                 throw new YAMPFileFormatNotSupportedException(filename.Value);
 
-			return new StringValue(count + " objects loaded.");
+            Notify(count);
+            return null;
         }
 
-		static IDictionary<string, Value> Load(string filename, out bool error)
+        #region Helpers
+
+        static void Notify(int count)
+        {
+            Parser.RaiseNotification("load", new NotificationEventArgs(NotificationType.Success, count + " objects loaded."));
+        }
+
+        static IDictionary<string, Value> Load(string filename, out bool error)
 		{
 			var ht = new Dictionary<string, Value>();
 			var lenbuffer = new byte[4];
@@ -529,6 +539,8 @@ namespace YAMP
             Text,
             Image
         }
-	}
+
+        #endregion
+    }
 }
 

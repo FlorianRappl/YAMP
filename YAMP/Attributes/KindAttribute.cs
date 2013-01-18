@@ -34,7 +34,9 @@ namespace YAMP
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
 	public class KindAttribute : Attribute
-	{
+    {
+        #region ctor
+
         /// <summary>
         /// Creates a new attribute for storing the kind of a function.
         /// </summary>
@@ -52,17 +54,15 @@ namespace YAMP
 		{
 		}
 
+        #endregion
+
+        #region Property
+
         /// <summary>
         /// Gets the kind.
         /// </summary>
         public string Kind { get; private set; }
-	}
 
-	public enum PopularKinds
-	{
-		Function,
-		Plot,
-		System,
-		Constant
-	}
+        #endregion
+    }
 }

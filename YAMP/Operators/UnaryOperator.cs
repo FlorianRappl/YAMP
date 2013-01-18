@@ -35,26 +35,56 @@ namespace YAMP
     /// The abstract base class for every unary operator (!, ', ...)
     /// </summary>
 	public abstract class UnaryOperator : Operator
-	{
-		public UnaryOperator (string op, int level) : base(op, level, false)
+    {
+        #region ctor
+
+        /// <summary>
+        /// Creates a new unary operator.
+        /// </summary>
+        /// <param name="op">The operator string.</param>
+        /// <param name="level">The operator level.</param>
+        public UnaryOperator (string op, int level) : base(op, level, false)
 		{
 		}
-		
-		public abstract Value Perform(Value value);
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Performs the operation with the evaluated value.
+        /// </summary>
+        /// <param name="value">The value to operate with.</param>
+        /// <returns>The result of the operation.</returns>
+        public abstract Value Perform(Value value);
+
+        /// <summary>
+        /// Handles the evaluation of one expression.
+        /// </summary>
+        /// <param name="expression">The expression on the left.</param>
+        /// <param name="symbols">The external symbols to consider.</param>
+        /// <returns>The result of the operation.</returns>
 		public virtual Value Handle(Expression expression, Dictionary<string, Value> symbols)
 		{
 			var value = expression.Interpret(symbols);
 			return Perform(value);
 		}
 
+        /// <summary>
+        /// The implementation of the more general evaluate method.
+        /// </summary>
+        /// <param name="expressions">The array of expressions, unary operators require Length == 1.</param>
+        /// <param name="symbols">The external symbols to consider.</param>
+        /// <returns>The result of the operation.</returns>
 		public override Value Evaluate(Expression[] expressions, Dictionary<string, Value> symbols)
 		{
             if (expressions.Length != 1)
                 throw new YAMPArgumentNumberException(Op, expressions.Length, 1);
 
 			return Handle(expressions[0], symbols);
-		}
-	}
+        }
+
+        #endregion
+    }
 }
 

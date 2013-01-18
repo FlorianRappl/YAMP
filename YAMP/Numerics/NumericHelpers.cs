@@ -39,7 +39,7 @@ namespace YAMP.Numerics
         /// <summary>
         /// Provides access to (2*pi)^(10*n) with n = 0, ..., 17.
         /// </summary>
-        public static readonly double[] twopi_pow = new double[] { 
+        public static readonly double[] TwoPIpow = new double[] { 
             1.0,
             9.589560061550901348e+007,
             9.195966217409212684e+015,
@@ -63,7 +63,7 @@ namespace YAMP.Numerics
         /// <summary>
         /// Provides access to the first 21 bernoulli numbers.
         /// </summary>
-        public static readonly double[] bernoulli_numbers = new double[] {
+        public static readonly double[] BernoulliNumbers = new double[] {
             1.0,
             1.0 / 6.0,
             -1.0 / 30.0, 
@@ -90,7 +90,7 @@ namespace YAMP.Numerics
         /// <summary>
         /// Provides access do some Lanczos numbers.
         /// </summary>
-        public static readonly double[] lanczosd = new double[] {
+        public static readonly double[] LanczosD = new double[] {
              2.48574089138753565546e-5,
              1.05142378581721974210,
             -3.45687097222016235469,
@@ -104,20 +104,54 @@ namespace YAMP.Numerics
             -2.71994908488607703910e-9
         };
 
-        public const double lanczosr = 10.900511;
+        /// <summary>
+        /// Value of the LaczosR number.
+        /// </summary>
+        public const double LanczosR = 10.900511;
 
+        /// <summary>
+        /// Value of 4 * Pi
+        /// </summary>
+        public const double FourPI = 4.0 * Math.PI;
+
+        /// <summary>
+        /// Value of 2 * Pi
+        /// </summary>
         public const double TwoPI = 2.0 * Math.PI;
 
+        /// <summary>
+        /// Value of Pi / 2
+        /// </summary>
         public const double HalfPI = Math.PI / 2.0;
 
+        /// <summary>
+        /// Value of Sqrt(2)
+        /// </summary>
         public static readonly double SqrtTwo = Math.Sqrt(2.0);
 
+        /// <summary>
+        /// Value of Sqrt(3)
+        /// </summary>
         public static readonly double SqrtThree = Math.Sqrt(3.0);
 
+        /// <summary>
+        /// Value of Sqrt(Pi)
+        /// </summary>
         public static readonly double SqrtPI = Math.Sqrt(Math.PI);
 
+        /// <summary>
+        /// Value of Sqrt(2 * Pi)
+        /// </summary>
         public static readonly double SqrtTwoPI = Math.Sqrt(2.0 * Math.PI);
 
+        /// <summary>
+        /// Value of ln(Pi)
+        /// </summary>
+        public static readonly double LogPI = Math.Log(Math.PI);
+
+        /// <summary>
+        /// Value of ln(2)
+        /// </summary>
         public static readonly double LogTwo = Math.Log(2.0);
 
         #endregion
@@ -286,6 +320,12 @@ namespace YAMP.Numerics
             return u;
         }
 
+        /// <summary>
+        /// Evaluate a real Chebyshev polynomial on an interval, given the coefficients.
+        /// </summary>
+        /// <param name="cs">The coefficients to consider.</param>
+        /// <param name="x">The real evaluation argument.</param>
+        /// <returns>The value.</returns>
         public static double ChebEval(ChebSeries cs, double x)
         {
             int j;
@@ -304,6 +344,12 @@ namespace YAMP.Numerics
             return y * d - dd + 0.5 * cs.Coefficients[0];
         }
 
+        /// <summary>
+        /// Evaluate a complex Chebyshev polynomial on an interval, given the coefficients.
+        /// </summary>
+        /// <param name="cs">The coefficients to consider.</param>
+        /// <param name="z">The complex evaluation argument.</param>
+        /// <returns>The value.</returns>
         public static ScalarValue ChebEval(ChebSeries cs, ScalarValue z)
         {
             int j;
@@ -326,16 +372,34 @@ namespace YAMP.Numerics
 
         #region Nested Structure
 
+        /// <summary>
+        /// The coefficients with order, and more information.
+        /// </summary>
         public struct ChebSeries
         {
+            /// <summary>
+            /// The (real) coefficients of the Chebyshev polynomial.
+            /// </summary>
             public double[] Coefficients;
 
+            /// <summary>
+            /// The order of the polynomial.
+            /// </summary>
             public int Order;
 
+            /// <summary>
+            /// The lowest point in the interval.
+            /// </summary>
             public double LowerPoint;
 
+            /// <summary>
+            /// The highest point in the interval.
+            /// </summary>
             public double UpperPoint;
 
+            /// <summary>
+            /// The order of the single precision.
+            /// </summary>
             public int SinglePrecisionOrder;
         };
 

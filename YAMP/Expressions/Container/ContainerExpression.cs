@@ -45,34 +45,61 @@ namespace YAMP
 
         #region ctors
 
+        /// <summary>
+        /// Creates a new expression container.
+        /// </summary>
         public ContainerExpression()
         {
         }
 
+        /// <summary>
+        /// Creates a new expression container.
+        /// </summary>
+        /// <param name="expression">The (1) expression to contain.</param>
         public ContainerExpression(Expression expression)
         {
             _expressions = new Expression[] { expression };
             _operator = null;
         }
 
+        /// <summary>
+        /// Creates a new expression container.
+        /// </summary>
+        /// <param name="expression">The (1) expression to contain.</param>
+        /// <param name="operator">The assigned operator for the expression.</param>
         public ContainerExpression(Expression expression, Operator @operator)
         {
             _expressions = new Expression[] { expression };
             _operator = @operator;
         }
 
+        /// <summary>
+        /// Creates a new expression container.
+        /// </summary>
+        /// <param name="leftExpression">The left expression to evaluate.</param>
+        /// <param name="rightExpression">The right expression to evaluate.</param>
+        /// <param name="operator">The operator that connects the expressions.</param>
         public ContainerExpression(Expression leftExpression, Expression rightExpression, Operator @operator)
         {
             _expressions = new Expression[] { leftExpression, rightExpression };
             _operator = @operator;
         }
 
+        /// <summary>
+        /// Creates a new expression container.
+        /// </summary>
+        /// <param name="expressions">The expressions to evaluate.</param>
+        /// <param name="operator">The operator that connects the expressions.</param>
         public ContainerExpression(Expression[] expressions, Operator @operator)
         {
             _expressions = expressions;
             _operator = @operator;
         }
 
+        /// <summary>
+        /// Creates a new expression container.
+        /// </summary>
+        /// <param name="container">The container which contains expressions and an operator.</param>
         public ContainerExpression(ContainerExpression container)
         {
             _expressions = container._expressions;
@@ -235,6 +262,10 @@ namespace YAMP
 
         #region String Representations
 
+        /// <summary>
+        /// Transforms the content into a string.
+        /// </summary>
+        /// <returns>The representative.</returns>
         public override string ToString()
         {
             if (_expressions != null)
@@ -253,6 +284,10 @@ namespace YAMP
             return string.Empty;
         }
 
+        /// <summary>
+        /// Transforms the contained expressions and operators into a valid part of a YAMP query.
+        /// </summary>
+        /// <returns>The code.</returns>
         public override string ToCode()
         {
             var sb = new StringBuilder();

@@ -39,7 +39,9 @@ namespace YAMP.Physics
         {
             return DiLog(value);
         }
-        
+
+        #region Algorithms
+
         /// <summary>
         /// Computes the complex dilogarithm function, also called Spence's function.
         /// </summary>
@@ -129,7 +131,7 @@ namespace YAMP.Physics
             {
                 var f_old = f.Clone();
                 p *= ln2 / (2 * k + 1) / (2 * k);
-                f += (-Helpers.bernoulli_numbers[k] / (2 * k)) * p;
+                f += (-Helpers.BernoulliNumbers[k] / (2 * k)) * p;
 
                 if (f == f_old) 
                     return f;
@@ -137,5 +139,7 @@ namespace YAMP.Physics
 
             throw new YAMPNotConvergedException("spence");
         }
+
+        #endregion
     }
 }

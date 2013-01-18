@@ -3,9 +3,13 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// This class contains bessel functions.
+    /// </summary>
 	public static class Bessel
-	{
-		/// <summary>
+    {
+        #region js
+        /// <summary>
 		/// Returns the Bessel function of order 0 of the specified number.
 		/// </summary>
 		/// <param name="x">x</param>
@@ -140,7 +144,11 @@ namespace YAMP.Numerics
 			return x < 0.0 && n % 2 == 1 ? -ans : ans;
 		}
 
-		/// <summary>
+        #endregion
+
+        #region ys
+
+        /// <summary>
 		/// Returns the Bessel function of the second kind, of order 0 of the specified number.
 		/// </summary>
 		/// <param name="x">x</param>
@@ -218,6 +226,8 @@ namespace YAMP.Numerics
 			}
 
 			return by;
-		}
-	}
+        }
+
+        #endregion
+    }
 }

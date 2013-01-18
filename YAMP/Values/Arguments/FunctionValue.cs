@@ -128,11 +128,21 @@ namespace YAMP
             };
         }
 
+        /// <summary>
+        /// Invokes the given function value.
+        /// </summary>
+        /// <param name="context">The context of the invocation.</param>
+        /// <param name="argument">The argument(s) to use for the invocation.</param>
+        /// <returns>The evaluated value.</returns>
         public Value Perform(ParseContext context, Value argument)
         {
             return perform(context, argument);
         }
 
+        /// <summary>
+        /// Returns a string representation of the function.
+        /// </summary>
+        /// <returns>The string representing the instance.</returns>
 		public override string ToString()
 		{
 			if (arguments == null || string.IsNullOrEmpty(body))
@@ -145,6 +155,10 @@ namespace YAMP
 
         #region Serialization
 
+        /// <summary>
+        /// Tries to convert the given instance into bytes.
+        /// </summary>
+        /// <returns>The binary content.</returns>
         public override byte[] Serialize()
         {
             if (!canSerialize)
@@ -162,6 +176,11 @@ namespace YAMP
             }
         }
 
+        /// <summary>
+        /// Tries to create a new instance from the given bytes.
+        /// </summary>
+        /// <param name="content">The binary content.</param>
+        /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
             if (content.Length == 0)

@@ -57,6 +57,10 @@ namespace YAMP
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance of the parse engine.
+        /// </summary>
+        /// <param name="input">The query context to consider.</param>
         public ParseEngine(QueryContext input)
         {
             query = input;
@@ -768,7 +772,7 @@ namespace YAMP
         /// Determines if the given content is a (block or line) comment.
         /// </summary>
         /// <param name="ch1">The leading character to be examined.</param>
-        /// <param name="ch1">The succeeding character to be investigated.</param>
+        /// <param name="ch2">The succeeding character to be investigated.</param>
         /// <returns>True if a line comment has been found.</returns>
         public static bool IsComment(char ch1, char ch2)
         {
@@ -779,7 +783,7 @@ namespace YAMP
         /// Determines if the given content is a line comment.
         /// </summary>
         /// <param name="ch1">The leading character to be examined.</param>
-        /// <param name="ch1">The succeeding character to be investigated.</param>
+        /// <param name="ch2">The succeeding character to be investigated.</param>
         /// <returns>True if a line comment has been found.</returns>
         public static bool IsLineComment(char ch1, char ch2)
         {
@@ -790,7 +794,7 @@ namespace YAMP
         /// Determines if the given content is a block comment.
         /// </summary>
         /// <param name="ch1">The leading character to be examined.</param>
-        /// <param name="ch1">The succeeding character to be investigated.</param>
+        /// <param name="ch2">The succeeding character to be investigated.</param>
         /// <returns>True if a block comment has been found.</returns>
         public static bool IsBlockComment(char ch1, char ch2)
         {
@@ -801,6 +805,10 @@ namespace YAMP
 
         #region General Stuff
 
+        /// <summary>
+        /// Transforms the contained expression blocks into one string.
+        /// </summary>
+        /// <returns>The string representation of the parser content.</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();

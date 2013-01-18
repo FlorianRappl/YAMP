@@ -18,7 +18,8 @@ namespace YAMP
         public StringValue Function(ScalarValue digits)
         {
             Context.Precision = digits.IntValue;
-            return new StringValue("Output precision changed to " + Context.Precision + " digits.");
+            Parser.RaiseNotification("precision", new NotificationEventArgs(NotificationType.Information, "Output precision changed to " + Context.Precision + " digits."));
+            return null;
         }
     }
 }

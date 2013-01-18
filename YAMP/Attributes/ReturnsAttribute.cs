@@ -34,8 +34,10 @@ namespace YAMP
 	/// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple=true)]
 	public class ReturnsAttribute : Attribute
-	{
-		/// <summary>
+    {
+        #region ctor
+
+        /// <summary>
 		/// Creates a new attribute for storing explanations for return values
 		/// (should be used in combination with multiple output arguments).
         /// </summary>
@@ -49,7 +51,11 @@ namespace YAMP
             Order = order;
 		}
 
-		/// <summary>
+        #endregion
+
+        #region Properties
+
+        /// <summary>
 		/// Gets the specified explanations for this return type.
 		/// </summary>
 		public string Explanation
@@ -61,11 +67,21 @@ namespace YAMP
         /// <summary>
         /// Gets the type that will be returned.
         /// </summary>
-        public Type ReturnType { get; private set; }
+        public Type ReturnType 
+        {
+            get; 
+            private set; 
+        }
 
         /// <summary>
         /// Gets the rank of the return attribute.
         /// </summary>
-        public int Order { get; private set; }
+        public int Order 
+        { 
+            get; 
+            private set;
+        }
+
+        #endregion
     }
 }

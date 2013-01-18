@@ -39,13 +39,23 @@ namespace YAMP
     {
         #region Members
 
+        /// <summary>
+        /// The various included series.
+        /// </summary>
         protected List<IPointSeries> points;
+
+        /// <summary>
+        /// The contained annotations.
+        /// </summary>
         protected List<Annotation> annotations;
 
         #endregion
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public XYPlotValue()
         {
             points = new List<IPointSeries>();
@@ -54,7 +64,7 @@ namespace YAMP
             LegendBackground = "white";
             LegendLineColor = "black";
             LegendLineWidth = 1.0;
-            LegendPosition = YAMP.LegendPosition.RightTop;
+            LegendPosition = LegendPosition.TopRight;
             XLabel = "x";
             YLabel = "y";
             Gridlines = false;
@@ -247,8 +257,15 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Adds points to the plot.
+        /// </summary>
+        /// <param name="m">The given matrix.</param>
         public abstract void AddPoints(MatrixValue m);
 
+        /// <summary>
+        /// Initializes the values MinX, MaxX, MinY and MaxY.
+        /// </summary>
         protected virtual void InitializeBoundaries()
         {
             MinX = double.MaxValue;
@@ -257,24 +274,52 @@ namespace YAMP
             MaxY = double.MinValue;
         }
 
+        /// <summary>
+        /// Sets the x-range (min and max) in one statement.
+        /// </summary>
+        /// <param name="min">The minimum for the x-axis.</param>
+        /// <param name="max">The maximum for the x-axis.</param>
         public void SetXRange(double min, double max)
         {
             MinX = min;
             MaxX = max;
         }
 
+        /// <summary>
+        /// Sets the y-range (min and max) in one statement.
+        /// </summary>
+        /// <param name="min">The minimum for the y-axis.</param>
+        /// <param name="max">The maximum for the y-axis.</param>
         public void SetYRange(double min, double max)
         {
             MinY = min;
             MaxY = max;
         }
 
-        public void AddSeries(IPointSeries series)
+        /// <summary>
+        /// Adds a new series to the plot. This function automatically
+        /// selects a new color for the series, such that no color
+        /// should be taken twice.
+        /// </summary>
+        /// <param name="series">The series to add.</param>
+        /// <param name="nameSeries">Should the series be named?</param>
+        /// <param name="colorSeries">Should the series be colored automatically?</param>
+        public void AddSeries(IPointSeries series, bool nameSeries = true, bool colorSeries = true)
         {
-            series.Color = StandardColors[Count % StandardColors.Length];
+            if(nameSeries)
+                series.Label = "Series " + (points.Count + 1);
+
+            if(colorSeries)
+                series.Color = StandardColors[Count % StandardColors.Length];
+
             points.Add(series);
         }
 
+        /// <summary>
+        /// Gets the specified series as an IPointSeries.
+        /// </summary>
+        /// <param name="index">The 0-based index of the series.</param>
+        /// <returns>The series at the given index.</returns>
         public IPointSeries GetSeries(int index)
         {
             return points[index];

@@ -218,6 +218,14 @@ namespace YAMP
             _stop = true;
         }
 
+        #endregion
+
+        #region String Representation
+
+        /// <summary>
+        /// Outputs the string representation of the query context.
+        /// </summary>
+        /// <returns>A string variable.</returns>
 		public override string ToString()
 		{
 			return string.Format("{0} = {1}{2}", Input, Environment.NewLine, Output);

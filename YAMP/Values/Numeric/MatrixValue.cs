@@ -338,6 +338,10 @@ namespace YAMP
 
         #region Serialization
 
+        /// <summary>
+        /// Serializes the current instance.
+        /// </summary>
+        /// <returns>The binary content of the current instance.</returns>
         public override byte[] Serialize()
         {
             byte[] content;
@@ -367,6 +371,11 @@ namespace YAMP
             return content;
         }
 
+        /// <summary>
+        /// Creates a new matrix instance from the given content.
+        /// </summary>
+        /// <param name="content">The binary content.</param>
+        /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
             dimY = BitConverter.ToInt32(content, 0);
@@ -598,6 +607,11 @@ namespace YAMP
 
         #region String Representation
 
+        /// <summary>
+        /// Creates a standard string representation of the matrix.
+        /// </summary>
+        /// <param name="context">The parse content.</param>
+        /// <returns>The string with the matrix.</returns>
         public override string ToString(ParseContext context)
         {
             var sb = new StringBuilder();
@@ -623,6 +637,10 @@ namespace YAMP
 
         #region Special Matrix operations
 
+        /// <summary>
+        /// Computes the inverse (if it exists).
+        /// </summary>
+        /// <returns>The inverse matrix.</returns>
         public MatrixValue Inverse()
         {
             var target = One(DimensionX);
@@ -642,6 +660,10 @@ namespace YAMP
             return qr.Solve(target);
         }
 
+        /// <summary>
+        /// Computes the adjungated (transposed + c.c.) matrix.
+        /// </summary>
+        /// <returns>The adjungated matrix.</returns>
         public MatrixValue Adjungate()
 		{
 			var m = Transpose();
@@ -652,6 +674,10 @@ namespace YAMP
 			return m;
 		}
 
+        /// <summary>
+        /// Computes the transposed matrix.
+        /// </summary>
+        /// <returns>The transposed matrix.</returns>
 		public MatrixValue Transpose()
 		{
 			var m = Clone();
@@ -672,6 +698,10 @@ namespace YAMP
 			return m;
 		}
 
+        /// <summary>
+        /// Computes the trace (sum over all elements on the diagonal) of the matrix.
+        /// </summary>
+        /// <returns>The value of the computation.</returns>
 		public ScalarValue Trace()
 		{
 			var sum = new ScalarValue();
@@ -686,6 +716,10 @@ namespace YAMP
 			return sum;
 		}
 
+        /// <summary>
+        /// Computes the determinant of the matrix.
+        /// </summary>
+        /// <returns>The value of the determinant.</returns>
 		public ScalarValue Det()
 		{
 			if (DimensionX == DimensionY)
@@ -812,11 +846,20 @@ namespace YAMP
 
         #region Comparison
 
+        /// <summary>
+        /// Gives a first hint if two matrices can be equivalent.
+        /// </summary>
+        /// <returns>The computed integer value.</returns>
         public override int GetHashCode()
 		{
 			return dimX + dimY;
 		}
 
+        /// <summary>
+        /// Takes a close look if two matrices are equivalent.
+        /// </summary>
+        /// <param name="obj">The other matrix (otherwise it is false).</param>
+        /// <returns>A boolean indicating the status.</returns>
 		public override bool Equals(object obj)
 		{
 			if (obj is MatrixValue)
@@ -989,7 +1032,7 @@ namespace YAMP
         /// <summary>
         /// Sets the i-th column vector to be of the given matrix.
         /// </summary>
-        /// <param name="j">The index of the column to set the vector to.</param>
+        /// <param name="i">The index of the column to set the vector to.</param>
         /// <param name="m">The matrix with values to set the i-th column to.</param>
         /// <returns>The current instance.</returns>
         public MatrixValue SetColumnVector(int i, MatrixValue m)
@@ -1196,6 +1239,12 @@ namespace YAMP
         
 		#region Standard Operators
 
+        /// <summary>
+        /// Multiplication.
+        /// </summary>
+        /// <param name="A">Matrix A</param>
+        /// <param name="B">Matrix B</param>
+        /// <returns>A * B</returns>
 		public static MatrixValue operator *(MatrixValue A, MatrixValue B)
 		{
             if (A.DimensionX != B.DimensionY)
@@ -1215,6 +1264,12 @@ namespace YAMP
             return M;
 		}
 
+        /// <summary>
+        /// Multiplication.
+        /// </summary>
+        /// <param name="s">Scalar s</param>
+        /// <param name="M">Matrix M</param>
+        /// <returns>s * M</returns>
 		public static MatrixValue operator *(ScalarValue s, MatrixValue M)
         {
             var A = new MatrixValue(M.DimensionY, M.DimensionX);
@@ -1226,11 +1281,23 @@ namespace YAMP
             return A;
 		}
 
+        /// <summary>
+        /// Division.
+        /// </summary>
+        /// <param name="l">Matrix l</param>
+        /// <param name="r">Matrix r</param>
+        /// <returns>l / r</returns>
 		public static MatrixValue operator /(MatrixValue l, MatrixValue r)
 		{
             return l * r.Inverse();
 		}
 
+        /// <summary>
+        /// Division.
+        /// </summary>
+        /// <param name="l">Matrix l</param>
+        /// <param name="r">Scalar r</param>
+        /// <returns>l / r</returns>
         public static MatrixValue operator /(MatrixValue l, ScalarValue r)
         {
             var m = new MatrixValue(l.DimensionY, l.DimensionX);
@@ -1242,6 +1309,12 @@ namespace YAMP
             return m;
         }
 
+        /// <summary>
+        /// Subtraction.
+        /// </summary>
+        /// <param name="l">Matrix l</param>
+        /// <param name="r">Matrix r</param>
+        /// <returns>l - r</returns>
 		public static MatrixValue operator -(MatrixValue l, MatrixValue r)
 		{
             if (r.DimensionX != l.DimensionX || r.DimensionY != l.DimensionY)
@@ -1256,6 +1329,12 @@ namespace YAMP
             return m;
 		}
 
+        /// <summary>
+        /// Addition.
+        /// </summary>
+        /// <param name="l">Matrix l</param>
+        /// <param name="r">Matrix r</param>
+        /// <returns>l + r</returns>
 		public static MatrixValue operator +(MatrixValue l, MatrixValue r)
         {
             if (r.DimensionX != l.DimensionX || r.DimensionY != l.DimensionY)
@@ -1270,6 +1349,12 @@ namespace YAMP
             return m;
 		}
 
+        /// <summary>
+        /// Equality.
+        /// </summary>
+        /// <param name="l">Matrix l</param>
+        /// <param name="r">Matrix r</param>
+        /// <returns>l == r</returns>
 		public static bool operator ==(MatrixValue l, MatrixValue r)
 		{
 			if (ReferenceEquals(l, r))
@@ -1292,6 +1377,12 @@ namespace YAMP
 			return true;
 		}
 
+        /// <summary>
+        /// Inequality.
+        /// </summary>
+        /// <param name="l">Matrix l</param>
+        /// <param name="r">Matrix r</param>
+        /// <returns>l != r</returns>
 		public static bool operator !=(MatrixValue l, MatrixValue r)
 		{
 			return !(l == r);
@@ -1304,7 +1395,7 @@ namespace YAMP
         /// <summary>
         /// Registers all operators that are associated with the matrix.
         /// </summary>
-        public override void RegisterElement()
+        protected override void RegisterOperators()
         {
             PlusOperator.Register(typeof(MatrixValue), typeof(MatrixValue), AddMM);
             PlusOperator.Register(typeof(MatrixValue), typeof(ScalarValue), AddMS);
@@ -1329,6 +1420,12 @@ namespace YAMP
             ModuloOperator.Register(typeof(MatrixValue), typeof(ScalarValue), ModuloMS);
         }
 
+        /// <summary>
+        /// Matrix + Matrix
+        /// </summary>
+        /// <param name="left">Must be a matrix.</param>
+        /// <param name="right">Must be a matrix.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue AddMM(Value left, Value right)
         {
             var l = (MatrixValue)left;
@@ -1336,6 +1433,12 @@ namespace YAMP
             return l + r;
         }
 
+        /// <summary>
+        /// Scalar + Matrix
+        /// </summary>
+        /// <param name="left">Must be a scalar.</param>
+        /// <param name="right">Must be a matrix.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue AddSM(Value left, Value right)
         {
             var s = (ScalarValue)left;
@@ -1349,11 +1452,23 @@ namespace YAMP
             return M;
         }
 
+        /// <summary>
+        /// Matrix + Scalar
+        /// </summary>
+        /// <param name="left">Must be a matr.</param>
+        /// <param name="right">Must be a scalar.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue AddMS(Value left, Value right)
         {
             return AddSM(right, left);
         }
 
+        /// <summary>
+        /// Matrix - Matrix
+        /// </summary>
+        /// <param name="left">Must be a matrix.</param>
+        /// <param name="right">Must be a matrix.</param>
+        /// <returns>The new matrix.</returns>
         public static Value SubtractMM(Value left, Value right)
         {
             var l = (MatrixValue)left;
@@ -1361,11 +1476,23 @@ namespace YAMP
             return l - r;
         }
 
+        /// <summary>
+        /// Matrix - Scalar
+        /// </summary>
+        /// <param name="left">Must be a matr.</param>
+        /// <param name="right">Must be a scalar.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue SubtractMS(Value left, Value right)
         {
             return SubtractSM(right, left);
         }
 
+        /// <summary>
+        /// Scalar - Matrix
+        /// </summary>
+        /// <param name="left">Must be a scalar.</param>
+        /// <param name="right">Must be a matrix.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue SubtractSM(Value left, Value right)
         {
             var s = (ScalarValue)left;
@@ -1379,6 +1506,12 @@ namespace YAMP
             return m;
         }
 
+        /// <summary>
+        /// Matrix * Matrix
+        /// </summary>
+        /// <param name="left">Must be a matrix.</param>
+        /// <param name="right">Must be a matrix.</param>
+        /// <returns>The new matrix.</returns>
         public static Value MultiplyMM(Value left, Value right)
         {
             var A = (MatrixValue)left;
@@ -1391,11 +1524,23 @@ namespace YAMP
             return C;
         }
 
+        /// <summary>
+        /// Matrix * Scalar
+        /// </summary>
+        /// <param name="left">Must be a matr.</param>
+        /// <param name="right">Must be a scalar.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue MultiplyMS(Value left, Value right)
         {
             return MultiplySM(right, left);
         }
 
+        /// <summary>
+        /// Scalar * Matrix
+        /// </summary>
+        /// <param name="left">Must be a scalar.</param>
+        /// <param name="right">Must be a matrix.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue MultiplySM(Value left, Value right)
         {
             var l = (ScalarValue)left;
@@ -1403,6 +1548,12 @@ namespace YAMP
             return l * r;
         }
 
+        /// <summary>
+        /// Matrix ^ Scalar
+        /// </summary>
+        /// <param name="basis">Must be a matr.</param>
+        /// <param name="exponent">Must be a scalar.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue PowMS(Value basis, Value exponent)
         {
             var l = (MatrixValue)basis;
@@ -1424,6 +1575,12 @@ namespace YAMP
             return eye;
         }
 
+        /// <summary>
+        /// Scalar ^ Matrix
+        /// </summary>
+        /// <param name="basis">Must be a scalar.</param>
+        /// <param name="exponent">Must be a matrix.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue PowSM(Value basis, Value exponent)
         {
             var l = (ScalarValue)basis;
@@ -1437,20 +1594,12 @@ namespace YAMP
             return m;
         }
 
-        public static MatrixValue DivideMS(Value left, Value right)
-        {
-            var l = (MatrixValue)left;
-            var r = (ScalarValue)right;
-            return l / r;
-        }
-
-        public static MatrixValue DivideSM(Value left, Value right)
-        {
-            var l = (ScalarValue)left;
-            var r = (MatrixValue)right;
-            return l * r.Inverse();
-        }
-
+        /// <summary>
+        /// Matrix / Matrix
+        /// </summary>
+        /// <param name="left">Must be a matrix.</param>
+        /// <param name="right">Must be a matrix.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue DivideMM(Value left, Value right)
         {
             var L = (MatrixValue)left;
@@ -1458,6 +1607,38 @@ namespace YAMP
             return L / Q;
         }
 
+        /// <summary>
+        /// Matrix / Scalar
+        /// </summary>
+        /// <param name="left">Must be a matr.</param>
+        /// <param name="right">Must be a scalar.</param>
+        /// <returns>The new matrix.</returns>
+        public static MatrixValue DivideMS(Value left, Value right)
+        {
+            var l = (MatrixValue)left;
+            var r = (ScalarValue)right;
+            return l / r;
+        }
+
+        /// <summary>
+        /// Scalar / Matrix
+        /// </summary>
+        /// <param name="left">Must be a scalar.</param>
+        /// <param name="right">Must be a matrix.</param>
+        /// <returns>The new matrix.</returns>
+        public static MatrixValue DivideSM(Value left, Value right)
+        {
+            var l = (ScalarValue)left;
+            var r = (MatrixValue)right;
+            return l * r.Inverse();
+        }
+
+        /// <summary>
+        /// Matrix % Scalar
+        /// </summary>
+        /// <param name="left">Must be a matr.</param>
+        /// <param name="right">Must be a scalar.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue ModuloMS(Value left, Value right)
         {
             var l = (MatrixValue)left;
@@ -1465,6 +1646,12 @@ namespace YAMP
             return ModFunction.Mod(l, r);
         }
 
+        /// <summary>
+        /// Scalar % Matrix
+        /// </summary>
+        /// <param name="left">Must be a scalar.</param>
+        /// <param name="right">Must be a matrix.</param>
+        /// <returns>The new matrix.</returns>
         public static MatrixValue ModuloSM(Value left, Value right)
         {
             var l = (ScalarValue)left;
@@ -1476,6 +1663,13 @@ namespace YAMP
 
         #region Functional behavior
 
+        /// <summary>
+        /// Method used by YAMP to set values in a matrix.
+        /// </summary>
+        /// <param name="context">The context where this is happening.</param>
+        /// <param name="argument">The indices (1-dim or 2-dim).</param>
+        /// <param name="values">The value(s) to set.</param>
+        /// <returns>The current instance.</returns>
         public Value Perform(ParseContext context, Value argument, Value values)
         {
             if (!(values is NumericValue))
@@ -1550,6 +1744,12 @@ namespace YAMP
             return this;
         }
 
+        /// <summary>
+        /// The method used by YAMP to get values from a matrix.
+        /// </summary>
+        /// <param name="context">The context where this is happening.</param>
+        /// <param name="argument">The 1-dim or 2-dim indices.</param>
+        /// <returns>The values that have been requested.</returns>
         public Value Perform(ParseContext context, Value argument)
         {
             if (argument is ArgumentsValue)

@@ -85,7 +85,9 @@ namespace YAMP
             if (chars[index] == '(')
             {
                 kw.Condition = engine.Advance().ParseStatement(')');
+                SetMarker(engine);
                 kw.Body = engine.ParseStatement();
+                UnsetMarker(engine);
 
                 if (engine.LastStatement != null && engine.LastStatement.IsKeyword<DoKeyword>())
                 {

@@ -276,11 +276,11 @@ namespace YAMP.Numerics
         }
 
         /// <summary>
-        /// Returns a nonnegative random number less than or equal to <see cref="Int32.MaxValue"/>.
+        /// Returns a nonnegative random number less than or equal to MaxValue.
         /// </summary>
         /// <returns>
-        /// A 32-bit signed integer greater than or equal to 0, and less than or equal to <see cref="Int32.MaxValue"/>; 
-        ///   that is, the range of return values includes 0 and <paramref name="Int32.MaxValue"/>.
+        /// A 32-bit signed integer greater than or equal to 0, and less than or equal to MaxValue; 
+        ///   that is, the range of return values includes 0 and MaxValue.
         /// </returns>
         public int NextInclusiveMaxValue()
         {
@@ -324,11 +324,11 @@ namespace YAMP.Numerics
         }
 
         /// <summary>
-        /// Returns a nonnegative random number less than <see cref="Int32.MaxValue"/>.
+        /// Returns a nonnegative random number less than MaxValue.
         /// </summary>
         /// <returns>
-        /// A 32-bit signed integer greater than or equal to 0, and less than <see cref="Int32.MaxValue"/>; that is, 
-        ///   the range of return values includes 0 but not <paramref name="Int32.MaxValue"/>.
+        /// A 32-bit signed integer greater than or equal to 0, and less than MaxValue; that is, 
+        ///   the range of return values includes 0 but not MaxValue.
         /// </returns>
         public override int Next()
         {

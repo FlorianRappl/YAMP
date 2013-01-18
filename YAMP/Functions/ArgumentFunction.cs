@@ -46,6 +46,9 @@ namespace YAMP
 
 		#region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
 		public ArgumentFunction ()
 		{
 		    functions = (from method in GetType().GetMethods()
@@ -58,6 +61,9 @@ namespace YAMP
 
 		#region Properties
 
+        /// <summary>
+        /// Gets the number of given arguments.
+        /// </summary>
 		public int Length
 		{
 			get
@@ -101,6 +107,11 @@ namespace YAMP
 			return false;
 		}
 		
+        /// <summary>
+        /// Performs the function execution.
+        /// </summary>
+        /// <param name="argument">The argument(s) (if presented in an "ArgumentValue").</param>
+        /// <returns>The evaluated value.</returns>
 		public override Value Perform (Value argument)
 		{
 			if(argument is ArgumentsValue)
@@ -110,8 +121,12 @@ namespace YAMP
 			
 			return Execute();
 		}
-		
-		Value Execute()
+
+        #endregion
+
+        #region Helpers
+
+        Value Execute()
 		{
             var args = arguments.Length;
             var expected = 0;

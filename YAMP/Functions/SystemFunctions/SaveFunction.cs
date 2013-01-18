@@ -9,16 +9,13 @@ namespace YAMP
 	[Kind(PopularKinds.System)]
     class SaveFunction : SystemFunction
 	{
-        public SaveFunction()
-        {
-        }
-
         [Description("Saves all variables that are currently available.")]
         [Example("save(\"myfile.mat\")", "Saves all variables in the file myfile.mat")]
         public StringValue Function(StringValue fileName)
 		{
             Save(fileName.Value, Context.Variables);
-            return new StringValue(Context.Variables.Count + " objects saved.");
+            Notify(Context.Variables.Count);
+            return null;
 		}
 
         [Description("Saves the specified variables in the file.")]
@@ -40,31 +37,41 @@ namespace YAMP
             }
 
             Save(fileName.Value, workspace);
-            return new StringValue(workspace.Count + " objects saved.");
+            Notify(workspace.Count);
+            return null;
         }
 
-		public static void Save(string filename, IDictionary<string, Value> workspace)
-		{
-			using(var fs = File.Create(filename))
-			{
-				foreach(string variable in workspace.Keys)
-				{
-					var idx = Encoding.Unicode.GetBytes(variable);
-					var len = BitConverter.GetBytes (idx.Length);
-					fs.Write(len, 0, len.Length);
-					fs.Write(idx, 0, idx.Length);
-					var value = workspace[variable];
-					idx = Encoding.ASCII.GetBytes(value.Header);
-					len = BitConverter.GetBytes(idx.Length);
-					fs.Write(len, 0, len.Length);
-					fs.Write(idx, 0, idx.Length);
-					idx = value.Serialize();
-					len = BitConverter.GetBytes(idx.Length);
-					fs.Write(len, 0, len.Length);
-					fs.Write(idx, 0, idx.Length);
-				}
-			}
-		}
-	}
+        #region Helpers
+
+        public static void Save(string filename, IDictionary<string, Value> workspace)
+        {
+            using (var fs = File.Create(filename))
+            {
+                foreach (string variable in workspace.Keys)
+                {
+                    var idx = Encoding.Unicode.GetBytes(variable);
+                    var len = BitConverter.GetBytes(idx.Length);
+                    fs.Write(len, 0, len.Length);
+                    fs.Write(idx, 0, idx.Length);
+                    var value = workspace[variable];
+                    idx = Encoding.ASCII.GetBytes(value.Header);
+                    len = BitConverter.GetBytes(idx.Length);
+                    fs.Write(len, 0, len.Length);
+                    fs.Write(idx, 0, idx.Length);
+                    idx = value.Serialize();
+                    len = BitConverter.GetBytes(idx.Length);
+                    fs.Write(len, 0, len.Length);
+                    fs.Write(idx, 0, idx.Length);
+                }
+            }
+        }
+
+        static void Notify(int count)
+        {
+            Parser.RaiseNotification("save", new NotificationEventArgs(NotificationType.Success, count + " objects saved."));
+        }
+
+        #endregion
+    }
 }
 

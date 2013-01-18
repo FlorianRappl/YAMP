@@ -172,7 +172,8 @@ namespace YAMP
 		/// <summary>
 		/// Searches for the given keyword in the list of available keywords. Creates a class if the keyword is found.
 		/// </summary>
-		/// <param name="keyword">The keyword to look for.</param>
+        /// <param name="keyword">The keyword to look for.</param>
+        /// <param name="engine">The engine to use.</param>
 		/// <returns>Keyword that matches the given keyword.</returns>
         public Expression FindKeywordExpression(string keyword, ParseEngine engine)
         {

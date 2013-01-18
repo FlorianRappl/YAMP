@@ -56,6 +56,8 @@ namespace YAMP.Physics
             return M;
         }
 
+        #region Algorithm
+
         static ScalarValue Zernike(int n, int m, ScalarValue rho)
         {
             if (n < 0)
@@ -116,5 +118,7 @@ namespace YAMP.Physics
                 r1 = rp;
             }
         }
+
+        #endregion
     }
 }

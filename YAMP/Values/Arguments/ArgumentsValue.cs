@@ -46,11 +46,18 @@ namespace YAMP
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public ArgumentsValue()
         {
             _values = new List<Value>();
         }
 
+        /// <summary>
+        /// Creates a new instance containing the specified values.
+        /// </summary>
+        /// <param name="values">The values to include.</param>
         public ArgumentsValue(params Value[] values)
             : this()
         {
@@ -107,6 +114,10 @@ namespace YAMP
 
         #region Serialization
 
+        /// <summary>
+        /// Serializes the instance.
+        /// </summary>
+        /// <returns>The binary content for creating such an instance again.</returns>
         public override byte[] Serialize()
         {
             byte[] content;
@@ -132,6 +143,11 @@ namespace YAMP
             return content;
         }
 
+        /// <summary>
+        /// Create a new instance from the given binary content.
+        /// </summary>
+        /// <param name="content">The content in bytes.</param>
+        /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
             using (var ms = new System.IO.MemoryStream(content))
@@ -236,6 +252,12 @@ namespace YAMP
 
 		#region Static
 
+        /// <summary>
+        /// Creates a new ArgumentsValue with 2 values.
+        /// </summary>
+        /// <param name="left">The first value to include.</param>
+        /// <param name="right">The second value to include.</param>
+        /// <returns>The new ArgumentsValue instance.</returns>
 		public static ArgumentsValue Create (Value left, Value right)
 		{
 			var a = new ArgumentsValue();
@@ -247,6 +269,11 @@ namespace YAMP
 
         #region Overrides
 
+        /// <summary>
+        /// Returns a string representation of the content.
+        /// </summary>
+        /// <param name="context">The context to consider.</param>
+        /// <returns>The string representation.</returns>
         public override string ToString(ParseContext context)
         {
             var first = First();
@@ -259,20 +286,30 @@ namespace YAMP
 
         #endregion
 
-        #region Method invocation
+        #region Functional Behavior
 
+        /// <summary>
+        /// Uses the instance from YAMP like a function.
+        /// </summary>
+        /// <param name="context">The context in which this instance is used.</param>
+        /// <param name="argument">The indices that have been specified.</param>
+        /// <returns>The value behind the given index.</returns>
         public Value Perform(ParseContext context, Value argument)
         {
             if (argument is ScalarValue)
                 return this[((ScalarValue)argument).IntValue];
 
-            throw new YAMPOperationInvalidException("argument-index", argument);
+            throw new YAMPArgumentWrongTypeException(argument.Header, "Scalar", "Arguments");
         }
 
         #endregion
 
         #region Enumerable
 
+        /// <summary>
+        /// Gets an enumerator of this ArgumentsValue.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<Value> GetEnumerator()
         {
             return _values.GetEnumerator();

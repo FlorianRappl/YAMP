@@ -6,10 +6,6 @@ namespace YAMP
 	[Kind(PopularKinds.System)]
     class ClearFunction : SystemFunction
     {
-        public ClearFunction()
-        {
-        }
-
         [Description("Clears all variables.")]
         [ExampleAttribute("clear()")]
         public StringValue Function()
@@ -22,7 +18,8 @@ namespace YAMP
                 count++;
             }
 
-            return new StringValue(count + " objects cleared.");
+            Notify(count);
+            return null;
         }
 
         [Description("Clears the specified variables given with their names as strings.")]
@@ -48,7 +45,13 @@ namespace YAMP
                 }
             }
 
-            return new StringValue(count + " objects cleared.");
+            Notify(count);
+            return null;
+        }
+
+        void Notify(int count)
+        {
+            Parser.RaiseNotification("clear", new NotificationEventArgs(NotificationType.Information, count + " objects cleared."));
         }
     }
 }

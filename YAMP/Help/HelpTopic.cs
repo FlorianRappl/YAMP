@@ -36,6 +36,10 @@ namespace YAMP.Help
     /// </summary>
 	public class HelpTopic : List<HelpEntry>
 	{
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="kind">The kind of topic.</param>
 		public HelpTopic(string kind)
 		{
 			Kind = kind;

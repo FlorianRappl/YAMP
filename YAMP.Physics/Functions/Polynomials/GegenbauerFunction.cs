@@ -56,7 +56,9 @@ namespace YAMP.Physics
             return M;
         }
 
-        static ScalarValue Gegenbauer(int n, double alpha, ScalarValue x)
+        #region Algorithm
+
+        public static ScalarValue Gegenbauer(int n, double alpha, ScalarValue x)
         {
             if (n < 0)
                 throw new YAMPArgumentRangeException("n");
@@ -83,5 +85,7 @@ namespace YAMP.Physics
 
             return C1;
         }
+
+        #endregion
     }
 }

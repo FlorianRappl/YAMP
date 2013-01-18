@@ -3,6 +3,9 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// Basic class for an Arnoldi iteration.
+    /// </summary>
     public class Arnoldi
     {
         MatrixValue A;
@@ -14,13 +17,13 @@ namespace YAMP.Numerics
         /// Creates the instance of an Arnoldi method for orthogonalization of the Krylov subspace.
         /// </summary>
         /// <param name="A">
-        /// A <see cref="mat"/> reference to the A matrix, which is to the matrix to solve A * x = b.
+        /// A reference to the A matrix, which is to the matrix to solve A * x = b.
         /// </param>
         /// <param name="H">
-        /// A <see cref="mat"/> reference to the H matrix.
+        /// A reference to the H matrix.
         /// </param>
         /// <param name="v">
-        /// A <see cref="mat"/> reference to the collection of v vectors.
+        /// A reference to the collection of v vectors.
         /// </param>
         public Arnoldi(MatrixValue A, MatrixValue H, MatrixValue v)
         {
@@ -30,6 +33,10 @@ namespace YAMP.Numerics
             this.j = 0;
         }
 
+        /// <summary>
+        /// Performs the next iteration.
+        /// </summary>
+        /// <returns>True if the iteration converged, false if another iteration is required.</returns>
         public bool Next()
         {
             j++;

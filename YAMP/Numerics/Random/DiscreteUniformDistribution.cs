@@ -5,6 +5,7 @@
 
 
 using System;
+
 namespace YAMP.Numerics
 {
 	/// <summary>
@@ -80,8 +81,8 @@ namespace YAMP.Numerics
 
 		#region construction
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DiscreteUniformDistribution"/> class, using a 
-		///   <see cref="StandardGenerator"/> as underlying random number generator. 
+        /// Initializes a new instance of the DiscreteUniformDistribution class, using a 
+        /// StandardGenerator as underlying random number generator. 
 		/// </summary>
 		public DiscreteUniformDistribution()
 		{

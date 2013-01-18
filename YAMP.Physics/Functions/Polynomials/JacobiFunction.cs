@@ -60,6 +60,8 @@ namespace YAMP.Physics
             return M;
         }
 
+        #region Algorithm
+
         /// <summary>
         /// Returns the JacobiP of order n with parameters alpha and beta of the specified number.
         /// </summary>
@@ -109,8 +111,9 @@ namespace YAMP.Physics
                 p += n_over_m[k] * gamma_alpha_beta_n_m_1[k] / gamma_alpha_m_1[k] * z_minus_1_over_2_to_the_m;
             }
 
-            p *= gamma_alpha_m_1[n] / (gamma_alpha_beta_n_m_1[0] * n_factorial);
-            return p; 
+            return p * gamma_alpha_m_1[n] / (gamma_alpha_beta_n_m_1[0] * n_factorial);
         }
+
+        #endregion
     }
 }

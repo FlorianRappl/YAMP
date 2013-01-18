@@ -45,11 +45,25 @@ namespace YAMP
 
 		static ParseContext primary;
 
-		#endregion
+        #endregion
 
-		#region ctor
+        #region Events
 
-		private Parser(ParseContext context, QueryContext query)
+        /// <summary>
+        /// If a new notification has been sent, this event is fired (only in interactive mode).
+        /// </summary>
+        public static event EventHandler<NotificationEventArgs> OnNotificationReceived;
+
+        /// <summary>
+        /// If the user is required to enter something this event is fired.
+        /// </summary>
+        public static event EventHandler<UserInputEventArgs> OnUserInputRequired;
+
+        #endregion
+
+        #region ctor
+
+        private Parser(ParseContext context, QueryContext query)
 		{
 			_query = query;
 			query.Context = context;
@@ -146,6 +160,18 @@ namespace YAMP
 			get;
 			set;
 		}
+
+        /// <summary>
+        /// Gets or sets if YAMP should run in interactive mode.
+        /// </summary>
+        /// <value>
+        /// The current setting.
+        /// </value>
+        public static bool InteractiveMode
+        {
+            get;
+            set;
+        }
 
 		#endregion
 
@@ -481,6 +507,34 @@ namespace YAMP
 
 		#region General
 
+        /// <summary>
+        /// Raises the notification if in interactive mode.
+        /// </summary>
+        /// <param name="sender">The sender of the notification.</param>
+        /// <param name="e">The notification arguments.</param>
+        public static void RaiseNotification(string sender, NotificationEventArgs e)
+        {
+            if (InteractiveMode && OnNotificationReceived != null)
+                OnNotificationReceived(sender, e);
+        }
+
+        /// <summary>
+        /// Raises the input prompt if in interactive mode.
+        /// </summary>
+        /// <param name="sender">The sender that demands the user input.</param>
+        /// <param name="e">The input arguments.</param>
+        public static void RaiseInputPrompt(string sender, UserInputEventArgs e)
+        {
+            if (InteractiveMode && OnUserInputRequired != null)
+                OnUserInputRequired(sender, e);
+            else
+                e.Continue(string.Empty);
+        }
+
+        /// <summary>
+        /// Returns a string representation of the query.
+        /// </summary>
+        /// <returns>A string variable.</returns>
 		public override string ToString()
 		{
 			return _query.ToString();

@@ -3,6 +3,9 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// This class contains the dawson integral.
+    /// </summary>
     public static class Dawson
     {
         #region Constant Coefficients

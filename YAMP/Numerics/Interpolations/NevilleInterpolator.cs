@@ -3,12 +3,24 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// The Neville polynom interpolation algorithm.
+    /// </summary>
     public class NevilleInterpolator : Interpolation
     {
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="vector">The Nx2 vector with the sample values.</param>
         public NevilleInterpolator(MatrixValue vector) : base(vector)
         {
         }
 
+        /// <summary>
+        /// Interpolates the y value for a given x (t) value.
+        /// </summary>
+        /// <param name="t">The x value for computing f(x) = y.</param>
+        /// <returns>The interpolated value.</returns>
         public override double ComputeValue(double t)
         {
             var x = Samples.GetRealVector(0, Np, 0, 1);

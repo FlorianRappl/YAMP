@@ -35,6 +35,9 @@ namespace YAMP.Help
     /// </summary>
 	public class HelpFunctionUsage
 	{
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
 		public HelpFunctionUsage()
 		{
 			Examples = new List<HelpExample>();

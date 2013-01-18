@@ -3,12 +3,15 @@ using YAMP;
 
 namespace YAMP.Numerics
 {
+    /// <summary>
+    /// This is the Runge-Kutta Algorithm for solving ODEs.
+    /// </summary>
     public class RungeKutta : ODEBase
     {
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="function">Function to be solved delegate</param>
+        /// <param name="f">Function to be solved delegate</param>
         /// <param name="begin">Interval start point value</param>
         /// <param name="end">Interval end point value</param>
         /// <param name="y0">Starting condition</param>
@@ -18,6 +21,9 @@ namespace YAMP.Numerics
         {
         }
 
+        /// <summary>
+        /// Calculates the result.
+        /// </summary>
         protected override void Calculate()
         {
             double k1, k2, k3;

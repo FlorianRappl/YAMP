@@ -19,11 +19,13 @@ namespace YAMP
                 p = Path.Combine(Environment.CurrentDirectory, path.Value);
 
             if (!Directory.Exists(path.Value))
-                throw new DirectoryNotFoundException("The directory " + p + " could not be found.");
+            {
+                Parser.RaiseNotification("cd", new NotificationEventArgs(NotificationType.Failure, "The directory " + p + " could not be found."));
+                return null;
+            }
 
             Environment.CurrentDirectory = path.Value;
-
-            return new StringValue(Environment.CurrentDirectory);
+            return null;
         }
     }
 }

@@ -7,13 +7,35 @@ namespace YAMP
     /// of classes that represent constants.
     /// </summary>
 	public abstract class BaseConstant : IConstants
-	{
-		string name;
+    {
+        #region Members
 
+        string name;
+
+        #endregion
+
+        #region ctor
+
+        /// <summary>
+        /// Creates a new instance with the name given by convention.
+        /// </summary>
 		public BaseConstant()
 		{
 			name = GetType().Name.Replace("Constant", string.Empty);
 		}
+
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="name">The name for the constant.</param>
+        public BaseConstant(string name)
+        {
+            this.name = name;
+        }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets the name of the constant (by convention).
@@ -30,6 +52,8 @@ namespace YAMP
 		public abstract Value Value
 		{
 			get;
-		}
-	}
+        }
+
+        #endregion
+    }
 }

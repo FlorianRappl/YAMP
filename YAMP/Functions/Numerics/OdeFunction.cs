@@ -22,6 +22,7 @@ namespace YAMP
 
 				return ((ScalarValue)sv).Value;
 			};
+
 			var euler = new RungeKutta(lambda, points[1].Value, points[points.Length].Value, x0.Value, points.Length - 1);
 			return new MatrixValue(euler.Result);
 		}

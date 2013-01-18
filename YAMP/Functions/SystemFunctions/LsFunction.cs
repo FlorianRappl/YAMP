@@ -20,7 +20,6 @@ namespace YAMP
 		public StringValue Function(StringValue filter)
 		{
 			var sb = new StringBuilder();
-
 			var dir = new DirectoryInfo(Environment.CurrentDirectory);
 
 			sb.AppendFormat("{0,-32} {1,-10}   {2}", "Name", "Attributes", "Last changed").AppendLine();
@@ -43,7 +42,7 @@ namespace YAMP
 			return new StringValue(sb.ToString());
 		}
 
-		private string Limit(string p)
+		string Limit(string p)
 		{
 			if (p.Length > 29)
 				return p.Substring(0, 29) + "...";
@@ -51,7 +50,7 @@ namespace YAMP
 			return p;
 		}
 
-		private string PrintAttributes(FileAttributes fileAttributes)
+	    string PrintAttributes(FileAttributes fileAttributes)
 		{
 			var sb = new StringBuilder();
 			sb.Append(Check(fileAttributes, FileAttributes.Directory, 'd'));
@@ -63,10 +62,9 @@ namespace YAMP
 			sb.Append(Check(fileAttributes, FileAttributes.Archive, 'a'));
 			sb.Append(Check(fileAttributes, FileAttributes.Temporary, 't'));
 			return sb.ToString();
-
 		}
 
-		private char Check(FileAttributes there, FileAttributes premise, char ok)
+		char Check(FileAttributes there, FileAttributes premise, char ok)
 		{
 			if((there & premise) == premise)
 				return ok;
