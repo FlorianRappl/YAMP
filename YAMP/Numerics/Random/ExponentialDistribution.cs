@@ -17,6 +17,7 @@ namespace YAMP.Numerics
 	public class ExponentialDistribution : Distribution
 	{
 		#region instance fields
+
 		/// <summary>
 		/// Gets or sets the parameter lambda which is used for generation of exponential distributed random numbers.
 		/// </summary>
@@ -40,7 +41,7 @@ namespace YAMP.Numerics
 		/// <summary>
 		/// Stores the parameter lambda which is used for generation of exponential distributed random numbers.
 		/// </summary>
-		private double lambda;
+		double lambda;
 
         /// <summary>
         /// Stores an intermediate result for generation of exponential distributed random numbers.
@@ -49,10 +50,12 @@ namespace YAMP.Numerics
         /// Speeds up random number generation cause this value only depends on distribution parameters 
         ///   and therefor doesn't need to be recalculated in successive executions of <see cref="NextDouble"/>.
         /// </remarks>
-        private double helper1;
+        double helper1;
+
         #endregion
 		
 		#region construction
+
 		/// <summary>
         /// Initializes a new instance of the ExponentialDistribution class, using a 
         /// StandardGenerator as underlying random number generator.
@@ -75,9 +78,11 @@ namespace YAMP.Numerics
             this.lambda = 1.0;
             this.UpdateHelpers();
         }
+
         #endregion
 		
 		#region instance methods
+
 		/// <summary>
         /// Determines whether the specified value is valid for parameter <see cref="Lambda"/>.
 		/// </summary>
@@ -94,13 +99,15 @@ namespace YAMP.Numerics
         /// Updates the helper variables that store intermediate results for generation of exponential distributed random 
         ///   numbers.
         /// </summary>
-        private void UpdateHelpers()
+        void UpdateHelpers()
         {
             this.helper1 = -1.0 / this.lambda;
         }
+
         #endregion
 
 		#region overridden Distribution members
+
         /// <summary>
 		/// Gets the minimum possible value of exponential distributed random numbers.
 		/// </summary>
@@ -176,6 +183,7 @@ namespace YAMP.Numerics
             // Subtract random number from 1.0 to avoid Math.Log(0.0)
             return this.helper1 * Math.Log(1.0 - this.Generator.NextDouble());
 		}
+
 		#endregion
 	}
 }

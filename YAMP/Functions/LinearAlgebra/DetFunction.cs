@@ -4,6 +4,7 @@ namespace YAMP
 {
 	[Description("Calculates the determinant of the given matrix.")]
 	[Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Determinant")]
 	class DetFunction : ArgumentFunction
 	{
 		[Description("Uses the best algorithm to compute the determinant.")]

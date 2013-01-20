@@ -5,6 +5,7 @@ namespace YAMP
 {
 	[Description("Uses the conjugate gradient algorithm to solve a linear system of equations.")]
 	[Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Conjugate_gradient_method")]
     class CGFunction : ArgumentFunction
     {
         [Description("Computes the solution vector x for a given matrix A and a source vector b.")]

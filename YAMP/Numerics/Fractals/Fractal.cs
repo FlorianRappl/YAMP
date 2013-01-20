@@ -4,9 +4,9 @@ using YAMP;
 namespace YAMP.Numerics
 {
     /// <summary>
-    /// Creates the class for evaluating a mandelbrot function.
+    /// Represents the abstract base class for Fractals.
     /// </summary>
-    public class Mandelbrot
+    public abstract class Fractal
     {
         #region Members
 
@@ -18,27 +18,11 @@ namespace YAMP.Numerics
         #region ctor
 
         /// <summary>
-        /// Creates a new mandelbrot instance with the default number of iterations (768).
-        /// </summary>
-        public Mandelbrot() : this(768)
-        {
-        }
-
-        /// <summary>
-        /// Creates a new mandelbrot instance with the default number of colors (25).
-        /// </summary>
-        /// <param name="maxIterations">The number of iterations.</param>
-        public Mandelbrot(int maxIterations)
-            : this(maxIterations, 25)
-        {
-        }
-
-        /// <summary>
         /// Creates a new instance.
         /// </summary>
-        /// <param name="maxIterations">The maximum iterations.</param>
-        /// <param name="colors">The number of colors.</param>
-        public Mandelbrot(int maxIterations, int colors)
+        /// <param name="maxIterations">The maximum number of iterations.</param>
+        /// <param name="colors">The number of colors to use.</param>
+        public Fractal(int maxIterations, int colors)
         {
             this.maxIterations = maxIterations;
             this.colors = colors;
@@ -51,12 +35,18 @@ namespace YAMP.Numerics
         /// <summary>
         /// Gets the maximum number of iterations.
         /// </summary>
-        public int MaxIterations { get { return maxIterations; } }
+        public int MaxIterations
+        {
+            get { return maxIterations; }
+        }
 
         /// <summary>
         /// Gets the number of colors to use.
         /// </summary>
-        public int Colors { get { return colors; } }
+        public int Colors
+        {
+            get { return colors; }
+        }
 
         #endregion
 
@@ -100,7 +90,7 @@ namespace YAMP.Numerics
         #region Methods
 
         /// <summary>
-        /// Calculates the matrix with all the mandelbrot values.
+        /// Calculates the matrix with all the fractal values.
         /// </summary>
         /// <param name="xi">The initial (start) x.</param>
         /// <param name="xf">The final (end) x.</param>
@@ -109,7 +99,7 @@ namespace YAMP.Numerics
         /// <param name="xsteps">The number of steps in x direction.</param>
         /// <param name="ysteps">The number of steps in y direction.</param>
         /// <returns>The matrix with all the values.</returns>
-        public MatrixValue CalculateMatrix(double xi, double xf, double yi, double yf, int xsteps, int ysteps)
+        public virtual MatrixValue CalculateMatrix(double xi, double xf, double yi, double yf, int xsteps, int ysteps)
         {
             var width = (double)xsteps;
             var height = (double)ysteps;
@@ -132,27 +122,12 @@ namespace YAMP.Numerics
         }
 
         /// <summary>
-        /// Calculates a single mandelbrot value.
+        /// Calculates a single value.
         /// </summary>
         /// <param name="x">The x value.</param>
         /// <param name="y">The y value.</param>
         /// <returns>The result (color value 0..1).</returns>
-        public double Run(double x, double y) 
-        {
-            var xt = 0.0;
-		    var yt = 0.0;
-		    var iteration = 0;
-
-            while (iteration < maxIterations && xt * xt + yt * yt < 4.0)
-            {
-		        var t = xt * xt - yt * yt + x;
-		        yt = 2.0 * xt * yt + y;
-		        xt = t;
-		        iteration++;
-	        }
-
-            return Math.Max((double)(maxIterations - iteration * colors) / (double)maxIterations, 0.0);
-        }
+        public abstract double Run(double x, double y);
 
         #endregion
     }

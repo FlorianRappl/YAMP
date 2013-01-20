@@ -3,7 +3,8 @@
 namespace YAMP
 {
 	[Description("The method of least squares is a standard approach to the approximate solution of overdetermined systems, i.e., sets of equations in which there are more equations than unknowns.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
+    [Link("http://en.wikipedia.org/wiki/Least_squares")]
 	class LsqFunction : ArgumentFunction
 	{
 		[Description("In statistics and mathematics, linear least squares is an approach to fitting a mathematical or statistical model to data in cases where the idealized value provided by the model for any data point is expressed linearly in terms of the unknown parameters of the model.")]

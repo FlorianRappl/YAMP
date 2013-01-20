@@ -3,7 +3,8 @@
 namespace YAMP
 {
 	[Description("In statistics and probability theory, standard deviation (represented by the symbol sigma, σ) shows how much variation or dispersion exists from the average (mean, or expected value).")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
+    [Link("http://en.wikipedia.org/wiki/Standard_deviation")]
 	class DevFunction : ArgumentFunction
 	{
 		[Description("Standard deviation is a very common calculation in statistical analysis, and is formally defined as the square root of the variance of the data set.")]

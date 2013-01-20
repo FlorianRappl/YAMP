@@ -4,9 +4,18 @@ using YAMP.Numerics;
 namespace YAMP
 {
 	[Description("Calculates values within the Mandelbrot fractal.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Mandelbrot_set")]
     class MandelbrotFunction : ArgumentFunction
-	{
+    {
+        [Description("Calculates the most interesting region of the Mandelbrot fractal.")]
+        [Example("mandelbrot()", "Computes the most interesting region x in (-2.5, 1.0), y in (-1.0, 1.0) with a resolution of 150 x 150 points.")]
+        public MatrixValue Function()
+        {
+            var m = new Mandelbrot();
+            return m.CalculateMatrix(-2.5, 1.0, -1.0, -1.0, 150, 150);
+        }
+
 		[Description("Calculates a point in the Mandelbrot fractal.")]
 		[Example("mandelbrot(-2.5 - 1i)", "Computes the point z = x + iy with x = -2.5, y = -1.")]
 		public ScalarValue Function(ScalarValue z)

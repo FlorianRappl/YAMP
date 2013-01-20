@@ -3,7 +3,8 @@
 namespace YAMP
 {
     [Description("In probability theory and statistics, the variance is a measure of how far a set of numbers is spread out.")]
-    [Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
+    [Link("http://en.wikipedia.org/wiki/Variance")]
     class VarFunction : ArgumentFunction
     {
         [Description("The variance is obtained by calculating the data set consisting of each data point in the original data set subtracting the arithmetic mean for the data set, and then squaring it.")]

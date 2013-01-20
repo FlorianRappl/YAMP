@@ -49,5 +49,18 @@ namespace YAMP.Help
         /// Gets or sets the description of this entry.
         /// </summary>
 		public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the hyperlink associated with this entry.
+        /// </summary>
+        public string Link { get; set; }
+
+        /// <summary>
+        /// Gets the status if the entry has a webpage associated.
+        /// </summary>
+        public bool HasLink
+        {
+            get { return !string.IsNullOrEmpty(Link); }
+        }
 	}
 }

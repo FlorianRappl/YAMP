@@ -3,7 +3,8 @@
 namespace YAMP
 {
 	[Description("The inverse of the coth(x) function, which is cosh(x) / sinh(x).")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Trigonometric)]
+    [Link("http://en.wikipedia.org/wiki/Inverse_hyperbolic_function")]
     class ArcothFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

@@ -318,6 +318,23 @@ namespace YAMP
 		}
 
         /// <summary>
+        /// Creates a new identity matrix of the given dimension.
+        /// </summary>
+        /// <param name="rows">The number of rows of the identity matrix.</param>
+        /// <param name="columns">The number of columns of the identity matrix.</param>
+        /// <returns>A new identity matrix.</returns>
+        public static MatrixValue One(int rows, int columns)
+        {
+            var m = new MatrixValue(rows, columns);
+            var dim = Math.Min(rows, columns);
+
+            for (var i = 1; i <= dim; i++)
+                m[i, i] = new ScalarValue(1.0);
+
+            return m;
+        }
+
+        /// <summary>
         /// Creates a matrix containing only ones.
         /// </summary>
         /// <param name="rows">The number of rows in the new matrix.</param>
@@ -1387,6 +1404,22 @@ namespace YAMP
 		{
 			return !(l == r);
 		}
+
+        /// <summary>
+        /// Unary minus.
+        /// </summary>
+        /// <param name="m">Matrix m</param>
+        /// <returns>l - r</returns>
+        public static MatrixValue operator -(MatrixValue m)
+        {
+            var n= new MatrixValue(m.DimensionY, m.DimensionX);
+
+            for (var j = 1; j <= m.DimensionY; j++)
+                for (var i = 1; i <= m.DimensionX; i++)
+                    n[j, i] = -m[j, i];
+
+            return n;
+        }
 
 		#endregion
 

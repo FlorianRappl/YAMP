@@ -4,7 +4,8 @@ using YAMP.Numerics;
 namespace YAMP
 {
 	[Description("Generates a matrix with uniformly distributed random values between 0 and 1.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Random)]
+    [Link("http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)")]
 	class RandFunction : ArgumentFunction
 	{
 		static readonly ContinuousUniformDistribution ran = new ContinuousUniformDistribution();

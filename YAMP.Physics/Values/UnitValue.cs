@@ -99,11 +99,6 @@ namespace YAMP.Physics
             return base.ToString(context) + " " + unit;
         }
 
-        public override ScalarValue Sqrt()
-        {
-            return new UnitValue(Math.Sqrt(Value), new CombinedUnit(unit).Sqrt().Unpack());
-        }
-
         #endregion
 
         #region Register Operators

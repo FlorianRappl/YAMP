@@ -3,7 +3,7 @@
 namespace YAMP
 {
     [Description("Returns a boolean matrix to state if the given numbers are infinite.")]
-    [Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Logic)]
     class IsInfiniteFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

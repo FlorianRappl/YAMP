@@ -3,7 +3,8 @@
 namespace YAMP
 {
 	[Description("Performs the trace operation on the given matrix.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Trace_(linear_algebra)")]
 	class TraceFunction : ArgumentFunction
 	{
 		[Description("Sums all elements on the diagonal.")]

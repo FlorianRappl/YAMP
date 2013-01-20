@@ -3,7 +3,8 @@
 namespace YAMP
 {
 	[Description("In probability theory and statistics, covariance is a measure of how much fluctuations in one variable are accompanied by a fluctuations in another variable.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
+    [Link("http://en.wikipedia.org/wiki/Covariance")]
 	class CovFunction : ArgumentFunction
 	{
 		[Description("This function returns a symmetric matrix with all variances on the diagonal and all covariances in the rest of the matrix.")]

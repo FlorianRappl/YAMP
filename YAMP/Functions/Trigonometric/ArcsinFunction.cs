@@ -3,20 +3,13 @@
 namespace YAMP
 {
 	[Description("The inverse of the sin(x) function.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Trigonometric)]
+    [Link("http://en.wikipedia.org/wiki/Inverse_trigonometric_function")]
     class ArcsinFunction : StandardFunction
     {
-        protected override ScalarValue GetValue(ScalarValue value)
+        protected override ScalarValue GetValue(ScalarValue z)
         {
-            if (value.ImaginaryValue == 0.0)
-                return arcsin(value.Value);
-
-            return (-ScalarValue.I) * (ScalarValue.I * value + (1.0 - (value * value)).Sqrt()).Ln();
-        }
-
-        ScalarValue arcsin(double value)
-        {
-            return new ScalarValue(Math.Asin(value));
+            return z.Arcsin();
         }
     }
 }

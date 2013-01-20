@@ -222,12 +222,12 @@ namespace YAMP
             double amt;
             int sign, exponent;
 
-			if (double.IsPositiveInfinity(value))
-				return "inf";
-			else if (double.IsNegativeInfinity(value))
-				return "-inf";
-			else if (double.IsNaN(value))
-				return "nan";
+            if (double.IsPositiveInfinity(value))
+                return "inf";
+            else if (double.IsNegativeInfinity(value))
+                return "-inf";
+            else if (double.IsNaN(value))
+                return "nan";
 
             switch (context.DefaultDisplayStyle)
             {

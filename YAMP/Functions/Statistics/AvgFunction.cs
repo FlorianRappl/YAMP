@@ -2,8 +2,9 @@
 
 namespace YAMP
 {
-    [Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
     [Description("Calculates the arithmetic mean, which is the sum of n elements divided by n.")]
+    [Link("http://en.wikipedia.org/wiki/Arithmetic_mean")]
     class AvgFunction : ArgumentFunction
     {
         [Description("The arithmetic mean is the naive way of averaging over a number of items. Here the arithmetic mean is taken, i.e. the sum over all items divided by the number of items.")]

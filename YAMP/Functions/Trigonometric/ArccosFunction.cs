@@ -3,20 +3,13 @@
 namespace YAMP
 {
 	[Description("The inverse of the cos(x) function.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Trigonometric)]
+    [Link("http://en.wikipedia.org/wiki/Inverse_trigonometric_function")]
     class ArccosFunction : StandardFunction
     {
-        protected override ScalarValue GetValue(ScalarValue value)
+        protected override ScalarValue GetValue(ScalarValue z)
         {
-            if (value.ImaginaryValue == 0.0)
-                return arccos(value.Value);
-
-            return (-ScalarValue.I) * (value + (value * value - 1.0).Sqrt()).Ln();
-        }
-
-        ScalarValue arccos(double value)
-        {
-            return new ScalarValue(Math.Acos(value));
+            return z.Arccos();
         }
     }
 }

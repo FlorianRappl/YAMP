@@ -33,18 +33,22 @@ namespace YAMP
     /// Inverts the given scalar. This operator is a unary operator, but is
     /// used as a binary one with a pseudo expression on the left side.
     /// </summary>
-    class InvOperator : LogicOperator
+    class InvOperator : LeftUnaryOperator
     {
-		public InvOperator () : base("~")
+        public InvOperator()
+            : base("~", 995)
 		{
 		}
 
-        public override ScalarValue Compare(ScalarValue left, ScalarValue right)
+        public override Value Perform(Value value)
         {
-            if (right.IsTrue)
-                return new ScalarValue(false);
+            if (value is ScalarValue)
+            {
+                var scalar = (ScalarValue)value;
+                return new ScalarValue(scalar.IsFalse);
+            }
 
-            return new ScalarValue(true);
+            return new ScalarValue(false);
         }
 
         public override Operator Create()

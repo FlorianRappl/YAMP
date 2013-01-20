@@ -29,11 +29,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("YAMP")]
-[assembly: AssemblyDescription("Yet Another Math Parser (YAMP) Core System using YAMP-PE v1.2.0 released on the 15th of January 2013.")]
+[assembly: AssemblyDescription("Yet Another Math Parser (YAMP) Core System using YAMP-PE. YAMP enables parsing and interpretation of complex mathematical expressions.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Florian Rappl")]
 [assembly: AssemblyProduct("YAMP")]
-[assembly: AssemblyCopyright("(c) Florian Rappl, rsi Software, 2012.")]
+[assembly: AssemblyCopyright("(c) Florian Rappl, 2012 - 2013.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.2.0.*")]
+[assembly: AssemblyVersion("1.2.1.*")]

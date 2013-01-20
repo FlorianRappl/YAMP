@@ -3,7 +3,8 @@ using YAMP.Numerics;
 
 namespace YAMP
 {
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/LU_decomposition")]
 	[Description("In linear algebra, LU decomposition (also called LU factorization) factorizes a matrix as the product of a lower triangular matrix and an upper triangular matrix. The product sometimes includes a permutation matrix as well. The LU decomposition can be viewed as the matrix form of Gaussian elimination.")]
 	class LUFunction : ArgumentFunction
 	{

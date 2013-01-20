@@ -326,7 +326,7 @@ namespace YAMP
         /// Computes z x z = z^2.
         /// </summary>
         /// <returns>The square of the current instance.</returns>
-		public virtual ScalarValue Square()
+		public ScalarValue Square()
 		{
 			return this * this;
 		}
@@ -335,7 +335,7 @@ namespace YAMP
         /// Computes z^* x z = |z|^2, which is AbsSquare().
         /// </summary>
         /// <returns>The absolute square of the current instance.</returns>
-        public virtual ScalarValue ComplexSquare()
+        public ScalarValue ComplexSquare()
         {
             return new ScalarValue(_real * _real + _imag * _imag);
         }
@@ -380,7 +380,7 @@ namespace YAMP
         /// Takes the square root of the scalar.
         /// </summary>
         /// <returns>The square root of the value.</returns>
-        public virtual ScalarValue Sqrt()
+        public ScalarValue Sqrt()
         {
             return Pow(new ScalarValue(0.5));
         }
@@ -389,7 +389,7 @@ namespace YAMP
         /// Takes the cosine of the scalar.
         /// </summary>
         /// <returns>The cosine of the value.</returns>
-        public virtual ScalarValue Cos()
+        public ScalarValue Cos()
         {
             var re = Math.Cos(_real) * Math.Cosh(_imag);
             var im = -Math.Sin(_real) * Math.Sinh(_imag);
@@ -400,7 +400,7 @@ namespace YAMP
         /// Takes the sine of the scalar.
         /// </summary>
         /// <returns>The sine of the value.</returns>
-        public virtual ScalarValue Sin()
+        public ScalarValue Sin()
         {
             var re = Math.Sin(_real) * Math.Cosh(_imag);
             var im = Math.Cos(_real) * Math.Sinh(_imag);
@@ -408,10 +408,88 @@ namespace YAMP
         }
 
         /// <summary>
+        /// Computes the inverse sine of the scalar (arcsin).
+        /// </summary>
+        /// <returns>The arcsin of the value.</returns>
+        public ScalarValue Arcsin()
+        {
+            var x = _real;
+            var y = _imag;
+            var yy = y * y;
+            var rtp = Math.Sqrt(Math.Pow(x + 1.0, 2.0) + yy);
+            var rtn = Math.Sqrt(Math.Pow(x - 1.0, 2.0) + yy);
+            var alpha = 0.5 * (rtp + rtn);
+            var beta = 0.5 * (rtp - rtn);
+            var re = Math.Asin(beta);
+            var im = Math.Sign(y) * Math.Log(alpha + Math.Sqrt(alpha * alpha - 1.0));
+            return new ScalarValue(re, im);
+        }
+
+        /// <summary>
+        /// Computes the inverse cosine of the scalar (arccos).
+        /// </summary>
+        /// <returns>The arccos of the value.</returns>
+        public ScalarValue Arccos()
+        {
+            var x = _real;
+            var y = _imag;
+            var yy = y * y;
+            var rtp = Math.Sqrt(Math.Pow(x + 1.0, 2.0) + yy);
+            var rtn = Math.Sqrt(Math.Pow(x - 1.0, 2.0) + yy);
+            var alpha = 0.5 * (rtp + rtn);
+            var beta = 0.5 * (rtp - rtn);
+            var re = Math.Acos(beta);
+            var im = -Math.Sign(y) * Math.Log(alpha + Math.Sqrt(alpha * alpha - 1.0));
+            return new ScalarValue(re, im);
+        }
+
+        /// <summary>
+        /// Computes the inverse tangent of the scalar (arctan).
+        /// </summary>
+        /// <returns>The arctan of the value.</returns>
+        public ScalarValue Arctan()
+        {
+            var x = _real;
+            var y = _imag;
+            var xx = x * x;
+            var yy = y * y;
+            var re = 0.5 * Math.Atan2(2.0 * x, 1.0 - xx - yy);
+            var im = 0.25 * Math.Log((xx + Math.Pow(y + 1.0, 2.0)) / (xx + Math.Pow(y - 1.0, 2.0)));
+            return new ScalarValue(re, im);
+        }
+
+        /// <summary>
+        /// Computes the inverse cotangent of the scalar (arccot).
+        /// </summary>
+        /// <returns>The arccot of the value.</returns>
+        public ScalarValue Arccot()
+        {
+            return (1.0 / this).Arctan();
+        }
+
+        /// <summary>
+        /// Computes the inverse secant of the scalar (arcsec).
+        /// </summary>
+        /// <returns>The arcsec of the value.</returns>
+        public ScalarValue Arcsec()
+        {
+            return (1.0 / this).Arccos();
+        }
+
+        /// <summary>
+        /// Computes the inverse cosecant of the scalar (arccsc).
+        /// </summary>
+        /// <returns>The arccsc of the value.</returns>
+        public ScalarValue Arccsc()
+        {
+            return (1.0 / this).Arcsin();
+        }
+
+        /// <summary>
         /// Takes the exponential of the scalar.
         /// </summary>
         /// <returns>The exponential of the value.</returns>
-        public virtual ScalarValue Exp()
+        public ScalarValue Exp()
         {
             var f = Math.Exp(_real);
             var re = f * Math.Cos(_imag);
@@ -423,7 +501,7 @@ namespace YAMP
         /// Takes the natural logarithm of the scalar.
         /// </summary>
         /// <returns>The natural logarithm of the value.</returns>
-        public virtual ScalarValue Ln()
+        public ScalarValue Ln()
         {
             var re = Math.Log(Abs());
             var im = Arg();
@@ -434,7 +512,7 @@ namespace YAMP
         /// Takes the base-10 logarithm of the scalar.
         /// </summary>
         /// <returns>The base-10 logarithm of the value.</returns>
-        public virtual ScalarValue Log()
+        public ScalarValue Log()
         {
             var re = Math.Log(Abs(), 10.0);
             var im = Arg();
@@ -628,14 +706,14 @@ namespace YAMP
             var f = Math.Pow(10, -exponent);
 
             var re = Format(context, _real * f);
-            var im = Format(context, _imag * f) + "i";
+            var im = Format(context, Math.Abs(_imag) * f) + "i";
 
-            if (ImaginaryValue == 0.0)
+            if (Math.Abs(_imag) < epsilon)
                 return re;
-            else if (Value == 0.0)
-                return im;
+            else if (Math.Abs(_real) < epsilon)
+                return (_imag < 0.0 ? "-" : string.Empty) + im;
 
-            return string.Format("{0}{2}{1}", re, im, ImaginaryValue < 0.0 ? string.Empty : "+");
+            return string.Format("{0} {2} {1}", re, im, _imag < 0.0 ? "-" : "+");
         }
 
         /// <summary>

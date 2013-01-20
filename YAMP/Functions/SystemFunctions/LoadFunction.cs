@@ -480,9 +480,9 @@ namespace YAMP
                             idx = finalWidth - 1;
                         for (int j = 0; j < height; j++)
                         {
-                            int jdx = finalHeight - (int)(j * cI) - 1;
-                            if (jdx < 0)
-                                jdx = 0;
+                            int jdx = (int)(j * cI);
+                            if (jdx >= finalHeight)
+                                jdx = finalHeight - 1;
                             rvalues[jdx, idx] += rgbValues[(j * width + i) * bytesPerPixel + 2];
                             gvalues[jdx, idx] += rgbValues[(j * width + i) * bytesPerPixel + 1];
                             bvalues[jdx, idx] += rgbValues[(j * width + i) * bytesPerPixel + 0];

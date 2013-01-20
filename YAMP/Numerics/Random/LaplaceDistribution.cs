@@ -17,6 +17,7 @@ namespace YAMP.Numerics
 	public class LaplaceDistribution : Distribution
 	{
 		#region instance fields
+
 		/// <summary>
 		/// Gets or sets the parameter alpha which is used for generation of laplace distributed random numbers.
 		/// </summary>
@@ -39,7 +40,7 @@ namespace YAMP.Numerics
 		/// <summary>
 		/// Stores the parameter alpha which is used for generation of laplace distributed random numbers.
 		/// </summary>
-		private double alpha;
+		double alpha;
 		
 		/// <summary>
 		/// Gets or sets the parameter mu which is used for generation of laplace distributed random numbers.
@@ -54,19 +55,19 @@ namespace YAMP.Numerics
 			set
 			{
                 if (this.IsValidMu(value))
-                {
                     this.mu = value;
-                }
         	}
 		}
 
 		/// <summary>
 		/// Stores the parameter mu which is used for generation of laplace distributed random numbers.
 		/// </summary>
-		private double mu;
+		double mu;
+
         #endregion
 
 		#region construction, destruction
+
 		/// <summary>
         /// Initializes a new instance of the <see cref="LaplaceDistribution"/> class, using a 
         /// StandardGenerator as underlying random number generator.
@@ -89,9 +90,11 @@ namespace YAMP.Numerics
             this.alpha = 1.0;
             this.mu = 0.0;
         }
+
 		#endregion
 	
 		#region instance methods
+
 		/// <summary>
         /// Determines whether the specified value is valid for parameter <see cref="Alpha"/>.
 		/// </summary>
@@ -113,9 +116,11 @@ namespace YAMP.Numerics
 		{
 			return true;
 		}
+
         #endregion
 
 		#region overridden Distribution members
+
         /// <summary>
 		/// Gets the minimum possible value of laplace distributed random numbers.
 		/// </summary>
@@ -191,6 +196,7 @@ namespace YAMP.Numerics
             double rand = 0.5 - this.Generator.NextDouble();
             return this.mu - this.alpha * Math.Sign(rand) * Math.Log(2.0 * Math.Abs(rand));
 		}
+
 		#endregion
 	}
 }

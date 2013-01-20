@@ -17,6 +17,7 @@ namespace YAMP.Numerics
 	public class RayleighDistribution : Distribution
 	{
 		#region instance fields
+
 		/// <summary>
 		/// Gets or sets the parameter sigma which is used for generation of rayleigh distributed random numbers.
 		/// </summary>
@@ -40,20 +41,22 @@ namespace YAMP.Numerics
 		/// <summary>
 		/// Stores the parameter sigma which is used for generation of rayleigh distributed random numbers.
 		/// </summary>
-		private double sigma;
+		double sigma;
 
         /// <summary>
         /// Stores first <see cref="NormalDistribution"/> object used for generation of rayleigh distributed random numbers.
         /// </summary>
-        private NormalDistribution normalDistribution1;
+        NormalDistribution normalDistribution1;
 
         /// <summary>
         /// Stores second <see cref="NormalDistribution"/> object used for generation of rayleigh distributed random numbers.
         /// </summary>
-        private NormalDistribution normalDistribution2;
+        NormalDistribution normalDistribution2;
+
         #endregion
 
 		#region construction
+
 		/// <summary>
         /// Initializes a new instance of the RayleighDistribution class, using a 
         /// StandardGenerator as underlying random number generator.
@@ -80,9 +83,11 @@ namespace YAMP.Numerics
             this.normalDistribution2.Mu = 0.0;
             this.UpdateHelpers();
         }
+
 		#endregion
 	
 		#region instance methods
+
         /// <summary>
         /// Determines whether the specified value is valid for parameter <see cref="Sigma"/>.
 		/// </summary>
@@ -99,14 +104,16 @@ namespace YAMP.Numerics
         /// Updates the helper variables that store intermediate results for generation of rayleigh distributed random 
         ///   numbers.
         /// </summary>
-        private void UpdateHelpers()
+        void UpdateHelpers()
         {
             this.normalDistribution1.Sigma = this.sigma;
             this.normalDistribution2.Sigma = this.sigma;
         }
+
         #endregion
 
 		#region overridden Distribution members
+
 		/// <summary>
 		/// Resets the chi distribution, so that it produces the same random number sequence again.
 		/// </summary>
@@ -116,13 +123,13 @@ namespace YAMP.Numerics
 		public override bool Reset()
 		{
 			bool result = base.Reset();
+
 			if (result)
 			{
 				result = this.normalDistribution1.Reset();
+
 				if (result)
-				{
 					result = this.normalDistribution2.Reset();
-				}
 			}
 
 			return result;
@@ -202,6 +209,7 @@ namespace YAMP.Numerics
         {
             return Math.Sqrt(Math.Pow(this.normalDistribution1.NextDouble(), 2) + Math.Pow(this.normalDistribution2.NextDouble(), 2));
         }
+
 		#endregion
 	}
 }

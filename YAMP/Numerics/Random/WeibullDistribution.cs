@@ -17,14 +17,24 @@ namespace YAMP.Numerics
 	public class WeibullDistribution : Distribution
 	{
         #region class fields
+
         /// <summary>
         /// Represents coefficients for the Lanczos approximation of the Gamma function.
         /// </summary>
-        private static readonly double[] LanczosCoefficients = new double[] { 1.000000000190015, 76.18009172947146, 
-            -86.50532032941677, 24.01409824083091, -1.231739572450155, 1.208650973866179e-3, -5.395239384953e-6 };
+        static readonly double[] LanczosCoefficients = new double[] { 
+            1.000000000190015, 
+            76.18009172947146, 
+            -86.50532032941677, 
+            24.01409824083091, 
+            -1.231739572450155, 
+            1.208650973866179e-3, 
+            -5.395239384953e-6 
+        };
+
         #endregion
 
         #region instance fields
+
 		/// <summary>
 		/// Gets or sets the parameter alpha which is used for generation of weibull distributed random numbers.
 		/// </summary>
@@ -48,7 +58,7 @@ namespace YAMP.Numerics
 		/// <summary>
 		/// Stores the parameter alpha which is used for generation of weibull distributed random numbers.
 		/// </summary>
-		private double alpha;
+		double alpha;
 
         /// <summary>
         /// Gets or sets the parameter lambda which is used for generation of erlang distributed random numbers.
@@ -72,7 +82,7 @@ namespace YAMP.Numerics
         /// <summary>
         /// Stores the parameter lambda which is used for generation of erlang distributed random numbers.
         /// </summary>
-        private double lambda;
+        double lambda;
 
         /// <summary>
         /// Stores an intermediate result for generation of weibull distributed random numbers.
@@ -81,10 +91,12 @@ namespace YAMP.Numerics
         /// Speeds up random number generation cause this value only depends on distribution parameters 
         ///   and therefor doesn't need to be recalculated in successive executions of <see cref="NextDouble"/>.
         /// </remarks>
-        private double helper1;
+        double helper1;
+
         #endregion
 
 		#region construction
+
 		/// <summary>
         /// Initializes a new instance of the WeibullDistribution class, using a 
         /// StandardGenerator as underlying random number generator.
@@ -108,9 +120,11 @@ namespace YAMP.Numerics
             this.lambda = 1.0;
             this.UpdateHelpers();
         }
+
 		#endregion
 	
 		#region instance methods
+
 		/// <summary>
         /// Determines whether the specified value is valid for parameter <see cref="Alpha"/>.
 		/// </summary>
@@ -139,7 +153,7 @@ namespace YAMP.Numerics
         /// Updates the helper variables that store intermediate results for generation of weibull distributed random 
         ///   numbers.
         /// </summary>
-        private void UpdateHelpers()
+        void UpdateHelpers()
         {
             this.helper1 = 1.0 / this.alpha;
         }
@@ -151,19 +165,20 @@ namespace YAMP.Numerics
         /// <returns>
         /// A double-precision floating point number representing an approximation of Gamma(<paramref name="x"/>).
         /// </returns>
-        private double Gamma(double x)
+        double Gamma(double x)
         {
             double sum = WeibullDistribution.LanczosCoefficients[0];
+
             for (int index = 1; index <= 6; index++)
-            {
                 sum += WeibullDistribution.LanczosCoefficients[index] / (x + index);
-            }
 
             return Math.Sqrt(2.0 * Math.PI) / x * Math.Pow(x + 5.5, x + 0.5) / Math.Exp(x + 5.5) * sum;
         }
+
         #endregion
 
 		#region overridden Distribution members
+
         /// <summary>
 		/// Gets the minimum possible value of weibull distributed random numbers.
 		/// </summary>
@@ -227,13 +242,9 @@ namespace YAMP.Numerics
 			get
 			{
                 if (this.alpha >= 1.0)
-                {
                     return new double[] { this.lambda * Math.Pow(1.0 - 1.0 / this.alpha, 1.0 / this.alpha) };
-                }
-                else
-                {
-                    return new double[] { 0.0 };
-                }
+                
+                return new double[] { 0.0 };
             }
 		}
 		
@@ -246,6 +257,7 @@ namespace YAMP.Numerics
             // Subtract random number from 1.0 to avoid Math.Log(0.0)
             return this.lambda * Math.Pow(-Math.Log(1.0 - this.Generator.NextDouble()), this.helper1);
 		}
+
 		#endregion
 	}
 }

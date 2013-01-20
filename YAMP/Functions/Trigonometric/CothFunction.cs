@@ -2,8 +2,9 @@
 
 namespace YAMP
 {
-	[Description("The standard coth(x) function, which is cosh(x) / sinh(x).")]
-	[Kind(PopularKinds.Function)]
+    [Description("The standard coth(x) function, which is cosh(x) / sinh(x). This is the hyperbolic cotangent.")]
+    [Kind(PopularKinds.Trigonometric)]
+    [Link("http://en.wikipedia.org/wiki/Hyperbolic_function")]
     class CothFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

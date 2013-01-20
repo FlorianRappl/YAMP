@@ -41,7 +41,7 @@ namespace YAMP
 	{
 		#region Members
 
-		IDictionary<string, Operator> operators;
+        IDictionary<string, Operator> operators;
 		List<Expression> expressions;
 		IDictionary<string, Keyword> keywords;
 		
@@ -51,7 +51,7 @@ namespace YAMP
 
 		Elements ()
 		{
-			operators = new Dictionary<string, Operator>();
+            operators = new Dictionary<string, Operator>();
 			expressions = new List<Expression>();
 			keywords = new Dictionary<string, Keyword>();
 		}

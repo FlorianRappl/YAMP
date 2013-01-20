@@ -3,7 +3,8 @@ using YAMP.Numerics;
 
 namespace YAMP
 {
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Singular_value_decomposition")]
 	[Description("In linear algebra, the singular value decomposition (SVD) is a factorization of a real or complex matrix, with many useful applications in signal processing and statistics.")]
 	class SvdFunction : ArgumentFunction
 	{

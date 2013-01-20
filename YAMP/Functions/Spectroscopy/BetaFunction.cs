@@ -5,6 +5,7 @@ namespace YAMP
 {
     [Description("In mathematics, the beta function, also called the Euler integral of the first kind, is a special function. The beta function was studied by Euler and Legendre and was given its name by Jacques Binet; its symbol Β is a Greek capital β rather than the similar Latin capital B.")]
     [Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Beta_function")]
     class BetaFunction : ArgumentFunction
     {
         [Description("Computes the beta function for corresponding values z and w. The values must be real and positive.")]

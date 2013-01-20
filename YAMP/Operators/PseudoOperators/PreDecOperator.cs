@@ -30,23 +30,22 @@ using System;
 namespace YAMP
 {
     /// <summary>
-    /// This is the increment operator ++.
+    /// This is the prefix decrement operator --.
     /// </summary>
-    class IncrementOperator : UnaryOperator
+    class PreDecOperator : LeftUnaryOperator
     {
-        public IncrementOperator()
-            : base("++", 1000)
+        public PreDecOperator()
+            : base("--", 999)
         {
         }
 
         public override Value Perform(Value left)
         {
-            if(left is ScalarValue)
+            if (left is ScalarValue)
             {
                 var sc = (ScalarValue)left;
-                var ret = sc.Clone();
-                sc.Re += 1.0;
-                return ret;
+                sc.Re -= 1.0;
+                return sc;
             }
 
             return left;
@@ -54,7 +53,7 @@ namespace YAMP
 
         public override Operator Create()
         {
-            return new IncrementOperator();
+            return new PreDecOperator();
         }
     }
 }

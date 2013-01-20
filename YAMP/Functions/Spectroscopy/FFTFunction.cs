@@ -5,6 +5,7 @@ namespace YAMP
 {
 	[Description("Provides a fast-fourier-transform function for 2^n (complex) values.")]
 	[Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Fast_Fourier_transform")]
 	class FFTFunction : ArgumentFunction
 	{
 		[Description("Fourier transforms a matrix of elements.")]

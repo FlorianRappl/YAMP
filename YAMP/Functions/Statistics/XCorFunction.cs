@@ -3,7 +3,8 @@
 namespace YAMP
 {
 	[Description("In probability theory and statistics, cross-correlation is a measure of how much two random variables are correlated at different offsets.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
+    [Link("http://en.wikipedia.org/wiki/Cross-correlation")]
     class XCorFunction : ArgumentFunction
 	{
         [Description("This function returns a vector with cross-correlations for diferent offsets. All matrices are treated as vectors.")]

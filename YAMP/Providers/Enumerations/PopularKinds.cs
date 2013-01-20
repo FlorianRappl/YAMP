@@ -49,6 +49,22 @@ namespace YAMP
         /// <summary>
         /// This is not a function, but a constant.
         /// </summary>
-        Constant
+        Constant,
+        /// <summary>
+        /// This is a random number generator with a specific distribution.
+        /// </summary>
+        Random,
+        /// <summary>
+        /// This is a trigonometric function.
+        /// </summary>
+        Trigonometric,
+        /// <summary>
+        /// This is a statistic function.
+        /// </summary>
+        Statistic,
+        /// <summary>
+        /// This is a logic function.
+        /// </summary>
+        Logic
     }
 }

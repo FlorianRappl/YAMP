@@ -4,7 +4,8 @@ using YAMP.Numerics;
 namespace YAMP
 {
 	[Description("Uses the GMRES / GMRES(k) algorithm to solve a linear system of equations.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Generalized_minimal_residual_method")]
     class GMRESFunction : ArgumentFunction
     {
         [Description("Computes the solution vector x for a given matrix A and a source vector b.")]

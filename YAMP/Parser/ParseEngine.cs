@@ -48,6 +48,7 @@ namespace YAMP
         bool parsing;
         bool useKeywords;
         List<Statement> statements;
+        Statement currentStatement;
         char[] characters;
         bool terminated;
         Marker markers;
@@ -210,6 +211,14 @@ namespace YAMP
         internal Statement LastStatement
         {
             get { return statements.Count != 0 ? statements[statements.Count - 1] : null; }
+        }
+
+        /// <summary>
+        /// Gets the statement that is currently created.
+        /// </summary>
+        internal Statement CurrentStatement
+        {
+            get { return currentStatement; }
         }
 
         /// <summary>
@@ -420,6 +429,8 @@ namespace YAMP
         /// <returns>The statement again (allows chaining).</returns>
         internal Statement ParseBlock(Statement statement)
         {
+            currentStatement = statement;
+
             if (statement.IsOperator)
             {
                 var op = Elements.Instance.FindOperator(this);
@@ -450,6 +461,8 @@ namespace YAMP
         /// <returns>The statement again (allows chaining).</returns>
         internal Statement ParseBlock(Statement statement, Operator defaultOperator)
         {
+            currentStatement = statement;
+
             if (statement.IsOperator)
             {
                 var op = Elements.Instance.FindOperator(this) ?? defaultOperator;

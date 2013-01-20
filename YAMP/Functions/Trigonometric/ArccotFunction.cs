@@ -3,16 +3,13 @@
 namespace YAMP
 {
 	[Description("The inverse of the cot(x) function, which is cos(x) / sin(x).")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Trigonometric)]
+    [Link("http://en.wikipedia.org/wiki/Inverse_trigonometric_function")]
     class ArccotFunction : StandardFunction
     {
-        protected override ScalarValue GetValue(ScalarValue value)
+        protected override ScalarValue GetValue(ScalarValue z)
         {
-            if (value.ImaginaryValue == 0.0)
-                return new ScalarValue(Math.PI / 2.0 - Math.Atan(value.Value), 0.0);
-
-            var iv = ScalarValue.I * value;
-            return (ScalarValue.I / new ScalarValue(0.0, -2.0)) * ((iv + 1.0) / (iv - 1.0)).Ln();
+            return z.Arccot();
         }
     }
 }

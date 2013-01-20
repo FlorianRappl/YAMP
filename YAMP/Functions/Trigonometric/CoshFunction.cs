@@ -2,8 +2,9 @@
 
 namespace YAMP
 {
-	[Description("The standard cosh(x) function.")]
-	[Kind(PopularKinds.Function)]
+    [Description("The standard cosh(x) function. This is the hyperbolic cosine.")]
+    [Kind(PopularKinds.Trigonometric)]
+    [Link("http://en.wikipedia.org/wiki/Hyperbolic_function")]
     class CoshFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

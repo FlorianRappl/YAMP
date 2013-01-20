@@ -3,7 +3,8 @@
 namespace YAMP
 {
     [Description("In probability theory and statistics, auto-correlation is a measure of how much one random variables is correlated with itself at different offsets.")]
-    [Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
+    [Link("http://en.wikipedia.org/wiki/Autocorrelation")]
     class ACorFunction : ArgumentFunction
     {
         [Description("This function returns a vector with auto-correlations for diferent offsets. All matrices are treated as vectors.")]

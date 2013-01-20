@@ -17,6 +17,7 @@ namespace YAMP.Numerics
 	public class GammaDistribution : Distribution
 	{
 		#region instance fields
+
 		/// <summary>
 		/// Gets or sets the parameter alpha which is used for generation of gamma distributed random numbers.
 		/// </summary>
@@ -40,7 +41,7 @@ namespace YAMP.Numerics
 		/// <summary>
 		/// Stores the parameter alpha which is used for generation of gamma distributed random numbers.
 		/// </summary>
-		private double alpha;
+		double alpha;
 		
 		/// <summary>
 		/// Gets or sets the parameter theta which is used for generation of gamma distributed random numbers.
@@ -64,7 +65,7 @@ namespace YAMP.Numerics
 		/// <summary>
 		/// Stores the parameter theta which is used for generation of gamma distributed random numbers.
 		/// </summary>
-		private double theta;
+		double theta;
 
         /// <summary>
         /// Stores an intermediate result for generation of gamma distributed random numbers.
@@ -73,7 +74,7 @@ namespace YAMP.Numerics
         /// Speeds up random number generation cause this value only depends on distribution parameters 
         ///   and therefor doesn't need to be recalculated in successive executions of <see cref="NextDouble"/>.
         /// </remarks>
-        private double helper1;
+        double helper1;
 
         /// <summary>
         /// Stores an intermediate result for generation of gamma distributed random numbers.
@@ -82,10 +83,12 @@ namespace YAMP.Numerics
         /// Speeds up random number generation cause this value only depends on distribution parameters 
         ///   and therefor doesn't need to be recalculated in successive executions of <see cref="NextDouble"/>.
         /// </remarks>
-        private double helper2;
+        double helper2;
+
         #endregion
 
 		#region construction, destruction
+
 		/// <summary>
         /// Initializes a new instance of the GammaDistribution class, using a 
         /// StandardGenerator as underlying random number generator.
@@ -109,9 +112,11 @@ namespace YAMP.Numerics
             this.theta = 1.0;
             this.UpdateHelpers();
         }
+
 		#endregion
 	
 		#region instance methods
+
 		/// <summary>
         /// Determines whether the specified value is valid for parameter <see cref="Alpha"/>.
 		/// </summary>
@@ -140,14 +145,16 @@ namespace YAMP.Numerics
         /// Updates the helper variables that store intermediate results for generation of gamma distributed random 
         ///   numbers.
         /// </summary>
-        private void UpdateHelpers()
+        void UpdateHelpers()
         {
             this.helper1 = this.alpha - Math.Floor(this.alpha);
             this.helper2 = Math.E / (Math.E + this.helper1);
         }
+
         #endregion
 
 		#region overridden Distribution members
+
         /// <summary>
 		/// Gets the minimum possible value of gamma distributed random numbers.
 		/// </summary>
@@ -211,13 +218,9 @@ namespace YAMP.Numerics
 			get
 			{
                 if (this.alpha >= 1.0)
-                {
                     return new double[] { (this.alpha - 1.0) * this.theta };
-                }
-                else
-                {
-                    return new double[] { };
-                }
+
+                return new double[] { };
 			}
 		}
 		
@@ -228,10 +231,12 @@ namespace YAMP.Numerics
         public override double NextDouble()
 		{
 			double xi, eta, gen1, gen2;
+
 			do
 			{
 				gen1 = 1.0 - this.Generator.NextDouble();
 				gen2 = 1.0 - this.Generator.NextDouble();
+
                 if (gen1 <= this.helper2)
 				{
                     xi = Math.Pow(gen1 / this.helper2, 1.0 / this.helper1);
@@ -242,15 +247,15 @@ namespace YAMP.Numerics
                     xi = 1.0 - Math.Log((gen1 - this.helper2) / (1.0 - this.helper2));
 					eta = gen2 * Math.Pow(Math.E, -xi);
 				}
-            } while (eta > Math.Pow(xi, this.helper1 - 1.0) * Math.Pow(Math.E, -xi));
+            } 
+            while (eta > Math.Pow(xi, this.helper1 - 1.0) * Math.Pow(Math.E, -xi));
 
             for (int i = 1; i <= this.alpha; i++)
-            {
                 xi -= Math.Log(this.Generator.NextDouble());
-            }
 
 			return xi * this.theta;
 		}
+
 		#endregion
 	}
 }

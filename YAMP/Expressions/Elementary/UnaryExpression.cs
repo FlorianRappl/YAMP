@@ -37,7 +37,7 @@ namespace YAMP
     {
         #region Members
 
-        ScalarValue factor;
+        static IDictionary<string, LeftUnaryOperator> operators = new Dictionary<string, LeftUnaryOperator>();
 
         #endregion
 
@@ -47,41 +47,79 @@ namespace YAMP
         {
         }
 
-        public UnaryExpression(ParseEngine engine) : base(engine)
-        {
-            Length = 1;
-        }
-
         #endregion
 
         #region Methods
 
+        /// <summary>
+        /// Adds an operator to the dictionary.
+        /// </summary>
+        /// <param name="pattern">The operator pattern, i.e. += for add and assign.</param>
+        /// <param name="op">The instance of the operator.</param>
+        public static void AddOperator(string pattern, LeftUnaryOperator op)
+        {
+            operators.Add(pattern, op);
+        }
+
         public override Value Interpret(Dictionary<string, Value> symbols)
         {
-            return factor.Clone();
+            return null;
         }
 
         public override Expression Scan(ParseEngine engine)
         {
-            var index = engine.Pointer;
-            var chars = engine.Characters;
+            var op = FindUnaryOperator(engine);
 
-            if (chars[index] == '-' || chars[index] == '+')
+            if (op != null)
             {
-                var exp = new UnaryExpression(engine);
-                exp.factor = new ScalarValue(chars[index] == '+' ? 1.0 : -1.0);
-                engine.Replace(index, '*');
-                return exp;
-            }
-            else if (chars[index] == '~')
-            {
-                var exp = new UnaryExpression(engine);
-                exp.factor = new ScalarValue();
-                engine.Replace(index, '~');
-                return exp;
+                engine.CurrentStatement.Push(new EmptyExpression());
+                engine.CurrentStatement.Push(op);
+
+                if(engine.Pointer < engine.Characters.Length)
+                    return Elements.Instance.FindExpression(engine);
+
+                engine.AddError(new YAMPExpressionExpectedError(engine));
+                return new EmptyExpression();
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Finds the closest matching (left) unary operator.
+        /// </summary>
+        /// <param name="engine">The engine to parse the query.</param>
+        /// <returns>Unary operator that matches the current characters.</returns>
+        public Operator FindUnaryOperator(ParseEngine engine)
+        {
+            var maxop = string.Empty;
+            var notfound = true;
+            var chars = engine.Characters;
+            var ptr = engine.Pointer;
+            var rest = chars.Length - ptr;
+
+            foreach (var op in operators.Keys)
+            {
+                if (op.Length > rest)
+                    continue;
+
+                if (op.Length <= maxop.Length)
+                    continue;
+
+                notfound = false;
+
+                for (var i = 0; i < op.Length; i++)
+                    if (notfound = (chars[ptr + i] != op[i]))
+                        break;
+
+                if (notfound == false)
+                    maxop = op;
+            }
+
+            if (maxop.Length == 0)
+                return null;
+
+            return operators[maxop].Create(engine);
         }
 
         #endregion

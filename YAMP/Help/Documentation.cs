@@ -203,6 +203,7 @@ namespace YAMP.Help
 				help.Name = topic.Name;
 				help.Description = GetDescription(to);
 				help.Topic = topic.Topic.Kind;
+                help.Link = GetLink(to);
 				var functions = to.GetMethods();
 
 				foreach (var function in functions)
@@ -233,7 +234,8 @@ namespace YAMP.Help
 				var help = new HelpSection();
 				help.Name = topic.Name;
 				help.Description = GetDescription(to);
-				help.Topic = topic.Topic.Kind;
+                help.Topic = topic.Topic.Kind;
+                help.Link = GetLink(to);
 				return help;
 			}
 		}
@@ -242,7 +244,7 @@ namespace YAMP.Help
 
 		#region Helpers
 
-		int Distance(string s1, string s2, int maxOffset)
+		static int Distance(string s1, string s2, int maxOffset)
 		{
 			if (string.IsNullOrEmpty(s1))
 				return string.IsNullOrEmpty(s2) ? 0 : s2.Length;
@@ -315,7 +317,11 @@ namespace YAMP.Help
 			topics.Add(ht);
 		}
 
-		HelpFunctionUsage GetUsage(string name, MethodInfo function)
+        #endregion
+
+        #region Get Information
+
+        HelpFunctionUsage GetUsage(string name, MethodInfo function)
 		{
 			var objects = function.GetCustomAttributes(typeof(ExampleAttribute), false);
 			var rets = function.GetCustomAttributes(typeof(ReturnsAttribute), false);
@@ -374,6 +380,16 @@ namespace YAMP.Help
 
 			return sb.ToString();
 		}
+
+        string GetLink(MemberInfo element)
+        {
+            var objects = element.GetCustomAttributes(typeof(LinkAttribute), false);
+
+            if (objects.Length == 0)
+                return string.Empty;
+
+            return ((LinkAttribute)objects[0]).Url;
+        }
 
 		string ModifyValueType(Type type)
 		{

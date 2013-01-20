@@ -3,7 +3,8 @@
 namespace YAMP
 {
 	[Description("The median is defined as the data point that falls exactly at the midpoint of a set of data points. If there is an even number of points, then the average is taken of the middle two points.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
+    [Link("http://en.wikipedia.org/wiki/Median")]
 	class MedianFunction : ArgumentFunction
 	{
 		[Description("Computes the median of the given values.")]

@@ -3,7 +3,7 @@
 namespace YAMP
 {
 	[Description("Returns a boolean matrix to state if the given values are real.")]
-	[Kind(PopularKinds.Function)]
+	[Kind(PopularKinds.Logic)]
     class IsRealFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

@@ -2,16 +2,16 @@
 
 namespace YAMP
 {
-    [Description("Converts matrix data loaded from an image into three matrices which contain the red, green, and blue values separately. It is the inverse function to RGBToImageData.")]
+    [Description("Converts matrix data loaded from an image into three matrices which contain the red, green, and blue values separately. It is the inverse function to RgbToImg.")]
 	[Kind(PopularKinds.Function)]
-    class ImageDataToRGBFunction : ArgumentFunction
+    class ImgToRGBFunction : ArgumentFunction
     {
         const int rfactor = 256 * 256;
         const int gfactor = 256;
         const int bfactor = 1;
 
         [Description("Gets the RGB values of an image matrix.")]
-        [Example("load(\"example.bmp\", \"bmp\"); [r, g, b] = imagedatatorgb(bmp)", "Returns three matrices containing the red, green, and blue values of the image.")]
+        [Example("load(\"example.bmp\", \"bmp\"); [r, g, b] = imgtorgb(bmp)", "Returns three matrices containing the red, green, and blue values of the image.")]
         public ArgumentsValue Function(MatrixValue M)
         {
             var rvalues = new MatrixValue(M.DimensionY, M.DimensionX);

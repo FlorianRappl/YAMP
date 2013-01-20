@@ -6,6 +6,7 @@ namespace YAMP.Functions
 {
     [Description("In mathematics, the Pochhammer symbol introduced by Leo August Pochhammer is the notation (x)n, where n is a non-negative integer. Depending on the context the Pochhammer symbol may represent either the rising factorial or the falling factorial.")]
     [Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Pochhammer_symbol")]
     class PochFunction : ArgumentFunction
     {
         [Description("Computes the Pochhammer symbol using the (in general complex) values z and n, where poch(z, n) = Gamma(z + n) / Gamma(z).")]

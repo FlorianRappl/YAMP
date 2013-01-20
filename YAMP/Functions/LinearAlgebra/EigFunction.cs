@@ -4,7 +4,8 @@ using YAMP.Numerics;
 namespace YAMP
 {
 	[Description("Computes the eigenvalues and eigenvectors of a given matrix.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix")]
 	class EigFunction : ArgumentFunction
 	{
 		[Description("Solves the eigenproblem of a matrix A and return a vector with all (and degenerate) eigenvalues.")]

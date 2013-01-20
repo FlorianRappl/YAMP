@@ -2,8 +2,9 @@
 
 namespace YAMP
 {
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
 	[Description("Calculates the geometric mean, which is the n-th root of the product of n elements.")]
+    [Link("http://en.wikipedia.org/wiki/Geometric_mean")]
 	class MeanFunction : ArgumentFunction
 	{
 		[Description("The geometric mean is similar to the arithmetic mean in that it is a type of average for the data, except it has a rather different way of calculating it.")]

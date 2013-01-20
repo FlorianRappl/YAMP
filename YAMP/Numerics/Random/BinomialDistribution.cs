@@ -18,6 +18,7 @@ namespace YAMP.Numerics
 	public class BinomialDistribution : Distribution
 	{
 		#region instance fields
+
 		/// <summary>
         /// Gets or sets the parameter alpha which is used for generation of binomial distributed random numbers.
 		/// </summary>
@@ -40,7 +41,7 @@ namespace YAMP.Numerics
 		/// <summary>
         /// Stores the parameter alpha which is used for generation of binomial distributed random numbers.
 		/// </summary>
-        private double alpha;
+        double alpha;
 
         /// <summary>
         /// Gets or sets the parameter beta which is used for generation of binomial distributed random numbers.
@@ -64,10 +65,12 @@ namespace YAMP.Numerics
         /// <summary>
         /// Stores the parameter beta which is used for generation of binomial distributed random numbers.
         /// </summary>
-        private int beta;
+        int beta;
+
         #endregion
 
 		#region construction
+
 		/// <summary>
         /// Initializes a new instance of the class, using a as underlying random number generator.
 		/// </summary>
@@ -89,9 +92,11 @@ namespace YAMP.Numerics
             this.alpha = 0.5;
             this.beta = 1;
         }
+
 		#endregion
 	
 		#region instance methods
+
 		/// <summary>
         /// Determines whether the specified value is valid for parameter <see cref="Alpha"/>.
 		/// </summary>
@@ -123,19 +128,20 @@ namespace YAMP.Numerics
         public int Next()
         {
             int successes = 0;
+
             for (int i = 0; i < this.beta; i++)
             {
                 if (this.Generator.NextDouble() < this.alpha)
-                {
                     successes++;
-                }
             }
 
             return successes;
         }
+
         #endregion
 
 		#region overridden Distribution members
+
         /// <summary>
         /// Gets the minimum possible value of binomial distributed random numbers.
 		/// </summary>
@@ -209,16 +215,16 @@ namespace YAMP.Numerics
         public override double NextDouble()
         {
             double successes = 0.0;
+
             for (int i = 0; i < this.beta; i++)
             {
                 if (this.Generator.NextDouble() < this.alpha)
-                {
                     successes++;
-                }
             }
             
             return successes;
         }
+
 		#endregion
 	}
 }

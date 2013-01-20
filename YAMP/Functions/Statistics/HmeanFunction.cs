@@ -2,8 +2,9 @@
 
 namespace YAMP
 {
-    [Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
     [Description("Calculates the harmonic mean, which is the number of elements divided by the sum of the inverse of each element. The harmonic mean is the special case of the power mean. As it tends strongly toward the least elements of the list, it may (compared to the arithmetic mean) mitigate the influence of large outliers and increase the influence of small values.")]
+    [Link("http://en.wikipedia.org/wiki/Harmonic_mean")]
     class HmeanFunction : ArgumentFunction
     {
         [Description("The harmonic mean (sometimes called the subcontrary mean) is one of several kinds of average. Typically, it is appropriate for situations when the average of rates is desired.")]

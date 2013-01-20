@@ -3,7 +3,8 @@
 namespace YAMP
 {
     [Description("In statistics the Bootstrap is a method to estimate the statistical error of observables measured on a set of data.")]
-    [Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Statistic)]
+    [Link("http://en.wikipedia.org/wiki/Bootstrapping")]
     class BootstrapFunction : SystemFunction
     {
         [Description("This function implements the Bootstrap method for functions of a set of vector data saved as the rows of a matrix. The function has to take a matrix of data as the first argument and has to return either a scalar or a matrix.")]

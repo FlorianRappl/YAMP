@@ -4,7 +4,8 @@ using YAMP.Numerics;
 namespace YAMP
 {
 	[Description("Generates a matrix with uniformly distributed integer values.")]
-	[Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Random)]
+    [Link("http://en.wikipedia.org/wiki/Uniform_distribution_(discrete)")]
 	class RandiFunction : ArgumentFunction
 	{
 		static readonly DiscreteUniformDistribution ran = new DiscreteUniformDistribution();
