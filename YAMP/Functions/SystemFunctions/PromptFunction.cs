@@ -13,7 +13,7 @@ namespace YAMP
         {
             var handle = new EventWaitHandle(false, EventResetMode.ManualReset);
             var e = new UserInputEventArgs(handle, "Your input is required");
-            Parser.RaiseInputPrompt("prompt", e);
+            Parser.RaiseInputPrompt(Context, e);
             handle.WaitOne();
             return new StringValue(e.Input);
         }
@@ -24,7 +24,7 @@ namespace YAMP
         {
             var handle = new EventWaitHandle(false, EventResetMode.ManualReset);
             var e = new UserInputEventArgs(handle, message.Value);
-            Parser.RaiseInputPrompt("prompt", e);
+            Parser.RaiseInputPrompt(Context, e);
             handle.WaitOne();
             return new StringValue(e.Input);
         }

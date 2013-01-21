@@ -8,7 +8,7 @@ namespace YAMP
     {
         [Description("Clears all variables.")]
         [ExampleAttribute("clear()")]
-        public StringValue Function()
+        public void Function()
         {
             var count = 0;
 
@@ -19,14 +19,13 @@ namespace YAMP
             }
 
             Notify(count);
-            return null;
         }
 
         [Description("Clears the specified variables given with their names as strings.")]
         [ExampleAttribute("clear(\"x\")", "Deletes the variable x.")]
         [ExampleAttribute("clear(\"x\", \"y\", \"z\")", "Deletes the variables x, y and z.")]
 		[Arguments(0, 1)]
-        public StringValue Function(ArgumentsValue args)
+        public void Function(ArgumentsValue args)
         {
             var count = 0;
             var allVariables = Context.AllVariables.Keys;
@@ -46,12 +45,11 @@ namespace YAMP
             }
 
             Notify(count);
-            return null;
         }
 
         void Notify(int count)
         {
-            Parser.RaiseNotification("clear", new NotificationEventArgs(NotificationType.Information, count + " objects cleared."));
+            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Information, count + " objects cleared."));
         }
     }
 }

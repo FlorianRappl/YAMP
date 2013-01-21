@@ -119,7 +119,13 @@ namespace YAMP
                 Plot = plot
             });
 
-            UpdateLayout();
+            return this;
+        }
+
+        SubPlotValue AddSubPlot(ParseContext context, int row, int column, PlotValue plot, int rowSpan = 1, int columnSpan = 1)
+        {
+            AddSubPlot(row, column, plot, rowSpan, columnSpan);
+            context.ChangeLastPlotTo(this);
             return this;
         }
 
@@ -320,7 +326,7 @@ namespace YAMP
 
                     InspectIndex(av[1], out rowIndex, out rowSpan);
                     InspectIndex(av[2], out colIndex, out colSpan);
-                    return AddSubPlot(rowIndex, colIndex, (PlotValue)values, rowSpan, colSpan);
+                    return AddSubPlot(context, rowIndex, colIndex, (PlotValue)values, rowSpan, colSpan);
                 }
                 else if (indices is ScalarValue)
                 {
@@ -331,7 +337,7 @@ namespace YAMP
 
                     var rowIndex = (index - 1) % Rows + 1;
                     var colIndex = (index - 1) / Columns + 1;
-                    return AddSubPlot(rowIndex, colIndex, (PlotValue)values);
+                    return AddSubPlot(context, rowIndex, colIndex, (PlotValue)values);
                 }
 
                 throw new YAMPWrongTypeSuppliedException(indices.Header, "Scalar");

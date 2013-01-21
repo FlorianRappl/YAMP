@@ -5,6 +5,7 @@ namespace YAMP
 {
 	[Description("A root-finding algorithm is a numerical method, or algorithm, for finding a value x such that f(x) = 0, for a given function f. Such an x is called a root of the function f.")]
 	[Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Zero_of_a_function")]
 	class RootFunction : SystemFunction
 	{
 		[Description("This function calls finds the root of f(x) that is the closest to the given value of x. The output is a value x0, which has the property that f(x0) = 0. There might be more roots depending on the starting value of x.")]

@@ -510,9 +510,9 @@ namespace YAMP
         /// <summary>
         /// Raises the notification if in interactive mode.
         /// </summary>
-        /// <param name="sender">The sender of the notification.</param>
+        /// <param name="sender">The sending context of the notification.</param>
         /// <param name="e">The notification arguments.</param>
-        public static void RaiseNotification(string sender, NotificationEventArgs e)
+        public static void RaiseNotification(ParseContext sender, NotificationEventArgs e)
         {
             if (InteractiveMode && OnNotificationReceived != null)
                 OnNotificationReceived(sender, e);
@@ -521,9 +521,9 @@ namespace YAMP
         /// <summary>
         /// Raises the input prompt if in interactive mode.
         /// </summary>
-        /// <param name="sender">The sender that demands the user input.</param>
+        /// <param name="sender">The sending context that demands the user input.</param>
         /// <param name="e">The input arguments.</param>
-        public static void RaiseInputPrompt(string sender, UserInputEventArgs e)
+        public static void RaiseInputPrompt(ParseContext sender, UserInputEventArgs e)
         {
             if (InteractiveMode && OnUserInputRequired != null)
                 OnUserInputRequired(sender, e);

@@ -94,7 +94,10 @@ namespace YAMP.Numerics
         /// StandardGenerator as underlying random number generator.
 		/// </summary>
         public GammaDistribution()
-		{
+        {
+            this.alpha = 1.0;
+            this.theta = 1.0;
+            this.UpdateHelpers();
 		}
 
 		/// <summary>

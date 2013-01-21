@@ -17,13 +17,12 @@ namespace YAMP
         [Example("format(\"default\")", "The default style outputs as many digits as possible, however, only with the given precision.")]
         [Example("format(\"scientific\")", "The scientific style outputs as many digits up to the given precision with an exponential notation beyond.")]
         [Example("format(\"engineering\")", "The engineering style outputs as many digits up to the given precision with an exponential notation used in the orders of 3, i.e. coming from exactly zero with ..., e-6, e-3, e0, e3, e6 and so on.")]
-        public StringValue Function(StringValue type)
+        public void Function(StringValue type)
         {
             var stec = new StringToEnumConverter(typeof(DisplayStyle));
             var value = stec.Convert(type);
             Context.DefaultDisplayStyle = (DisplayStyle)value;
-            Parser.RaiseNotification("format", new NotificationEventArgs(NotificationType.Information, "Display format changed to " + value + "."));
-            return null;
+            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Information, "Display format changed to " + value + "."));
         }
     }
 }

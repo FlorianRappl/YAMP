@@ -73,7 +73,9 @@ namespace YAMP.Numerics
         /// StandardGenerator as underlying random number generator.
 		/// </summary>
         public LaplaceDistribution()
-		{
+        {
+            this.alpha = 1.0;
+            this.mu = 0.0;
 		}
 
 		/// <summary>

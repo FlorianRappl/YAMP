@@ -102,7 +102,10 @@ namespace YAMP.Numerics
         /// StandardGenerator as underlying random number generator.
 		/// </summary>
         public WeibullDistribution()
-		{
+        {
+            this.alpha = 1.0;
+            this.lambda = 1.0;
+            this.UpdateHelpers();
 		}
 
 		/// <summary>

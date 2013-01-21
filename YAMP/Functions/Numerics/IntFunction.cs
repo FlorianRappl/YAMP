@@ -5,6 +5,7 @@ namespace YAMP
 {
     [Description("Integrates a given vector numerically by summing up all entries and returns the antiderivative vector.")]
     [Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Numerical_integration")]
     class IntFunction : ArgumentFunction
 	{
 		[Description("Integrates a given vector numerically by summing up all entries and returns the antiderivative vector.")]

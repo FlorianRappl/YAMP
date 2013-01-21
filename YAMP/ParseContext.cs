@@ -41,6 +41,7 @@ namespace YAMP
         IDictionary<string, Value> variables;
         IDictionary<string, IFunction> functions;
         IDictionary<string, IConstants> constants;
+        IDictionary<string, IDictionary<string, Value>> defaultProperties;
         ParseContext parent;
         int? precision = 5;
         bool isReadOnly;
@@ -94,6 +95,7 @@ namespace YAMP
             variables = new Dictionary<string, Value>();
             functions = new Dictionary<string, IFunction>();
             constants = new Dictionary<string, IConstants>();
+            defaultProperties = new Dictionary<string, IDictionary<string, Value>>();
             this.parent = parent;
 
             if (parent == null)
@@ -275,6 +277,7 @@ namespace YAMP
                     return;
 
                 lastPlot = value;
+                ApplyPlotTemplate(value);
                 RaiseLastPlotChanged(value);
             }
         }
@@ -434,6 +437,12 @@ namespace YAMP
             return this;
         }
 
+        /// <summary>
+        /// Assigns a variable to the given context.
+        /// </summary>
+        /// <param name="context">The context, where to assign the variable to.</param>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The value of the variable.</param>
         static void AssignVariable(ParseContext context, string name, Value value)
         {
             if (value != null)
@@ -500,10 +509,13 @@ namespace YAMP
         /// <summary>
         /// Sets the lastplot to be used to the given value.
         /// </summary>
-        /// <param name="plot"></param>
-        public void ChangeLastPlotTo(PlotValue plot)
+        /// <param name="plot">The plot to change to.</param>
+        /// <returns>The current context.</returns>
+        public ParseContext ChangeLastPlotTo(PlotValue plot)
         {
             lastPlot = plot;
+            RaiseLastPlotChanged(plot);
+            return this;
         }
 
         /// <summary>
@@ -594,6 +606,73 @@ namespace YAMP
                 var args = new PlotEventArgs(plot, string.Empty);
                 OnLastPlotChanged(this, args);
             }
+        }
+
+        #endregion
+
+        #region Template Properties
+
+        /// <summary>
+        /// Sets a template property in the dictionary.
+        /// </summary>
+        /// <param name="binName">The category of the default property.</param>
+        /// <param name="propertyName">The name of the property.</param>
+        /// <param name="propertyValue">The default value of the property.</param>
+        /// <returns>The current context.</returns>
+        public ParseContext SetDefaultProperty(string binName, string propertyName, Value propertyValue)
+        {
+            if (!defaultProperties.ContainsKey(binName))
+                defaultProperties.Add(binName, new Dictionary<string, Value>());
+
+            var bin = defaultProperties[binName];
+
+            if (propertyValue != null)
+            {
+                if (bin.ContainsKey(propertyName))
+                    bin[propertyName] = propertyValue;
+                else
+                    bin.Add(propertyName, propertyValue);
+            }
+            else if (bin.ContainsKey(propertyName))
+                bin.Remove(propertyName);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Applies the template set for plots.
+        /// </summary>
+        /// <param name="plot">The plot which will adjusted to the default values.</param>
+        /// <returns>The current context.</returns>
+        ParseContext ApplyPlotTemplate(PlotValue plot)
+        {
+            if (defaultProperties.ContainsKey("plot"))
+            {
+                var bin = defaultProperties["plot"];
+
+                foreach (var pair in bin)
+                {
+                    try { SetFunction.AlterProperty(plot, pair.Key, pair.Value); }
+                    catch { }
+                }
+            }
+
+            if (defaultProperties.ContainsKey("series"))
+            {
+                var bin = defaultProperties["series"];
+
+                foreach (var pair in bin)
+                {
+                    try 
+                    {
+                        for(var i = 0; i < plot.Count; i++)
+                            SetFunction.AlterSeriesProperty(plot, i, pair.Key, pair.Value); 
+                    }
+                    catch { }
+                }
+            }
+
+            return this;
         }
 
         #endregion

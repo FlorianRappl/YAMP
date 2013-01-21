@@ -84,6 +84,10 @@ namespace YAMP
 
 		#region Methods
 
+        /// <summary>
+        /// Invokes the OnPlotChanged event if it has been set.
+        /// </summary>
+        /// <param name="property">The property name to take as argument.</param>
 		internal void RaisePlotChanged(string property)
 		{
 			if (OnPlotChanged != null)

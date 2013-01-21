@@ -15,11 +15,10 @@ namespace YAMP
 
         [Description("Sets the output precision to x digits.")]
         [Example("precision(5)", "Sets the precision to 5 digits.")]
-        public StringValue Function(ScalarValue digits)
+        public void Function(ScalarValue digits)
         {
             Context.Precision = digits.IntValue;
-            Parser.RaiseNotification("precision", new NotificationEventArgs(NotificationType.Information, "Output precision changed to " + Context.Precision + " digits."));
-            return null;
+            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Information, "Output precision changed to " + Context.Precision + " digits."));
         }
     }
 }

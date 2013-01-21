@@ -7,44 +7,46 @@ namespace YAMP
 	[Kind(PopularKinds.Plot)]
 	[Description("Sets properties of a plot.")]
 	class SetFunction : SystemFunction
-	{
-		[Description("Sets the specified (as string) field's value to a new value.")]
-		[Example("set(\"title\", \"My plot...\")", "Sets the title of the last plot to My Plot....")]
-		public StringValue Function(StringValue property, Value newValue)
-		{
-			if (Context.LastPlot == null)
-				return new StringValue("No plot available... Nothing changed.");
+    {
+        #region Functions
 
-			return Function(Context.LastPlot, property, newValue);
+        [Description("Sets the specified (as string) field's value to a new value.")]
+		[Example("set(\"title\", \"My plot...\")", "Sets the title of the last plot to My Plot....")]
+		public void Function(StringValue property, Value newValue)
+		{
+            if (Context.LastPlot == null)
+                Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Failure, "No plot available... Nothing changed."));
+            else
+			    Function(Context.LastPlot, property, newValue);
 		}
 
 		[Description("Sets the specified (as string) field's value to a new value.")]
 		[Example("set(myplot, \"title\", \"My plot Title\")", "Sets the title of the plot in the variable myplot to My Plot Title.")]
-		public StringValue Function(PlotValue plot, StringValue property, Value newValue)
+		public void Function(PlotValue plot, StringValue property, Value newValue)
 		{
 			var propertyName = property.Value;
 			AlterProperty(plot, propertyName, newValue);
-			plot.RaisePlotChanged(propertyName);
-			return new StringValue("Property changed.");
+            plot.RaisePlotChanged(propertyName);
+            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Success, "Property changed"));
 		}
 
 		[Description("Sets the specified (as string) field's value of the given series to a new value.")]
 		[Example("set(1, \"color\", \"#FF0000\")", "Sets the color of series #1 of the last plot to red (hex-color).")]
 		[Example("set(1, \"color\", \"rgb(255, 0, 0)\")", "Sets the color of series #1 of the last plot to red (rgb-color).")]
 		[Example("set(1, \"color\", \"red\")", "Sets the color of series #1 of the last plot to red.")]
-		public StringValue Function(ScalarValue series, StringValue property, Value newValue)
+		public void Function(ScalarValue series, StringValue property, Value newValue)
 		{
-			if (Context.LastPlot == null)
-				return new StringValue("No plot available... Nothing changed.");
-
-			return Function(Context.LastPlot, series, property, newValue);
+            if (Context.LastPlot == null)
+                Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Failure, "No plot available... Nothing changed."));
+            else
+			    Function(Context.LastPlot, series, property, newValue);
 		}
 
 		[Description("Sets the specified (as string) field's values of the specified series to a new value.")]
 		[Example("set(myplot, 1, \"color\", \"#FF0000\")", "Sets the color of series #1 of the plot in the variable myplot to red (hex-color).")]
 		[Example("set(myplot, 1, \"color\", \"rgb(255, 0, 0)\")", "Sets the color of series #1 of the plot in the variable myplot to red (rgb-color).")]
 		[Example("set(myplot, 1, \"color\", \"red\")", "Sets the color of series #1 of the plot in the variable myplot to red.")]
-		public StringValue Function(PlotValue plot, ScalarValue series, StringValue property, Value newValue)
+		public void Function(PlotValue plot, ScalarValue series, StringValue property, Value newValue)
 		{
 			if(plot.Count == 0)
 				throw new ArgumentOutOfRangeException("The given plot contains no series.");
@@ -52,43 +54,28 @@ namespace YAMP
 			if(series.IntValue < 1 || series.IntValue > plot.Count)
 				throw new ArgumentOutOfRangeException(string.Format("The value for series must be between {0} and {1}.", 1, plot.Count));
 
-			var type = plot.GetType();
-			var props = type.GetProperties();
-
-			foreach (var prop in props)
-			{
-				var idx = prop.GetIndexParameters();
-
-				if (idx.Length == 1)
-				{
-					var method = prop.GetGetMethod();
-					var s = method.Invoke(plot, new object[] { series.IntValue - 1 });
-					AlterProperty(s, property.Value, newValue);
-					break;
-				}
-			}
-
+            AlterSeriesProperty(plot, series.IntValue - 1, property.Value, newValue);
 			plot.UpdateProperties();
-			return new StringValue("Series " + series.IntValue + " changed.");
+            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Success, "Series " + series.IntValue + " changed."));
 		}
 
 		[Description("Sets the specified (as string) field's value of the given series to a new value.")]
 		[Example("set(1:3, \"color\", \"#FF0000\")", "Sets the color of series #1 to #3 of the last plot to red (hex-color).")]
 		[Example("set(1:2:5, \"color\", \"rgb(255, 0, 0)\")", "Sets the color of series #1, #3, #5 of the last plot to red (rgb-color).")]
 		[Example("set([1,3,7], \"color\", \"red\")", "Sets the color of series #1, #3, #7 of the last plot to red.")]
-		public StringValue Function(MatrixValue series, StringValue property, Value newValue)
+		public void Function(MatrixValue series, StringValue property, Value newValue)
 		{
-			if (Context.LastPlot == null)
-				return new StringValue("No plot available... Nothing changed.");
-
-			return Function(Context.LastPlot, series, property, newValue);
+            if (Context.LastPlot == null)
+                Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Failure, "No plot available... Nothing changed."));
+            else
+			    Function(Context.LastPlot, series, property, newValue);
 		}
 
 		[Description("Sets the specified (as string) field's value to of the given series to a new value.")]
 		[Example("set(myplot, 1:3, \"color\", \"#FF0000\")", "Sets the color of series #1 to #3 of the plot in the variable myplot to red (hex-color).")]
 		[Example("set(myplot, 1:2:5, \"color\", \"rgb(255, 0, 0)\")", "Sets the color of series #1, #3, #5 of the plot in the variable myplot to red (rgb-color).")]
 		[Example("set(myplot, [1,3,7], \"color\", \"red\")", "Sets the color of series #1, #3, #7 of the plot in the variable myplot to red.")]
-		public StringValue Function(PlotValue plot, MatrixValue series, StringValue property, Value newValue)
+		public void Function(PlotValue plot, MatrixValue series, StringValue property, Value newValue)
 		{
 			var s = new List<string>();
 
@@ -101,7 +88,7 @@ namespace YAMP
 				for (var j = (int)r.Start; j <= end; j += step)
 				{
 					s.Add(j.ToString());
-					Function(plot, new ScalarValue(j), property, newValue);
+                    AlterSeriesProperty(plot, j - 1, property.Value, newValue);
 				}
 			}
 			else
@@ -110,15 +97,26 @@ namespace YAMP
 
 				for (var i = 1; i <= end; i++)
 				{
-					s.Add(series[i].IntValue.ToString());
-					Function(plot, series[i], property, newValue);
+                    s.Add(series[i].IntValue.ToString());
+                    AlterSeriesProperty(plot, series[i].IntValue - 1, property.Value, newValue);
 				}
 			}
 
-			return new StringValue("Series " + string.Join(", ", s.ToArray()) + " changed.");
+            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Failure, "Series " + string.Join(", ", s.ToArray()) + " changed."));
+            plot.UpdateProperties();
 		}
 
-		void AlterProperty(object parent, string name, Value value)
+        #endregion
+
+        #region Helper
+
+        /// <summary>
+        /// Changes a given property to a certain value using the available value converter.
+        /// </summary>
+        /// <param name="parent">The object that should contain the property.</param>
+        /// <param name="name">The name of the property (property needs to have a converter specified).</param>
+        /// <param name="value">The new value of the property.</param>
+        public static void AlterProperty(object parent, string name, Value value)
 		{
 			var type = parent.GetType();
 			var props = type.GetProperties();
@@ -150,7 +148,7 @@ namespace YAMP
 					}
 
                     if (content == null)
-                        throw new YAMPArgumentWrongTypeException(value.Header, possible.ToArray(), Name);
+                        throw new YAMPArgumentWrongTypeException(value.Header, possible.ToArray(), "set");
 
 					prop.SetValue(parent, content, null);
 					return;
@@ -158,6 +156,34 @@ namespace YAMP
 			}
 
             throw new YAMPPropertyMissingException(name, available.ToArray());
-		}
-	}
+        }
+
+        /// <summary>
+        /// Changes a given property to a certain value using the available value converter.
+        /// </summary>
+        /// <param name="series">The series (0..(n-1)) that should be changed.</param>
+        /// <param name="parent">The object that should contain the property.</param>
+        /// <param name="property">The name of the property (property needs to have a converter specified).</param>
+        /// <param name="value">The new value of the property.</param>
+        public static void AlterSeriesProperty(object parent, int series, string property, Value value)
+        {
+            var type = parent.GetType();
+            var props = type.GetProperties();
+
+            foreach (var prop in props)
+            {
+                var idx = prop.GetIndexParameters();
+
+                if (idx.Length == 1)
+                {
+                    var method = prop.GetGetMethod();
+                    var s = method.Invoke(parent, new object[] { series });
+                    AlterProperty(s, property, value);
+                    break;
+                }
+            }
+        }
+
+        #endregion
+    }
 }

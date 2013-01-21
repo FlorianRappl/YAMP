@@ -11,17 +11,16 @@ namespace YAMP
 	{
         [Description("Saves all variables that are currently available.")]
         [Example("save(\"myfile.mat\")", "Saves all variables in the file myfile.mat")]
-        public StringValue Function(StringValue fileName)
+        public void Function(StringValue fileName)
 		{
             Save(fileName.Value, Context.Variables);
             Notify(Context.Variables.Count);
-            return null;
 		}
 
         [Description("Saves the specified variables in the file.")]
         [Example("save(\"myfile.mat\", \"x\", \"y\")", "Saves the variables x and y in the file myfile.mat")]
 		[Arguments(1)]
-        public StringValue Function(StringValue fileName, ArgumentsValue args)
+        public void Function(StringValue fileName, ArgumentsValue args)
         {
             var workspace = new Dictionary<string, Value>();
 
@@ -38,7 +37,6 @@ namespace YAMP
 
             Save(fileName.Value, workspace);
             Notify(workspace.Count);
-            return null;
         }
 
         #region Helpers
@@ -66,9 +64,9 @@ namespace YAMP
             }
         }
 
-        static void Notify(int count)
+        void Notify(int count)
         {
-            Parser.RaiseNotification("save", new NotificationEventArgs(NotificationType.Success, count + " objects saved."));
+            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Success, count + " objects saved."));
         }
 
         #endregion

@@ -56,12 +56,15 @@ namespace YAMP.Numerics
 		#endregion
 
 		#region construction
+
 		/// <summary>
         /// Initializes a new instance of the PoissonDistribution class, using a 
         /// StandardGenerator as underlying random number generator.
 		/// </summary>
         public PoissonDistribution()
-		{
+        {
+            this.lambda = 1.0;
+            this.UpdateHelpers();
 		}
 		
 		/// <summary>
@@ -78,6 +81,7 @@ namespace YAMP.Numerics
             this.lambda = 1.0;
             this.UpdateHelpers();
         }
+
 		#endregion
 		
 		#region instance methods

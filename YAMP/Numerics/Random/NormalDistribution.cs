@@ -89,12 +89,16 @@ namespace YAMP.Numerics
 		#endregion
 
 		#region construction
+
 		/// <summary>
         /// Initializes a new instance of the NormalDistribution class, using a 
         /// StandardGenerator as underlying random number generator.
 		/// </summary>
         public NormalDistribution()
-		{
+        {
+            this.mu = 1.0;
+            this.sigma = 1.0;
+            this.UpdateHelpers();
 		}
 
 		/// <summary>
@@ -110,9 +114,9 @@ namespace YAMP.Numerics
         {
             this.mu = 1.0;
             this.sigma = 1.0;
-
 			this.UpdateHelpers();
         }
+
 		#endregion
 	
 		#region instance methods

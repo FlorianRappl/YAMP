@@ -30,35 +30,23 @@ using System;
 namespace YAMP
 {
     /// <summary>
-    /// Returns the given scalar(s) with a switched sign. This operator is a unary operator,
-    /// but is used as a binary one with a pseudo expression on the left side.
+    /// Just returns the given value.
     /// </summary>
-    class NegateOperator : LeftUnaryOperator
+    class PosateOperator : LeftUnaryOperator
     {
-        public NegateOperator()
-            : base("-", 997)
+        public PosateOperator()
+            : base("+", 997)
         {
         }
 
         public override Value Perform(Value value)
         {
-            if (value is ScalarValue)
-            {
-                var scalar = (ScalarValue)value;
-                return -scalar;
-            }
-            else if (value is MatrixValue)
-            {
-                var matrix = (MatrixValue)value;
-                return -matrix;
-            }
-
-            throw new YAMPOperationInvalidException(Op, value);
+            return value;
         }
 
         public override Operator Create()
         {
-            return new NegateOperator();
+            return new PosateOperator();
         }
     }
 }

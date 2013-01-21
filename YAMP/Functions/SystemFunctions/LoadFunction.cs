@@ -13,7 +13,7 @@ namespace YAMP
 	{
         [Description("Loads all variables found in the file, if the file contains YAMP variables. Else it treats the file as an ASCII data table or an image file and stores the content as a matrix with the name \"data\" or \"image\".")]
         [Example("load(\"myfile.mat\")", "Opens the file myfile.mat and reads out all variables.")]
-        public StringValue Function(StringValue filename)
+        public void Function(StringValue filename)
 		{
             if (!File.Exists(filename.Value))
                 throw new YAMPFileNotFoundException(filename.Value);
@@ -74,14 +74,13 @@ namespace YAMP
                 throw new YAMPFileFormatNotSupportedException(filename.Value);
 
             Notify(count);
-			return null;
 		}
 
         [Description("Tries to load the file as the specified file type.")]
         [Example("load(\"myfile.mat\", \"binary\")", "Opens the file myfile.mat and reads out all variables.")]
         [Example("load(\"myfile.bmp\", \"image\")", "Opens the image myfile.bmp and transforms the data to a matrix.")]
         [Example("load(\"myfile.txt\", \"text\")", "Opens the textfile myfile.txt converts the data to a matrix.")]
-        public StringValue Function(StringValue filename, StringValue filetype)
+        public void Function(StringValue filename, StringValue filetype)
         {
             var type = (FileType)(new YAMP.Converter.StringToEnumConverter(typeof(FileType)).Convert(filetype));
             var error = false;
@@ -147,13 +146,12 @@ namespace YAMP
                 throw new YAMPFileFormatNotSupportedException(filename.Value);
 
             Notify(count);
-            return null;
         }
 
         [Description("Loads specified variables found in the file, if the file contains YAMP variables. Else it treats the file as an ASCII data table or an image file and stores the content as a matrix with the name of the first variable.")]
         [Example("load(\"myfile.mat\", \"x\", \"y\", \"z\")", "Opens the file myfile.mat and reads out variables that have been named x, y and z.")]
 		[Arguments(1, 1)]
-        public StringValue Function(StringValue filename, ArgumentsValue args)
+        public void Function(StringValue filename, ArgumentsValue args)
         {
             if (!File.Exists(filename.Value))
                 throw new YAMPFileNotFoundException(filename.Value);
@@ -239,14 +237,13 @@ namespace YAMP
                 throw new YAMPFileFormatNotSupportedException(filename.Value);
 
             Notify(count);
-            return null;
         }
 
         #region Helpers
 
-        static void Notify(int count)
+        void Notify(int count)
         {
-            Parser.RaiseNotification("load", new NotificationEventArgs(NotificationType.Success, count + " objects loaded."));
+            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Success, count + " objects loaded."));
         }
 
         static IDictionary<string, Value> Load(string filename, out bool error)

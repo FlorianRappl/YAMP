@@ -5,6 +5,7 @@ namespace YAMP
 {
 	[Description("Integrates a given vector of values with Simpson's rule (perfect for third order polynomials, i.e. cubic functions).")]
 	[Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Simpson's_rule")]
     class SimpsFunction : ArgumentFunction
     {
         [Description("Computes the integral for a given range of y values with its x vector.")]

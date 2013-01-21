@@ -5,6 +5,7 @@ namespace YAMP
 {
 	[Description("Interpolates points between given sample values.")]
 	[Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Spline_(mathematics)")]
     class SplineFunction : ArgumentFunction
     {
         [Description("Generates the y value for a single point with given sample data.")]

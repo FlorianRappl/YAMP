@@ -85,7 +85,10 @@ namespace YAMP.Numerics
         /// StandardGenerator as underlying random number generator. 
 		/// </summary>
 		public DiscreteUniformDistribution()
-		{
+        {
+            this.alpha = 0;
+            this.beta = 1;
+            this.UpdateHelpers();
 		}
 
 		/// <summary>

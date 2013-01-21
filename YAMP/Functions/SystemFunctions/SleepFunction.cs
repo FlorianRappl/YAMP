@@ -9,7 +9,7 @@ namespace YAMP
 	{
 		[Description("Sets the computation thread on idle for the proposed time in milliseconds (ms).")]
 		[Example("sleep(150)", "Sleeps for 150ms and outputs the real waiting time in ms.")]
-		public ScalarValue Function(ScalarValue timeout)
+		public void Function(ScalarValue timeout)
 		{
 			var start = Environment.TickCount;
 
@@ -19,7 +19,7 @@ namespace YAMP
 			}
 
 			var time = Environment.TickCount - start;
-			return new ScalarValue(time);
+            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Information, "Slept " + time + "ms."));
 		}
 	}
 }

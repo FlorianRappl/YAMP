@@ -61,7 +61,9 @@ namespace YAMP.Numerics
         /// StandardGenerator as underlying random number generator.
 		/// </summary>
         public ExponentialDistribution()
-		{
+        {
+            this.lambda = 1.0;
+            this.UpdateHelpers();
 		}
 		
 		/// <summary>

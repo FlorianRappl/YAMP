@@ -75,7 +75,9 @@ namespace YAMP.Numerics
         /// Initializes a new instance of the class, using a as underlying random number generator.
 		/// </summary>
         public BinomialDistribution()
-		{
+        {
+            this.alpha = 0.5;
+            this.beta = 1;
 		}
 		
 		/// <summary>

@@ -54,7 +54,6 @@ namespace YAMP
 		[Example("plot(myplot)", "Displays the given plot stored in the variable myplot.")]
 		public PlotValue Function(PlotValue plot)
 		{
-			Context.LastPlot = plot;
 			return plot;
 		}
 	}

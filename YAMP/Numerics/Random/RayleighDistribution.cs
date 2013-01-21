@@ -62,6 +62,7 @@ namespace YAMP.Numerics
         /// StandardGenerator as underlying random number generator.
 		/// </summary>
         public RayleighDistribution()
+            : this(standardGenerator)
 		{
 		}
 

@@ -85,11 +85,13 @@
     <Compile Include="Functions\Trigonometric\SecFunction.cs" />
     <Compile Include="Functions\Trigonometric\CschFunction.cs" />
     <Compile Include="Functions\Trigonometric\SechFunction.cs" />
+    <Compile Include="Functions\Visualization\SetDefFunction.cs" />
     <Compile Include="Numerics\Fractals\Fractal.cs" />
     <Compile Include="Numerics\Fractals\Julia.cs" />
     <Compile Include="Numerics\Fractals\Newton.cs" />
     <Compile Include="Operators\PseudoOperators\LeftUnaryOperator.cs" />
     <Compile Include="Operators\PseudoOperators\NegateOperator.cs" />
+    <Compile Include="Operators\PseudoOperators\PosateOperator.cs" />
     <Compile Include="Operators\PseudoOperators\PreDecOperator.cs" />
     <Compile Include="Operators\PseudoOperators\PreIncOperator.cs" />
     <Compile Include="ParseContext.IO.cs" />

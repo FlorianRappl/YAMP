@@ -5,6 +5,7 @@ namespace YAMP
 {
 	[Description("Computes the greatest common divisor of the given elements.")]
 	[Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Greatest_common_divisor")]
 	class GcdFunction : ArgumentFunction
 	{
 		[Description("Given a matrix of integers the greatest common divisor is computed.")]

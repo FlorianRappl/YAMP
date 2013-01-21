@@ -42,9 +42,9 @@ namespace YAMP
         /// <returns>The result of the function</returns>
         public override Value Perform(Value argument)
         {
-            Value value = base.Perform(argument);
+            var value = base.Perform(argument);
 
-            if(value is PlotValue)
+            if(value != null && value is PlotValue)
                 Context.LastPlot = (PlotValue)value;
 
             return value;

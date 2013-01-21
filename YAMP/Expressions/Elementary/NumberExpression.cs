@@ -109,7 +109,7 @@ namespace YAMP
 
                     if (index < chars.Length && (chars[index] == '+' || chars[index] == '-'))
                     {
-                        sign = chars[index] == '-' ? - 1 : 1;
+                        sign = chars[index] == '-' ? -1 : +1;
                         index++;
                     }
 
@@ -120,7 +120,7 @@ namespace YAMP
                         index++;
                     }
 
-                    pow += epow * sign;
+                    pow -= epow * sign;
                 }
 
                 var value = number / Math.Pow(10.0, pow);

@@ -5,6 +5,7 @@ namespace YAMP
 {
 	[Description("Solves one dimensional ordinary differential equations in the form x'(t) = f(t, x(t)).")]
 	[Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Ordinary_differential_equation")]
 	class OdeFunction : SystemFunction
 	{
 		[Description("Searches for a solution of the differential equation x'(t) = f(t, x) for a given a lambda expression f with two arguments t and x within the range specified as a vector and the starting value of x(t) at t(0) (the first value for t).")]

@@ -4,6 +4,7 @@ namespace YAMP
 {
 	[Description("Calculates the modulo of the integer real parts of the arguments.")]
 	[Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Modular_arithmetic")]
 	class ModFunction : ArgumentFunction
 	{
 		[Description("Performes the modulo operation on each of the entries of the given matrix.")]

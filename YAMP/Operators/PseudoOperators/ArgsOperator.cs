@@ -95,13 +95,14 @@ namespace YAMP
 
         public Value Handle(Expression expression, Value value, Dictionary<string, Value> symbols)
         {
+            var symbolName = string.Empty;
             var isSymbol = expression is SymbolExpression;
             var args = _content.Interpret(symbols);
 
             if (isSymbol)
             {
                 var sym = (SymbolExpression)expression;
-                var symbolName = sym.SymbolName;
+                symbolName = sym.SymbolName;
 
                 if (Context.GetVariableContext(sym.SymbolName) == null)
                     Context.AssignVariable(sym.SymbolName, new MatrixValue());
@@ -113,6 +114,10 @@ namespace YAMP
             {
                 var sf = (ISetFunction)left;
                 sf.Perform(Context, args, value);
+
+                if (isSymbol)
+                    Context.AssignVariable(symbolName, left);
+
                 return left;
             }
 

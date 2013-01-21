@@ -5,6 +5,7 @@ namespace YAMP
 {
     [Description("Differentiates a given vector numerically by differences and returns the derivative vector.")]
     [Kind(PopularKinds.Function)]
+    [Link("http://en.wikipedia.org/wiki/Derivative")]
     class DiffFunction : ArgumentFunction
 	{
 		[Description("Differentiates a given vector numerically by differences and returns the derivative vector.")]

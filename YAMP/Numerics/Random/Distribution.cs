@@ -35,6 +35,11 @@ namespace YAMP.Numerics
         Generator generator;
 
         /// <summary>
+        /// Gets the standard genertor to use (MT19937).
+        /// </summary>
+        protected static readonly Generator standardGenerator = new MT19937Generator();
+
+        /// <summary>
         /// Gets a value indicating whether the random number distribution can be reset, so that it produces the same 
         /// random number sequence again.
         /// </summary>
@@ -54,7 +59,7 @@ namespace YAMP.Numerics
         /// Initializes a new instance of the Distribution class, using a 
         /// StandardGenerator as underlying random number generator.
         /// </summary>
-        protected Distribution() : this(new MT19937Generator())
+        protected Distribution() : this(standardGenerator)
         {
         }
 
