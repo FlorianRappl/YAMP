@@ -35,7 +35,7 @@ namespace YAMP
     class PosateOperator : LeftUnaryOperator
     {
         public PosateOperator()
-            : base("+", 997)
+            : base("+", 7)
         {
         }
 

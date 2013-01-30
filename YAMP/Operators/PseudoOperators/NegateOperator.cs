@@ -36,7 +36,7 @@ namespace YAMP
     class NegateOperator : LeftUnaryOperator
     {
         public NegateOperator()
-            : base("-", 997)
+            : base("-", 7)
         {
         }
 

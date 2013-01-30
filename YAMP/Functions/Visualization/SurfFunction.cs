@@ -11,6 +11,7 @@ namespace YAMP
         {
             var splot = new SurfacePlotValue();
             splot.IsSurf = true;
+            splot.IsMesh = false;
             splot.AddPoints(Z);
             return splot;
         }
@@ -21,6 +22,7 @@ namespace YAMP
         {
             var splot = new SurfacePlotValue();
             splot.IsSurf = true;
+            splot.IsMesh = false;
             splot.AddPoints(X, Y, Z);
             return splot;
         }
