@@ -247,12 +247,15 @@ namespace YAMP
         {
             var list = new List<SymbolExpression>();
 
-            foreach (var expression in _expressions)
+            if (_expressions != null)
             {
-                if (expression is ContainerExpression)
-                    list.AddRange(((ContainerExpression)expression).GetSymbols());
-                else if (expression is SymbolExpression)
-                    list.Add((SymbolExpression)expression);
+                foreach (var expression in _expressions)
+                {
+                    if (expression is ContainerExpression)
+                        list.AddRange(((ContainerExpression)expression).GetSymbols());
+                    else if (expression is SymbolExpression)
+                        list.Add((SymbolExpression)expression);
+                }
             }
 
             return list.ToArray();

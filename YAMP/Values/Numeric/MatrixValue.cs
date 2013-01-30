@@ -565,6 +565,15 @@ namespace YAMP
         /// <summary>
         /// Creates a deep copy of the matrix.
         /// </summary>
+        /// <returns>A copy of the current instance.</returns>
+        public override Value Copy()
+        {
+            return Clone();
+        }
+
+        /// <summary>
+        /// Creates a deep copy of the matrix.
+        /// </summary>
         /// <returns>A clone of the current instance.</returns>
 		public virtual MatrixValue Clone()
 		{

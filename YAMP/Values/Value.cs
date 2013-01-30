@@ -159,6 +159,30 @@ namespace YAMP
             //Nothing to register here.
         }
 
+        /// <summary>
+        /// Creates a copy of the given object using reflection.
+        /// Override for using a more specialized version.
+        /// </summary>
+        /// <returns>The copy or original in case of a failed copy.</returns>
+        public virtual Value Copy()
+        {
+            var T = GetType();
+
+            // Get all the fields of the type, also the privates.
+            var fis = T.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var clone = Activator.CreateInstance(T) as Value;
+
+            if (clone == null)
+                return this;
+
+            // Loop through all the fields and copy the information from the source to the target
+            foreach (var fi in fis)
+                fi.SetValue(clone, fi.GetValue(this));
+
+            // Return the cloned object.
+            return clone;
+        }
+
         #endregion
 
         #region Serialization

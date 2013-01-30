@@ -72,6 +72,90 @@ namespace YAMP
 
         #endregion
 
+        #region Deactivated Properties
+
+        //Those properties are being "deactivated" by design - we just
+        //override them but do not use any Converter for them. Therefore
+        //YAMP will ignore them since Reflection does not consider the
+        //Attributes being "inherited".
+
+        /// <summary>
+        /// Obsolete.
+        /// </summary>
+        public override bool ShowLegend
+        {
+            get
+            {
+                return base.ShowLegend;
+            }
+            set
+            {
+                base.ShowLegend = value;
+            }
+        }
+
+        /// <summary>
+        /// Obsolete.
+        /// </summary>
+        public override string LegendBackground
+        {
+            get
+            {
+                return base.LegendBackground;
+            }
+            set
+            {
+                base.LegendBackground = value;
+            }
+        }
+
+        /// <summary>
+        /// Obsolete.
+        /// </summary>
+        public override string LegendLineColor
+        {
+            get
+            {
+                return base.LegendLineColor;
+            }
+            set
+            {
+                base.LegendLineColor = value;
+            }
+        }
+
+        /// <summary>
+        /// Obsolete.
+        /// </summary>
+        public override double LegendLineWidth
+        {
+            get
+            {
+                return base.LegendLineWidth;
+            }
+            set
+            {
+                base.LegendLineWidth = value;
+            }
+        }
+
+        /// <summary>
+        /// Obsolete.
+        /// </summary>
+        public override LegendPosition LegendPosition
+        {
+            get
+            {
+                return base.LegendPosition;
+            }
+            set
+            {
+                base.LegendPosition = value;
+            }
+        }
+
+        #endregion
+
         #region Methods
 
         /// <summary>

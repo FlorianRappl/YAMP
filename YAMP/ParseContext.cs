@@ -284,7 +284,7 @@ namespace YAMP
 
         #endregion
 
-        #region Add Methods
+        #region Add elements
 
         /// <summary>
         /// Adds a constant to the context.
@@ -364,6 +364,58 @@ namespace YAMP
             
             if (functions.ContainsKey(lname))
                 functions.Remove(lname);
+
+            return this;
+        }
+
+        #endregion
+
+        #region Rename elements
+
+        /// <summary>
+        /// Renames a constant from the context.
+        /// </summary>
+        /// <param name="oldName">
+        /// The old name of the constant.
+        /// </param>
+        /// <param name="newName">
+        /// The new name for the constant.
+        /// </param>
+        /// <returns>The current context.</returns>
+        public ParseContext RenameConstant(string oldName, string newName)
+        {
+            var lname = oldName.ToLower();
+
+            if (constants.ContainsKey(lname))
+            {
+                var buffer = constants[lname];
+                constants.Remove(lname);
+                constants.Add(newName, buffer);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Renames a function from the context.
+        /// </summary>
+        /// <param name="oldName">
+        /// The old name of the function.
+        /// </param>
+        /// <param name="newName">
+        /// The new name for the function.
+        /// </param>
+        /// <returns>The current context.</returns>
+        public ParseContext RenameFunction(string oldName, string newName)
+        {
+            var lname = oldName.ToLower();
+
+            if (functions.ContainsKey(lname))
+            {
+                var buffer = functions[lname];
+                functions.Remove(lname);
+                functions.Add(newName, buffer);
+            }
 
             return this;
         }
@@ -637,6 +689,19 @@ namespace YAMP
                 bin.Remove(propertyName);
 
             return this;
+        }
+
+        /// <summary>
+        /// Gets the key value pairs of the specified bin.
+        /// </summary>
+        /// <param name="binName">The name of the template bin.</param>
+        /// <returns>The read only key value pairs.</returns>
+        public ReadOnlyDictionary<string, Value> GetDefaultProperties(string binName)
+        {
+            if(defaultProperties.ContainsKey(binName))
+                return new ReadOnlyDictionary<string, Value>(defaultProperties[binName]);
+
+            return new ReadOnlyDictionary<string, Value>();
         }
 
         /// <summary>

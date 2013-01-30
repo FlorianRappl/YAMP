@@ -13,7 +13,7 @@ namespace YAMP
         public MatrixValue Function()
         {
             var m = new Mandelbrot();
-            return m.CalculateMatrix(-2.5, 1.0, -1.0, -1.0, 150, 150);
+            return m.CalculateMatrix(-2.5, 1.0, -1.0, 1.0, 150, 150);
         }
 
 		[Description("Calculates a point in the Mandelbrot fractal.")]

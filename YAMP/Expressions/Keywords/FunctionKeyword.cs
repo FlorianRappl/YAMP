@@ -101,36 +101,52 @@ namespace YAMP
             var start = engine.Pointer;
             var kw = new FunctionKeyword(engine.CurrentLine, engine.CurrentColumn, engine.Query);
             engine.Advance(Token.Length).Skip();
+
+            if (engine.Pointer == engine.Characters.Length)
+            {
+                kw.Length = engine.Pointer - start;
+                engine.AddError(new YAMPFunctionNameMissing(engine), kw);
+                return kw;
+            }
+
             kw.name = Elements.Instance.FindExpression<SymbolExpression>().Scan(engine) as SymbolExpression;
 
             if (kw.name == null)
             {
-                engine.AddError(new YAMPFunctionNameMissing(engine));
-                return null;
+                engine.AddError(new YAMPFunctionNameMissing(engine), kw);
+                return kw;
             }
 
             engine.Skip();
+
+            if (engine.Pointer == engine.Characters.Length)
+            {
+                kw.Length = engine.Pointer - start;
+                engine.AddError(new YAMPFunctionArgumentsMissing(engine), kw);
+                return kw;
+            }
+
             kw.arguments = Elements.Instance.FindExpression<BracketExpression>().Scan(engine) as BracketExpression;
             kw.Body = engine.ParseStatement();
+            kw.Length = engine.Pointer - start;
 
             if (kw.arguments == null)
             {
-                engine.AddError(new YAMPFunctionArgumentsMissing(engine));
-                return null;
+                engine.AddError(new YAMPFunctionArgumentsMissing(engine), kw);
+                return kw;
             }
-            else if (!kw.arguments.IsSymbolList)
+            else if (kw.arguments.HasContent && !kw.arguments.IsSymbolList)
             {
-                engine.AddError(new YAMPFunctionArgumentsSymbols(engine));
-                return null;
+                engine.AddError(new YAMPFunctionArgumentsSymbols(engine), kw.arguments);
+                return kw;
             }
 
-            kw.Length = engine.Pointer - start;
             return kw;
         }
 
         public override Value Interpret(Dictionary<string, Value> symbols)
         {
-            var f = new FunctionValue(Arguments, Body.Container);
+            var f = new FunctionValue(Name, Arguments, Body.Container);
             Query.Context.AddFunction(Name, f);
             return f;
         }

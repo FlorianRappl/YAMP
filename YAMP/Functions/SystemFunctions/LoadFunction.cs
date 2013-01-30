@@ -10,7 +10,15 @@ namespace YAMP
 	[Description("Loads compatible files into YAMP.")]
 	[Kind(PopularKinds.System)]
     class LoadFunction : SystemFunction
-	{
+    {
+        #region Constants
+
+        const double rfactor = 256 * 256;
+        const double gfactor = 256;
+        const double bfactor = 1;
+
+        #endregion
+
         [Description("Loads all variables found in the file, if the file contains YAMP variables. Else it treats the file as an ASCII data table or an image file and stores the content as a matrix with the name \"data\" or \"image\".")]
         [Example("load(\"myfile.mat\")", "Opens the file myfile.mat and reads out all variables.")]
         public void Function(StringValue filename)
@@ -423,17 +431,14 @@ namespace YAMP
 
                     Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
                     System.Drawing.Imaging.BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, bmp.PixelFormat);
-
                     IntPtr ptr = bmpData.Scan0;
 
                     int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
                     byte[] rgbValues = new byte[bytes];
-
                     System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-
                     bmp.UnlockBits(bmpData);
-
                     int bytesPerPixel;
+
                     if (bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Canonical ||
                         bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppArgb ||
                         bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppPArgb ||
@@ -470,16 +475,21 @@ namespace YAMP
                     double[,] rvalues = new double[finalHeight, finalWidth];
                     double[,] gvalues = new double[finalHeight, finalWidth];
                     double[,] bvalues = new double[finalHeight, finalWidth];
+
                     for (int i = 0; i < width; i++)
                     {
                         int idx = (int)(i * cI);
+
                         if (idx >= finalWidth)
                             idx = finalWidth - 1;
+
                         for (int j = 0; j < height; j++)
                         {
                             int jdx = (int)(j * cI);
+
                             if (jdx >= finalHeight)
                                 jdx = finalHeight - 1;
+
                             rvalues[jdx, idx] += rgbValues[(j * width + i) * bytesPerPixel + 2];
                             gvalues[jdx, idx] += rgbValues[(j * width + i) * bytesPerPixel + 1];
                             bvalues[jdx, idx] += rgbValues[(j * width + i) * bytesPerPixel + 0];
@@ -498,9 +508,6 @@ namespace YAMP
                         }
                     }
 
-                    const double rfactor = 256 * 256;
-                    const double gfactor = 256;
-                    const double bfactor = 1;
                     for (int i = 0; i < finalHeight; i++)
                     {
                         for (int j = 0; j < finalWidth; j++)

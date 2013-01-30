@@ -291,6 +291,15 @@ namespace YAMP
             return new ScalarValue(this);
         }
 
+        /// <summary>
+        /// Copies the current instance.
+        /// </summary>
+        /// <returns>A copy of the current scalar.</returns>
+        public override Value Copy()
+        {
+            return Clone();
+        }
+
         #endregion
 
         #region Mathematics
@@ -797,7 +806,7 @@ namespace YAMP
         /// <returns>The result.</returns>
         public static ScalarValue operator -(double b, ScalarValue a)
         {
-            return new ScalarValue(b - a._real, a._imag);
+            return new ScalarValue(b - a._real, -a._imag);
         }
 
         /// <summary>

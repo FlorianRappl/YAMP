@@ -58,15 +58,13 @@ namespace YAMP
 
         public override Expression Scan(ParseEngine engine)
         {
-            if (IsBreakable(engine))
-            {
-                var kw = new BreakKeyword(engine.CurrentLine, engine.CurrentColumn, engine.Query);
-                engine.Advance(Token.Length);
-                return kw;
-            }
+            var kw = new BreakKeyword(engine.CurrentLine, engine.CurrentColumn, engine.Query);
+            engine.Advance(Token.Length);
 
-            engine.AddError(new YAMPKeywordNotPossible(engine, Token)).Advance(Token.Length);
-            return null;
+            if (!IsBreakable(engine))
+                engine.AddError(new YAMPKeywordNotPossible(engine, Token), kw);
+
+            return kw;
         }
 
         public override Value Interpret(Dictionary<string, Value> symbols)

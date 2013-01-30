@@ -122,13 +122,31 @@ namespace YAMP
 		}
 
         /// <summary>
+        /// Increases the size of an array to n elements, repeating the containing elements.
+        /// </summary>
+        /// <param name="values">The current array.</param>
+        /// <param name="n">The desired size of the array.</param>
+        protected double[] MakeArrayPeriodic(double[] values, int n)
+        {
+            var dest = new double[n];
+
+            if (values.Length > 0)
+            {
+                for (var i = 0; i < n; i++)
+                    dest[i] = values[i % values.Length];
+            }
+
+            return dest;
+        }
+
+        /// <summary>
         /// Generates an array of double values.
         /// </summary>
         /// <param name="minValue">The first value in the array.</param>
         /// <param name="step">The difference between each element.</param>
         /// <param name="count">The number of elements in the array.</param>
         /// <returns>The double array containing the values.</returns>
-		protected double[] Generate(double minValue, double step, int count)
+        protected double[] Generate(double minValue, double step, int count)
 		{
 			count = Math.Max(count, 0);
 			var values = new double[count];

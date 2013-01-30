@@ -78,10 +78,12 @@ namespace YAMP
                     return false;
                 }).Container;
 
-                if (container != null)
-                    return new BracketExpression(line, col, engine.Pointer - start, engine.Query, container);
-                else
-                    engine.AddError(new YAMPBracketEmptyError(line, col));
+                var exp = new BracketExpression(line, col, engine.Pointer - start, engine.Query, container ?? new ContainerExpression());
+
+                if (container == null)
+                    engine.AddError(new YAMPBracketEmptyError(line, col), exp);
+
+                return exp;
             }
 
             return null;

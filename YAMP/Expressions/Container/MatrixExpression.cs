@@ -139,10 +139,13 @@ namespace YAMP
                 }
 
                 if (!terminated)
-                    engine.AddError(new YAMPMatrixNotClosedError(engine));
+                {
+                    var err = new YAMPMatrixNotClosedError(line, column);
+                    engine.AddError(err);
+                }
 
                 var container = statement.Finalize(engine).Container;
-                return new MatrixExpression(line, column, engine.Pointer - start, engine.Query, container);
+                return new MatrixExpression(line, column, engine.Pointer - start, engine.Query, container ?? new ContainerExpression());
             }
 
             return null;

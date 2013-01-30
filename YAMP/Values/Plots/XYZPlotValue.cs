@@ -52,6 +52,26 @@ namespace YAMP
         #region Properties
 
         /// <summary>
+        /// Gets or sets the pairs of minimum and maximum x, y coordinates.
+        /// </summary>
+        [MatrixToDoubleArrayConverter]
+        public override double[] View
+        {
+            get { return new double[] { MinX, MaxX, MinY, MaxY, MinZ, MaxZ }; }
+            set
+            {
+                var elements = MakeArrayPeriodic(value, 6);
+
+                MinX = elements[0];
+                MaxX = elements[1];
+                MinY = elements[2];
+                MaxY = elements[3];
+                MinZ = elements[4];
+                MaxZ = elements[5];
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the label of the z axis.
         /// </summary>
         [StringToStringConverter]
@@ -90,8 +110,9 @@ namespace YAMP
             get { return new double[] { MinZ, MaxZ }; }
             set
             {
-                MinZ = value[0];
-                MaxZ = value[1];
+                var elements = MakeArrayPeriodic(value, 2);
+                MinZ = elements[0];
+                MaxZ = elements[1];
             }
         }
 

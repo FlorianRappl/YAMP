@@ -79,7 +79,7 @@ namespace YAMP
         }
 
         /// <summary>
-        /// Creates a new FunctionValue with a parsed object.
+        /// Creates a new FunctionValue with a parsed object (lambda expression).
         /// </summary>
         /// <param name="arguments">The list of argument identifiers.</param>
         /// <param name="body">The Expression representation of the body.</param>
@@ -89,6 +89,19 @@ namespace YAMP
             this.body = body.ToCode();
             canSerialize = true;
             SetPerform(arguments, body);
+        }
+
+        /// <summary>
+        /// Creates a new FunctionValue with a parsed named function (function).
+        /// </summary> 
+        /// <param name="name">The name of the function.</param>
+        /// <param name="arguments">The list of argument identifiers.</param>
+        /// <param name="body">The Expression representation of the body.</param>
+        internal FunctionValue(string name, string[] arguments, Expression body)
+        {
+            this.arguments = arguments;
+            canSerialize = false;
+            SetPerform(name, arguments, body);
         }
 
         /// <summary>
@@ -106,23 +119,45 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Does not clone the function, but just returns the same function
+        /// again.
+        /// </summary>
+        /// <returns>The original function.</returns>
+        public override Value Copy()
+        {
+            return this;
+        }
+
         void SetPerform(string[] arguments, Expression body)
         {
             perform = (context, argument) =>
             {
-                var av = new ArgumentsValue();
                 var symbols = new Dictionary<string, Value>();
-
-                if (argument is ArgumentsValue)
-                    av = (ArgumentsValue)argument;
-                else
-                    av.Insert(argument);
+                var av = new ArgumentsValue().Append(argument);
 
                 if (av.Length != arguments.Length)
                     throw new YAMPArgumentNumberException("Anonymous function", av.Length, arguments.Length);
 
                 for (var i = 0; i < arguments.Length; i++)
                     symbols.Add(arguments[i], av.Values[i]);
+
+                return body.Interpret(symbols);
+            };
+        }
+
+        void SetPerform(string name, string[] arguments, Expression body)
+        {
+            perform = (context, argument) =>
+            {
+                var symbols = new Dictionary<string, Value>();
+                var av = new ArgumentsValue().Append(argument);
+
+                if (av.Length != arguments.Length)
+                    throw new YAMPArgumentNumberException(name, av.Length, arguments.Length);
+
+                for (var i = 0; i < arguments.Length; i++)
+                    symbols.Add(arguments[i], av.Values[i].Copy());
 
                 return body.Interpret(symbols);
             };

@@ -109,6 +109,17 @@ namespace YAMP
         #region Properties
 
         /// <summary>
+        /// Gets a list of the available keywords.
+        /// </summary>
+        public static string[] Keywords
+        {
+            get
+            {
+                return Elements.Instance.Keywords;
+            }
+        }
+
+        /// <summary>
         /// Gets the version of the YAMP parser.
         /// </summary>
         public static string Version
@@ -336,6 +347,32 @@ namespace YAMP
 			return context;
 		}
 
+        /// <summary>
+        /// Renames an existing constant (custom or defined).
+        /// </summary>
+        /// <param name="context">The context of the constant.</param>
+        /// <param name="oldName">The old name of the constant.</param>
+        /// <param name="newName">The new name for the constant.</param>
+        /// <returns>The given context.</returns>
+        public static ParseContext RenameConstant(ParseContext context, string oldName, string newName)
+        {
+            context.RenameConstant(oldName, newName);
+            return context;
+        }
+
+        /// <summary>
+        /// Renames an existing function (custom or defined).
+        /// </summary>
+        /// <param name="context">The context of the function.</param>
+        /// <param name="oldName">The old name of the function.</param>
+        /// <param name="newName">The new name for the function.</param>
+        /// <returns>The given context.</returns>
+        public static ParseContext RenameFunction(ParseContext context, string oldName, string newName)
+        {
+            context.RenameFunction(oldName, newName);
+            return context;
+        }
+
 		/// <summary>
 		/// Adds a custom function to be used by the parser (to the primary context).
 		/// </summary>
@@ -467,9 +504,9 @@ namespace YAMP
 		/// </summary>
 		/// <param name="assembly">
 		/// The assembly to load as a plugin.
-		/// </param>
-		/// <returns>The default context.</returns>
-		public static ParseContext LoadPlugin(Assembly assembly)
+        /// </param>
+        /// <returns>The ID for the plugin.</returns>
+		public static int LoadPlugin(Assembly assembly)
 		{
 			return LoadPlugin(PrimaryContext, assembly);
 		}
@@ -483,12 +520,22 @@ namespace YAMP
 		/// <param name="assembly">
 		/// The assembly to load as a plugin.
 		/// </param>
-		/// <returns>The given context.</returns>
-		public static ParseContext LoadPlugin(ParseContext context, Assembly assembly)
+		/// <returns>The ID for the plugin.</returns>
+		public static int LoadPlugin(ParseContext context, Assembly assembly)
 		{
-			Elements.Instance.RegisterAssembly(context, assembly);
-			return context;
+			return Elements.Instance.RegisterAssembly(context, assembly);
 		}
+
+        /// <summary>
+        /// Unloads a previously loaded plugin.
+        /// </summary>
+        /// <param name="pluginId">The ID for the assembly to unload.</param>
+        /// <returns>The primary parse context.</returns>
+        public static ParseContext UnloadPlugin(int pluginId)
+        {
+            Elements.Instance.RemoveAssembly(pluginId);
+            return PrimaryContext;
+        }
 
 		/// <summary>
 		/// Load the required functions, operators and expressions (CAN only be performed once).

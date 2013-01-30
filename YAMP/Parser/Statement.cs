@@ -224,6 +224,12 @@ namespace YAMP
             if (finalized)
                 return this;
 
+            if (_expressions.Count == 0 && _operators.Count > 0)
+            {
+                engine.AddError(new YAMPExpressionMissingError(engine));
+                return this;
+            }
+
             if (_expressions.Count > 0 && _operators.Count != _expressions.Count - 1)
             {
                 engine.AddError(new YAMPExpressionMissingError(engine));

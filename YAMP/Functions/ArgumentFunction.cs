@@ -129,6 +129,7 @@ namespace YAMP
         Value Execute()
 		{
             var args = arguments.Length;
+            var difference = int.MaxValue;
             var expected = 0;
             YAMPRuntimeException exception = null;
 
@@ -136,11 +137,18 @@ namespace YAMP
 			{
 			    var key = kv.Key;
 
-                if(key.MinimumArguments > expected && key.MinimumArguments < arguments.Length)
-                    expected = key.MinimumArguments;
+                if (args < key.MinimumArguments || args > key.MaximumArguments)
+                {
+                    var diff = Math.Min(Math.Abs(key.MinimumArguments - args), Math.Abs(args - key.MaximumArguments));
 
-				if (args < key.MinimumArguments || args > key.MaximumArguments)
-					continue;
+                    if (diff < difference)
+                    {
+                        difference = diff;
+                        expected = args < key.MinimumArguments ? key.MinimumArguments : key.MaximumArguments;
+                    }
+
+                    continue;
+                }
 
 				var f = kv.Value;
                 exception = BuildArguments(key);
@@ -164,7 +172,7 @@ namespace YAMP
             if (exception != null)
                 throw exception;
             
-			throw new YAMPArgumentNumberException(Name, arguments.Length, expected);
+			throw new YAMPArgumentNumberException(Name, args, expected);
 		}
 
 		YAMPRuntimeException BuildArguments(FunctionParameters yp)
@@ -206,7 +214,7 @@ namespace YAMP
 					var idx = values.Count;
 
 					if (!yp.ParameterTypes[idx].IsInstanceOfType(arguments[idx]))
-                        return new YAMPArgumentInvalidException(Name, yp.ParameterTypes[idx].Name.RemoveValueConvention(), idx);
+                        return new YAMPArgumentInvalidException(Name, arguments[idx].Header, yp.ParameterTypes[idx].Name.RemoveValueConvention(), idx);
 
 					values.Add(arguments[i]);
 				}

@@ -87,6 +87,13 @@ namespace YAMP
             var start = engine.Pointer;
             var index = engine.Advance(Token.Length).Skip().Pointer;
             var chars = engine.Characters;
+
+            if (index == chars.Length)
+            {
+                kw.Length = engine.Pointer - start;
+                engine.AddError(new YAMPForArgumentsMissing(engine));
+                return kw;
+            }
             
             if (chars[index] == '(')
             {
@@ -99,10 +106,7 @@ namespace YAMP
                 UnsetMarker(engine);
             }
             else
-            {
                 engine.AddError(new YAMPForArgumentsMissing(engine));
-                return null;
-            }
 
             kw.Length = engine.Pointer - start;
             return kw;

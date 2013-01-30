@@ -130,6 +130,15 @@ namespace YAMP
         #region Serialization
 
         /// <summary>
+        /// Returns a copy of this string value instance.
+        /// </summary>
+        /// <returns>The cloned string value.</returns>
+        public override Value Copy()
+        {
+            return new StringValue(_value);
+        }
+
+        /// <summary>
         /// Converts the given value into binary data.
         /// </summary>
         /// <returns>The bytes array containing the data.</returns>

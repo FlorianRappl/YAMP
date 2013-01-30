@@ -44,6 +44,7 @@ namespace YAMP
         IDictionary<string, Operator> operators;
 		List<Expression> expressions;
 		IDictionary<string, Keyword> keywords;
+        IDictionary<int, Plugin> plugins;
 		
 		#endregion
 
@@ -54,13 +55,29 @@ namespace YAMP
             operators = new Dictionary<string, Operator>();
 			expressions = new List<Expression>();
 			keywords = new Dictionary<string, Keyword>();
+            plugins = new Dictionary<int, Plugin>();
 		}
 		
 		#endregion
-		
-		#region Register elements
-		
-		void RegisterElements()
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the list of possible keywords.
+        /// </summary>
+        public string[] Keywords
+        {
+            get
+            {
+                return keywords.Keys.ToArray();
+            }
+        }
+
+        #endregion
+
+        #region Register elements
+
+        void RegisterElements()
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			RegisterAssembly(ParseContext.Default, assembly);
@@ -75,8 +92,10 @@ namespace YAMP
 		/// <param name="assembly">
 		/// The assembly to load.
 		/// </param>
-		public void RegisterAssembly(ParseContext context, Assembly assembly)
+        /// <returns>The ID for the assembly.</returns>
+		public int RegisterAssembly(ParseContext context, Assembly assembly)
 		{
+            var plugin = new Plugin(context, assembly.FullName);
 			var types = assembly.GetTypes();
 			var ir = typeof(IRegisterElement).Name;
 			var fu = typeof(IFunction).Name;
@@ -92,7 +111,10 @@ namespace YAMP
                     var ctor = type.GetConstructor(Value.EmptyTypes);
 
                     if (ctor != null)
+                    {
                         (ctor.Invoke(null) as IRegisterElement).RegisterElement();
+                        plugin.ValueTypes.Add(type.Name.RemoveValueConvention());
+                    }
 
                     continue;
                 }
@@ -115,6 +137,7 @@ namespace YAMP
 					{
 						var name = type.Name.RemoveFunctionConvention().ToLower();
 						var method = ctor.Invoke(null) as IFunction;
+                        plugin.Functions.Add(name);
 						context.AddFunction(name, method);
 					}
 				}
@@ -125,12 +148,28 @@ namespace YAMP
 
 					if (ctor != null)
 					{
-						var instc = ctor.Invoke(null) as IConstants;
+                        var instc = ctor.Invoke(null) as IConstants;
+                        plugin.Functions.Add(instc.Name);
 						context.AddConstant(instc.Name, instc);
 					}
 				}
 			}
+
+            plugins.Add(plugin.Id, plugin);
+            return plugin.Id;
 		}
+
+        /// <summary>
+        /// Removes a previously added assembly.
+        /// </summary>
+        /// <param name="pluginID">The id of the plugin to remove.</param>
+        public void RemoveAssembly(int pluginID)
+        {
+            if (plugins.ContainsKey(pluginID))
+            {
+                plugins[pluginID].Uninstall();
+            }
+        }
 		
 		#endregion
 

@@ -79,6 +79,41 @@ namespace YAMP
         #region Properties
 
         /// <summary>
+        /// Gets the names of all collected (user-defined) symbols.
+        /// </summary>
+        public string[] CollectedSymbols
+        {
+            get
+            {
+                var symbols = new List<string>();
+
+                for (var i = 0; i < statements.Count; i++)
+                {
+                    if (statements[i] != null && statements[i].Container != null)
+                    {
+                        var listOfSymbols = statements[i].Container.GetSymbols();
+
+                        for (var j = 0; j < listOfSymbols.Length; j++)
+                        {
+                            if (symbols.Contains(listOfSymbols[j].SymbolName))
+                                continue;
+
+                            if (Context.FindFunction(listOfSymbols[j].SymbolName) != null)
+                                continue;
+
+                            if (Context.FindConstants(listOfSymbols[j].SymbolName) != null)
+                                continue;
+
+                            symbols.Add(listOfSymbols[j].SymbolName);
+                        }
+                    }
+                }
+
+                return symbols.ToArray();
+            }
+        }
+
+        /// <summary>
         /// Gets the parent parse engine (NULL if topmost) of the current instance.
         /// </summary>
         public ParseEngine Parent
@@ -247,7 +282,7 @@ namespace YAMP
 
         #endregion
 
-        #region Methods
+        #region Error Management
 
         /// <summary>
         /// Add a parse error to the list of parse errors.
@@ -262,7 +297,11 @@ namespace YAMP
 
                 if (lerr.Column == error.Column && lerr.Line == error.Line)
                 {
-                    Advance();
+                    if (ptr < characters.Length - 1)
+                        Advance();
+                    else
+                        parsing = false;
+
                     return this;
                 }
             }
@@ -270,6 +309,22 @@ namespace YAMP
             errors.Add(error);
             return this;
         }
+
+        /// <summary>
+        /// Add a parse error to the list of parse errors with the block causing the error.
+        /// </summary>
+        /// <param name="error">The parse error, which occured.</param>
+        /// <param name="part">The part where the error occured.</param>
+        /// <returns>The current parse engine.</returns>
+        internal ParseEngine AddError(YAMPParseError error, Block part)
+        {
+            error.Part = part;
+            return AddError(error);
+        }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Resets the complete parse tree and uses the given input for
@@ -324,7 +379,7 @@ namespace YAMP
         {
             var statement = new Statement();
 
-            while (ptr < characters.Length)
+            while (parsing && ptr < characters.Length)
             {
                 if (IsWhiteSpace(characters[ptr]))
                 {
@@ -378,9 +433,8 @@ namespace YAMP
         {
             var terminated = false;
             var statement = new Statement();
-            int sc = currentColumn, sl = currentLine;
 
-            while (ptr < characters.Length)
+            while (parsing && ptr < characters.Length)
             {
                 if (handleCharacter != null && handleCharacter(characters[ptr], statement))
                     continue;
@@ -417,7 +471,7 @@ namespace YAMP
             }
 
             if (!terminated)
-                AddError(new YAMPTerminatorMissingError(sl, sc, termination));
+                AddError(new YAMPTerminatorMissingError(currentLine, currentColumn, termination));
 
             return statement.Finalize(this);
         }
@@ -511,7 +565,7 @@ namespace YAMP
                 currentColumn = 1;
             }
             else
-                currentColumn ++;
+                currentColumn++;
 
             ptr++;
             return this;

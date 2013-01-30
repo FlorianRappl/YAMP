@@ -85,7 +85,7 @@ namespace YAMP
         /// </summary>
         [ScalarToBooleanConverter]
         [StringToBooleanConverter]
-        public bool Gridlines
+        public virtual bool Gridlines
         {
             get;
             set;
@@ -96,7 +96,7 @@ namespace YAMP
         /// </summary>
         [ScalarToBooleanConverter]
         [StringToBooleanConverter]
-        public bool MinorGridlines
+        public virtual bool MinorGridlines
         {
             get;
             set;
@@ -106,7 +106,7 @@ namespace YAMP
         /// Gets or sets the label of the x-axis.
         /// </summary>
         [StringToStringConverter]
-        public string XLabel
+        public virtual string XLabel
         {
             get;
             set;
@@ -116,7 +116,7 @@ namespace YAMP
         /// Gets or sets the label of the y-axis.
         /// </summary>
         [StringToStringConverter]
-        public string YLabel
+        public virtual string YLabel
         {
             get;
             set;
@@ -126,7 +126,7 @@ namespace YAMP
         /// Gets or sets the minimum x coordinate.
         /// </summary>
         [ScalarToDoubleConverter]
-        public double MinX
+        public virtual double MinX
         {
             get;
             set;
@@ -136,7 +136,7 @@ namespace YAMP
         /// Gets or sets the maximum x coordinate.
         /// </summary>
         [ScalarToDoubleConverter]
-        public double MaxX
+        public virtual double MaxX
         {
             get;
             set;
@@ -146,13 +146,14 @@ namespace YAMP
         /// Gets or sets the pair of minimum and maximum x coordinates.
         /// </summary>
         [MatrixToDoubleArrayConverter]
-        public double[] XRange
+        public virtual double[] XRange
         {
             get { return new double[] { MinX, MaxX }; }
             set
             {
-                MinX = value[0];
-                MaxX = value[1];
+                var elements = MakeArrayPeriodic(value, 2);
+                MinX = elements[0];
+                MaxX = elements[1];
             }
         }
 
@@ -160,7 +161,7 @@ namespace YAMP
         /// Gets or sets the minimum y coordinate.
         /// </summary>
         [ScalarToDoubleConverter]
-        public double MinY
+        public virtual double MinY
         {
             get;
             set;
@@ -170,7 +171,7 @@ namespace YAMP
         /// Gets or sets the maximum y coordinate.
         /// </summary>
         [ScalarToDoubleConverter]
-        public double MaxY
+        public virtual double MaxY
         {
             get;
             set;
@@ -180,13 +181,14 @@ namespace YAMP
         /// Gets or sets the pair of minimum and maximum y coordinates.
         /// </summary>
         [MatrixToDoubleArrayConverter]
-        public double[] YRange
+        public virtual double[] YRange
         {
             get { return new double[] { MinY, MaxY }; }
             set
             {
-                MinY = value[0];
-                MaxY = value[1];
+                var elements = MakeArrayPeriodic(value, 2);
+                MinY = elements[0];
+                MaxY = elements[1];
             }
         }
 
@@ -195,7 +197,7 @@ namespace YAMP
         /// </summary>
         [ScalarToBooleanConverter]
         [StringToBooleanConverter]
-        public bool ShowLegend
+        public virtual bool ShowLegend
         {
             get;
             set;
@@ -205,7 +207,7 @@ namespace YAMP
         /// Gets or sets the position of the legend.
         /// </summary>
         [StringToEnumConverter(typeof(LegendPosition))]
-        public LegendPosition LegendPosition
+        public virtual LegendPosition LegendPosition
         {
             get;
             set;
@@ -215,7 +217,7 @@ namespace YAMP
         /// Gets or sets the color of the legend.
         /// </summary>
         [StringToStringConverter]
-        public string LegendBackground
+        public virtual string LegendBackground
         {
             get;
             set;
@@ -225,7 +227,7 @@ namespace YAMP
         /// Gets or sets the legend line color.
         /// </summary>
         [StringToStringConverter]
-        public string LegendLineColor
+        public virtual string LegendLineColor
         {
             get;
             set;
@@ -235,16 +237,34 @@ namespace YAMP
         /// Gets or sets the line width of the legend box.
         /// </summary>
         [ScalarToDoubleConverter]
-        public double LegendLineWidth
+        public virtual double LegendLineWidth
         {
             get;
             set;
         }
 
         /// <summary>
+        /// Gets or sets the pairs of minimum and maximum x, y coordinates.
+        /// </summary>
+        [MatrixToDoubleArrayConverter]
+        public virtual double[] View
+        {
+            get { return new double[] { MinX, MaxX, MinY, MaxY }; }
+            set
+            {
+                var elements = MakeArrayPeriodic(value, 4);
+
+                MinX = elements[0];
+                MaxX = elements[1];
+                MinY = elements[2];
+                MaxY = elements[3];
+            }
+        }
+
+        /// <summary>
         /// Gets each of the contained annotations.
         /// </summary>
-        public IEnumerable<Annotation> Annotations
+        public virtual IEnumerable<Annotation> Annotations
         {
             get
             {

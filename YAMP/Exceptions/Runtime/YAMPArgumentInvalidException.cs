@@ -13,7 +13,7 @@ namespace YAMP
         /// <param name="function">The function where this happened.</param>
         /// <param name="argument">The given argument.</param>
         public YAMPArgumentInvalidException(string function, string argument)
-            : base("The argument {0} provided for the function {1} is not valid.", function, argument)
+            : base("The argument {1} provided for the function {0} is not valid.", function, argument)
         {
         }
 
@@ -24,7 +24,19 @@ namespace YAMP
         /// <param name="argumentType">The type of argument.</param>
         /// <param name="argumentNumber">The number of the argument.</param>
         public YAMPArgumentInvalidException(string function, string argumentType, int argumentNumber)
-            : base("The argument #{0} of type {2}, provided for the function {1}, is not valid.", function, argumentNumber, argumentType)
+            : base("The argument #{1} of type {2}, provided for the function {0}, is not valid.", function, argumentNumber, argumentType)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new argument invalid exception.
+        /// </summary>
+        /// <param name="function">The function where this happened.</param>
+        /// <param name="argumentType">The actual type of argument.</param>
+        /// <param name="expectedType">The expected type of argument.</param>
+        /// <param name="argumentNumber">The number of the argument.</param>
+        public YAMPArgumentInvalidException(string function, string argumentType, string expectedType, int argumentNumber)
+            : base("The argument #{1} of type {2}, provided for the function {0}, is not valid. Expected was {3}.", function, argumentNumber, argumentType, expectedType)
         {
         }
 
@@ -34,7 +46,7 @@ namespace YAMP
         /// <param name="function">The function where this happened.</param>
         /// <param name="argumentNumber">The number of the argument.</param>
         public YAMPArgumentInvalidException(string function, int argumentNumber)
-            : base("The argument #{0} provided for the function {1} is not valid.", function, argumentNumber)
+            : base("The argument #{1} provided for the function {0} is not valid.", function, argumentNumber)
         {
         }
     }

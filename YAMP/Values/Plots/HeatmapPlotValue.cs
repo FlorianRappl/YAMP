@@ -35,6 +35,12 @@ namespace YAMP
     /// </summary>
     public sealed class HeatmapPlotValue : XYPlotValue
     {
+        #region Members
+
+        Points<HeatPoint> data;
+
+        #endregion
+
         #region ctor
 
         /// <summary>
@@ -42,6 +48,8 @@ namespace YAMP
         /// </summary>
         public HeatmapPlotValue()
         {
+            data = new Points<HeatPoint>();
+            points.Add(data);
             ColorPalette = ColorPalettes.Hot;
             XLabel = "Column";
             YLabel = "Row";
@@ -57,7 +65,7 @@ namespace YAMP
         /// <param name="M">The matrix to investigate.</param>
         public override void AddPoints(MatrixValue M)
         {
-            var p = new Points<HeatPoint>();
+            var p = data;
             var min = double.MaxValue;
             var max = double.MinValue;
 
@@ -92,7 +100,6 @@ namespace YAMP
             MaxX = M.DimensionX;
             MinY = 1;
             MaxY = M.DimensionY;
-            AddSeries(p);
         }
 
         #endregion
@@ -113,13 +120,19 @@ namespace YAMP
         /// Gets the minimum (absolute) value of the matrix.
         /// </summary>
         public double Minimum
-        { get; private set; }
+        { 
+            get; 
+            private set; 
+        }
 
         /// <summary>
         /// Gets the maximum (absolute) value of the matrix.
         /// </summary>
         public double Maximum
-        { get; private set; }
+        {
+            get; 
+            private set; 
+        }
 
         #endregion
 
@@ -232,27 +245,27 @@ namespace YAMP
         /// <summary>
         /// Gets a series of HeatPoints (here we have only 1 series).
         /// </summary>
-        /// <param name="index">The index (only 0 is valid).</param>
-        /// <returns>The series of points.</returns>
+        /// <param name="index">Obsolete (always returns the same).</param>
+        /// <returns>The series with the points.</returns>
         public Points<HeatPoint> this[int index]
         {
             get
             {
-                return base.GetSeries(index) as Points<HeatPoint>;
+                return data;
             }
         }
 
         /// <summary>
         /// Gets one particular point of a heatmap series (we only have 1 heatmap series!).
         /// </summary>
-        /// <param name="index">The index of the heatmap series (only 0 is valid).</param>
+        /// <param name="index">Obsolete since we only have 1 series.</param>
         /// <param name="point">The point to get (0.. N - 1, where N is the number of points).</param>
         /// <returns>The specified heatmap value.</returns>
         public HeatPoint this[int index, int point]
         {
             get
             {
-                return this[index][point];
+                return data[point];
             }
         }
 

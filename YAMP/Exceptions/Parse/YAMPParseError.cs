@@ -81,6 +81,29 @@ namespace YAMP
             private set;
         }
 
+        /// <summary>
+        /// Gets or sets the block responsible for the parse error.
+        /// </summary>
+        public Block Part
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets the length of the error in characters.
+        /// </summary>
+        public int Length
+        {
+            get
+            {
+                if (Part != null)
+                    return Part.Length;
+
+                return 1;
+            }
+        }
+
         #endregion
 
         #region Methods

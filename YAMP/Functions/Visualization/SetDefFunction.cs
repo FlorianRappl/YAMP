@@ -19,6 +19,27 @@ namespace YAMP
         public StringValue Function(StringValue type)
         {
             var sb = new StringBuilder();
+            sb.AppendLine("Defined for any plot:");
+            var plotSettings = Context.GetDefaultProperties("plot");
+
+            foreach (var pair in plotSettings)
+            {
+                sb.Append("-\t").Append("Name: ");
+                sb.AppendLine(pair.Key);
+                sb.Append("\t").Append("Value: ");
+                sb.AppendLine(pair.Value.ToString());
+            }
+
+            sb.AppendLine("Defined for any series:");
+            var seriesSettings = Context.GetDefaultProperties("series");
+
+            foreach (var pair in seriesSettings)
+            {
+                sb.Append("-\t").Append("Name: ");
+                sb.AppendLine(pair.Key);
+                sb.Append("\t").Append("Value: ");
+                sb.AppendLine(pair.Value.ToString());
+            }
 
             return new StringValue(sb.ToString());
         }

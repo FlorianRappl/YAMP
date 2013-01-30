@@ -82,6 +82,13 @@ namespace YAMP
             var index = engine.Advance(Token.Length).Skip().Pointer;
             var chars = engine.Characters;
 
+            if (index == chars.Length)
+            {
+                kw.Length = engine.Pointer - start;
+                engine.AddError(new YAMPWhileArgumentsMissing(engine), kw);
+                return kw;
+            }
+
             if (chars[index] == '(')
             {
                 kw.Condition = engine.Advance().ParseStatement(')');
@@ -97,14 +104,11 @@ namespace YAMP
                         engine.LastStatement.GetKeyword<DoKeyword>().While = kw;
                     }
                     else
-                        engine.AddError(new YAMPDoWhileNotEmptyError(engine));
+                        engine.AddError(new YAMPDoWhileNotEmptyError(engine), kw);
                 }
             }
             else
-            {
-                engine.AddError(new YAMPWhileArgumentsMissing(engine));
-                return null;
-            }
+                engine.AddError(new YAMPWhileArgumentsMissing(engine), kw);
 
             kw.Length = engine.Pointer - start;
             return kw;

@@ -76,16 +76,20 @@ namespace YAMP
             var index = engine.Advance(Token.Length).Skip().Pointer;
             var chars = engine.Characters;
 
+            if (index == chars.Length)
+            {
+                kw.Length = engine.Pointer - start;
+                engine.AddError(new YAMPIfArgumentsMissing(engine), kw);
+                return kw;
+            }
+
             if (chars[index] == '(')
             {
                 kw.Condition = engine.Advance().ParseStatement(')');
                 kw.Body = engine.ParseStatement();
             }
             else
-            {
-                engine.AddError(new YAMPIfArgumentsMissing(engine));
-                return null;
-            }
+                engine.AddError(new YAMPIfArgumentsMissing(engine), kw);
 
             kw.Length = engine.Pointer - start;
             return kw;

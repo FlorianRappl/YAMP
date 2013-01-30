@@ -85,7 +85,7 @@ namespace YAMP
             kw.Body = engine.Advance(Token.Length).ParseStatement();
 
             if (engine.LastStatement == null)
-                engine.AddError(new YAMPIfRequiredError(engine));
+                engine.AddError(new YAMPIfRequiredError(engine), kw);
             else if (engine.LastStatement.IsKeyword<IfKeyword>())
                 engine.LastStatement.GetKeyword<IfKeyword>().Else = kw;
             else if(engine.LastStatement.IsKeyword<ElseKeyword>())
@@ -95,10 +95,10 @@ namespace YAMP
                 if (otherwise.IsElseIf)
                     otherwise.ElseIf.Else = kw;
                 else
-                    engine.AddError(new YAMPSingleElseError(engine));
+                    engine.AddError(new YAMPSingleElseError(engine), kw);
             }
             else
-                engine.AddError(new YAMPIfRequiredError(engine));
+                engine.AddError(new YAMPIfRequiredError(engine), kw);
 
             kw.Length = engine.Pointer - start;
             return kw;

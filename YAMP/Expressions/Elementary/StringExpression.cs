@@ -122,7 +122,7 @@ namespace YAMP
                                 break;
                             default:
                                 engine.SetPointer(index);
-                                engine.AddError(new YAMPEscapeSequenceNotFoundError(engine, chars[index]));
+                                engine.AddError(new YAMPEscapeSequenceNotFoundError(engine, chars[index]), exp);
                                 break;
                         }
 
@@ -135,7 +135,7 @@ namespace YAMP
                 }
 
                 if (!terminated)
-                    engine.AddError(new YAMPStringNotTerminatedError(engine));
+                    engine.AddError(new YAMPStringNotTerminatedError(engine), exp);
 
                 exp.value = sb.ToString();
                 exp.Length = index - start;
