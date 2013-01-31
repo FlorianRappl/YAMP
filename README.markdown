@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **1.2.0**. A NuGet package (current version 1.1.2) is
+The current version number is **1.2.1**. A NuGet package (current version 1.2.1) is
 available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code -
 since the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -37,6 +37,23 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**1.2.1:**
+- Improved stability of the parser
+- Included more tests
+- Fixed some bugs (e.g. gamma function, zeta function)
+- Added pre- and post increment / decrement operators
+- Introduced functions for evaluating and casting user content
+- Improved the event handling
+- Added the method `setdef` to set default values for plots
+- Added `SurfacePlot` with possibilities as Meshgrid and Surface plot
+- Added the function `meshgrid` to generate a 2D grid (2 matrices)
+- Introduced lots of new random number distributions
+- Added wikipedia links in help
+- Added several new trigonometric functions like sec, csc, ...
+- Improved the numeric package
+- Extended the existing "kinds" enumeration for naming classes of functions
+- Introduced notifications with an event driven API
+
 **1.2.0:**
 - Rewrote the parser; it is now twice as fast and returns accurate errors
 - Included the Zeta function

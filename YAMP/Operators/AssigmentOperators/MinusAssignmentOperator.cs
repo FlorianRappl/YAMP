@@ -38,6 +38,13 @@ namespace YAMP
         {
         }
 
+        public static MinusAssignmentOperator CreateWithContext(QueryContext context)
+        {
+            var a = new MinusAssignmentOperator();
+            a.Query = context;
+            return a;
+        }
+
         public override Operator Create()
         {
             return new MinusAssignmentOperator();

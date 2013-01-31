@@ -40,7 +40,10 @@ namespace YAMP
             UnaryExpression.AddOperator(Op, this);
         }
 
-        public abstract Value Perform(Value value);
+        public virtual Value Perform(Value value)
+        {
+            return value;
+        }
 
         public override Value Perform(Value left, Value right)
         {

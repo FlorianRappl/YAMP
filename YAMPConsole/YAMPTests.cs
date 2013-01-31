@@ -163,6 +163,9 @@ namespace YAMPConsole
             Test("sum(dim([\n1 2 3 4\n5 6 7 8]))", 6.0);
             Test("zeta(0.5)", -1.4603545088095868);
             Test("zeta(0)", -0.49999999999999994);
+            Test("eval(\"2+3\")", 5.0);
+            Test("eval(\"|[1,2,3]|\")", Math.Sqrt(14.0));
+            Test("cast(\"3.5\")", 3.5);
 
             sw.Stop();
 
@@ -191,6 +194,9 @@ namespace YAMPConsole
             Test("legendre(3, 1)", 1.0);
             Test("hermite(3, 2)", 40.0);
             Test("laguerre(2, 2)", -0.99999999999999956);
+            Test("zernike(1, 1, 0.5)", 0.5);
+            Test("zernike(2, 0, 0.5)", 2.0 * 0.25 - 1.0);
+            Test("gegenbauer(1, 0.5, 0.25)", 2.0 * 0.5 * 0.25);
 
             sw.Stop();
 

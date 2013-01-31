@@ -79,6 +79,7 @@
     <Compile Include="Functions\RandomNumbers\RandgFunction.cs" />
     <Compile Include="Functions\RandomNumbers\RandlFunction.cs" />
     <Compile Include="Functions\RandomNumbers\RandwFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\EvalFunction.cs" />
     <Compile Include="Functions\Trigonometric\ArtanhFunction.cs" />
     <Compile Include="Functions\Trigonometric\ArsechFunction.cs" />
     <Compile Include="Functions\Trigonometric\ArcsecFunction.cs" />

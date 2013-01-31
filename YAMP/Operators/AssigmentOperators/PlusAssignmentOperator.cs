@@ -39,6 +39,13 @@ namespace YAMP
         {
         }
 
+        public static PlusAssignmentOperator CreateWithContext(QueryContext context)
+        {
+            var a = new PlusAssignmentOperator();
+            a.Query = context;
+            return a;
+        }
+
         public override Operator Create()
         {
             return new PlusAssignmentOperator();

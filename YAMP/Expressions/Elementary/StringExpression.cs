@@ -49,9 +49,13 @@ namespace YAMP
 		{
 		}
 
+        public StringExpression(string content)
+        {
+            value = content;
+        }
+
         public StringExpression(ParseEngine engine) : base(engine)
         {
-
         }
 
         #endregion

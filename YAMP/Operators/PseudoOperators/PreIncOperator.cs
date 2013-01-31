@@ -26,6 +26,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace YAMP
 {
@@ -34,21 +35,17 @@ namespace YAMP
     /// </summary>
     class PreIncOperator : LeftUnaryOperator
     {
-        public PreIncOperator()
-            : base("++", 999)
+        static readonly PlusAssignmentOperator assignment = new PlusAssignmentOperator();
+
+        public PreIncOperator() : base("++", 999)
         {
         }
 
-        public override Value Perform(Value left)
+        public override Value Handle(Expression left, Expression right, Dictionary<string, Value> symbols)
         {
-            if(left is ScalarValue)
-            {
-                var sc = (ScalarValue)left;
-                sc.Re += 1.0;
-                return sc;
-            }
-
-            return left;
+            var a = PlusAssignmentOperator.CreateWithContext(Query);
+            a.Handle(right, new NumberExpression(new ScalarValue(1.0)), symbols);
+            return right.Interpret(symbols);
         }
 
         public override Operator Create()

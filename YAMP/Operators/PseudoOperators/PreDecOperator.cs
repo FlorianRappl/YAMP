@@ -26,6 +26,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace YAMP
 {
@@ -39,16 +40,11 @@ namespace YAMP
         {
         }
 
-        public override Value Perform(Value left)
+        public override Value Handle(Expression left, Expression right, Dictionary<string, Value> symbols)
         {
-            if (left is ScalarValue)
-            {
-                var sc = (ScalarValue)left;
-                sc.Re -= 1.0;
-                return sc;
-            }
-
-            return left;
+            var a = MinusAssignmentOperator.CreateWithContext(Query);
+            a.Handle(right, new NumberExpression(new ScalarValue(1.0)), symbols);
+            return right.Interpret(symbols);
         }
 
         public override Operator Create()

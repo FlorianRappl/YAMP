@@ -56,7 +56,10 @@ namespace YAMP
         /// </summary>
         /// <param name="value">The value to operate with.</param>
         /// <returns>The result of the operation.</returns>
-        public abstract Value Perform(Value value);
+        public virtual Value Perform(Value value)
+        {
+            return value;
+        }
 
         /// <summary>
         /// Handles the evaluation of one expression.

@@ -43,11 +43,16 @@ namespace YAMP
 
         #region ctor
 
-        public NumberExpression ()
+        public NumberExpression()
 		{
 		}
 
-		public NumberExpression (ParseEngine engine) : base(engine)
+        public NumberExpression(ScalarValue content)
+        {
+            value = content;
+        }
+
+		public NumberExpression(ParseEngine engine) : base(engine)
 		{
 		}
 

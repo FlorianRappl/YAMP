@@ -47,6 +47,11 @@ namespace YAMP
 		{
 		}
 
+        public SymbolExpression(string content)
+        {
+            symbolName = content;
+        }
+
         public SymbolExpression(ParseEngine engine, string name)
             : base(engine)
         {
