@@ -9,7 +9,7 @@ namespace YAMP.Numerics
     /// </summary>
 	public static class Gamma
     {
-        #region Linear 
+        #region Linear
 
         /// <summary>
         /// Computes the real (linear) gamma function.
@@ -156,7 +156,7 @@ namespace YAMP.Numerics
 			if (z.ImaginaryValue < 0.0)
 				return LogGamma_Stirling(z.Conjugate()).Conjugate();
 
-			var f = (z - 0.5) * z.Log() - z + Math.Log(2.0 * Math.PI) / 2.0;
+			var f = (z - 0.5) * z.Ln() - z + Math.Log(2.0 * Math.PI) / 2.0;
 			var reduce = f.ImaginaryValue / (2.0 * Math.PI);
 			reduce = f.ImaginaryValue - (int)(reduce) * 2.0 * Math.PI;
 			f = new ScalarValue(f.Value, reduce);

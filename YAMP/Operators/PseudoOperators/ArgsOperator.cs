@@ -61,6 +61,11 @@ namespace YAMP
         public override Operator Create(ParseEngine engine)
         {
             var start = engine.Pointer;
+
+            //Arguments need to be attached directly.
+            if (start == 0 || ParseEngine.IsWhiteSpace(engine.Characters[start - 1]) || ParseEngine.IsNewLine(engine.Characters[start - 1]))
+                return null;
+
             var ao = new ArgsOperator();
             ao.Query = engine.Query;
             ao.StartLine = engine.CurrentLine;

@@ -69,12 +69,24 @@ namespace YAMP.Physics
             if (x.Abs() > 1.0)
                 throw new YAMPArgumentRangeException("x", -1, 1);
 
-            if (n == 0)
-                return new ScalarValue(1.0);
-            else if (n == 1)
-                return 2.0 * alpha * x;
+            var C0 = new ScalarValue(1.0);
 
-            return (2 * x * (n + alpha - 1) * Gegenbauer(n - 1, alpha, x) - (n + 2 * alpha - 2) * Gegenbauer(n - 2, alpha, x)) / n;
+            if (n == 0)
+                return C0;
+
+            var C1 = 2.0 * alpha * x;
+
+            if (n == 1)
+                return C1;
+
+            for (var k = 2; k <= n; k++)
+            {
+                var Ck = (2 * x * (k + alpha - 1) * C1 - (k + 2 * alpha - 2) * C0) / k;
+                C0 = C1;
+                C1 = Ck;
+            }
+
+            return C1;
         }
 
         #endregion

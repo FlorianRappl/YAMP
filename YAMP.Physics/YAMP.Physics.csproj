@@ -49,8 +49,12 @@
     <Compile Include="Exceptions\YAMPUnitParseException.cs" />
     <Compile Include="Functions\Integrals\CarlsonDFunction.cs" />
     <Compile Include="Functions\Integrals\CarlsonFFunction.cs" />
+    <Compile Include="Functions\Integrals\InvTangentFunction.cs" />
     <Compile Include="Functions\Polynomials\ChebyshevFunction.cs" />
     <Compile Include="Functions\Special\ClebschFunction.cs" />
+    <Compile Include="Functions\Special\HzetaFunction.cs" />
+    <Compile Include="Functions\Special\PolyLogFunction.cs" />
+    <Compile Include="Functions\Special\StruveFunction.cs" />
     <Compile Include="Functions\Units\ConvertFunction.cs" />
     <Compile Include="Functions\Integrals\EllepticFFunction.cs" />
     <Compile Include="Functions\Integrals\EllipticKFunction.cs" />
@@ -60,7 +64,7 @@
     <Compile Include="Functions\Polynomials\LaguerreFunction.cs" />
     <Compile Include="Functions\Special\LambertFunction.cs" />
     <Compile Include="Functions\Polynomials\LegendreFunction.cs" />
-    <Compile Include="Functions\Special\Psi0Function.cs" />
+    <Compile Include="Functions\Special\PsiFunction.cs" />
     <Compile Include="Functions\Special\SincFunction.cs" />
     <Compile Include="Functions\Special\SpenceFunction.cs" />
     <Compile Include="Functions\Units\UnitFunction.cs" />

@@ -101,6 +101,9 @@ namespace YAMP
         /// <returns>The exponent n (10^n) of the double value.</returns>
         protected int GetExponent(double value)
         {
+            if (value < 10.0)
+                return 0;
+
             var log = Math.Log10(Math.Abs(value));
             return (int)Math.Floor(log);
         }
@@ -243,9 +246,6 @@ namespace YAMP
         /// <returns>The string representation.</returns>
         public static string Format(ParseContext context, double value)
         {
-            double amt;
-            int sign, exponent;
-
             if (double.IsPositiveInfinity(value))
                 return "inf";
             else if (double.IsNegativeInfinity(value))
@@ -253,99 +253,104 @@ namespace YAMP
             else if (double.IsNaN(value))
                 return "nan";
 
+            int sign = Math.Sign(value);
+            double v = value * sign;
+            double t = v;
+            int u = v >= 1 ? (int)Math.Log10(v) + 1 : 0;
+            int l = 0;
+
+            while (Math.Floor(t) != t)
+            {
+                t *= 10.0;
+                l++;
+            }
+
             switch (context.DefaultDisplayStyle)
             {
                 case DisplayStyle.Scientific:
-                    ScientificFormat(context, value, out sign, out amt, out exponent);
-                    break;
+                    return ScientificFormat(context, v, sign, u, l);
+
                 case DisplayStyle.Engineering:
-                    EngineeringFormat(context, value, out sign, out amt, out exponent);
-                    break;
+                    return EngineeringFormat(context, v, sign, u, l);
+
+                case DisplayStyle.Default:
                 default:
-                    sign = Math.Sign(value);
-                    amt = sign * value;
-                    exponent = 0;
-                    break;
-            }
-            
-            return ComposeFormat(context, sign, amt, exponent);
-        }
-
-        static void ScientificFormat(ParseContext context, double value, out int sign, out double new_value, out int exponent)
-        {
-            sign = Math.Sign(value);
-            value = sign * value;
-            var prec = (double)context.Precision;
-            var suggested = Math.Pow(10.0, prec);
-
-            if (value > 1.0)
-                exponent = (int)(Math.Floor(Math.Log10(value) / prec) * prec);
-            else if (value > 0.0)
-                exponent = (int)(Math.Ceiling(Math.Log10(value)));
-            else
-                exponent = 0;
-
-            new_value = value * Math.Pow(10.0, -exponent);
-
-            if (new_value >= suggested)
-            {
-                new_value /= suggested;
-                exponent += context.Precision;
-            }
-
-            if (new_value < 1 && new_value > 0)
-            {
-                new_value *= 10.0;
-                exponent -= 1;
+                    return StandardFormat(context, v, sign, u, l);
             }
         }
 
-        static void EngineeringFormat(ParseContext context, double value, out int sign, out double new_value, out int exponent)
+        static string ScientificFormat(ParseContext context, double value, int sign, int U, int L)
         {
-            sign = Math.Sign(value);
-            value = sign * value;
+            var v = sign * value;
 
-            if (value > 1.0)
-                exponent = (int)(Math.Floor(Math.Log10(value) / 3.0) * 3.0);
-            else if(value > 0.0)
-                exponent = (int)(Math.Ceiling(Math.Log10(value) / 3.0) * 3.0);
-            else
-                exponent = 0;
+            if (U > 1)
+                return Compose(context, v * Math.Pow(10.0, 1 - U), context.Precision, U - 1);
 
-            new_value = value * Math.Pow(10.0, -exponent);
-
-            if (new_value >= 1e3)
+            if (U == 0 && L > 0)
             {
-                new_value *= 1e-3;
-                exponent += 3;
+                var f = 0;
+
+                while (Math.Floor(v) == 0)
+                {
+                    v *= 10.0;
+                    f++;
+                }
+
+                return Compose(context, v, context.Precision, -f);
             }
 
-            if (new_value <= 1e-3 && new_value > 0)
-            {
-                new_value *= 1e3;
-                exponent -= 3;
-            }
+            return Compose(context, v, context.Precision, 0);
         }
 
-        static string ComposeFormat(ParseContext context, int sign, double v, int exponent)
+        static string EngineeringFormat(ParseContext context, double value, int sign, int U, int L)
         {
-            int expsign = Math.Sign(exponent);
-            int significant_digits = context.Precision;
-            exponent = Math.Abs(exponent);
-            int digits = v > 0 ? (int)Math.Log10(v) + 1 : 0;
-            significant_digits += Math.Abs(v) < 1.0 ? 1 : 0;
-            int decimals = Math.Max(significant_digits - digits, 0);
-            double round = Math.Pow(10, -decimals);
-            digits = v > 0 ? (int)Math.Log10(v + 0.5 * round) + 1 : 0;
-            decimals = Math.Max(significant_digits - digits, 0);
-            string f = "0:F";
+            var v = sign * value;
 
+            if (U > 3)
+            {
+                var pwr = 3 * ((U - 1) / 3);
+                return Compose(context, v * Math.Pow(10.0, -pwr), context.Precision, pwr);
+            }
+
+            if (U == 0 && L > 0)
+            {
+                var f = 0;
+
+                while (Math.Floor(v) == 0)
+                {
+                    f++;
+                    v *= 10.0;
+                }
+
+                var t = f / 3;
+                var t3 = t * 3 - f;
+
+                if (t3 != 0)
+                {
+                    t++;
+                    v *= Math.Pow(10.0, t3 + 3);
+                }
+
+                return Compose(context, v, context.Precision, -3 * t);
+            }
+
+            return Compose(context, v, context.Precision, 0);
+        }
+
+        static string StandardFormat(ParseContext context, double v, int sign, int U, int L)
+        {
+            return Compose(context, v * sign, Math.Min(context.Precision, L), 0);
+        }
+
+        static string Compose(ParseContext context, double value, int decimals, int exponent)
+        {
             if (exponent == 0)
-                return string.Format(numberFormat, "{" + f + decimals + "}", sign * v);
-            else if (context.CustomExponent)
-                return string.Format(numberFormat, "{" + f + decimals + "}{1}", sign * v, ToSuperScript(expsign * exponent));
-            
-            return string.Format(numberFormat, "{" + f + decimals + "}e{1}", sign * v, expsign * exponent);
+                return string.Format(numberFormat, "{0:F" + decimals + "}", value);
+
+            if (context.CustomExponent)
+                return string.Format(numberFormat, "{0:F" + decimals + "}{1}", value, ToSuperScript(exponent));
+
+            return string.Format(numberFormat, "{0:F" + decimals + "}e{1}", value, exponent);
         }
 
         static string ToSuperScript(int exp)

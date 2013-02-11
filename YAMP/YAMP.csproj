@@ -72,6 +72,7 @@
     <Compile Include="Attributes\ReturnsAttribute.cs" />
     <Compile Include="Exceptions\Parse\YAMPBracketEmptyError.cs" />
     <Compile Include="Functions\ArgumentFunctions\MeshgridFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\SphereFunction.cs" />
     <Compile Include="Functions\Fractals\NewtonFunction.cs" />
     <Compile Include="Functions\RandomNumbers\RandbFunction.cs" />
     <Compile Include="Functions\RandomNumbers\RandrFunction.cs" />
@@ -79,6 +80,8 @@
     <Compile Include="Functions\RandomNumbers\RandgFunction.cs" />
     <Compile Include="Functions\RandomNumbers\RandlFunction.cs" />
     <Compile Include="Functions\RandomNumbers\RandwFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\Log10Function.cs" />
+    <Compile Include="Functions\StandardFunctions\Log2Function.cs" />
     <Compile Include="Functions\SystemFunctions\EvalFunction.cs" />
     <Compile Include="Functions\Trigonometric\ArtanhFunction.cs" />
     <Compile Include="Functions\Trigonometric\ArsechFunction.cs" />
@@ -88,12 +91,14 @@
     <Compile Include="Functions\Trigonometric\SecFunction.cs" />
     <Compile Include="Functions\Trigonometric\CschFunction.cs" />
     <Compile Include="Functions\Trigonometric\SechFunction.cs" />
+    <Compile Include="Functions\Visualization\AnnotationFunction.cs" />
     <Compile Include="Functions\Visualization\MeshFunction.cs" />
     <Compile Include="Functions\Visualization\SetDefFunction.cs" />
     <Compile Include="Functions\Visualization\SurfFunction.cs" />
     <Compile Include="Numerics\Fractals\Fractal.cs" />
     <Compile Include="Numerics\Fractals\Julia.cs" />
     <Compile Include="Numerics\Fractals\Newton.cs" />
+    <Compile Include="Numerics\Matrices\BlasL3.cs" />
     <Compile Include="Operators\PseudoOperators\LeftUnaryOperator.cs" />
     <Compile Include="Operators\PseudoOperators\NegateOperator.cs" />
     <Compile Include="Operators\PseudoOperators\PosateOperator.cs" />
@@ -159,6 +164,7 @@
     <Compile Include="Providers\Enumerations\PopularKinds.cs" />
     <Compile Include="Providers\EventArgs\NotificationEventArgs.cs" />
     <Compile Include="Providers\EventArgs\UserInputEventArgs.cs" />
+    <Compile Include="Providers\Mapping\MatrixContent.cs" />
     <Compile Include="Providers\Plugin.cs" />
     <Compile Include="Values\Plots\HeatmapPlotValue.cs" />
     <Compile Include="Values\Plots\SurfacePlotValue.cs" />

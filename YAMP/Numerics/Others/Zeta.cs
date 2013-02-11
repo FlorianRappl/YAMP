@@ -108,31 +108,30 @@ namespace YAMP.Numerics
                 return double.PositiveInfinity;
             else if (s >= 0.0)
                 return RiemannZetaGt0(s);
-            else
-            {
-                /* reflection formula, [Abramowitz+Stegun, 23.2.5] */
-                var zeta_one_minus_s = RiemannZeta1msLt0(s);
-                var sin_term = ((s % 2.0) == 0.0) ? 0.0 : Math.Sin(0.5 * Math.PI * (s % 4.0)) / Math.PI;
 
-                if (sin_term == 0.0)
-                    return 0.0;
-                else if (s > -170)
-                {
-                    /* We have to be careful about losing digits
-                     * in calculating pow(2 Pi, s). The gamma
-                     * function is fine because we were careful
-                     * with that implementation.
-                     * We keep an array of (2 Pi)^(10 n).
-                     */
-                    int n = (int)Math.Floor((-s) / 10.0);
-                    var fs = s + 10.0 * n;
-                    var p = Math.Pow(2.0 * Math.PI, fs) / Helpers.TwoPIpow[n];
-                    var g = Gamma.LinearGamma(1.0 - s);
-                    return p * g * sin_term * zeta_one_minus_s;
-                }
-                else
-                    throw new YAMPNumericOverflowException("Zeta");
+            /* reflection formula, [Abramowitz+Stegun, 23.2.5] */
+            var zeta_one_minus_s = RiemannZeta1msLt0(s);
+            var sin_term = ((s % 2.0) == 0.0) ? 0.0 : Math.Sin(0.5 * Math.PI * (s % 4.0)) / Math.PI;
+
+            if (sin_term == 0.0)
+                return 0.0;
+            else if (s > -170)
+            {
+                /* 
+                 * We have to be careful about losing digits
+                 * in calculating pow(2 Pi, s). The gamma
+                 * function is fine because we were careful
+                 * with that implementation.
+                 * We keep an array of (2 Pi)^(10 n).
+                 */
+                var n = (int)Math.Floor((-s) / 10.0);
+                var fs = s + 10.0 * n;
+                var p = Math.Pow(2.0 * Math.PI, fs) / Helpers.TwoPIpow[n];
+                var g = Gamma.LinearGamma(1.0 - s);
+                return p * g * sin_term * zeta_one_minus_s;
             }
+
+            throw new YAMPNumericOverflowException("Zeta");
         }
 
         #endregion
@@ -152,14 +151,12 @@ namespace YAMP.Numerics
                 var c = Helpers.ChebEval(zetaGt1, x);
                 return c / (s - 1.0);
             }
-            else
-            {
-                var f2 = 1.0 - new ScalarValue(2.0).Pow(-s);
-                var f3 = 1.0 - new ScalarValue(3.0).Pow(-s);
-                var f5 = 1.0 - new ScalarValue(5.0).Pow(-s);
-                var f7 = 1.0 - new ScalarValue(7.0).Pow(-s);
-                return 1.0 / (f2 * f3 * f5 * f7);
-            }
+
+            var f2 = 1.0 - new ScalarValue(2.0).Pow(-s);
+            var f3 = 1.0 - new ScalarValue(3.0).Pow(-s);
+            var f5 = 1.0 - new ScalarValue(5.0).Pow(-s);
+            var f7 = 1.0 - new ScalarValue(7.0).Pow(-s);
+            return 1.0 / (f2 * f3 * f5 * f7);
         }
 
         static double RiemannZetaGt0(double s)
@@ -175,14 +172,12 @@ namespace YAMP.Numerics
                 var c = Helpers.ChebEval(zetaGt1, x);
                 return c / (s - 1.0);
             }
-            else
-            {
-                double f2 = 1.0 - Math.Pow(2.0, -s);
-                double f3 = 1.0 - Math.Pow(3.0, -s);
-                double f5 = 1.0 - Math.Pow(5.0, -s);
-                double f7 = 1.0 - Math.Pow(7.0, -s);
-                return 1.0 / (f2 * f3 * f5 * f7);
-            }
+
+            var f2 = 1.0 - Math.Pow(2.0, -s);
+            var f3 = 1.0 - Math.Pow(3.0, -s);
+            var f5 = 1.0 - Math.Pow(5.0, -s);
+            var f7 = 1.0 - Math.Pow(7.0, -s);
+            return 1.0 / (f2 * f3 * f5 * f7);
         }
 
         static ScalarValue RiemannZeta1msLt0(ScalarValue s)
@@ -193,14 +188,12 @@ namespace YAMP.Numerics
                 var c = Helpers.ChebEval(zetaGt1, x);
                 return c / (-s);
             }
-            else
-            {
-                var f2 = 1.0 - new ScalarValue(2.0).Pow(-(1.0 - s));
-                var f3 = 1.0 - new ScalarValue(3.0).Pow(-(1.0 - s));
-                var f5 = 1.0 - new ScalarValue(5.0).Pow(-(1.0 - s));
-                var f7 = 1.0 - new ScalarValue(7.0).Pow(-(1.0 - s));
-                return 1.0 / (f2 * f3 * f5 * f7);
-            }
+
+            var f2 = 1.0 - new ScalarValue(2.0).Pow(-(1.0 - s));
+            var f3 = 1.0 - new ScalarValue(3.0).Pow(-(1.0 - s));
+            var f5 = 1.0 - new ScalarValue(5.0).Pow(-(1.0 - s));
+            var f7 = 1.0 - new ScalarValue(7.0).Pow(-(1.0 - s));
+            return 1.0 / (f2 * f3 * f5 * f7);
         }
 
         static double RiemannZeta1msLt0(double s)
@@ -211,14 +204,12 @@ namespace YAMP.Numerics
                 var c = Helpers.ChebEval(zetaGt1, x);
                 return c / (-s);
             }
-            else
-            {
-                double f2 = 1.0 - Math.Pow(2.0, -(1.0 - s));
-                double f3 = 1.0 - Math.Pow(3.0, -(1.0 - s));
-                double f5 = 1.0 - Math.Pow(5.0, -(1.0 - s));
-                double f7 = 1.0 - Math.Pow(7.0, -(1.0 - s));
-                return 1.0 / (f2 * f3 * f5 * f7);
-            }
+
+            var f2 = 1.0 - Math.Pow(2.0, -(1.0 - s));
+            var f3 = 1.0 - Math.Pow(3.0, -(1.0 - s));
+            var f5 = 1.0 - Math.Pow(5.0, -(1.0 - s));
+            var f7 = 1.0 - Math.Pow(7.0, -(1.0 - s));
+            return 1.0 / (f2 * f3 * f5 * f7);
         }
 
         #endregion

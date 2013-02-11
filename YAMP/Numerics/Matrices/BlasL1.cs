@@ -115,7 +115,7 @@ namespace YAMP.Numerics
         }
 
         /// <summary>
-        /// Returns the dot product (a^T, b).
+        /// Returns the dot product (a, b).
         /// </summary>
         /// <param name="aStore">The first vector a.</param>
         /// <param name="aOffset">Offset in the vector a.</param>
@@ -144,7 +144,44 @@ namespace YAMP.Numerics
         }
 
         /// <summary>
-        /// Returns the result of the product x = a x, with a scalar a and a vector x.
+        /// Returns the complex dot product (a, b).
+        /// </summary>
+        /// <param name="aStore">The first vector a.</param>
+        /// <param name="aOffset">Offset in the vector a.</param>
+        /// <param name="aStride">The offset between two elements of the vector a.</param>
+        /// <param name="bStore">The second vector b.</param>
+        /// <param name="bOffset">Offset in the vector a.</param>
+        /// <param name="bStride">The offset between two elements of the vector a.</param>
+        /// <param name="count">The number of elements to consider.</param>
+        /// <returns>The result of the complex dot product.</returns>
+        public static ScalarValue cDot(ScalarValue[] aStore, int aOffset, int aStride, ScalarValue[] bStore, int bOffset, int bStride, int count)
+        {
+            double re = 0.0;
+            double im = 0.0;
+            int n = 0;
+            int a = aOffset;
+            int b = bOffset;
+
+            while (n < count)
+            {
+                var re1 = aStore[a].Re;
+                var im1 = aStore[a].Im;
+                var re2 = bStore[b].Re;
+                var im2 = bStore[b].Im;
+
+                re += (re1 * re2 - im1 * im2);
+                im += (re1 * im2 + im1 * re2);
+
+                n++;
+                a += aStride;
+                b += bStride;
+            }
+
+            return new ScalarValue(re, im);
+        }
+
+        /// <summary>
+        /// Returns the result of the product x = a * x, with a scalar a and a vector x.
         /// </summary>
         /// <param name="alpha">Some arbitrary real scalar.</param>
         /// <param name="store">The vector x.</param>
@@ -165,17 +202,64 @@ namespace YAMP.Numerics
         }
 
         /// <summary>
+        /// Returns the result of the product x = a * x, with a complex a and a complex vector x.
+        /// </summary>
+        /// <param name="alpha">Some arbitrary complex scalar.</param>
+        /// <param name="store">The complex vector x.</param>
+        /// <param name="offset">The offset in the vector x.</param>
+        /// <param name="stride">The offset between two elements in x.</param>
+        /// <param name="count">The number of elements to consider (from x).</param>
+        public static void cScal(ScalarValue alpha, ScalarValue[] store, int offset, int stride, int count)
+        {
+            int n = 0;
+            int i = offset;
+
+            while (n < count)
+            {
+                store[i] *= alpha;
+                n++;
+                i += stride;
+            }
+        }
+
+        /// <summary>
         /// Computes y = a x + y, where x, y are vectors and a is a real scalar.
         /// </summary>
         /// <param name="alpha">Some arbitrary real scalar.</param>
         /// <param name="xStore">The vector x.</param>
         /// <param name="xOffset">The offset in the vector x.</param>
         /// <param name="xStride">The offset between two elements in x.</param>
-        /// <param name="yStore">The vector x.</param>
+        /// <param name="yStore">The vector y.</param>
         /// <param name="yOffset">The offset in the vector y.</param>
         /// <param name="yStride">The offset between two elements in y.</param>
         /// <param name="count">The number of elements to take.</param>
         public static void dAxpy(double alpha, double[] xStore, int xOffset, int xStride, double[] yStore, int yOffset, int yStride, int count)
+        {
+            int n = 0;
+            int x = xOffset;
+            int y = yOffset;
+
+            while (n < count)
+            {
+                yStore[y] += alpha * xStore[x];
+                n++;
+                x += xStride;
+                y += yStride;
+            }
+        }
+
+        /// <summary>
+        /// Computes y = a x + y, where x, y are complex vectors and a is a complex scalar.
+        /// </summary>
+        /// <param name="alpha">Some arbitrary complex scalar.</param>
+        /// <param name="xStore">The complex vector x.</param>
+        /// <param name="xOffset">The offset in the vector x.</param>
+        /// <param name="xStride">The offset between two elements in x.</param>
+        /// <param name="yStore">The complex vector y.</param>
+        /// <param name="yOffset">The offset in the vector y.</param>
+        /// <param name="yStride">The offset between two elements in y.</param>
+        /// <param name="count">The number of elements to take.</param>
+        public static void cAxpy(ScalarValue alpha, ScalarValue[] xStore, int xOffset, int xStride, ScalarValue[] yStore, int yOffset, int yStride, int count)
         {
             int n = 0;
             int x = xOffset;

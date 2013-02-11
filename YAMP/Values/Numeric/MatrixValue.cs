@@ -30,6 +30,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using YAMP.Numerics;
 
 namespace YAMP
 {
@@ -50,23 +51,16 @@ namespace YAMP
         #region Properties
 
         /// <summary>
-        /// Gets the maximum length of a cell in the default string representation.
+        /// Gets the status of the matrix - is it dense?
+        /// Def. of dense: # of values \neq 0 greater 1.5 * \sqrt length.
+        /// Example: Rows = 10, Columns = 10, i.e. more than 15 elements = dense.
         /// </summary>
-        public int MaximumLength
+        public bool IsDense
         {
             get
             {
-                var max = 0;
-
-                foreach (var el in _values.Values)
-                {
-                    var length = el.Length;
-
-                    if (length > max)
-                        max = length;
-                }
-
-                return max;
+                var diag = Math.Sqrt(Length);
+                return _values.Count >= 1.5 * diag;
             }
         }
 
@@ -183,10 +177,7 @@ namespace YAMP
         {
             get
             {
-                if (_values.Count == 0)
-                    return 0;
-
-                var exp = int.MinValue;
+                var exp = 0;
 
                 foreach (var value in _values.Values)
                     exp = Math.Max(value.Exponent, exp);
@@ -277,6 +268,28 @@ namespace YAMP
             for (var i = 1; i <= dimX; i++)
                 for (var j = 1; j <= dimY; j++)
                     this[j, i] = filling.Clone();
+        }
+
+        /// <summary>
+        /// Constructs a new matrix from an array of scalars with the given rows and columns (columns first).
+        /// </summary>
+        /// <param name="array">The 1-dim. array with values (will be referenced).</param>
+        /// <param name="rows">The number of rows.</param>
+        /// <param name="cols">The number of columns.</param>
+        public MatrixValue(ScalarValue[] array, int rows, int cols) : this(rows, cols)
+        {
+            var k = 0;
+
+            for (var j = 1; j <= dimY; j++)
+            {
+                for (var i = 1; i <= dimX; i++)
+                {
+                    var value = array[k++];
+
+                    if (value != ScalarValue.Zero)
+                        _values.Add(new MatrixIndex(j, i), value);
+                }
+            }
         }
 
 		#endregion
@@ -431,6 +444,18 @@ namespace YAMP
         }
 
         /// <summary>
+        /// Goes over all rows and columns and randomizes the values.
+        /// </summary>
+        public void Randomize()
+        {
+            var r = new YAMP.Numerics.ContinuousUniformDistribution();
+
+            for (var j = 1; j <= dimY; j++)
+                for (var i = 1; i <= dimX; i++)
+                    this[j, i] = new ScalarValue(r.NextDouble());
+        }
+
+        /// <summary>
         /// Adds a column specified by the type of the value to
         /// add-in. If it is a scalar value, then it is quite simple.
         /// For a matrix the geometry is important.
@@ -512,17 +537,17 @@ namespace YAMP
         #region Methods
 
         /// <summary>
-        /// Gets the maximum length of cell by considering the given context.
+        /// Gets the maximum length of any cell of the matrix by considering the given context.
         /// </summary>
         /// <param name="context">The parse context which holds the state information.</param>
-        /// <returns>The length of the string in chars.</returns>
-        public int GetMaximumLength(ParseContext context)
+        /// <returns>The length of the string in characters.</returns>
+        public int ComputeLargestStringContent(ParseContext context)
         {
             var max = 0;
 
             foreach (var el in _values.Values)
             {
-                var length = el.GetLength(context);
+                var length = el.GetLengthOfString(context);
 
                 if (length > max)
                     max = length;
@@ -629,6 +654,90 @@ namespace YAMP
             return minIndex;
         }
 
+        /// <summary>
+        /// Deletes the specified number of columns of the matrix.
+        /// </summary>
+        /// <param name="index">The column index to start (1-based).</param>
+        /// <param name="count">The number of columns to remove.</param>
+        public virtual void DeleteColumns(int index, int count = 1)
+        {
+            if (count < 0)
+            {
+                index += count;
+                count = -count;
+            }
+            else if (count == 0)
+                return;
+
+            if (index + count > dimX + 1)
+                count = dimX - index + 1;
+
+            var dim = index + count;
+
+            for (var i = index; i < dim; i++)
+            {
+                for (var j = 1; j <= dimY; j++)
+                    this[j, i] = ScalarValue.Zero;
+            }
+
+            index = dim;
+
+            for (var i = index; i <= dimX; i++)
+            {
+                var k = i - count;
+
+                for (var j = 1; j <= dimY; j++)
+                {
+                    this[j, k] = this[j, i];
+                    this[j, i] = ScalarValue.Zero;
+                }
+            }
+
+            dimX -= count;
+        }
+
+        /// <summary>
+        /// Deletes the specified number of rows of the matrix.
+        /// </summary>
+        /// <param name="index">The row index to start (1-based).</param>
+        /// <param name="count">The number of rows to remove.</param>
+        public virtual void DeleteRows(int index, int count = 1)
+        {
+            if (count < 0)
+            {
+                index += count;
+                count = -count;
+            }
+            else if (count == 0)
+                return;
+
+            if (index + count > dimY + 1)
+                count = dimY - index + 1;
+
+            var dim = index + count;
+
+            for (var j = index; j < dim; j++)
+            {
+                for (var i = 1; i <= dimX; i++)
+                    this[j, i] = ScalarValue.Zero;
+            }
+
+            index = dim;
+
+            for (var j = index; j <= dimY; j++)
+            {
+                var k = j - count;
+
+                for (var i = 1; i <= dimX; i++)
+                {
+                    this[k, i] = this[j, i];
+                    this[j, i] = ScalarValue.Zero;
+                }
+            }
+
+            dimY -= count;
+        }
+
         #endregion
 
         #region String Representation
@@ -640,13 +749,24 @@ namespace YAMP
         /// <returns>The string with the matrix.</returns>
         public override string ToString(ParseContext context)
         {
+            return ToString(context, 0);
+        }
+
+        /// <summary>
+        /// Creates a standard string representation of the matrix.
+        /// </summary>
+        /// <param name="context">The parse content.</param>
+        /// <param name="exponent">The global exponent that is in use.</param>
+        /// <returns>The string with the matrix.</returns>
+        public string ToString(ParseContext context, int exponent)
+        {
             var sb = new StringBuilder();
 
             for (var j = 1; j <= DimensionY; j++)
             {
                 for (var i = 1; i <= DimensionX; i++)
                 {
-                    sb.Append(this[j, i].ToString(context));
+                    sb.Append(this[j, i].ToString(context, exponent));
 
                     if (i < DimensionX)
                         sb.Append("\t");
@@ -662,6 +782,21 @@ namespace YAMP
         #endregion
 
         #region Special Matrix operations
+
+        /// <summary>
+        /// Copies the internal scalar values to a 1-dim. complex array.
+        /// </summary>
+        public ScalarValue[] ToArray()
+        {
+            var array = new ScalarValue[Length];
+            var k = 0;
+
+            for (var j = 1; j <= dimY; j++)
+                for (var i = 1; i <= dimX; i++)
+                    array[k++] = this[j, i];
+
+            return array;
+        }
 
         /// <summary>
         /// Computes the inverse (if it exists).
@@ -1268,26 +1403,32 @@ namespace YAMP
         /// <summary>
         /// Multiplication.
         /// </summary>
-        /// <param name="A">Matrix A</param>
-        /// <param name="B">Matrix B</param>
+        /// <param name="x">Matrix A</param>
+        /// <param name="y">Matrix B</param>
         /// <returns>A * B</returns>
-		public static MatrixValue operator *(MatrixValue A, MatrixValue B)
+		public static MatrixValue operator *(MatrixValue x, MatrixValue y)
 		{
-            if (A.DimensionX != B.DimensionY)
-                throw new YAMPMatrixMultiplyException(A.DimensionX, B.DimensionY);
+            if (x.DimensionX != y.DimensionY)
+                throw new YAMPMatrixMultiplyException(x.DimensionX, y.DimensionY);
+            
+            var A = x.ToArray();
+            var B = y.ToArray();
+            var C = new ScalarValue[x.Rows * y.Columns];
+            BlasL3.cGemm(A, 0, x.Columns, 1, B, 0, y.Columns, 1, C, 0, y.Columns, 1, x.Rows, y.Columns, x.Columns);
+            return new MatrixValue(C, x.Rows, y.Columns);
 
-            var M = new MatrixValue(A.DimensionY, B.DimensionX);
+            //var M = new MatrixValue(A.DimensionY, B.DimensionX);
 
-            for (var j = 1; j <= B.DimensionX; j++)
-            {
-                for (var i = 1; i <= A.DimensionY; i++)
-                {
-                    for (var k = 1; k <= A.DimensionX; k++)
-                        M[i, j] = M[i, j] + (A[i, k] * B[k, j]);
-                }
-            }
+            //for (var j = 1; j <= B.DimensionX; j++)
+            //{
+            //    for (var i = 1; i <= A.DimensionY; i++)
+            //    {
+            //        for (var k = 1; k <= A.DimensionX; k++)
+            //            M[i, j] = M[i, j] + (A[i, k] * B[k, j]);
+            //    }
+            //}
 
-            return M;
+            //return M;
 		}
 
         /// <summary>
@@ -1300,9 +1441,19 @@ namespace YAMP
         {
             var A = new MatrixValue(M.DimensionY, M.DimensionX);
 
+            if (s == ScalarValue.Zero)
+                return A;
+
             for (var i = 1; i <= M.DimensionX; i++)
+            {
                 for (var j = 1; j <= M.DimensionY; j++)
-                    A[j, i] = M[j, i] * s;
+                {
+                    var m = M[j, i];
+
+                    if(m != ScalarValue.Zero)
+                        A[j, i] = m * s;
+                }
+            }
 
             return A;
 		}
@@ -1326,6 +1477,9 @@ namespace YAMP
         /// <returns>l / r</returns>
         public static MatrixValue operator /(MatrixValue l, ScalarValue r)
         {
+            if (r == ScalarValue.One)
+                return l.Clone();
+
             var m = new MatrixValue(l.DimensionY, l.DimensionX);
 
             for (var j = 1; j <= l.DimensionY; j++)
@@ -1346,13 +1500,23 @@ namespace YAMP
             if (r.DimensionX != l.DimensionX || r.DimensionY != l.DimensionY)
                 throw new YAMPDifferentDimensionsException(l, r);
 
-            var m = new MatrixValue(l.DimensionY, l.DimensionX);
+            var A = l.ToArray();
+            var B = r.ToArray();
+            var n = l.Length;
+            var C = new ScalarValue[n];
 
-            for (var j = 1; j <= l.DimensionY; j++)
-                for (var i = 1; i <= l.DimensionX; i++)
-                    m[j, i] = l[j, i] - r[j, i];
+            for (var k = 0; k != n; k++)
+                C[k] = A[k] - B[k];
 
-            return m;
+            return new MatrixValue(C, r.DimensionY, r.DimensionY);
+
+            //var m = new MatrixValue(l.DimensionY, l.DimensionX);
+
+            //for (var j = 1; j <= l.DimensionY; j++)
+            //    for (var i = 1; i <= l.DimensionX; i++)
+            //        m[j, i] = l[j, i] - r[j, i];
+
+            //return m;
 		}
 
         /// <summary>
@@ -1366,13 +1530,23 @@ namespace YAMP
             if (r.DimensionX != l.DimensionX || r.DimensionY != l.DimensionY)
                 throw new YAMPDifferentDimensionsException(l, r);
 
-            var m = new MatrixValue(l.DimensionY, l.DimensionX);
+            var A = l.ToArray();
+            var B = r.ToArray();
+            var n = l.Length;
+            var C = new ScalarValue[n];
 
-            for (var j = 1; j <= l.DimensionY; j++)
-                for (var i = 1; i <= l.DimensionX; i++)
-                    m[j, i] = l[j, i] + r[j, i];
+            for (var k = 0; k != n; k++)
+                C[k] = A[k] + B[k];
 
-            return m;
+            return new MatrixValue(C, r.DimensionY, r.DimensionY);
+
+            //var m = new MatrixValue(l.DimensionY, l.DimensionX);
+
+            //for (var j = 1; j <= l.DimensionY; j++)
+            //    for (var i = 1; i <= l.DimensionX; i++)
+            //        m[j, i] = l[j, i] + r[j, i];
+
+            //return m;
 		}
 
         /// <summary>
@@ -1703,6 +1877,171 @@ namespace YAMP
 
         #endregion
 
+        #region Helpers
+
+        void DeleteFullRows(List<MatrixIndex> indices)
+        {
+            // There cannot be a full row if we have less indices than columns
+            if (indices.Count < dimX)
+                return;
+
+            // Save currently found rows
+            var rows = new List<int>();
+
+            // Go over the all the indices
+            for (var i = 0; i < indices.Count; i++)
+            {
+                var row = indices[i].Row;
+                var cols = new List<int>();
+                var taken = new List<int>();
+                cols.Add(indices[i].Column);
+                taken.Add(i);
+
+                // How often do we find the same row ?
+                for (var j = i + 1; j < indices.Count; j++)
+                {
+                    if (indices[j].Row == row && !cols.Contains(indices[j].Column) && indices[j].Column >= 1 && indices[j].Column <= Columns)
+                    {
+                        cols.Add(indices[j].Column);
+                        taken.Add(j);
+
+                        // Apparently we've found a complete row - stop.
+                        if (cols.Count == Columns)
+                            break;
+                    }
+                }
+
+                // Check again if we found a match
+                if (cols.Count == Columns)
+                {
+                    // Sort the found indices
+                    taken.Sort();
+
+                    // Remove the indices to improve search performance
+                    for (var k = taken.Count - 1; k >= 0; k--)
+                        indices.RemoveAt(taken[k]);
+
+                    // Add the found row to the list of found rows
+                    rows.Add(row);
+                    // Start again from the beginning, since we removed indices
+                    i = -1;
+                }
+            }
+
+            // Just sort the rows to optimize the next itertion
+            rows.Sort();
+
+            // Go over all found rows
+            for (var i = rows.Count - 1; i >= 0; i--)
+            {
+                var count = 1;
+
+                // Look how many consecutive rows we found
+                for (var j = i - 1; j >= 0; j--)
+                {
+                    if (rows[j] == rows[j + 1] - 1)
+                        count++;
+                    else
+                        break;
+                }
+
+                // Modify the loop iterator (for count == 1 no change is required)
+                i -= (count - 1);
+                // Delete the consecutive rows
+                DeleteRows(rows[i], count);
+                // Modify the other indices - shift them by the number of rows if required
+                var minIndex = rows[i] + count;
+
+                for (var j = 0; j < indices.Count; j++)
+                {
+                    if (indices[j].Row >= minIndex)
+                        indices[j] = new MatrixIndex(indices[j].Row - count, indices[j].Column);
+                }
+            }
+        }
+
+        void DeleteFullColumns(List<MatrixIndex> indices)
+        {
+            // There cannot be a full column if we have less indices than rows
+            if (indices.Count < dimY)
+                return;
+
+            // Save currently found columns
+            var columns = new List<int>();
+
+            // Go over the all the indices
+            for (var i = 0; i < indices.Count; i++)
+            {
+                var col = indices[i].Column;
+                var rows = new List<int>();
+                var taken = new List<int>();
+                rows.Add(indices[i].Row);
+                taken.Add(i);
+
+                // How often do we find the same column ?
+                for (var j = i + 1; j < indices.Count; j++)
+                {
+                    if (indices[j].Column == col && !rows.Contains(indices[j].Row) && indices[j].Row >= 1 && indices[j].Row <= Rows)
+                    {
+                        rows.Add(indices[j].Row);
+                        taken.Add(j);
+
+                        // Apparently we've found a complete column - stop.
+                        if (rows.Count == Rows)
+                            break;
+                    }
+                }
+
+                if (rows.Count == Rows)
+                {
+                    // Sort the found indices
+                    taken.Sort();
+
+                    // Remove the indices to improve search performance
+                    for (var k = taken.Count - 1; k >= 0; k--)
+                        indices.RemoveAt(taken[k]);
+
+                    // Add the found column to the list of found columns
+                    columns.Add(col);
+                    // Start again from the beginning, since we removed indices
+                    i = -1;
+                }
+            }
+
+            // Just sort the columns to optimize the next itertion
+            columns.Sort();
+
+            // Go over all found columns
+            for (var i = columns.Count - 1; i >= 0; i--)
+            {
+                var count = 1;
+
+                // Look how many consecutive columns we found
+                for (var j = i - 1; j >= 0; j--)
+                {
+                    if (columns[j] == columns[j + 1] - 1)
+                        count++;
+                    else
+                        break;
+                }
+
+                // Modify the loop iterator (for count == 1 no change is required)
+                i -= count - 1;
+                // Delete the consecutive columns
+                DeleteColumns(columns[i], count);
+                // Modify the other indices - shift them by the number of columns if required
+                var minIndex = columns[i] + count;
+
+                for (var j = 0; j < indices.Count; j++)
+                {
+                    if (indices[j].Column >= minIndex)
+                        indices[j] = new MatrixIndex(indices[j].Row, indices[j].Column - count);
+                }
+            }
+        }
+
+        #endregion
+
         #region Functional behavior
 
         /// <summary>
@@ -1719,6 +2058,7 @@ namespace YAMP
 
             var indices = new List<MatrixIndex>();
 
+            //Multiple arguments
             if (argument is ArgumentsValue)
             {
                 var ags = (ArgumentsValue)argument;
@@ -1743,16 +2083,21 @@ namespace YAMP
                     }
                 }
             }
+            // just a single argument
             else if (argument is NumericValue)
             {
+                // A matrix as argument == probably logical subscripting?
                 if (argument is MatrixValue)
                 {
                     var mm = (MatrixValue)argument;
 
+                    // But only logical subscripting of the dimensions match!
                     if (mm.DimensionX == DimensionX && mm.DimensionY == DimensionY)
                         LogicalSubscripting(mm, indices);
                 }
 
+                // So... if it has not been logical subscripting, then build
+                // the index for each entry of the matrix.
                 if (indices.Count == 0)
                 {
                     var idx = BuildIndex(argument, Length);
@@ -1761,20 +2106,44 @@ namespace YAMP
                         indices.Add(GetIndex(idx[i]));
                 }
             }
+            // no numeric value provided ?
             else
                 throw new YAMPOperationInvalidException("Matrix", argument);
 
+            // The right hand side is a matrix (look for dimensions)
             if (values is MatrixValue)
             {
                 var index = 1;
                 var m = (MatrixValue)values;
 
-                if (m.Length != indices.Count)
-                    throw new YAMPDifferentLengthsException(m.Length, indices.Count);
+                // Special case: Empty matrix supplied
+                if (m.Rows == 0 && m.Columns == 0)
+                {
+                    //Passed in empty matrix as in M(3,:) = []; --> either delete COMPLETE
+                    //row or column, or set the corresponding values to 0 (if no complete
+                    //row or column has been selected).
 
-                foreach (var mi in indices)
-                    this[mi.Row, mi.Column] = m[index++];
+                    DeleteFullRows(indices);
+                    DeleteFullColumns(indices);
+
+                    if (indices.Count > 0)
+                    {
+                        for (var i = 0; i < indices.Count; i++)
+                            this[indices[i].Row, indices[i].Column] = ScalarValue.Zero;
+                    }
+                }
+                // In the general case the right hand side matrix has to be of the same 
+                // dimension (or length) as the supplied indices.
+                else
+                {
+                    if (m.Length != indices.Count)
+                        throw new YAMPDifferentLengthsException(m.Length, indices.Count);
+
+                    foreach (var mi in indices)
+                        this[mi.Row, mi.Column] = m[index++];
+                }
             }
+            // the right hand side is a scalar (apply to each value)
             else if(values is ScalarValue)
             {
                 var value = (ScalarValue)values;

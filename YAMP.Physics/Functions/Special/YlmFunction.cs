@@ -94,45 +94,14 @@ namespace YAMP.Physics
             return M;
         }
 
-        //
-        // General formulas
-        //
-        // ylm(0, 0, theta, phi) = 1/2 * sqrt(1/pi)
-        // ylm(1, 0, theta, phi) = 1/2 * sqrt(3/pi) * cos(theta)
-        // ylm(1, -1, theta, phi) = 1/2 * sqrt(3/(2*pi)) * exp(-i*phi) * sin(theta)
-        // ylm(1, 1, theta, phi) = -1/2 * sqrt(3/(2*pi)) * exp(i*phi) * sin(theta)
-        // die negativen m sind gleich zu den positiven m, nur mit einem vorzeichen (-1)^m und entsprechenden exp(- arg)
-        // ylm(2, 0, theta, phi) = 1/4 * sqrt(5/pi) * (3*cos(theta)^2 - 1)
-        // ylm(2, 1, theta, phi) = -1/2 * sqrt(15/2/pi) * exp(i * phi) * sin(theta) * cos(theta)
-        // ylm(2, 2, theta, phi) = 1/4 * sqrt(15/2/pi) * exp(2*i*phi) * sin(theta)^2
-        // ylm(3, 0, theta, phi) = 1/4 * sqrt(7/pi) * (5 * cos(theta)^3 - 3 * cos(theta))
-        // ylm(3, 1, theta, phi) = -1/8 * sqrt(21/pi) * exp(i * phi) * sin(theta) * (5 * cos(theta)^2 - 1)
-        // ylm(3, 2, theta, phi) = 1/4 * sqrt(105/2/pi) * exp(2 * i * phi) * sin(theta)^2 * cos(theta)
-        // ....
-        // Examples with values for theta and phi
-        //
-        // ylm(0, 0, 0, 0) = 1/2 * sqrt(1/pi) ~ 0.28
-        // ylm(1, 0, 0, 0) = 1/2 * sqrt(3/pi) ~ 0.48
-        // ylm(1, -1, pi / 2, 0) = 1/2 * sqrt(3/(2*pi)) ~ 0.34
-        // ylm(1, 1, pi / 2, 0) = -1/2 * sqrt(3/(2*pi)) ~ -0.34
-        // ylm(2, 0, 0, 0) = 1/4 * sqrt(5/pi) * 2 ~ 0.63
-        // ylm(2, 1, pi / 4, 0) = -1/2 * sqrt(15/2/pi) * sin(pi / 4) * cos(pi / 4) ~ 0.38
-        // ylm(2, 2, pi / 2, 0) = 1/4 * sqrt(15/2/pi) ~ 0.38
-        // ylm(3, 0, 0, 0) = 1/4 * sqrt(7/pi) * 2 ~ 0.74
-        // ylm(3, 1, pi / 4, 0) = -1/8 * sqrt(21/pi) * sin(pi / 4) * (5 * cos(pi / 4)^2 - 1) ~ -0.34
-        // ylm(3, 2, pi / 4, 0) = 1/4 * sqrt(105/2/pi) * sin(pi / 4)^2 * cos(pi / 4) ~ 0.36
-        //
-        static ScalarValue Ylm(int l, int m, double theta, double phi)
+        #region Algorithms
+
+        public static ScalarValue Ylm(int l, int m, double theta, double phi)
         {
             var expphi = new ScalarValue(0.0, m * phi).Exp();
             var factor = m < 0 ? Math.Pow(-1, -m) : 1.0;
             var legend = Plm(l, Math.Abs(m), Math.Cos(theta));
             return factor * expphi * legend;
-        }
-
-        static double sqrt(double x)
-        {
-            return Math.Sqrt(x);
         }
 
         static double Pl(int l, double x)
@@ -170,39 +139,38 @@ namespace YAMP.Physics
 
                 return p_ell;
             }
+
+            /* 
+             * Asymptotic expansion.
+             * [Olver, p. 473]
+             */
+            double u = l + 0.5;
+            double th = Math.Acos(x);
+            double J0 = Bessel.j0(u * th);
+            double Jm1 = Bessel.jn(-1, u * th);
+            double pre;
+            double B00;
+            double c1;
+
+            /* 
+             * B00 = 1/8 (1 - th cot(th) / th^2
+             * pre = sqrt(th/sin(th))
+             */
+            if (th < 1.2207031250000000e-04)
+            {
+                B00 = (1.0 + th * th / 15.0) / 24.0;
+                pre = 1.0 + th * th / 12.0;
+            }
             else
             {
-                /* 
-                 * Asymptotic expansion.
-                 * [Olver, p. 473]
-                 */
-                double u = l + 0.5;
-                double th = Math.Acos(x);
-                double J0 = Bessel.j0(u * th);
-                double Jm1 = Bessel.jn(-1, u * th);
-                double pre;
-                double B00;
-                double c1;
-
-                /* B00 = 1/8 (1 - th cot(th) / th^2
-                 * pre = sqrt(th/sin(th))
-                 */
-                if (th < 1.2207031250000000e-04)
-                {
-                    B00 = (1.0 + th * th / 15.0) / 24.0;
-                    pre = 1.0 + th * th / 12.0;
-                }
-                else
-                {
-                    double sin_th = sqrt(1.0 - x * x);
-                    double cot_th = x / sin_th;
-                    B00 = 1.0 / 8.0 * (1.0 - th * cot_th) / (th * th);
-                    pre = sqrt(th / sin_th);
-                }
-
-                c1 = th / u * B00;
-                return pre * (J0 + c1 * Jm1);
+                double sin_th = Math.Sqrt(1.0 - x * x);
+                double cot_th = x / sin_th;
+                B00 = 1.0 / 8.0 * (1.0 - th * cot_th) / (th * th);
+                pre = Math.Sqrt(th / sin_th);
             }
+
+            c1 = th / u * B00;
+            return pre * (J0 + c1 * Jm1);
         }
 
         static double Plm(int l, int m, double x)
@@ -210,48 +178,44 @@ namespace YAMP.Physics
             if (m == 0)
             {
                 var res = Pl(l, x);
-                var pre = sqrt((2.0 * l + 1.0) / (4.0 * Math.PI));
+                var pre = Math.Sqrt((2.0 * l + 1.0) / (4.0 * Math.PI));
                 return pre * res;
             }
             else if (x == 1.0 || x == -1.0)
-            {
                 return 0.0;
+
+            //Y_m^m(x) = sqrt( (2m+1)/(4pi m) gamma(m+1/2)/gamma(m) ) (-1)^m (1-x^2)^(m/2) / pi^(1/4)
+            double sgn = m % 2 == 1 ? -1.0 : 1.0;
+            double y_mmp1_factor = x * Math.Sqrt(2.0 * m + 3.0);
+            double lncirc = Math.Log(1 - x * x);
+            double lnpoch = Gamma.LogGamma(m + 0.5) - Gamma.LogGamma(m);
+            double expf = Math.Exp(0.5 * (lnpoch + m * lncirc) - 0.25 * Helpers.LogPI);
+            double sr = Math.Sqrt((2.0 + 1.0 / m) / Helpers.FourPI);
+            double y_mm = sgn * sr * expf;
+            double y_mmp1 = y_mmp1_factor * y_mm;
+
+            if (l == m)
+                return y_mm;
+            else if (l == m + 1)
+                return y_mmp1;
+
+            var y_ell = 0.0;
+
+            /* Compute Y_l^m, l > m + 1, upward recursion on l. */
+            for (int ell = m + 2; ell <= l; ell++)
+            {
+                var rat1 = (double)(ell - m) / (double)(ell + m);
+                var rat2 = (ell - m - 1.0) / (ell + m - 1.0);
+                var factor1 = Math.Sqrt(rat1 * (2.0 * ell + 1.0) * (2.0 * ell - 1.0));
+                var factor2 = Math.Sqrt(rat1 * rat2 * (2.0 * ell + 1.0) / (2.0 * ell - 3.0));
+                y_ell = (x * y_mmp1 * factor1 - (ell + m - 1.0) * y_mm * factor2) / (ell - m);
+                y_mm = y_mmp1;
+                y_mmp1 = y_ell;
             }
-            else /* m > 0 and |x| < 1 here */
-            { 
-                //Y_m^m(x) = sqrt( (2m+1)/(4pi m) gamma(m+1/2)/gamma(m) ) (-1)^m (1-x^2)^(m/2) / pi^(1/4)
-                double sgn = m % 2 == 1 ? -1.0 : 1.0;
-                double y_mmp1_factor = x * sqrt(2.0 * m + 3.0);
-                double lncirc = Math.Log(1 - x * x);
-                double lnpoch = Gamma.LogGamma(m + 0.5) - Gamma.LogGamma(m);
-                double expf = Math.Exp(0.5 * (lnpoch + m * lncirc) - 0.25 * Helpers.LogPI);
-                double sr = sqrt((2.0 + 1.0 / m) / Helpers.FourPI);
-                double y_mm = sgn * sr * expf;
-                double y_mmp1 = y_mmp1_factor * y_mm;
 
-                if (l == m)
-                    return y_mm;
-                else if (l == m + 1)
-                    return y_mmp1;
-                else
-                {
-                    var y_ell = 0.0;
-
-                    /* Compute Y_l^m, l > m+1, upward recursion on l. */
-                    for (int ell = m + 2; ell <= l; ell++)
-                    {
-                        var rat1 = (double)(ell - m) / (double)(ell + m);
-                        var rat2 = (ell - m - 1.0) / (ell + m - 1.0);
-                        var factor1 = sqrt(rat1 * (2.0 * ell + 1.0) * (2.0 * ell - 1.0));
-                        var factor2 = sqrt(rat1 * rat2 * (2.0 * ell + 1.0) / (2.0 * ell - 3.0));
-                        y_ell = (x * y_mmp1 * factor1 - (ell + m - 1.0) * y_mm * factor2) / (ell - m);
-                        y_mm = y_mmp1;
-                        y_mmp1 = y_ell;
-                    }
-
-                    return y_ell;
-                }
-            }
+            return y_ell;
         }
+
+        #endregion
     }
 }

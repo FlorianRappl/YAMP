@@ -100,8 +100,8 @@ namespace YAMP
 
             if (parent == null)
             {
-                precision = 5;
-                displayStyle = DisplayStyle.Scientific;
+                precision = 6;
+                displayStyle = DisplayStyle.Default;
             }
             else
             {
@@ -266,11 +266,17 @@ namespace YAMP
         }
 
         /// <summary>
-        /// Gets the last plot added to the context.
+        /// Gets the last plot added to the context or the parent's context.
         /// </summary>
         public PlotValue LastPlot
         {
-            get { return lastPlot; }
+            get 
+            {
+                if (lastPlot == null && parent != null)
+                    return parent.LastPlot;
+
+                return lastPlot; 
+            }
             internal set
             {
                 if (value == lastPlot)

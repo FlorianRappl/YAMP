@@ -28,6 +28,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using YAMP.Numerics;
 
 namespace YAMP
 {
@@ -148,27 +149,6 @@ namespace YAMP
         }
 
         /// <summary>
-        /// Gets the length of the output in the default representation.
-        /// </summary>
-		public int Length
-		{
-			get
-			{
-				return ToString().Length;
-			}
-		}
-
-        /// <summary>
-        /// Gets the length of the output in the given parse context.
-        /// </summary>
-        /// <param name="context">The query context to consider.</param>
-        /// <returns>The length of the string representation</returns>
-        public int GetLength(ParseContext context)
-        {
-            return ToString(context).Length;
-        }
-
-        /// <summary>
         /// Gets the integer part of the real contribution.
         /// </summary>
         public int IntValue
@@ -260,6 +240,14 @@ namespace YAMP
 
         static readonly ScalarValue _I = new ScalarValue(0.0, 1.0);
 
+        static readonly ScalarValue _ONE = new ScalarValue(1.0, 0.0);
+
+        static readonly ScalarValue _ZERO = new ScalarValue(0.0, 0.0);
+
+        static readonly ScalarValue _REINFINITY = new ScalarValue(double.PositiveInfinity, 0.0);
+
+        static readonly ScalarValue _IMINFINITY = new ScalarValue(0.0, double.PositiveInfinity);
+
         /// <summary>
         /// Gets the imaginary unit, which is just i.
         /// Real: 0, Imaginary: 1
@@ -267,6 +255,42 @@ namespace YAMP
         public static ScalarValue I
         {
             get { return _I; }
+        }
+
+        /// <summary>
+        /// Gets the identity, which is just 1.
+        /// Real: 1, Imaginary: 0
+        /// </summary>
+        public static ScalarValue One
+        {
+            get { return _ONE; }
+        }
+
+        /// <summary>
+        /// Gets the neutral element of addition, which is zero.
+        /// Real: 0, Imaginary: 0
+        /// </summary>
+        public static ScalarValue Zero
+        {
+            get { return _ZERO; }
+        }
+
+        /// <summary>
+        /// Gets the a value that is positive infinity on the real axis.
+        /// Real: pos. infinity, Imaginary: 0
+        /// </summary>
+        public static ScalarValue RealInfinity
+        {
+            get { return _REINFINITY; }
+        }
+
+        /// <summary>
+        /// Gets the a value that is positive infinity on the imgainary axis.
+        /// Real: 0, Imaginary: pos. infinity
+        /// </summary>
+        public static ScalarValue ImaginaryInfinity
+        {
+            get { return _IMINFINITY; }
         }
 
         #endregion
@@ -369,17 +393,17 @@ namespace YAMP
                 return new ScalarValue();
 
             var theta = _real == 0.0 ? Math.PI / 2 * Math.Sign(ImaginaryValue) : Math.Atan2(_imag, _real);
-            var L = _real / Math.Cos(theta);
+            var li = _real / Math.Cos(theta);
             var phi = Ln() * exponent._imag;
-            var R = (I * phi).Exp();
-            var alpha = _real == 0.0 ? 1.0 : Math.Pow(Math.Abs(L), exponent._real);
+            var ri = (I * phi).Exp();
+            var alpha = _real == 0.0 ? 1.0 : Math.Pow(Math.Abs(li), exponent._real);
             var beta = theta * exponent._real;
-            var _cos = Math.Cos(beta);
-            var _sin = Math.Sin(beta);
-            var re = alpha * (_cos * R._real - _sin * R._imag);
-            var im = alpha * (_cos * R._imag + _sin * R._real);
+            var cos = Math.Cos(beta);
+            var sin = Math.Sin(beta);
+            var re = alpha * (cos * ri._real - sin * ri._imag);
+            var im = alpha * (cos * ri._imag + sin * ri._real);
 
-            if (L < 0)
+            if (li < 0)
                 return new ScalarValue(-im, re);
 
             return new ScalarValue(re, im);
@@ -414,6 +438,24 @@ namespace YAMP
             var re = Math.Sin(_real) * Math.Cosh(_imag);
             var im = Math.Cos(_real) * Math.Sinh(_imag);
             return new ScalarValue(re, im);
+        }
+
+        /// <summary>
+        /// Takes the tangent (sin / cos) of the scalar.
+        /// </summary>
+        /// <returns>The tangent of the value.</returns>
+        public ScalarValue Tan()
+        {
+            return Sin() / Cos();
+        }
+
+        /// <summary>
+        /// Takes the co-tangent (cos / sin) of the scalar.
+        /// </summary>
+        /// <returns>The co-tangent of the value.</returns>
+        public ScalarValue Cot()
+        {
+            return Cos() / Sin();
         }
 
         /// <summary>
@@ -518,10 +560,33 @@ namespace YAMP
         }
 
         /// <summary>
+        /// Takes the natural logarithm of the scalar.
+        /// </summary>
+        /// <returns>The natural logarithm of the value.</returns>
+        public ScalarValue Log()
+        {
+            var re = Math.Log(Abs());
+            var im = Arg();
+            return new ScalarValue(re, im);
+        }
+
+        /// <summary>
+        /// Takes the general logarithm of the scalar.
+        /// </summary>
+        /// <param name="basis">The basis to use for the logarithm.</param>
+        /// <returns>The general logarithm (in an arbitrary basis) of the value.</returns>
+        public ScalarValue Log(double basis)
+        {
+            var re = Math.Log(Abs(), basis);
+            var im = Arg();
+            return new ScalarValue(re, im);
+        }
+
+        /// <summary>
         /// Takes the base-10 logarithm of the scalar.
         /// </summary>
         /// <returns>The base-10 logarithm of the value.</returns>
-        public ScalarValue Log()
+        public ScalarValue Log10()
         {
             var re = Math.Log(Abs(), 10.0);
             var im = Arg();
@@ -534,13 +599,14 @@ namespace YAMP
         /// <returns>The factorial of the scalar x!+iy!.</returns>
         public ScalarValue Factorial()
         {
-            var re = Factorial(_real);
-            var im = Factorial(_imag);
+            var re = 0.0; 
+            var im = 0.0; 
 
-            if (_imag == 0.0)
-                im = 0.0;
-            else if (_real == 0.0 && _imag != 0.0)
-                re = 0.0;
+            if (_imag != 0.0)
+                im = _imag == Math.Floor(_imag) ? Helpers.Factorial((int)_imag) : Gamma.LinearGamma(_imag + 1.0);
+            
+            if (_real != 0.0 || _imag == 0.0)
+                re = _real == Math.Floor(_real) ? Helpers.Factorial((int)_real) : Gamma.LinearGamma(_real + 1.0);
 
             return new ScalarValue(re, im);
         }
@@ -652,20 +718,6 @@ namespace YAMP
 			return Convert.ToInt32(rr);
 		}
 
-        double Factorial(double r)
-        {
-            var k = (int)Math.Abs(r);
-            var value = r < 0 ? -1.0 : 1.0;
-
-            while (k > 1)
-            {
-                value *= k;
-                k--;
-            }
-
-            return value;
-        }
-
         #endregion
 
         #region Comparison
@@ -703,6 +755,16 @@ namespace YAMP
         #region String Representations
 
         /// <summary>
+        /// Gets the length of the output in the given parse context.
+        /// </summary>
+        /// <param name="context">The query context to consider.</param>
+        /// <returns>The length of the string representation</returns>
+        public int GetLengthOfString(ParseContext context)
+        {
+            return ToString(context).Length;
+        }
+
+        /// <summary>
         /// Use this string representation if you have a global exponent like
         /// everything is already e5 or similar. In this case the values get
         /// multiplied with e-5 for the output.
@@ -713,13 +775,14 @@ namespace YAMP
         public string ToString(ParseContext context, int exponent)
         {
             var f = Math.Pow(10, -exponent);
-
             var re = Format(context, _real * f);
-            var im = Format(context, Math.Abs(_imag) * f) + "i";
 
             if (Math.Abs(_imag) < epsilon)
                 return re;
-            else if (Math.Abs(_real) < epsilon)
+
+            var im = Format(context, Math.Abs(_imag) * f) + "i";
+
+            if (Math.Abs(_real) < epsilon)
                 return (_imag < 0.0 ? "-" : string.Empty) + im;
 
             return string.Format("{0} {2} {1}", re, im, _imag < 0.0 ? "-" : "+");
@@ -1018,9 +1081,9 @@ namespace YAMP
         /// <param name="b">Left operand</param>
         /// <param name="a">Right operand</param>
         /// <returns>The result.</returns>
-        public static ScalarValue operator /(double b, ScalarValue a)
+        public static ScalarValue operator /(double a, ScalarValue b)
         {
-            return new ScalarValue(b, 0.0) / a;
+            return new ScalarValue(a, 0.0) / b;
         }
 
         /// <summary>

@@ -197,6 +197,14 @@ namespace YAMPConsole
             Test("zernike(1, 1, 0.5)", 0.5);
             Test("zernike(2, 0, 0.5)", 2.0 * 0.25 - 1.0);
             Test("gegenbauer(1, 0.5, 0.25)", 2.0 * 0.5 * 0.25);
+            Test("polylog(0, 3)", -1.5);
+            Test("polylog(1, 0)", 0.0);
+            Test("polylog(2, 1)", Math.PI * Math.PI / 6.0);
+            Test("polylog(3, 1)", 1.2020569031595945);
+            Test("polylog(-3, 2)", 26.0);
+            Test("polylog(-5, 2)", 1082.0000000231821);
+            Test("polylog(-9, 0.1)", 86.621357524537643);
+            Test("hzeta(3, 1)", 1.2020569031595942853997381615114499907);
 
             sw.Stop();
 

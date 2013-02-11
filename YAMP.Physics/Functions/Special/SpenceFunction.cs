@@ -62,13 +62,13 @@ namespace YAMP.Physics
             {
                 // inside the unit disk...
                 if (a0 < 0.75)
-                    f = DiLog_Series_0(z);
+                    f = DiLog0(z);
                 else if (z.Re < 0.0)
                     f = DiLog(z * z) / 2.0 - DiLog(-z);
                 else
                 {
                     var e = 1.0 - z;
-                    f = e.Abs() < 0.5 ? DiLog_Series_1(e) : DiLog_Log_Series(z);
+                    f = e.Abs() < 0.5 ? DiLog1(e) : DiLog_Log_Series(z);
                 }
             }
 
@@ -78,7 +78,7 @@ namespace YAMP.Physics
             return f;
         }
 
-        static ScalarValue DiLog_Series_0(ScalarValue z)
+        static ScalarValue DiLog0(ScalarValue z)
         {
             var zz = z.Clone();
             var f = zz.Clone();
@@ -96,7 +96,7 @@ namespace YAMP.Physics
             throw new YAMPNotConvergedException("spence");
         }
 
-        static ScalarValue DiLog_Series_1(ScalarValue e)
+        static ScalarValue DiLog1(ScalarValue e)
         {
             var f = new ScalarValue(Math.PI * Math.PI / 6.0);
 

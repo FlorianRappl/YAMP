@@ -86,7 +86,11 @@ namespace YAMP
         /// <summary>
         /// Gets a value indicating if the statement consists of one keyword.
         /// </summary>
-        public bool IsFinished { get; private set; }
+        public bool IsFinished
+        {
+            get;
+            private set; 
+        }
 
         /// <summary>
         /// Gets a value indicating if the statement is empty.
@@ -285,7 +289,9 @@ namespace YAMP
         /// <returns>The string representation.</returns>
         public override string ToString()
         {
-            return _container.ToString();
+            //CHANGED
+            return string.Empty;
+            //return _container.ToString();
         }
 
         /// <summary>
@@ -294,7 +300,9 @@ namespace YAMP
         /// <returns>The code of the statement as a string.</returns>
         public string ToCode()
         {
-            return Container.ToCode() + ";";
+            //CHANGED
+            return string.Empty;
+            //return Container.ToCode() + ";";
         }
 
         #endregion

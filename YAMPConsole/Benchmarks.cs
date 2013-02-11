@@ -39,6 +39,9 @@ namespace YAMPConsole
         {
             Console.WriteLine("BENCHMARK MODE");
             RunBenchmark(BenchmarkKind.Standard);
+
+            //AdditionBenchmark();
+            //MatrixBenchmark();
         }
 
         enum BenchmarkKind
@@ -48,6 +51,112 @@ namespace YAMPConsole
             Little,
             Thomson
         }
+
+        #region Additional (internal) Benchmarks
+
+        static void AdditionBenchmark()
+        {
+            var n = 10000;
+            Console.WriteLine("Running addition benchmarks ...");
+
+            var sw = Stopwatch.StartNew();
+
+            // Result ~85 ms with dynamic Operator Binding (using PerformOverFind())
+            // Result ~77 ms without dynamic Operating Binding (using cast and + operator)
+
+            for (var i = 0; i < n; i++)
+            {
+                YAMP.Parser.Parse("2+3").Execute();
+            }
+
+            sw.Stop();
+
+            Console.WriteLine("Time for n = {0} runs : {1} ms", n, sw.ElapsedMilliseconds);
+            Console.WriteLine("Finished !");
+        }
+
+        static void MatrixBenchmark()
+        {
+            Console.WriteLine("Running matrix benchmarks ...");
+            //var n = 1000;
+            //var m = 1000;
+
+            for (var n = 20; n <= 500; n += 20)
+            {
+                var m = n;
+                var A = new YAMP.MatrixValue(n, m);
+                var B = new YAMP.MatrixValue(m, n);
+                A.Randomize();
+                B.Randomize();
+
+                A[n, m] = YAMP.ScalarValue.One;
+                B[m, n] = YAMP.ScalarValue.One;
+
+                var sw = Stopwatch.StartNew();
+                var C =  A * B;
+                sw.Stop();
+
+                #region Outputs
+
+                //---
+                // Output for usual multiplication
+                //---
+                //Time for n = 20, m = 20 : 22 ms
+                //Time for n = 40, m = 40 : 222 ms
+                //Time for n = 60, m = 60 : 1328 ms
+                //Time for n = 80, m = 80 : 3107 ms
+                //Time for n = 100, m = 100 : 8244 ms 
+                // stop ...
+
+                //---
+                // Output for BLAS L3 multiplication (1st order approx.)
+                //---
+                //Time for n = 20, m = 20 : 7 ms
+                //Time for n = 40, m = 40 : 8 ms
+                //Time for n = 60, m = 60 : 28 ms
+                //Time for n = 80, m = 80 : 51 ms
+                //Time for n = 100, m = 100 : 135 ms
+                //Time for n = 120, m = 120 : 273 ms
+                //Time for n = 140, m = 140 : 281 ms
+                //Time for n = 160, m = 160 : 387 ms
+                //Time for n = 180, m = 180 : 585 ms
+                //Time for n = 200, m = 200 : 845 ms
+                //Time for n = 220, m = 220 : 1196 ms
+                //Time for n = 240, m = 240 : 1709 ms
+                //Time for n = 260, m = 260 : 2318 ms
+                //Time for n = 280, m = 280 : 2451 ms
+                //Time for n = 300, m = 300 : 2771 ms
+                // and so on !
+
+                //---
+                /// Output for copying arrays only (required for perf. BLAS L3)
+                //---
+                //Time for n = 20, m = 20 : 7 ms
+                //Time for n = 40, m = 40 : 15 ms
+                //Time for n = 60, m = 60 : 20 ms
+                //Time for n = 80, m = 80 : 37 ms
+                //Time for n = 100, m = 100 : 78 ms
+                //Time for n = 120, m = 120 : 158 ms
+                //Time for n = 140, m = 140 : 207 ms
+                //Time for n = 160, m = 160 : 276 ms
+                //Time for n = 180, m = 180 : 411 ms
+                //Time for n = 200, m = 200 : 628 ms
+                //Time for n = 220, m = 220 : 897 ms
+                //Time for n = 240, m = 240 : 1271 ms
+                //Time for n = 260, m = 260 : 1703 ms
+                //Time for n = 280, m = 280 : 1956 ms
+                //Time for n = 300, m = 300 : 1974 ms
+                // and so on !
+
+                #endregion
+
+                Console.WriteLine("Time for n = {0}, m = {1} : {2} ms", n, m, sw.ElapsedMilliseconds);
+            }
+
+            Console.WriteLine("Finished !");
+        }
+
+        #endregion
 
         static void RunBenchmark(BenchmarkKind which)
         {

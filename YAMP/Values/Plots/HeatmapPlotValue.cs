@@ -105,6 +105,17 @@ namespace YAMP
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets or sets if the output image should be interpolated.
+        /// </summary>
+        [StringToBooleanConverter]
+        [ScalarToBooleanConverter]
+        public bool IsInterpolated
+        {
+            get;
+            set;
+        }
         
         /// <summary>
         /// Gets or sets the color palette to use.
