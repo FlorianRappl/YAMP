@@ -69,10 +69,7 @@ namespace YAMP
         /// </summary>
         public string Name
         {
-            get
-            {
-                return name.SymbolName;
-            }
+            get { return name.SymbolName; }
         }
 
         /// <summary>
@@ -96,6 +93,11 @@ namespace YAMP
 
         #region Methods
 
+        /// <summary>
+        /// Scans for a function entry.
+        /// </summary>
+        /// <param name="engine">The current parse engine.</param>
+        /// <returns>The created expression.</returns>
         public override Expression Scan(ParseEngine engine)
         {
             var start = engine.Pointer;
@@ -130,6 +132,17 @@ namespace YAMP
             kw.Body = engine.ParseStatement();
             kw.Length = engine.Pointer - start;
 
+            if (kw.Body.Container.Expressions.Length == 1 && kw.Body.Container.Expressions[0] is ScopeExpression)
+            {
+                var scope = (ScopeExpression)kw.Body.Container.Expressions[0];
+                scope.Scope.Context = new ParseContext();
+            }
+            else
+            {
+                engine.AddError(new YAMPFunctionBodyMissing(engine), kw.arguments);
+                return kw;
+            }
+            
             if (kw.arguments == null)
             {
                 engine.AddError(new YAMPFunctionArgumentsMissing(engine), kw);
@@ -155,6 +168,10 @@ namespace YAMP
 
         #region String Representations
 
+        /// <summary>
+        /// Transforms the created function expression to YAMP code.
+        /// </summary>
+        /// <returns>The string for creating the expression.</returns>
         public override string ToCode()
         {
             var sb = new StringBuilder();

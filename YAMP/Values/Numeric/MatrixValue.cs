@@ -537,26 +537,6 @@ namespace YAMP
         #region Methods
 
         /// <summary>
-        /// Gets the maximum length of any cell of the matrix by considering the given context.
-        /// </summary>
-        /// <param name="context">The parse context which holds the state information.</param>
-        /// <returns>The length of the string in characters.</returns>
-        public int ComputeLargestStringContent(ParseContext context)
-        {
-            var max = 0;
-
-            foreach (var el in _values.Values)
-            {
-                var length = el.GetLengthOfString(context);
-
-                if (length > max)
-                    max = length;
-            }
-
-            return max;
-        }
-
-        /// <summary>
         /// Sorts the values of the matrix and outputs the values in a
         /// new vector.
         /// </summary>
@@ -741,6 +721,26 @@ namespace YAMP
         #endregion
 
         #region String Representation
+
+        /// <summary>
+        /// Gets the maximum length of any cell of the matrix by considering the given context.
+        /// </summary>
+        /// <param name="context">The parse context which holds the state information.</param>
+        /// <returns>The length of the string in characters.</returns>
+        public int ComputeLargestStringContent(ParseContext context)
+        {
+            var max = 1;
+
+            foreach (var el in _values.Values)
+            {
+                var length = el.GetLengthOfString(context);
+
+                if (length > max)
+                    max = length;
+            }
+
+            return max;
+        }
 
         /// <summary>
         /// Creates a standard string representation of the matrix.
@@ -1137,7 +1137,7 @@ namespace YAMP
 
 			for (int j = 1; j <= y.Length; j++)
 				for (int i = xoffset + 1; i <= xfinal; i++)
-					X[j, i - xoffset] = this[y[j - 1], i].Clone();
+					X[j, i - xoffset] = this[y[j - 1] + 1, i].Clone();
 
 			return X;
 		}
@@ -1695,12 +1695,20 @@ namespace YAMP
         /// <summary>
         /// Matrix - Scalar
         /// </summary>
-        /// <param name="left">Must be a matr.</param>
+        /// <param name="left">Must be a matrix.</param>
         /// <param name="right">Must be a scalar.</param>
         /// <returns>The new matrix.</returns>
         public static MatrixValue SubtractMS(Value left, Value right)
         {
-            return SubtractSM(right, left);
+            var s = (ScalarValue)right;
+            var r = (MatrixValue)left;
+            var m = new MatrixValue(r.DimensionY, r.DimensionX);
+
+            for (var j = 1; j <= r.DimensionY; j++)
+                for (var i = 1; i <= r.DimensionX; i++)
+                    m[j, i] = r[j, i] - s;
+
+            return m;
         }
 
         /// <summary>

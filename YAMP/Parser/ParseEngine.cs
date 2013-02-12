@@ -143,10 +143,7 @@ namespace YAMP
         /// </summary>
         public QueryContext Query
         {
-            get
-            {
-                return query;
-            }
+            get { return query; }
         }
 
         /// <summary>
@@ -154,10 +151,7 @@ namespace YAMP
         /// </summary>
         public ParseContext Context
         {
-            get
-            {
-                return query.Context;
-            }
+            get { return query.Context; }
         }
 
         /// <summary>

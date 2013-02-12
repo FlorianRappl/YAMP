@@ -70,7 +70,7 @@ namespace YAMP
 		protected Value Assign(Expression left, Value value, Dictionary<string, Value> symbols)
 		{
 			if (left is SymbolExpression)
-				return Assign(left as SymbolExpression, value);
+                return Assign((SymbolExpression)left, value, symbols);
 			else if(left is ContainerExpression)
 			{
                 var tree = (ContainerExpression)left;
@@ -85,7 +85,7 @@ namespace YAMP
                 else if (tree.IsSymbolList)
                 {
                     var vars = tree.GetSymbols();
-                    return HandleMultipleOutputs(value, vars);
+                    return HandleMultipleOutputs(value, vars, symbols);
                 }
                 else
                     throw new YAMPAssignmentException(Op);
@@ -98,31 +98,32 @@ namespace YAMP
 
         #region Helpers
 
-        Value HandleMultipleOutputs(Value value, SymbolExpression[] vars)
+        Value HandleMultipleOutputs(Value value, SymbolExpression[] vars, Dictionary<string, Value> symbols)
         {
-
             if (value is ArgumentsValue)
             {
                 var av = (ArgumentsValue)value;
                 var l = Math.Min(vars.Length, av.Length);
 
                 for (var i = 0; i != l; i++)
-                    Assign(vars[i], av.Values[i]);
+                    Assign(vars[i], av.Values[i], symbols);
 
                 return av;
             }
-            else
-            {
-                foreach (var sym in vars)
-                    Assign(sym, value);
 
-                return value;
-            }
+            foreach (var sym in vars)
+                Assign(sym, value, symbols);
+
+            return value;
         }
 
-		Value Assign(SymbolExpression left, Value value)
+        Value Assign(SymbolExpression left, Value value, Dictionary<string, Value> symbols)
 		{
-            Context.AssignVariable(left.SymbolName, value);
+            if (symbols.ContainsKey(left.SymbolName))
+                symbols[left.SymbolName] = value;
+            else
+                Context.AssignVariable(left.SymbolName, value);
+
 			return value;
         }
 

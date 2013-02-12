@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **1.2.1**. A NuGet package (current version 1.2.1) is
+The current version number is **1.2.2**. A NuGet package (current version 1.2.2) is
 available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code -
 since the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -37,6 +37,25 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**1.2.2:**
+- Improved stability of the parser
+- Included more tests
+- Fixed some bugs (e.g. inverse, )
+- Added the `let` keyword for explicitly local defined variables
+- Added conversion functions, `bin2dec`, `hex2dec` and `oct2dec`
+- Added fit function `polyfit`, and polynomial evaluation `polyval`
+- Added function for convolution `convn`
+- Curly brackets do no longer give scope - only for functions
+- Functions require curly brackets and cannot access workspace variables
+- Improved the matrix properties
+- Added Hurwitz Zeta function
+- Added Polylog and Polygamma (Psi) function
+- Added Struve function and improved Ylm function
+- Improved matrix operations (speedup at least 10)
+- Improved the Gegenbauer function
+- Added the inverse tangent function
+- Added the `sphere` function to generate a sphere
+
 **1.2.1:**
 - Improved stability of the parser
 - Included more tests

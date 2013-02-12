@@ -64,7 +64,7 @@ namespace YAMP
 		{
 			Parent = query;
             parser.Parent = query.Parser;
-			Context = new ParseContext(query.Context);
+			Context = query.Context;
 		}
 
 		/// <summary>

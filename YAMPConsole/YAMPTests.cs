@@ -166,6 +166,15 @@ namespace YAMPConsole
             Test("eval(\"2+3\")", 5.0);
             Test("eval(\"|[1,2,3]|\")", Math.Sqrt(14.0));
             Test("cast(\"3.5\")", 3.5);
+            Test("bin2dec(\"1011\")", 11.0);
+            Test("bin2dec(\"0011\")", 3.0);
+            Test("hex2dec(\"Ff\")", 255.0);
+            Test("hex2dec(\"123\")", 291.0);
+            Test("oct2dec(\"1627\")", 919.0);
+            Test("oct2dec(\"77\")", 63.0);
+            Test("trace(inv([1,2,3;4,5,6;7,8,10]))", 4.0000000000000009);
+            Test("polyval([1 2 3], 5)", 86.0);
+            Test("sum(polyfit([0,1,2,3,4,5], [3,3,5,9,15,23], 2))", 3.0000000000000031);
 
             sw.Stop();
 

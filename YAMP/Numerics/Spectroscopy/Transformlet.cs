@@ -32,13 +32,14 @@ namespace YAMP.Numerics
 
         public int Radix
         {
-            get
-            {
-                return (R);
-            }
+            get { return R; }
         }
 
-        public int Multiplicity { get; internal set; }
+        public int Multiplicity 
+        { 
+            get; 
+            internal set; 
+        }
 
         #endregion
 

@@ -65,6 +65,10 @@ namespace YAMP
         /// <summary>
         /// This is a logic function.
         /// </summary>
-        Logic
+        Logic,
+        /// <summary>
+        /// This is a converter function.
+        /// </summary>
+        Conversion
     }
 }

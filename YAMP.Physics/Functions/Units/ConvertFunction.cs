@@ -30,7 +30,7 @@ using System;
 namespace YAMP.Physics
 {
     [Description("The unit converter is able to convert some simple and more advanced units. This function understands the basic SI units, the CGS system and is able to use prefixes like k for kilo or M for Mega. See the usage examples for more information.")]
-    [Kind(PopularKinds.Function)]
+    [Kind(PopularKinds.Conversion)]
     class ConvertFunction : ArgumentFunction
     {
         [Description("Converts the given value of the source unit to the target unit.")]

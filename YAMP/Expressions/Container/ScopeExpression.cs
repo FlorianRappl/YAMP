@@ -72,7 +72,8 @@ namespace YAMP
 
         public override Value Interpret(Dictionary<string, Value> symbols)
         {
-            Scope.Interpret(symbols);
+            var localSymbols = new Dictionary<string, Value>(symbols);
+            Scope.Interpret(localSymbols);
             return Scope.Output;
         }
 

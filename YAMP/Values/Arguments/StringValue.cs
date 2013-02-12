@@ -187,6 +187,26 @@ namespace YAMP
 
         #endregion
 
+        #region Index
+
+        /// <summary>
+        /// Gets the 1-based character of the string.
+        /// </summary>
+        /// <param name="index">The 1-based character (1 == first character) index.</param>
+        /// <returns>The character at the position.</returns>
+        public char this[int index]
+        {
+            get
+            {
+                if (index < 1 || index > _value.Length)
+                    throw new ArgumentOutOfRangeException("Access in string out of bounds.");
+
+                return _value[index - 1];
+            }
+        }
+
+        #endregion
+
         #region Overrides
 
         /// <summary>
