@@ -113,7 +113,6 @@
     <Compile Include="Operators\PseudoOperators\PosateOperator.cs" />
     <Compile Include="Operators\PseudoOperators\PreDecOperator.cs" />
     <Compile Include="Operators\PseudoOperators\PreIncOperator.cs" />
-    <Compile Include="ParseContext.IO.cs" />
     <Compile Include="Exceptions\Parse\YAMPDoWhileNotEmptyError.cs" />
     <Compile Include="Exceptions\Parse\YAMPFunctionArgumentsMissing.cs" />
     <Compile Include="Exceptions\Parse\YAMPFunctionArgumentsSymbols.cs" />
