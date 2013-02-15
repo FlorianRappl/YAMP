@@ -168,6 +168,8 @@
     <Compile Include="Numerics\Spectroscopy\Transformlet.cs" />
     <Compile Include="Operators\UnaryOperators\PostDecOperator.cs" />
     <Compile Include="Operators\UnaryOperators\PostIncOperator.cs" />
+    <Compile Include="ParseContext.IO.cs" />
+    <Compile Include="Providers\BaseParseContext.cs" />
     <Compile Include="Providers\Enumerations\NotificationType.cs" />
     <Compile Include="Providers\Enumerations\PopularKinds.cs" />
     <Compile Include="Providers\EventArgs\NotificationEventArgs.cs" />

@@ -135,7 +135,7 @@ namespace YAMP
             if (kw.Body.Container.Expressions.Length == 1 && kw.Body.Container.Expressions[0] is ScopeExpression)
             {
                 var scope = (ScopeExpression)kw.Body.Container.Expressions[0];
-                scope.Scope.Context = new ParseContext();
+                scope.Scope.Context = new ParseContext(engine.Context.Parent);
             }
             else
             {

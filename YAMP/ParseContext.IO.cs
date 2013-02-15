@@ -25,6 +25,11 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.IO;
+
 namespace YAMP
 {
     /// <summary>
@@ -32,6 +37,11 @@ namespace YAMP
     /// </summary>
     public sealed partial class ParseContext
     {
+        /// <summary>
+        /// List to buffer previous file function calls.
+        /// </summary>
+        static List<FunctionBuffer> buffer = new List<FunctionBuffer>();
+
         #region Comfort Methods
 
         /// <summary>
@@ -54,6 +64,112 @@ namespace YAMP
             SaveFunction.Save(toFileName, variables);
         }
 
+        /// <summary>
+        /// Tries to load a function from a given file.
+        /// </summary>
+        /// <param name="symbolName">The name of the function (equals the name of the file).</param>
+        /// <returns>The function (if found) or NULL.</returns>
+        public override IFunction LoadFunction(string symbolName)
+        {
+            var script = string.Empty;
+
+            var function = new FunctionBuffer
+            {
+                Directory = Environment.CurrentDirectory,
+                FunctionName = symbolName
+            };
+
+            if (!File.Exists(function.FileName))
+                return null;
+
+            for(var i = buffer.Count - 1; i >= 0; i--)
+                if(!buffer[i].Directory.Equals(Environment.CurrentDirectory, StringComparison.CurrentCultureIgnoreCase))
+                    buffer.RemoveAt(i);
+
+            var original = buffer
+                .Where(m => m.FileName.Equals(function.FileName, StringComparison.CurrentCultureIgnoreCase))
+                .FirstOrDefault();
+
+            try
+            {
+                function.LastUpdated = File.GetLastWriteTime(function.FileName);
+
+                if (original != null)
+                {
+                    if (function.LastUpdated.CompareTo(original.LastUpdated) <= 0)
+                        return original.Lookup();
+
+                    buffer.Remove(original);
+                }
+
+                script = File.ReadAllText(function.FileName);
+            }
+            catch
+            {
+                if (buffer != null)
+                    return original.Lookup();
+
+                return null;
+            }
+
+            if (!string.IsNullOrEmpty(script))
+            {
+                function.Context = new ParseContext(parent);
+                var p = Parser.Parse(function.Context, script);
+
+                if (!p.Context.Parser.HasErrors)
+                {
+                    try { p.Execute(); }
+                    catch { return null; }
+
+                    buffer.Add(function);
+                    return function.Lookup();
+                }
+            }
+
+            return null;
+        }
+
         #endregion
+
+        /// <summary>
+        /// Class to buffer previous file function calls.
+        /// </summary>
+        class FunctionBuffer
+        {
+            /// <summary>
+            /// Gets or sets the time of the last update of the file.
+            /// </summary>
+            public DateTime LastUpdated { get; set; }
+
+            /// <summary>
+            /// Gets the file name (functionname + ys as extension).
+            /// </summary>
+            public string FileName { get { return FunctionName + ".ys"; } }
+
+            /// <summary>
+            /// Gets or sets the directory that has been used.
+            /// </summary>
+            public string Directory { get; set; }
+
+            /// <summary>
+            /// Gets or sets the name of the function.
+            /// </summary>
+            public string FunctionName { get; set; }
+
+            /// <summary>
+            /// Gets or sets the used context.
+            /// </summary>
+            public ParseContext Context { get; set; }
+
+            /// <summary>
+            /// Requests the function to be looked up.
+            /// </summary>
+            /// <returns>The function or NULL, if the context did not contain the function.</returns>
+            public IFunction Lookup()
+            { 
+                return Context.FindFunction(FunctionName);
+            }
+        }
     }
 }

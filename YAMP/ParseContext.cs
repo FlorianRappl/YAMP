@@ -34,7 +34,7 @@ namespace YAMP
     /// <summary>
     /// Class that describes the current parse context (available functions, constants, variables, ...).
     /// </summary>
-    public sealed partial class ParseContext
+    public sealed partial class ParseContext : BaseParseContext
     {
         #region Members
 
@@ -137,6 +137,14 @@ namespace YAMP
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets the context's parent context (NULL for the top context).
+        /// </summary>
+        public ParseContext Parent
+        {
+            get { return parent; }
+        }
 
         /// <summary>
         /// Gets or sets the default display style.

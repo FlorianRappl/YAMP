@@ -95,6 +95,11 @@ namespace YAMP
             if (function != null)
                 return new FunctionValue(function);
 
+            function = Context.LoadFunction(symbolName);
+
+            if (function != null)
+                return new FunctionValue(function);
+            
             throw new YAMPSymbolMissingException(symbolName);
         }
 
