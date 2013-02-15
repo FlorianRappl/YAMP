@@ -1416,19 +1416,6 @@ namespace YAMP
             var C = new ScalarValue[x.Rows * y.Columns];
             BlasL3.cGemm(A, 0, x.Columns, 1, B, 0, y.Columns, 1, C, 0, y.Columns, 1, x.Rows, y.Columns, x.Columns);
             return new MatrixValue(C, x.Rows, y.Columns);
-
-            //var M = new MatrixValue(A.DimensionY, B.DimensionX);
-
-            //for (var j = 1; j <= B.DimensionX; j++)
-            //{
-            //    for (var i = 1; i <= A.DimensionY; i++)
-            //    {
-            //        for (var k = 1; k <= A.DimensionX; k++)
-            //            M[i, j] = M[i, j] + (A[i, k] * B[k, j]);
-            //    }
-            //}
-
-            //return M;
 		}
 
         /// <summary>
@@ -1508,15 +1495,7 @@ namespace YAMP
             for (var k = 0; k != n; k++)
                 C[k] = A[k] - B[k];
 
-            return new MatrixValue(C, r.DimensionY, r.DimensionY);
-
-            //var m = new MatrixValue(l.DimensionY, l.DimensionX);
-
-            //for (var j = 1; j <= l.DimensionY; j++)
-            //    for (var i = 1; i <= l.DimensionX; i++)
-            //        m[j, i] = l[j, i] - r[j, i];
-
-            //return m;
+            return new MatrixValue(C, r.DimensionY, r.DimensionX);
 		}
 
         /// <summary>
@@ -1538,15 +1517,7 @@ namespace YAMP
             for (var k = 0; k != n; k++)
                 C[k] = A[k] + B[k];
 
-            return new MatrixValue(C, r.DimensionY, r.DimensionY);
-
-            //var m = new MatrixValue(l.DimensionY, l.DimensionX);
-
-            //for (var j = 1; j <= l.DimensionY; j++)
-            //    for (var i = 1; i <= l.DimensionX; i++)
-            //        m[j, i] = l[j, i] + r[j, i];
-
-            //return m;
+            return new MatrixValue(C, r.DimensionY, r.DimensionX);
 		}
 
         /// <summary>
@@ -1595,7 +1566,7 @@ namespace YAMP
         /// <returns>l - r</returns>
         public static MatrixValue operator -(MatrixValue m)
         {
-            var n= new MatrixValue(m.DimensionY, m.DimensionX);
+            var n = new MatrixValue(m.DimensionY, m.DimensionX);
 
             for (var j = 1; j <= m.DimensionY; j++)
                 for (var i = 1; i <= m.DimensionX; i++)
