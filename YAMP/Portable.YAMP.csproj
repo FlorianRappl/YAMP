@@ -74,7 +74,9 @@
     <Compile Include="Attributes\KindAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Attributes\LinkAttribute.cs" />
+    <Compile Include="Attributes\LinkAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Attributes\ReturnsAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -129,7 +131,10 @@
     <Compile Include="Elements.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Exceptions\Parse\YAMPBracketEmptyError.cs" />
+    <Compile Include="Exceptions\Parse\YAMPBracketEmptyError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Exceptions\Parse\YAMPBracketNotClosedError.cs" />
     <Compile Include="Exceptions\Parse\YAMPDoWhileNotEmptyError.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -151,7 +156,9 @@
     <Compile Include="Exceptions\Parse\YAMPFunctionArgumentsSymbols.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Exceptions\Parse\YAMPFunctionBodyMissing.cs" />
+    <Compile Include="Exceptions\Parse\YAMPFunctionBodyMissing.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Exceptions\Parse\YAMPFunctionNameMissing.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -188,7 +195,9 @@
     <Compile Include="Exceptions\Parse\YAMPTerminatorMissingError.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Exceptions\Parse\YAMPVariableNameMissing.cs" />
+    <Compile Include="Exceptions\Parse\YAMPVariableNameMissing.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Exceptions\Parse\YAMPWhileArgumentsMissing.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -198,7 +207,9 @@
     <Compile Include="Exceptions\Runtime\YAMPArgumentNumberException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Exceptions\Runtime\YAMPArgumentRangeException.cs" />
+    <Compile Include="Exceptions\Runtime\YAMPArgumentRangeException.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Exceptions\Runtime\YAMPArgumentValueException.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -217,8 +228,12 @@
     <Compile Include="Exceptions\Runtime\YAMPExpressionNoFunctionException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Exceptions\Runtime\YAMPFileFormatNotSupportedException.cs" />
-    <Compile Include="Exceptions\Runtime\YAMPFileNotFoundException.cs" />
+    <Compile Include="Exceptions\Runtime\YAMPFileFormatNotSupportedException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Exceptions\Runtime\YAMPFileNotFoundException.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Exceptions\Runtime\YAMPFunctionMissingException.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -237,6 +252,7 @@
     <Compile Include="Exceptions\Runtime\YAMPNonNumericException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Exceptions\Runtime\YAMPNoSeriesAvailableException.cs" />
     <Compile Include="Exceptions\Runtime\YAMPNotConvergedException.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -246,7 +262,9 @@
     <Compile Include="Exceptions\Runtime\YAMPOperationInvalidException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Exceptions\Runtime\YAMPPixelFormatNotSupportedException.cs" />
+    <Compile Include="Exceptions\Runtime\YAMPPixelFormatNotSupportedException.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Exceptions\Runtime\YAMPPropertyMissingException.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -280,10 +298,8 @@
     <Compile Include="Expressions\Container\ContainerExpression.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Expressions\Container\GroupExpression.cs" />
     <Compile Include="Expressions\Container\MatrixExpression.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Expressions\Container\ScopeExpression.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Expressions\Container\TreeExpression.cs">
@@ -302,9 +318,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Expressions\Elementary\SymbolExpression.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Expressions\Elementary\UnaryExpression.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Expressions\Expression.cs">
@@ -337,7 +350,9 @@
     <Compile Include="Expressions\Keywords\Keyword.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Expressions\Keywords\LetKeyword.cs" />
+    <Compile Include="Expressions\Keywords\LetKeyword.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Expressions\Keywords\ReturnKeyword.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -353,14 +368,18 @@
     <Compile Include="Functions\ArgumentFunctions\EyeFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\ArgumentFunctions\ImgToRGBFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\ImgToRGBFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\ArgumentFunctions\LinspaceFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Functions\ArgumentFunctions\LogspaceFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\ArgumentFunctions\MeshgridFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\MeshgridFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\ArgumentFunctions\ModFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -370,8 +389,12 @@
     <Compile Include="Functions\ArgumentFunctions\OnesFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\ArgumentFunctions\RGBToImgFunction.cs" />
-    <Compile Include="Functions\ArgumentFunctions\SphereFunction.cs" />
+    <Compile Include="Functions\ArgumentFunctions\RGBToImgFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\ArgumentFunctions\SphereFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\ArgumentFunctions\ZerosFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -381,13 +404,21 @@
     <Compile Include="Functions\ContainerFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Conversions\Bin2DecFunction.cs" />
-    <Compile Include="Functions\Conversions\Hex2DecFunction.cs" />
-    <Compile Include="Functions\Conversions\Oct2DecFunction.cs" />
+    <Compile Include="Functions\Conversions\Bin2DecFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Conversions\Hex2DecFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Conversions\Oct2DecFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Fractals\MandelbrotFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Fractals\NewtonFunction.cs" />
+    <Compile Include="Functions\Fractals\NewtonFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\FunctionDelegate.cs" />
     <Compile Include="Functions\LinearAlgebra\CGFunction.cs">
       <SubType>Code</SubType>
@@ -413,6 +444,7 @@
     <Compile Include="Functions\LinearAlgebra\LUFunction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Functions\LinearAlgebra\MagicFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\QRFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -458,26 +490,54 @@
     <Compile Include="Functions\Numerics\OdeFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Numerics\PolyfitFunction.cs" />
-    <Compile Include="Functions\Numerics\PolyvalFunction.cs" />
+    <Compile Include="Functions\Numerics\PolyfitFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Numerics\PolyvalFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Numerics\RootFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Numerics\SimpsFunction.cs" />
+    <Compile Include="Functions\Numerics\SimpsFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Numerics\SplineFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Numerics\TrapzFunction.cs" />
-    <Compile Include="Functions\RandomNumbers\RandbFunction.cs" />
-    <Compile Include="Functions\RandomNumbers\RandeFunction.cs" />
-    <Compile Include="Functions\RandomNumbers\RandFunction.cs" />
-    <Compile Include="Functions\RandomNumbers\RandgFunction.cs" />
-    <Compile Include="Functions\RandomNumbers\RandiFunction.cs" />
-    <Compile Include="Functions\RandomNumbers\RandlFunction.cs" />
-    <Compile Include="Functions\RandomNumbers\RandnFunction.cs" />
-    <Compile Include="Functions\RandomNumbers\RandpFunction.cs" />
-    <Compile Include="Functions\RandomNumbers\RandrFunction.cs" />
-    <Compile Include="Functions\RandomNumbers\RandwFunction.cs" />
+    <Compile Include="Functions\Numerics\TrapzFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\RandomNumbers\RandbFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\RandomNumbers\RandeFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\RandomNumbers\RandFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\RandomNumbers\RandgFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\RandomNumbers\RandiFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\RandomNumbers\RandlFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\RandomNumbers\RandnFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\RandomNumbers\RandpFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\RandomNumbers\RandrFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\RandomNumbers\RandwFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\SpecialFunctions\Bessel0Function.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -496,7 +556,9 @@
     <Compile Include="Functions\SpecialFunctions\ErfFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\SpecialFunctions\Faddeeva.cs" />
+    <Compile Include="Functions\SpecialFunctions\Faddeeva.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\SpecialFunctions\GammaFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -506,7 +568,9 @@
     <Compile Include="Functions\Spectroscopy\BetaFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Spectroscopy\ConvnFunction.cs" />
+    <Compile Include="Functions\Spectroscopy\ConvnFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Spectroscopy\FFTFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -552,8 +616,12 @@
     <Compile Include="Functions\StandardFunctions\LnFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\StandardFunctions\Log10Function.cs" />
-    <Compile Include="Functions\StandardFunctions\Log2Function.cs" />
+    <Compile Include="Functions\StandardFunctions\Log10Function.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\StandardFunctions\Log2Function.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\StandardFunctions\LogFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -575,6 +643,7 @@
     <Compile Include="Functions\StandardFunctions\SignFunction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Functions\StandardFunctions\SizeFunction.cs" />
     <Compile Include="Functions\StandardFunctions\SortFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -626,27 +695,34 @@
     <Compile Include="Functions\SystemFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\SystemFunctions\CastFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\CastFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\SystemFunctions\ClearFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Functions\SystemFunctions\DateFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\SystemFunctions\EvalFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\EvalFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\SystemFunctions\FormatFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Functions\SystemFunctions\HelpFunction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Functions\SystemFunctions\NotifyFunction.cs" />
     <Compile Include="Functions\SystemFunctions\PrecisionFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Functions\SystemFunctions\PrintfFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\SystemFunctions\PromptFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\PromptFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\SystemFunctions\SleepFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -671,22 +747,30 @@
     <Compile Include="Functions\Trigonometric\ArccotFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Trigonometric\ArccscFunction.cs" />
+    <Compile Include="Functions\Trigonometric\ArccscFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Trigonometric\ArcoshFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Functions\Trigonometric\ArcothFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Trigonometric\ArcschFunction.cs" />
-    <Compile Include="Functions\Trigonometric\ArcsecFunction.cs" />
+    <Compile Include="Functions\Trigonometric\ArcschFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Trigonometric\ArcsecFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Trigonometric\ArcsinFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Functions\Trigonometric\ArctanFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Trigonometric\ArsechFunction.cs" />
+    <Compile Include="Functions\Trigonometric\ArsechFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Trigonometric\ArsinhFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -705,10 +789,18 @@
     <Compile Include="Functions\Trigonometric\CothFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Trigonometric\CscFunction.cs" />
-    <Compile Include="Functions\Trigonometric\CschFunction.cs" />
-    <Compile Include="Functions\Trigonometric\SecFunction.cs" />
-    <Compile Include="Functions\Trigonometric\SechFunction.cs" />
+    <Compile Include="Functions\Trigonometric\CscFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Trigonometric\CschFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Trigonometric\SecFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Functions\Trigonometric\SechFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Trigonometric\SinFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -740,14 +832,18 @@
     <Compile Include="Functions\Visualization\FplotFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Visualization\HeatmapFunction.cs" />
+    <Compile Include="Functions\Visualization\HeatmapFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Visualization\HistFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Functions\Visualization\LogLogFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Visualization\MeshFunction.cs" />
+    <Compile Include="Functions\Visualization\MeshFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Visualization\Plot3Function.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -763,14 +859,18 @@
     <Compile Include="Functions\Visualization\SemiLogYFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Visualization\SetDefFunction.cs" />
+    <Compile Include="Functions\Visualization\SetDefFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Functions\Visualization\SetFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Functions\Visualization\SubplotFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Visualization\SurfFunction.cs" />
+    <Compile Include="Functions\Visualization\SurfFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Help\Documentation.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -807,10 +907,18 @@
     <Compile Include="Numerics\Decompositions\SingularValueDecomposition.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Numerics\Fractals\Fractal.cs" />
-    <Compile Include="Numerics\Fractals\Julia.cs" />
-    <Compile Include="Numerics\Fractals\Mandelbrot.cs" />
-    <Compile Include="Numerics\Fractals\Newton.cs" />
+    <Compile Include="Numerics\Fractals\Fractal.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Fractals\Julia.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Fractals\Mandelbrot.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Fractals\Newton.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Numerics\Integration\Integrator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -832,9 +940,15 @@
     <Compile Include="Numerics\Interpolations\SplineInterpolation.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Numerics\Matrices\BlasL1.cs" />
-    <Compile Include="Numerics\Matrices\BlasL2.cs" />
-    <Compile Include="Numerics\Matrices\BlasL3.cs" />
+    <Compile Include="Numerics\Matrices\BlasL1.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Matrices\BlasL2.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Matrices\BlasL3.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Numerics\NonLinear\HalfDivisionMethod.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -871,7 +985,9 @@
     <Compile Include="Numerics\Others\Bessel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Numerics\Others\Dawson.cs" />
+    <Compile Include="Numerics\Others\Dawson.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Numerics\Others\Eigenvalues.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -935,17 +1051,39 @@
     <Compile Include="Numerics\Solvers\IterativeSolver.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Numerics\Spectroscopy\BluesteinTransformlet.cs" />
-    <Compile Include="Numerics\Spectroscopy\FFT.cs" />
-    <Compile Include="Numerics\Spectroscopy\Fourier.cs" />
-    <Compile Include="Numerics\Spectroscopy\FourierNormalization.cs" />
-    <Compile Include="Numerics\Spectroscopy\FourierSign.cs" />
-    <Compile Include="Numerics\Spectroscopy\RadixFiveTransformlet.cs" />
-    <Compile Include="Numerics\Spectroscopy\RadixFourTransformlet.cs" />
-    <Compile Include="Numerics\Spectroscopy\RadixSevenTransformlet.cs" />
-    <Compile Include="Numerics\Spectroscopy\RadixThreeTransformlet.cs" />
-    <Compile Include="Numerics\Spectroscopy\RadixTwoTransformlet.cs" />
-    <Compile Include="Numerics\Spectroscopy\Transformlet.cs" />
+    <Compile Include="Numerics\Spectroscopy\BluesteinTransformlet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Spectroscopy\FFT.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Spectroscopy\Fourier.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Spectroscopy\FourierNormalization.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Spectroscopy\FourierSign.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Spectroscopy\RadixFiveTransformlet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Spectroscopy\RadixFourTransformlet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Spectroscopy\RadixSevenTransformlet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Spectroscopy\RadixThreeTransformlet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Spectroscopy\RadixTwoTransformlet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Numerics\Spectroscopy\Transformlet.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Operators\AssigmentOperators\AssignmentOperator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1021,6 +1159,12 @@
     <Compile Include="Operators\DotOperators\DotRightDivideOperator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Operators\LeftUnaryOperators\InvOperator.cs" />
+    <Compile Include="Operators\LeftUnaryOperators\LeftUnaryOperator.cs" />
+    <Compile Include="Operators\LeftUnaryOperators\NegateOperator.cs" />
+    <Compile Include="Operators\LeftUnaryOperators\PosateOperator.cs" />
+    <Compile Include="Operators\LeftUnaryOperators\PreDecOperator.cs" />
+    <Compile Include="Operators\LeftUnaryOperators\PreIncOperator.cs" />
     <Compile Include="Operators\LogicOperator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1051,26 +1195,13 @@
     <Compile Include="Operators\PseudoOperators\FatArrowOperator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Operators\PseudoOperators\InvOperator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Operators\PseudoOperators\LeftUnaryOperator.cs" />
-    <Compile Include="Operators\PseudoOperators\NegateOperator.cs" />
-    <Compile Include="Operators\PseudoOperators\PosateOperator.cs" />
-    <Compile Include="Operators\PseudoOperators\PreDecOperator.cs" />
-    <Compile Include="Operators\PseudoOperators\PreIncOperator.cs" />
+    <Compile Include="Operators\RightUnaryOperators\AdjungateOperator.cs" />
+    <Compile Include="Operators\RightUnaryOperators\FactorialOperator.cs" />
+    <Compile Include="Operators\RightUnaryOperators\PostDecOperator.cs" />
+    <Compile Include="Operators\RightUnaryOperators\PostIncOperator.cs" />
+    <Compile Include="Operators\RightUnaryOperators\RightUnaryOperator.cs" />
+    <Compile Include="Operators\RightUnaryOperators\TransposeOperator.cs" />
     <Compile Include="Operators\UnaryOperator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Operators\UnaryOperators\AdjungateOperator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Operators\UnaryOperators\FactorialOperator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Operators\UnaryOperators\PostDecOperator.cs" />
-    <Compile Include="Operators\UnaryOperators\PostIncOperator.cs" />
-    <Compile Include="Operators\UnaryOperators\TransposeOperator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Operators\VoidOperator.cs">
@@ -1094,23 +1225,33 @@
     <Compile Include="Parser\Statement.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Providers\BaseParseContext.cs" />
+    <Compile Include="Providers\BaseParseContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Providers\ConventionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Providers\Enumerations\DisplayStyle.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Providers\Enumerations\NotificationType.cs" />
-    <Compile Include="Providers\Enumerations\PopularKinds.cs" />
+    <Compile Include="Providers\Enumerations\NotificationType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Providers\Enumerations\PopularKinds.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Providers\Enumerations\SpecialMatrixFormat.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Providers\EventArgs\NotificationEventArgs.cs" />
+    <Compile Include="Providers\EventArgs\NotificationEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Providers\EventArgs\PlotEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Providers\EventArgs\UserInputEventArgs.cs" />
+    <Compile Include="Providers\EventArgs\UserInputEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Providers\EventArgs\VariableEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1157,7 +1298,9 @@
     <Compile Include="Providers\Plotting\PointSymbol.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Providers\Plugin.cs" />
+    <Compile Include="Providers\Plugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Providers\ReadOnlyDictionary.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1203,7 +1346,9 @@
     <Compile Include="Values\Plots\ErrorPlotValue.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Values\Plots\HeatmapPlotValue.cs" />
+    <Compile Include="Values\Plots\HeatmapPlotValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Values\Plots\Plot2DValue.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1219,7 +1364,9 @@
     <Compile Include="Values\Plots\SubPlotValue.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Values\Plots\SurfacePlotValue.cs" />
+    <Compile Include="Values\Plots\SurfacePlotValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Values\Plots\XYPlotValue.cs">
       <SubType>Code</SubType>
     </Compile>
