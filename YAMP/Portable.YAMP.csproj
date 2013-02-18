@@ -1094,6 +1094,7 @@
     <Compile Include="Parser\Statement.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Providers\BaseParseContext.cs" />
     <Compile Include="Providers\ConventionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
