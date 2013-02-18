@@ -39,10 +39,12 @@ namespace YAMP.Physics
         [Example("legendre(3, 0.5)", "Evaluates the Legendre polynomial of order 3 at the point x = 0.5.")]
         public ScalarValue Function(ScalarValue n, ScalarValue x)
         {
-            if (n.IntValue < 0)
+            var nn = n.GetIntegerOrThrowException("n", Name);
+
+            if (nn < 0)
                 throw new Exception("Legendre polynomial of order n < 0 does not make sense.");
 
-            var f = GetPolynom(n.IntValue);
+            var f = GetPolynom(nn);
             return new ScalarValue(f(x.Value));
         }
 
@@ -50,11 +52,13 @@ namespace YAMP.Physics
         [Example("legendre(1, [-1, 0.5, 0, 0.5, 1])", "Evaluates the first Legendre polynomial (which is just x), at the points -1 to 1 with a spacing of 0.5.")]
         public MatrixValue Function(ScalarValue n, MatrixValue X)
         {
-            if (n.IntValue < 0)
+            var nn = n.GetIntegerOrThrowException("n", Name);
+
+            if (nn < 0)
                 throw new Exception("Legendre polynomial of order n < 0 does not make sense.");
 
             var M = new MatrixValue(X.DimensionY, X.DimensionX);
-            var f = GetPolynom(n.IntValue);
+            var f = GetPolynom(nn);
 
             for(var i = 1; i <= X.Length; i++)
                 M[i] = new ScalarValue(f(X[i].Value));

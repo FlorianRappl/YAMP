@@ -45,6 +45,7 @@ namespace YAMP
         /// <param name="level">The operator level.</param>
         public BinaryOperator(string op, int level) : base(op, level)
 		{
+            Expressions = 2;
 		}
 
         #endregion

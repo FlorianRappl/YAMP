@@ -16,8 +16,8 @@ namespace YAMP
 		[Description("Creates a vector with count elements ranging from a certain value to a certain value for an arbitrary basis.")]
 		[Example("logspace(2, 6, 5, 2)", "Creates the vector [4, 8, 16, 32, 64], i.e. start at 2^2 and end at 2^6 with number of elements 5.")]
 		public MatrixValue Function(ScalarValue start, ScalarValue end, ScalarValue count, ScalarValue basis)
-		{
-			var c = count.IntValue;
+        {
+            var c = count.GetIntegerOrThrowException("count", Name);
 			
 			if(c < 2)
 				throw new ArgumentException("logspace");

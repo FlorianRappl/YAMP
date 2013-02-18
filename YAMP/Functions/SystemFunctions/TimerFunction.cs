@@ -24,8 +24,10 @@ namespace YAMP
 		[Example("timer(1)", "Starts the stopwatch")]
 		[Example("timer(-1)", "Resets the stopwatch")]
 		public ScalarValue Function(ScalarValue action)
-		{
-			switch (action.IntValue)
+        {
+            var n = action.GetIntegerOrThrowException("action", Name);
+
+			switch (n)
 			{
 				case -1:
 					Reset();

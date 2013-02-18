@@ -33,7 +33,7 @@ namespace YAMP
     /// <summary>
     /// This is the postfix decrement operator --.
     /// </summary>
-    class PostDecOperator : UnaryOperator
+    class PostDecOperator : RightUnaryOperator
     {
         public PostDecOperator()
             : base("--", 999)

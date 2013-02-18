@@ -11,7 +11,7 @@ namespace YAMP
         const int bfactor = 1;
 
         [Description("Gets the RGB values of an image matrix.")]
-        [Example("load(\"example.bmp\", \"bmp\"); [r, g, b] = imgtorgb(bmp)", "Returns three matrices containing the red, green, and blue values of the image.")]
+        [Example("load(\"example.bmp\", \"bmp\"); [r, g, b] = imgtorgb(bmp)", "Returns three matrices containing the red, green, and blue values of the image.", true)]
         public ArgumentsValue Function(MatrixValue M)
         {
             var rvalues = new MatrixValue(M.DimensionY, M.DimensionX);

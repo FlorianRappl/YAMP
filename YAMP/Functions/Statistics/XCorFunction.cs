@@ -31,7 +31,7 @@ namespace YAMP
             if (M.Length != N.Length || M.Length <= 1)
                 return new MatrixValue();
             
-            int nOffset = lag.IntValue;
+            int nOffset = lag.GetIntegerOrThrowException("lag", Name);
 
             if (nOffset < 0)
                 nOffset = 0;

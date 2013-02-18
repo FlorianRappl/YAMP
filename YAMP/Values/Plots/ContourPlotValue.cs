@@ -297,12 +297,14 @@ namespace YAMP
         /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
 		{
+            var cp = new ContourPlotValue();
+
 			using (var ds = Deserializer.Create(content))
 			{
-				Deserialize(ds);
-				ColorPalette = (ColorPalettes)ds.GetInt();
-				ShowLevel = ds.GetBoolean();
-				Levels = new double[ds.GetInt()];
+				cp.Deserialize(ds);
+				cp.ColorPalette = (ColorPalettes)ds.GetInt();
+				cp.ShowLevel = ds.GetBoolean();
+				cp.Levels = new double[ds.GetInt()];
 
 				for (var i = 0; i < Levels.Length; i++)
 					Levels[i] = ds.GetDouble();
@@ -329,11 +331,11 @@ namespace YAMP
 						});
 					}
 
-					AddSeries(points);
+					cp.AddSeries(points);
 				}
 			}
 
-			return this;
+			return cp;
 		}
 
 		#endregion

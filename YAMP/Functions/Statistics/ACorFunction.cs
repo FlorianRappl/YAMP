@@ -30,18 +30,16 @@ namespace YAMP
         public MatrixValue Function(MatrixValue M, ScalarValue nLag)
         {
             if (M.Length <= 1)
-            {
                 return new MatrixValue();
-            }
-            else
-            {
-                int nOffset = nLag.IntValue;
-                if (nOffset < 0)
-                    nOffset = 0;
-                else if (nOffset >= M.Length)
-                    nOffset = M.Length - 1;
-                return XCorFunction.CrossCorrelation(M, M, nOffset);
-            }
+
+            var nOffset = nLag.GetIntegerOrThrowException("nLag", Name);
+
+            if (nOffset < 0)
+                nOffset = 0;
+            else if (nOffset >= M.Length)
+                nOffset = M.Length - 1;
+
+            return XCorFunction.CrossCorrelation(M, M, nOffset);
         }
     }
 }

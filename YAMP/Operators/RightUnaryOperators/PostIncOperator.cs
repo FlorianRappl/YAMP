@@ -1,4 +1,4 @@
-/*
+﻿/*
 	Copyright (c) 2012-2013, Florian Rappl.
 	All rights reserved.
 
@@ -26,52 +26,32 @@
 */
 
 using System;
-using System.IO;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Reflection;
-using YAMP;
 
-namespace YAMPConsole
+namespace YAMP
 {
-	class MainClass
+    /// <summary>
+    /// This is the postfix increment operator ++.
+    /// </summary>
+    class PostIncOperator : RightUnaryOperator
     {
-		public static void Main (string[] args)
-		{
-			Console.WriteLine("Command Line Test Tool of YAMP");
-			Console.WriteLine();
-			Console.WriteLine("--------------------------");
-			Console.WriteLine();
-			Console.WriteLine(" YAMP VERSION " + YAMP.Parser.Version);
-			Console.WriteLine();
-			Console.WriteLine("--------------------------");
-			Console.WriteLine();
-
-            LoadCore();
-            LoadPhysics();
-
-#if DEBUG
-            YAMPTests.Run();
-#elif BENCHMARKS
-            Benchmarks.Run();
-#elif CONSOLE
-			YAMPConsole.Run();
-#endif
-
-		}
-
-        static void LoadCore()
+        public PostIncOperator()
+            : base("++", 999)
         {
-            Console.Write("Loading core library ... ");
-            Parser.Load();
-            Console.WriteLine("loaded !");
         }
 
-		static void LoadPhysics()
-		{
-            Console.Write("Loading physics library ... ");
-		    Parser.LoadPlugin(Assembly.LoadFile(Environment.CurrentDirectory + "\\YAMP.Physics.dll"));
-            Console.WriteLine("loaded !");
-		}
-	}
+        public override Value Handle(Expression expression, Dictionary<string, Value> symbols)
+        {
+            var a = PlusAssignmentOperator.CreateWithContext(Query);
+            var origin = expression.Interpret(symbols);
+            a.Handle(expression, new NumberExpression(new ScalarValue(1.0)), symbols);
+            return origin;
+        }
+
+        public override Operator Create()
+        {
+            return new PostIncOperator();
+        }
+    }
 }
+

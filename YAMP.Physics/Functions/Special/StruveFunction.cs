@@ -41,12 +41,11 @@ namespace YAMP.Physics
         [Example("struve(1, 2)", "Computes the value of the function H_1(x) at x = 2.")]
         public ScalarValue Function(ScalarValue alpha, ScalarValue x)
         {
-            if(!alpha.IsInt)
-                throw new YAMPArgumentWrongTypeException(alpha.Header, "Integer", Name);
+            var a = alpha.GetIntegerOrThrowException("alpha", Name);
 
-            if (alpha.Re == 0)
+            if (a == 0)
                 return new ScalarValue(StruveL0(x.Re));
-            else if (alpha.Re == 1)
+            else if (a == 1)
                 return new ScalarValue(StruveL1(x.Re));
 
             throw new YAMPArgumentRangeException("alpha", 0.0, 1.0);

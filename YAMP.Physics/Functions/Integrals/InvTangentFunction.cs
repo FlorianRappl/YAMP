@@ -55,10 +55,7 @@ namespace YAMP.Physics
         [Example("invtangent(1, 0.5)", "Evaluates the inverse tangent integral at z = 0.5, with s = 1, which represents arctan(0.5).")]
         public ScalarValue Function(ScalarValue s, ScalarValue z)
         {
-            if (!s.IsInt)
-                throw new YAMPArgumentWrongTypeException(s.Header, "Integer", Name);
-
-            var n = s.IntValue;
+            var n = s.GetIntegerOrThrowException("s", Name);
             return GetValue(n, z);
         }
 
@@ -66,10 +63,7 @@ namespace YAMP.Physics
         [Example("invtangent(0, [0:0.1:1])", "Evaluates the inverse tangent integral at the values z = 0, 0.1, 0.2, ..., 1.0 at s = 0, which represents the first derivative, z / (1 + z^2).")]
         public MatrixValue Function(ScalarValue s, MatrixValue Z)
         {
-            if (!s.IsInt)
-                throw new YAMPArgumentWrongTypeException(s.Header, "Integer", Name);
-
-            var n = s.IntValue;
+            var n = s.GetIntegerOrThrowException("s", Name);
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var j = 1; j <= Z.DimensionY; j++)

@@ -9,7 +9,7 @@ namespace YAMP
     class CGFunction : ArgumentFunction
     {
         [Description("Computes the solution vector x for a given matrix A and a source vector b.")]
-        [Example("cg(A, b)", "Here A is a symmetric positive definite matrix and b is an arbitrary source vector.")]
+        [Example("cg([1,2,1;2,3,4;1,4,2], rand(3,1))", "Here A is an arbitrary symmetric positive definite matrix and b is a random source vector.")]
         public MatrixValue Function(MatrixValue A, MatrixValue b)
         {
             var cg = new CGSolver(A);
@@ -17,7 +17,7 @@ namespace YAMP
         }
 
         [Description("Computes the solution vector x for a given matrix A, a specified starting solution x0 (guess) and a source vector b.")]
-        [Example("cg(A, x0, b)", "Here A is a symmetric positive definite matrix, x0 is an arbitrary start vector and b is an arbitrary source vector.")]
+        [Example("cg([1,2,1;2,3,4;1,4,2], [1;0;0], rand(3,1))", "Here A is an arbitrary symmetric positive definite matrix, x0 is a start vector (1;0;0) and b is a random source vector.")]
         public MatrixValue Function(MatrixValue A, MatrixValue x, MatrixValue b)
         {
             var cg = new CGSolver(A);

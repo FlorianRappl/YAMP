@@ -35,8 +35,8 @@ namespace YAMP
         [Example("randw(3, 1, 10, 2.5)", "Gives a 3x1 matrix with Weibull dist. rand. values around 10 with scale parameter lambda set to 10 and shape parameter k set to 2.5.")]
         public MatrixValue Function(ScalarValue rows, ScalarValue cols, ScalarValue lambda, ScalarValue k)
         {
-            var n = (int)rows.Value;
-            var l = (int)cols.Value;
+            var n = rows.GetIntegerOrThrowException("rows", Name);
+            var l = cols.GetIntegerOrThrowException("cols", Name);
             var m = new MatrixValue(n, l);
 
             for (var i = 1; i <= l; i++)

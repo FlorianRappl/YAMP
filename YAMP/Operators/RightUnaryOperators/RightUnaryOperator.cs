@@ -26,32 +26,14 @@
 */
 
 using System;
-using System.Collections.Generic;
 
 namespace YAMP
 {
-    /// <summary>
-    /// This is the postfix increment operator ++.
-    /// </summary>
-    class PostIncOperator : UnaryOperator
+    abstract class RightUnaryOperator : UnaryOperator
     {
-        public PostIncOperator()
-            : base("++", 999)
+        public RightUnaryOperator(string op, int level) : base(op, level)
         {
-        }
-
-        public override Value Handle(Expression expression, Dictionary<string, Value> symbols)
-        {
-            var a = PlusAssignmentOperator.CreateWithContext(Query);
-            var origin = expression.Interpret(symbols);
-            a.Handle(expression, new NumberExpression(new ScalarValue(1.0)), symbols);
-            return origin;
-        }
-
-        public override Operator Create()
-        {
-            return new PostIncOperator();
+            IsRightToLeft = true;
         }
     }
 }
-

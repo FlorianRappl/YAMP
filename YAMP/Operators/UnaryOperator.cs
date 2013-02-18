@@ -43,8 +43,9 @@ namespace YAMP
         /// </summary>
         /// <param name="op">The operator string.</param>
         /// <param name="level">The operator level.</param>
-        public UnaryOperator (string op, int level) : base(op, level, false)
+        public UnaryOperator (string op, int level) : base(op, level)
 		{
+            Expressions = 1;
 		}
 
         #endregion

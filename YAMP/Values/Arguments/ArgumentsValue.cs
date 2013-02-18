@@ -28,6 +28,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.IO;
 
 namespace YAMP
 {
@@ -95,14 +96,14 @@ namespace YAMP
 			get
             {
                 if (i < 1 || i > _values.Count)
-                    throw new ArgumentOutOfRangeException("Access in list out of bounds.");
+                    throw new YAMPIndexOutOfBoundException(i, 1, _values.Count);
 
 				return _values[i - 1];
 			}
             set
             {
-                if(i < 1)
-                    throw new ArgumentOutOfRangeException("Access in list out of bounds.");
+                if (i < 1)
+                    throw new YAMPIndexOutOfBoundException(i, 1);
                 else if (i == _values.Count + 1)
                     _values.Add(value);
                 else if(i <= _values.Count)
@@ -150,7 +151,9 @@ namespace YAMP
         /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
-            using (var ms = new System.IO.MemoryStream(content))
+            var A = new ArgumentsValue();
+
+            using (var ms = new MemoryStream(content))
             {
                 var buffer = new byte[4];
                 ms.Read(buffer, 0, buffer.Length);
@@ -167,10 +170,11 @@ namespace YAMP
                     length = BitConverter.ToInt32(buffer, 0);
                     var contentBuffer = new byte[length];
                     ms.Read(contentBuffer, 0, contentBuffer.Length);
-                    _values.Add(Deserialize(name, contentBuffer));
+                    A._values.Add(Deserialize(name, contentBuffer));
                 }
             }
-            return this;
+
+            return A;
         }
 
         #endregion

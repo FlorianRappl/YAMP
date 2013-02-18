@@ -39,23 +39,27 @@ namespace YAMP.Physics
         [Example("jacobi(1, 0, 2, 3.5)", "Evaluates the Jacobi polynomial of order 1 with alpha = 0 and beta = 2 at the point z = 3.5.")]
         public ScalarValue Function(ScalarValue n, ScalarValue alpha, ScalarValue beta, ScalarValue z)
         {
-            if (n.IntValue < 0)
+            var nn = n.GetIntegerOrThrowException("n", Name);
+
+            if (nn < 0)
                 throw new Exception("Jacobi polynomial of order n < 0 does not make sense.");
 
-            return JacobiPolynomial(n.IntValue, alpha, beta, z);
+            return JacobiPolynomial(nn, alpha, beta, z);
         }
 
         [Description("Evaluates the Jacobi polynomial of some order n with the parameters alpha and beta at the given points of the matrix Z in C.")]
         [Example("jacobi(2, 1, 1, [-1, 0.5, 0, 0.5, 1])", "Evaluates the Jacobi polynomial of order 2 with alpha = 1 and beta = 1 at the points z = -1, 0.5, 0, 0.5 and 1.")]
         public MatrixValue Function(ScalarValue n, ScalarValue alpha, ScalarValue beta, MatrixValue Z)
         {
-            if (n.IntValue < 0)
+            var nn = n.GetIntegerOrThrowException("n", Name);
+
+            if (nn < 0)
                 throw new Exception("Jacobi polynomial of order n < 0 does not make sense.");
 
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var i = 1; i <= Z.Length; i++)
-                M[i] = JacobiPolynomial(n.IntValue, alpha, beta, Z[i]);
+                M[i] = JacobiPolynomial(nn, alpha, beta, Z[i]);
 
             return M;
         }

@@ -42,6 +42,7 @@ namespace YAMP
 		#region Members
 
         IDictionary<string, Operator> operators;
+        IDictionary<string, Operator> unaryOperators;
 		List<Expression> expressions;
 		IDictionary<string, Keyword> keywords;
         IDictionary<int, Plugin> plugins;
@@ -53,6 +54,7 @@ namespace YAMP
 		Elements ()
 		{
             operators = new Dictionary<string, Operator>();
+            unaryOperators = new Dictionary<string, Operator>();
 			expressions = new List<Expression>();
 			keywords = new Dictionary<string, Keyword>();
             plugins = new Dictionary<int, Plugin>();
@@ -182,7 +184,10 @@ namespace YAMP
         /// <param name="op">The instance of the operator.</param>
 		public void AddOperator(string pattern, Operator op)
 		{
-			operators.Add(pattern, op);
+            if (!op.IsRightToLeft && op.Expressions == 1)
+                unaryOperators.Add(pattern, op);
+            else
+                operators.Add(pattern, op);
 		}
 
         /// <summary>
@@ -269,19 +274,44 @@ namespace YAMP
         }
 
         /// <summary>
-        /// Finds the closest matching operator.
+        /// Finds the closest matching operator (all except left unary).
         /// </summary>
         /// <param name="engine">The engine to parse the query.</param>
         /// <returns>Operator that matches the current characters.</returns>
         public Operator FindOperator(ParseEngine engine)
+        {
+            var maxop = FindArbitraryOperator(operators.Keys, engine);
+
+            if (maxop.Length == 0)
+                return null;
+
+            return operators[maxop].Create(engine);
+        }
+
+        /// <summary>
+        /// Finds the closest matching left unary operator.
+        /// </summary>
+        /// <param name="engine">The engine to parse the query.</param>
+        /// <returns>Operator that matches the current characters.</returns>
+        public Operator FindLeftUnaryOperator(ParseEngine engine)
+        {
+            var maxop = FindArbitraryOperator(unaryOperators.Keys, engine);
+
+            if(maxop.Length == 0)
+                return null;
+
+            return unaryOperators[maxop].Create(engine);
+        }
+
+        string FindArbitraryOperator(IEnumerable<string> operators, ParseEngine engine)
         {
             var maxop = string.Empty;
             var notfound = true;
             var chars = engine.Characters;
             var ptr = engine.Pointer;
             var rest = chars.Length - ptr;
-            
-            foreach (var op in operators.Keys)
+
+            foreach (var op in operators)
             {
                 if (op.Length > rest)
                     continue;
@@ -299,10 +329,7 @@ namespace YAMP
                     maxop = op;
             }
 
-            if (maxop.Length == 0)
-                return null;
-
-            return operators[maxop].Create(engine);
+            return maxop;
         }
 
         /// <summary>
@@ -313,6 +340,10 @@ namespace YAMP
         public T FindOperator<T>() where T : Operator
         {
             foreach (var op in operators.Values)
+                if (op is T)
+                    return (T)op;
+
+            foreach (var op in unaryOperators.Values)
                 if (op is T)
                     return (T)op;
 

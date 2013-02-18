@@ -11,7 +11,7 @@ namespace YAMP
         const int bfactor = 1;
 
         [Description("Given the red, green, and blue matrices (with values between 0 and 255) this function calculates blue + green * 256 + red * 256^2 using only the real integer part of the matrices.")]
-        [Example("load(\"example.bmp\", \"bmp\"); [r, g, b] = imgtorgb(bmp); bmp2 = rgbtoimg(r, g, b)", "Reverses the transformation by the ImgToRgb function.")]
+        [Example("load(\"example.bmp\", \"bmp\"); [r, g, b] = imgtorgb(bmp); bmp2 = rgbtoimg(r, g, b)", "Reverses the transformation by the ImgToRgb function.", true)]
         public MatrixValue Function(MatrixValue R, MatrixValue G, MatrixValue B)
         {
             if (R.DimensionX != B.DimensionX || R.DimensionY != B.DimensionY)

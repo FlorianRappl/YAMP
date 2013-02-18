@@ -17,7 +17,8 @@ namespace YAMP
         [Example("precision(5)", "Sets the precision to 5 digits.")]
         public void Function(ScalarValue digits)
         {
-            Context.Precision = digits.IntValue;
+            var n = digits.GetIntegerOrThrowException("digits", Name);
+            Context.Precision = n;
             Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Information, "Output precision changed to " + Context.Precision + " digits."));
         }
     }

@@ -35,8 +35,8 @@ namespace YAMP
         [Example("randl(3, 1, 10, 2.5)", "Gives a 3x1 matrix with Laplace dist. rand. values around 10 with the mean mu set to 10 and variance parameter b set to 2.5. The variance scales with b^2, such that the standard deviation scales with b.")]
         public MatrixValue Function(ScalarValue rows, ScalarValue cols, ScalarValue mu, ScalarValue b)
         {
-            var n = (int)rows.Value;
-            var l = (int)cols.Value;
+            var n = rows.GetIntegerOrThrowException("rows", Name);
+            var l = cols.GetIntegerOrThrowException("cols", Name);
             var m = new MatrixValue(n, l);
 
             for (var i = 1; i <= l; i++)

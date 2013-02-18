@@ -287,11 +287,13 @@ namespace YAMP
         /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
+            var pp = new PolarPlotValue();
+
             using (var ds = Deserializer.Create(content))
             {
-                Deserialize(ds);
-                FractionSymbol = ds.GetString();
-                FractionUnit = ds.GetDouble();
+                pp.Deserialize(ds);
+                pp.FractionSymbol = ds.GetString();
+                pp.FractionUnit = ds.GetDouble();
                 var length = ds.GetInt();
 
                 for (var i = 0; i < length; i++)
@@ -312,11 +314,11 @@ namespace YAMP
                         });
                     }
 
-                    AddSeries(points);
+                    pp.AddSeries(points);
                 }
             }
 
-            return this;
+            return pp;
         }
 
         #endregion

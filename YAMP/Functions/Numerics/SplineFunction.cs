@@ -20,7 +20,7 @@ namespace YAMP
         }
 
         [Description("Generates the y values for a vector of points with given sample data.")]
-        [Example("spline([-3,9;-2,4;-1,1;0,0;1,1;3,9], (-1.5, -0.5, 0, 0.5, 1.5))", "Interpolates the y values for this x vector in the quadratic function. The final outcome is a small derivation of the real values.")]
+        [Example("spline([-3,9;-2,4;-1,1;0,0;1,1;3,9], [-1.5, -0.5, 0, 0.5, 1.5])", "Interpolates the y values for this x vector in the quadratic function. The final outcome is a small derivation of the real values.")]
         public MatrixValue Function(MatrixValue original, MatrixValue x)
         {
             var spline = new SplineInterpolation(original);

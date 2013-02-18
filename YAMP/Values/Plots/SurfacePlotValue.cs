@@ -356,12 +356,14 @@ namespace YAMP
         /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
+            var sp = new SurfacePlotValue();
+
             using (var ds = Deserializer.Create(content))
             {
-                Deserialize(ds);
-                IsMesh = ds.GetBoolean();
-                ColorPalette = (ColorPalettes)ds.GetInt();
-                data.Deserialize(ds);
+                sp.Deserialize(ds);
+                sp.IsMesh = ds.GetBoolean();
+                sp.ColorPalette = (ColorPalettes)ds.GetInt();
+                sp.data.Deserialize(ds);
                 var count = ds.GetInt();
 
                 for (int j = 0; j < count; j++)
@@ -379,7 +381,7 @@ namespace YAMP
                 }
             }
 
-            return this;
+            return sp;
         }
 
         #endregion

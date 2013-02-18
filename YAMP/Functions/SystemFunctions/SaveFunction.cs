@@ -10,7 +10,7 @@ namespace YAMP
     class SaveFunction : SystemFunction
 	{
         [Description("Saves all variables that are currently available.")]
-        [Example("save(\"myfile.mat\")", "Saves all variables in the file myfile.mat")]
+        [Example("save(\"myfile.mat\")", "Saves all variables in the file myfile.mat.", true)]
         public void Function(StringValue fileName)
 		{
             Save(fileName.Value, Context.Variables);
@@ -18,7 +18,7 @@ namespace YAMP
 		}
 
         [Description("Saves the specified variables in the file.")]
-        [Example("save(\"myfile.mat\", \"x\", \"y\")", "Saves the variables x and y in the file myfile.mat")]
+        [Example("save(\"myfile.mat\", \"x\", \"y\")", "Saves the variables x and y in the file myfile.mat.", true)]
 		[Arguments(1)]
         public void Function(StringValue fileName, ArgumentsValue args)
         {

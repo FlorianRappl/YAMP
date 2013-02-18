@@ -167,11 +167,13 @@ namespace YAMP
         /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
+            var sp = new SubPlotValue();
+
             using (var ds = Deserializer.Create(content))
             {
-                Title = ds.GetString();
-                Rows = ds.GetInt();
-                Columns = ds.GetInt();
+                sp.Title = ds.GetString();
+                sp.Rows = ds.GetInt();
+                sp.Columns = ds.GetInt();
                 var length = ds.GetInt();
 
                 for (var i = 0; i < length; i++)
@@ -183,11 +185,11 @@ namespace YAMP
                     subplot.ColumnSpan = ds.GetInt();
                     var name = ds.GetString();
                     subplot.Plot = (PlotValue)Value.Deserialize(name, ds.GetBytes());
-                    subplots.Add(subplot);
+                    sp.subplots.Add(subplot);
                 }
-
-                return this;
             }
+
+            return sp;
         }
 
         #endregion

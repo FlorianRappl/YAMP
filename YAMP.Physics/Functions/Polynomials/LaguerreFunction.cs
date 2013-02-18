@@ -39,23 +39,27 @@ namespace YAMP.Physics
         [Example("laguerre(3, 1.0, 1.5)", "Evaluates the Laguerre polynomial of order 3 with alpha set to 1.0 at the point z = 1.5.")]
         public ScalarValue Function(ScalarValue n, ScalarValue alpha, ScalarValue z)
         {
-            if (n.IntValue < 0)
+            var nn = n.GetIntegerOrThrowException("n", Name);
+
+            if (nn < 0)
                 throw new Exception("Laguerre polynomial of order n < 0 does not make sense.");
 
-            return LaguerrePolynomial(n.IntValue, alpha, z);
+            return LaguerrePolynomial(nn, alpha, z);
         }
 
         [Description("Evaluates the Laguerre polynomial of some order n with the parameter alpha at the given points of the matrix Z in C.")]
         [Example("laguerre(2, 1.0, [0.5, 1.5, 2.5])", "Evaluates the Laguerre polynomial of order 2 with alpha set to 1.0 at the points z = 0.5, 1.5 and 2.5.")]
         public MatrixValue Function(ScalarValue n, ScalarValue alpha, MatrixValue Z)
         {
-            if (n.IntValue < 0)
+            var nn = n.GetIntegerOrThrowException("n", Name);
+
+            if (nn < 0)
                 throw new Exception("Laguerre polynomial of order n < 0 does not make sense.");
 
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var i = 1; i <= Z.Length; i++)
-                M[i] = LaguerrePolynomial(n.IntValue, alpha, Z[i]);
+                M[i] = LaguerrePolynomial(nn, alpha, Z[i]);
 
             return M;
         }

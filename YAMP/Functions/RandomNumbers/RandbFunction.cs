@@ -35,13 +35,14 @@ namespace YAMP
         [Example("randw(3, 1, 0.5, 20)", "Gives a 3x1 matrix with binomial dist. rand. values around 10 with probability parameter p set to 0.5 and trials parameter n set to 20.")]
         public MatrixValue Function(ScalarValue rows, ScalarValue cols, ScalarValue p, ScalarValue n)
         {
-            var k = (int)rows.Value;
-            var l = (int)cols.Value;
+            var k = rows.GetIntegerOrThrowException("rows", Name);
+            var l = cols.GetIntegerOrThrowException("cols", Name);
+            var nn = n.GetIntegerOrThrowException("n", Name);
             var m = new MatrixValue(k, l);
 
             for (var i = 1; i <= l; i++)
                 for (var j = 1; j <= k; j++)
-                    m[j, i] = new ScalarValue(Binomial(p.Value, n.IntValue));
+                    m[j, i] = new ScalarValue(Binomial(p.Value, nn));
 
             return m;
         }

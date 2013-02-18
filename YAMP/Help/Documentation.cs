@@ -363,6 +363,7 @@ namespace YAMP.Help
 			var help = new HelpExample();
 			help.Example = attribute.Example;
 			help.Description = attribute.Description;
+            help.IsFile = attribute.IsFile;
 			return help;
 		}
 

@@ -32,16 +32,16 @@ using System.Text;
 namespace YAMP
 {
     /// <summary>
-    /// This class represents the scope of a function.
+    /// This class represents a group of statements.
     /// </summary>
-    class ScopeExpression : Expression
+    class GroupExpression : Expression
     {
         #region ctor
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public ScopeExpression()
+        public GroupExpression()
 		{
 		}
 
@@ -52,7 +52,7 @@ namespace YAMP
         /// <param name="column">The column in the line where the scope exp. starts.</param>
         /// <param name="length">The length of the scope expression.</param>
         /// <param name="scope">The associated query context (scope).</param>
-        public ScopeExpression(int line, int column, int length, QueryContext scope)
+        public GroupExpression(int line, int column, int length, QueryContext scope)
             : base(scope.Parent, line, column)
 		{
             Scope = scope;
@@ -102,7 +102,7 @@ namespace YAMP
                     engine.AddError(error);
 
                 engine.Advance(eng.Pointer);
-                return new ScopeExpression(line, column, engine.Pointer - start, scope);
+                return new GroupExpression(line, column, engine.Pointer - start, scope);
             }
 
             return null;

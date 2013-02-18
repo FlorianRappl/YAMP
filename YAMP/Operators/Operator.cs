@@ -49,16 +49,7 @@ namespace YAMP
         /// Creates a new operator given the string for the operator.
         /// </summary>
         /// <param name="op">The operator string like +.</param>
-		public Operator (string op) : this(op, 0, true)
-		{
-		}
-
-        /// <summary>
-        /// Creates a new operator given the string and level for the operator.
-        /// </summary>
-        /// <param name="op">The operator string like +.</param>
-        /// <param name="level">The operator level like 100.</param>
-		public Operator (string op, int level) : this(op, level, true)
+		public Operator (string op) : this(op, 0)
 		{
 		}
 		
@@ -67,12 +58,10 @@ namespace YAMP
         /// </summary>
         /// <param name="op">The operator string like +.</param>
         /// <param name="level">The operator level like 100.</param>
-        /// <param name="expect">Does the operator expect another expression? Unary operators want this to be false.</param>
-		public Operator (string op, int level, bool expect)
+		public Operator (string op, int level)
 		{
 			_op = op;
 			Level = level;
-			ExpectExpression = expect;
             Length = op.Length;
 		}
 
@@ -87,6 +76,15 @@ namespace YAMP
         {
             get { return new VoidOperator(); }
         }
+
+        /// <summary>
+        /// Gets how many expressions are eaten by thix operator (1 = unary, 2 = binary, ...).
+        /// </summary>
+        public int Expressions
+        {
+            get;
+            protected set;
+        }
 		
 		/// <summary>
 		/// Gets the operator's string.
@@ -100,15 +98,6 @@ namespace YAMP
 		/// Gets the level of the operator.
 		/// </summary>
 		public int Level
-		{
-			get;
-			private set;
-		}
-
-		/// <summary>
-		/// Gets a value if the operator expects an expression.
-		/// </summary>
-		public bool ExpectExpression
 		{
 			get;
 			private set;

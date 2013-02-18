@@ -142,7 +142,7 @@ namespace YAMP
         /// Converts the given value into binary data.
         /// </summary>
         /// <returns>The bytes array containing the data.</returns>
-        public override byte[] Serialize ()
+        public override byte[] Serialize()
 		{
             using (var ms = Serializer.Create())
             {
@@ -156,14 +156,16 @@ namespace YAMP
         /// </summary>
         /// <param name="content">The data which contains the content.</param>
         /// <returns>The new instance.</returns>
-		public override Value Deserialize (byte[] content)
+		public override Value Deserialize(byte[] content)
 		{
+            var value = string.Empty;
+
             using(var ds = Deserializer.Create(content))
             {
-                _value = ds.GetString();
+                value = ds.GetString();
             }
 
-			return this;
+			return new StringValue(value);
 		}
 
 		#endregion

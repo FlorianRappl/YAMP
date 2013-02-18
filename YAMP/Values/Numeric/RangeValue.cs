@@ -200,13 +200,28 @@ namespace YAMP
         /// <param name="content">The binary content.</param>
         /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
-		{
-			base.Deserialize(content);
-			Start = BitConverter.ToDouble(content, content.Length - 25);
-			End = BitConverter.ToDouble(content, content.Length - 17);
-			Step = BitConverter.ToDouble(content, content.Length - 9);
-			All = BitConverter.ToBoolean(content, content.Length - 1);
-			return this;
+        {
+            var R = new RangeValue();
+            R.DimensionY = BitConverter.ToInt32(content, 0);
+            R.DimensionX = BitConverter.ToInt32(content, 4);
+            var count = BitConverter.ToInt32(content, 8);
+            var pos = 12;
+
+            for (var i = 0; i < count; i++)
+            {
+                var row = BitConverter.ToInt32(content, pos);
+                var col = BitConverter.ToInt32(content, pos + 4);
+                var re = BitConverter.ToDouble(content, pos + 8);
+                var im = BitConverter.ToDouble(content, pos + 16);
+                R[row, col] = new ScalarValue(re, im);
+                pos += 24;
+            }
+
+			R.Start = BitConverter.ToDouble(content, content.Length - 25);
+			R.End = BitConverter.ToDouble(content, content.Length - 17);
+			R.Step = BitConverter.ToDouble(content, content.Length - 9);
+			R.All = BitConverter.ToBoolean(content, content.Length - 1);
+			return R;
 		}
 
         #endregion

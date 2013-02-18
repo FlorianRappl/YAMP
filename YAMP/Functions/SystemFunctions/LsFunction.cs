@@ -9,14 +9,14 @@ namespace YAMP
 	class LsFunction : SystemFunction
 	{
 		[Description("Reads the file system table and lists the contents of the current working directory.")]
-		[Example("ls()", "Lists name, attributes and the time of the last modification of the current working directory's files and sub-directories.")]
+		[Example("ls()", "Lists name, attributes and the time of the last modification of the current working directory's files and sub-directories.", true)]
 		public StringValue Function()
 		{
 			return Function(new StringValue("*"));
 		}
 
 		[Description("Reads the file system table and lists the filtered contents of the current working directory.")]
-		[Example("ls(\"*.png\")", "Lists only png files with name, attributes and the time of the last modification of the current working directory.")]
+		[Example("ls(\"*.png\")", "Lists only png files with name, attributes and the time of the last modification of the current working directory.", true)]
 		public StringValue Function(StringValue filter)
 		{
 			var sb = new StringBuilder();

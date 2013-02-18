@@ -202,14 +202,16 @@ namespace YAMP
         /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
+            var cp = new ComplexPlotValue();
+
             using (var ds = Deserializer.Create(content))
             {
-                Deserialize(ds);
+                cp.Deserialize(ds);
                 var ctn = ds.GetBytes();
-                f = new FunctionValue().Deserialize(ctn) as FunctionValue;
+                cp.f = new FunctionValue().Deserialize(ctn) as FunctionValue;
             }
 
-            return this;
+            return cp;
         }
 
         #endregion

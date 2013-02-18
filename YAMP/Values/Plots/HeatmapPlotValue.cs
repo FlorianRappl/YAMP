@@ -213,12 +213,14 @@ namespace YAMP
         /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
+            var hm = new HeatmapPlotValue();
+
             using (var ds = Deserializer.Create(content))
             {
-                Deserialize(ds);
-                ColorPalette = (ColorPalettes)ds.GetInt();
-                Minimum = ds.GetDouble();
-                Maximum = ds.GetDouble();
+                hm.Deserialize(ds);
+                hm.ColorPalette = (ColorPalettes)ds.GetInt();
+                hm.Minimum = ds.GetDouble();
+                hm.Maximum = ds.GetDouble();
 
                 var length = ds.GetInt();
 
@@ -242,11 +244,11 @@ namespace YAMP
                         });
                     }
 
-                    AddSeries(points);
+                    hm.AddSeries(points);
                 }
             }
 
-            return this;
+            return hm;
         }
 
         #endregion

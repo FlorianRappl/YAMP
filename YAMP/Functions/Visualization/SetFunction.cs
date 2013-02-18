@@ -49,14 +49,16 @@ namespace YAMP
 		public void Function(PlotValue plot, ScalarValue series, StringValue property, Value newValue)
 		{
 			if(plot.Count == 0)
-				throw new ArgumentOutOfRangeException("The given plot contains no series.");
+				throw new YAMPNoSeriesAvailableException("The given plot contains no series.");
 
-			if(series.IntValue < 1 || series.IntValue > plot.Count)
-				throw new ArgumentOutOfRangeException(string.Format("The value for series must be between {0} and {1}.", 1, plot.Count));
+            var n = series.GetIntegerOrThrowException("series", Name);
 
-            AlterSeriesProperty(plot, series.IntValue - 1, property.Value, newValue);
+			if(n < 1 || n > plot.Count)
+				throw new YAMPArgumentRangeException("series", 1, plot.Count);
+
+            AlterSeriesProperty(plot, n - 1, property.Value, newValue);
 			plot.UpdateProperties();
-            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Success, "Series " + series.IntValue + " changed."));
+            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Success, "Series " + n + " changed."));
 		}
 
 		[Description("Sets the specified (as string) field's value of the given series to a new value.")]
@@ -96,9 +98,10 @@ namespace YAMP
 				var end = series.Length;
 
 				for (var i = 1; i <= end; i++)
-				{
-                    s.Add(series[i].IntValue.ToString());
-                    AlterSeriesProperty(plot, series[i].IntValue - 1, property.Value, newValue);
+                {
+                    var n = series[i].GetIntegerOrThrowException("series", Name);
+                    s.Add(n.ToString());
+                    AlterSeriesProperty(plot, n - 1, property.Value, newValue);
 				}
 			}
 

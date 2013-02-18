@@ -26,28 +26,32 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace YAMP
 {
-    abstract class LeftUnaryOperator : BinaryOperator
+    /// <summary>
+    /// This is the prefix increment operator ++.
+    /// </summary>
+    class PreIncOperator : LeftUnaryOperator
     {
-        public LeftUnaryOperator(string op, int level) : base(op, level)
+        static readonly PlusAssignmentOperator assignment = new PlusAssignmentOperator();
+
+        public PreIncOperator() : base("++", 999)
         {
         }
 
-        public override void RegisterElement()
+        public override Value Handle(Expression value, Dictionary<string, Value> symbols)
         {
-            UnaryExpression.AddOperator(Op, this);
+            var a = PlusAssignmentOperator.CreateWithContext(Query);
+            a.Handle(value, new NumberExpression(new ScalarValue(1.0)), symbols);
+            return value.Interpret(symbols);
         }
 
-        public virtual Value Perform(Value value)
+        public override Operator Create()
         {
-            return value;
-        }
-
-        public override Value Perform(Value left, Value right)
-        {
-            return Perform(right);
+            return new PreIncOperator();
         }
     }
 }
+

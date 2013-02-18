@@ -20,7 +20,7 @@ namespace YAMP
 		[Description("Generates a n-by-n matrix with exponentially distributed random values with lambda set to 1.")]
 		[Example("rande(3)", "Gives a 3x3 matrix with normally dist. rand. values.")]
 		public MatrixValue Function(ScalarValue dim)
-		{
+        {
 			return Function(dim, dim);
 		}
 
@@ -34,9 +34,9 @@ namespace YAMP
 		[Description("Generates a m-by-n matrix with exponentially distributed random values that have been generated with a specified lambda.")]
 		[Example("rande(3, 1, 2.5)", "Gives a 3x1 matrix with exponentially distributed random values with lambda = 2.5.")]
 		public MatrixValue Function(ScalarValue rows, ScalarValue cols, ScalarValue lambda)
-		{
-			var k = (int)rows.Value;
-			var l = (int)cols.Value;
+        {
+            var k = rows.GetIntegerOrThrowException("rows", Name);
+            var l = cols.GetIntegerOrThrowException("cols", Name);
 			var m = new MatrixValue(k, l);
 
 			for (var i = 1; i <= l; i++)

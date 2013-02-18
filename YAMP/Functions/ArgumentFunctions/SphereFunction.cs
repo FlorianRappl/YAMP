@@ -17,7 +17,8 @@ namespace YAMP
         [Example("[X, Y, Z] = sphere(30)", "Returns the three matrices with x-, y-, and Z coordinates for a unit sphere with n = 30. The 31x31 matrices are saved in the variables X, Y, Z.")]
         public ArgumentsValue Function(ScalarValue n)
         {
-            int dim = n.IntValue + 1;
+            var nn = n.GetIntegerOrThrowException("n", Name);
+            int dim = nn + 1;
 
             if (dim < 2)
                 throw new YAMPArgumentRangeException("n", 1.0);

@@ -40,18 +40,20 @@ namespace YAMP.Physics
         [Example("gegenbauer(1, 0.5, 0.25)", "Computes the 1st order polynomial with parameter alpha = 0.5 at the point 0.25, which gives us -0.25.")]
         public ScalarValue Function(ScalarValue n, ScalarValue alpha, ScalarValue z)
         {
-            return Gegenbauer(n.IntValue, alpha.Value, z);
+            var nn = n.GetIntegerOrThrowException("n", Name);
+            return Gegenbauer(nn, alpha.Value, z);
         }
 
         [Description("Computes the Gegenbauer polynomial with order n, parameter alpha at the points in Z.")]
         [Example("gegenbauer(1, 1, 0:0.1:1)", "The 0th order polynomial is always 1.0.")]
         public MatrixValue Function(ScalarValue n, ScalarValue alpha, MatrixValue Z)
         {
+            var nn = n.GetIntegerOrThrowException("n", Name);
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for(var i = 1; i <= Z.DimensionX; i++)
                 for (var j = 1; j <= Z.DimensionY; j++)
-                    M[j, i] = Gegenbauer(n.IntValue, alpha.Value, Z[j, i]);
+                    M[j, i] = Gegenbauer(nn, alpha.Value, Z[j, i]);
 
             return M;
         }

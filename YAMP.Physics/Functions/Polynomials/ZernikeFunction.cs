@@ -40,18 +40,22 @@ namespace YAMP.Physics
         [Example("zernike(1, 0, 0.25)", "Computes the 1st order polynomial with parameter m = 0 at the point 0.25, which gives us -0.25.")]
         public ScalarValue Function(ScalarValue n, ScalarValue m, ScalarValue z)
         {
-            return Zernike(n.IntValue, m.IntValue, z);
+            var nn = n.GetIntegerOrThrowException("n", Name);
+            var nm = m.GetIntegerOrThrowException("m", Name);
+            return Zernike(nn, nm, z);
         }
 
         [Description("Computes the Zernike polynomial with order n and m at the points in Z.")]
         [Example("zernike(1, 1, 0:0.1:1)", "The polynomial at order 1, 1 evaluated at the values 0, 0.1, 0.2, ..., 1.0.")]
         public MatrixValue Function(ScalarValue n, ScalarValue m, MatrixValue Z)
         {
+            var nn = n.GetIntegerOrThrowException("n", Name);
+            var nm = m.GetIntegerOrThrowException("m", Name);
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var i = 1; i <= Z.DimensionX; i++)
                 for (var j = 1; j <= Z.DimensionY; j++)
-                    M[j, i] = Zernike(n.IntValue, m.IntValue, Z[j, i]);
+                    M[j, i] = Zernike(nn, nm, Z[j, i]);
 
             return M;
         }

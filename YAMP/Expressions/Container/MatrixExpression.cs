@@ -113,14 +113,14 @@ namespace YAMP
                     {
                         ws = false;
                         nl = false;
-                        statement.Push(new ColumnOperator());
+                        statement.Push(engine, new ColumnOperator());
                         engine.Advance();
                     }
                     else if (chars[engine.Pointer] == ';')
                     {
                         ws = false;
                         nl = false;
-                        statement.Push(new RowOperator());
+                        statement.Push(engine, new RowOperator());
                         engine.Advance();
                     }
                     else if (engine.Pointer < chars.Length - 1 && ParseEngine.IsComment(chars[engine.Pointer], chars[engine.Pointer + 1]))

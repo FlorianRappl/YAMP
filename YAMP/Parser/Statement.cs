@@ -161,34 +161,44 @@ namespace YAMP
         /// <summary>
         /// Pushes an operator to the stack.
         /// </summary>
+        /// <param name="engine">The current parse engine.</param>
         /// <param name="_operator">The operator to add.</param>
         /// <returns>The current instance.</returns>
-        internal Statement Push(Operator _operator)
+        internal Statement Push(ParseEngine engine, Operator _operator)
         {
             if (finalized)
                 return this;
 
             _operator = _operator ?? Operator.Void;
 
-            if (!_operator.ExpectExpression)
+            if (_operator.Expressions == 1 && _operator.IsRightToLeft)
                 _expressions.Push(new ContainerExpression(_expressions.Pop(), _operator));
             else
             {
-                if (_operator.Level >= (_operator.IsRightToLeft ? maxLevel : maxLevel + 1))
-                    maxLevel = _operator.Level;
-                else
+                if (_operator.Expressions == 2)
                 {
-                    while (true)
-                    {
-                        var right = _expressions.Pop();
-                        var left = _expressions.Pop();
-                        _expressions.Push(new ContainerExpression(left, right, _operators.Pop()));
-
-                        if (_operators.Count > 0 && _operators.Peek().Level > _operator.Level)
-                            continue;
-
+                    if (_operator.Level >= (_operator.IsRightToLeft ? maxLevel : maxLevel + 1))
                         maxLevel = _operator.Level;
-                        break;
+                    else
+                    {
+                        while (true)
+                        {
+                            var count = _operators.Peek().Expressions;
+                            var exp = new Expression[count];
+
+                            for (var i = count - 1; i >= 0; i--)
+                                exp[i] = _expressions.Pop();
+
+                            var container = new ContainerExpression(exp, _operators.Pop());
+                            _expressions.Push(container);
+                            ReduceUnary(container);
+
+                            if (_operators.Count > 0 && _operators.Peek().Level > _operator.Level)
+                                continue;
+
+                            maxLevel = _operator.Level;
+                            break;
+                        }
                     }
                 }
 
@@ -199,12 +209,22 @@ namespace YAMP
             return this;
         }
 
+        void ReduceUnary(ContainerExpression container)
+        {
+            while (_operators.Count != 0 && _operators.Peek().Expressions == 1)
+            {
+                var e = container.Expressions[0];
+                container.Expressions[0] = new ContainerExpression(e, _operators.Pop());
+            }
+        }
+
         /// <summary>
         /// Pushes an expression to the stack.
         /// </summary>
+        /// <param name="engine">The current parse engine.</param>
         /// <param name="_expression">The expression to add.</param>
         /// <returns>The current instance.</returns>
-        internal Statement Push(Expression _expression)
+        internal Statement Push(ParseEngine engine, Expression _expression)
         {
             if (finalized)
                 return this;
@@ -212,8 +232,8 @@ namespace YAMP
             if (_expressions.Count == 0)
                 IsFinished = _expression == null ? false : _expression.IsSingleStatement;
 
-            takeOperator = true;
             _expressions.Push(_expression ?? Expression.Empty);
+            takeOperator = true;
             return this;
         }
 
@@ -234,27 +254,26 @@ namespace YAMP
                 return this;
             }
 
-            if (_expressions.Count > 0 && _operators.Count != _expressions.Count - 1)
-            {
-                engine.AddError(new YAMPExpressionMissingError(engine));
-                return this;
-            }
-
-            while (_operators.Count > 1)
-            {
-                var right = _expressions.Pop();
-                var left = _expressions.Pop();
-                _expressions.Push(new ContainerExpression(left, right, _operators.Pop()));
-            }
-
-            if (_operators.Count == 1)
+            while (_operators.Count > 0)
             {
                 var op = _operators.Pop();
-                var right = _expressions.Pop();
-                var left = _expressions.Pop();
-                _container = new ContainerExpression(left, right, op);
+                var exp = new Expression[op.Expressions];
+
+                if (_expressions.Count < op.Expressions)
+                {
+                    engine.AddError(new YAMPExpressionMissingError(engine, op, _expressions.Count));
+                    return this;
+                }
+
+                for (var i = op.Expressions - 1; i >= 0; i--)
+                    exp[i] = _expressions.Pop();
+
+                var container = new ContainerExpression(exp, op);
+                _expressions.Push(container);
+                ReduceUnary(container);
             }
-            else if (_expressions.Count == 1)
+
+            if (_expressions.Count == 1)
                 _container = new ContainerExpression(_expressions.Pop());
             else
                 _container = new ContainerExpression();

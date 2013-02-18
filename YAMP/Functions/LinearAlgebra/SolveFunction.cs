@@ -8,7 +8,7 @@ namespace YAMP
 	class SolveFunction : ArgumentFunction
 	{
 		[Description("Searches a solution vector x for the matrix M and the source vector phi.")]
-		[Example("solve(A, b)", "Solves the equation A * x = b for a matrix A and a source vector b.")]
+		[Example("solve(rand(3), rand(3,1))", "Solves the equation M * x = b for a random 3x3 matrix M and a random vector phi.")]
 		public MatrixValue Function(MatrixValue M, MatrixValue phi)
 		{
 			if (M.IsSymmetric)
@@ -27,7 +27,7 @@ namespace YAMP
 		}
 
 		[Description("Searches a solution vector x for the scalar a and the source b.")]
-		[Example("solve(a, b)", "Solves the equation a * x = b for a scalar a and a source b.")]
+		[Example("solve(7, 2)", "Solves the equation a * x = b for a scalar a = 7 and a source b = 2.")]
 		public ScalarValue Function(ScalarValue a, ScalarValue b)
 		{
 			return a / b;

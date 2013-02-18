@@ -17,14 +17,17 @@ namespace YAMP
         [Example("eye(5)", "Returns a 5x5 matrix with 1 on the diagonal and 0 else.")]
         public MatrixValue Function(ScalarValue dim)
         {
-            return MatrixValue.One(dim.IntValue);
+            var n = dim.GetIntegerOrThrowException("dim", Name);
+            return MatrixValue.One(n);
         }
 
         [Description("Generates an n x m-dimensional identity matrix.")]
         [Example("eye(5, 3)", "Returns a 5x3 matrix with 1 on the diagonal and 0 else.")]
         public MatrixValue Function(ScalarValue n, ScalarValue m)
         {
-            return MatrixValue.One(n.IntValue, m.IntValue);
+            var nn = n.GetIntegerOrThrowException("n", Name);
+            var nm = m.GetIntegerOrThrowException("m", Name);
+            return MatrixValue.One(nn, nm);
         }
     }
 }

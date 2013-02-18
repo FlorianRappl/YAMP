@@ -18,10 +18,11 @@ namespace YAMP
 		[Description("Draws a contour plot of matrix Z with n contour levels where n is an integer scalar.")]
 		[Example("contour([1, 2, 3; 4, 5, 6; 7, 8, 9], 2)", "Creates a contour plot of the given matrix.")]
 		public ContourPlotValue Function(MatrixValue Z, ScalarValue n)
-		{
+        {
+            var nn = n.GetIntegerOrThrowException("n", Name);
 			var plot = new ContourPlotValue();
 			plot.AddPoints(Z);
-			plot.SetLevels(n.IntValue);
+			plot.SetLevels(nn);
 			return plot;
 		}
 
@@ -45,10 +46,11 @@ namespace YAMP
 
 		[Description("Draw contour plots of Z with n contour levels where n is an integer scalar using X and Y to determine the x- and y-axis limits. When X and Y are matrices, they must be the same size as Z and must be monotonically increasing.")]
 		public ContourPlotValue Function(MatrixValue X, MatrixValue Y, MatrixValue Z, ScalarValue n)
-		{
+        {
+            var nn = n.GetIntegerOrThrowException("n", Name);
 			var plot = new ContourPlotValue();
 			plot.AddPoints(X, Y, Z);
-			plot.SetLevels(n.IntValue);
+			plot.SetLevels(nn);
 			return plot;
 		}
 

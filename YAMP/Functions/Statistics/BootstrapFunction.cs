@@ -19,7 +19,7 @@ namespace YAMP
         [Arguments(3, 1)]
         public MatrixValue Function(MatrixValue cfgs, ScalarValue n, FunctionValue f, ArgumentsValue P)
         {
-            var numberOfBootstrapSamples = n.IntValue;
+            var numberOfBootstrapSamples = n.GetIntegerOrThrowException("n", Name);
             var nConfigs = cfgs.DimensionY;
             var nData = cfgs.DimensionX;
 

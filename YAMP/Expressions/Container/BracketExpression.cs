@@ -66,12 +66,12 @@ namespace YAMP
                 var index = start;
                 var line = engine.CurrentLine;
                 var col = engine.CurrentColumn;
-                var container = engine.Advance().ParseStatement(')', (ch, statement) =>
+                var container = engine.Advance().ParseStatement(')', e => new YAMPBracketNotClosedError(line, col), (ch, statement) =>
                 {
                     if (ch == ',')
                     {
                         engine.Advance();
-                        statement.Push(new CommaOperator());
+                        statement.Push(engine, new CommaOperator());
                         return true;
                     }
 

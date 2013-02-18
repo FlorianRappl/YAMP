@@ -97,10 +97,12 @@ namespace YAMP
             
             if (chars[index] == '(')
             {
+                var ln = engine.CurrentLine;
+                var col = engine.CurrentColumn;
                 kw.Initialization = engine.Advance().ParseStatement();
                 kw.Condition = engine.ParseStatement();
                 kw.Condition.IsMuted = false;
-                kw.End = engine.ParseStatement(')');
+                kw.End = engine.ParseStatement(')', e => new YAMPBracketNotClosedError(ln, col));
                 SetMarker(engine);
                 kw.Body = engine.ParseStatement();
                 UnsetMarker(engine);

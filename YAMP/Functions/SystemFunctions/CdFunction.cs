@@ -8,9 +8,9 @@ namespace YAMP
     class CdFunction : SystemFunction
     {
         [Description("The change directory method changes the currently set working directory. This enables you to access all files in the new directory with their file name only.")]
-        [Example("cd(\"..\")", "Navigates to the upper directory of the current working directory.")]
-        [Example("cd(\"C:/\")", "Navigates to the root directory of the drive C.")]
-        [Example("cd(\"../../../\")", "Navigates three directories up.")]
+        [Example("cd(\"..\")", "Navigates to the upper directory of the current working directory.", true)]
+        [Example("cd(\"C:/\")", "Navigates to the root directory of the drive C.", true)]
+        [Example("cd(\"../../../\")", "Navigates three directories up.", true)]
         public void Function(StringValue path)
         {
             var p = path.Value;

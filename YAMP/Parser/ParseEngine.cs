@@ -423,7 +423,7 @@ namespace YAMP
         /// <param name="termination">The custom termination character (e.g. ; for the standard case).</param>
         /// <param name="handleCharacter">An optional function that is invoked for every character.</param>
         /// <returns>The finalized statement.</returns>
-        internal Statement ParseStatement(char termination, Func<char, Statement, bool> handleCharacter = null)
+        internal Statement ParseStatement(char termination, Func<ParseEngine, YAMPParseError> terminationMissing = null, Func<char, Statement, bool> handleCharacter = null)
         {
             var terminated = false;
             var statement = new Statement();
@@ -465,7 +465,8 @@ namespace YAMP
             }
 
             if (!terminated)
-                AddError(new YAMPTerminatorMissingError(currentLine, currentColumn, termination));
+                AddError(terminationMissing != null ? terminationMissing(this) : new YAMPTerminatorMissingError(currentLine, currentColumn, termination));
+
 
             return statement.Finalize(this);
         }
@@ -486,16 +487,22 @@ namespace YAMP
                 if (op == null)
                     AddError(new YAMPOperatorMissingError(currentLine, currentColumn));
 
-                statement.Push(op);
+                statement.Push(this, op);
             }
             else
             {
-                var exp = Elements.Instance.FindExpression(this);
+                var op = Elements.Instance.FindLeftUnaryOperator(this);
 
-                if (exp == null)
-                    AddError(new YAMPExpressionExpectedError(currentLine, currentColumn));
+                if (op == null)
+                {
+                    var exp = Elements.Instance.FindExpression(this);
 
-                statement.Push(exp);
+                    if (exp == null)
+                        AddError(new YAMPExpressionExpectedError(currentLine, currentColumn));
+
+                    statement.Push(this, exp);
+                }
+                else statement.Push(this, op);
             }
 
             return statement;
@@ -514,16 +521,22 @@ namespace YAMP
             if (statement.IsOperator)
             {
                 var op = Elements.Instance.FindOperator(this) ?? defaultOperator;
-                statement.Push(op);
+                statement.Push(this, op);
             }
             else
             {
-                var exp = Elements.Instance.FindExpression(this);
+                var op = Elements.Instance.FindLeftUnaryOperator(this);
 
-                if (exp == null)
-                    AddError(new YAMPExpressionExpectedError(currentLine, currentColumn));
+                if (op == null)
+                {
+                    var exp = Elements.Instance.FindExpression(this);
 
-                statement.Push(exp);
+                    if (exp == null)
+                        AddError(new YAMPExpressionExpectedError(currentLine, currentColumn));
+
+                    statement.Push(this, exp);
+                }
+                else statement.Push(this, op);
             }
 
             return statement;

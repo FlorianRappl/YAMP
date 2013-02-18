@@ -319,12 +319,14 @@ namespace YAMP
         /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
 		{
+            var p3 = new Plot3DValue();
+
 			using (var ds = Deserializer.Create(content))
 			{
-				Deserialize(ds);
-				IsLogX = ds.GetBoolean();
-				IsLogY = ds.GetBoolean();
-				IsLogZ = ds.GetBoolean();
+				p3.Deserialize(ds);
+                p3.IsLogX = ds.GetBoolean();
+                p3.IsLogY = ds.GetBoolean();
+                p3.IsLogZ = ds.GetBoolean();
 				var length = ds.GetInt();
 
 				for (var i = 0; i < length; i++)
@@ -347,11 +349,11 @@ namespace YAMP
 						});
 					}
 
-					AddSeries(points);
+                    p3.AddSeries(points);
 				}
 			}
 
-			return this;
+			return p3;
 		}
 
 		#endregion

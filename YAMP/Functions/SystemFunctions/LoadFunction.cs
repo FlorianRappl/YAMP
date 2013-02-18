@@ -20,7 +20,7 @@ namespace YAMP
         #endregion
 
         [Description("Loads all variables found in the file, if the file contains YAMP variables. Else it treats the file as an ASCII data table or an image file and stores the content as a matrix with the name \"data\" or \"image\".")]
-        [Example("load(\"myfile.mat\")", "Opens the file myfile.mat and reads out all variables.")]
+        [Example("load(\"myfile.mat\")", "Opens the file myfile.mat and reads out all variables.", true)]
         public void Function(StringValue filename)
 		{
             if (!File.Exists(filename.Value))
@@ -85,9 +85,9 @@ namespace YAMP
 		}
 
         [Description("Tries to load the file as the specified file type.")]
-        [Example("load(\"myfile.mat\", \"binary\")", "Opens the file myfile.mat and reads out all variables.")]
-        [Example("load(\"myfile.bmp\", \"image\")", "Opens the image myfile.bmp and transforms the data to a matrix.")]
-        [Example("load(\"myfile.txt\", \"text\")", "Opens the textfile myfile.txt converts the data to a matrix.")]
+        [Example("load(\"myfile.mat\", \"binary\")", "Opens the file myfile.mat and reads out all variables.", true)]
+        [Example("load(\"myfile.bmp\", \"image\")", "Opens the image myfile.bmp and transforms the data to a matrix.", true)]
+        [Example("load(\"myfile.txt\", \"text\")", "Opens the textfile myfile.txt converts the data to a matrix.", true)]
         public void Function(StringValue filename, StringValue filetype)
         {
             var type = (FileType)(new YAMP.Converter.StringToEnumConverter(typeof(FileType)).Convert(filetype));
@@ -157,7 +157,7 @@ namespace YAMP
         }
 
         [Description("Loads specified variables found in the file, if the file contains YAMP variables. Else it treats the file as an ASCII data table or an image file and stores the content as a matrix with the name of the first variable.")]
-        [Example("load(\"myfile.mat\", \"x\", \"y\", \"z\")", "Opens the file myfile.mat and reads out variables that have been named x, y and z.")]
+        [Example("load(\"myfile.mat\", \"x\", \"y\", \"z\")", "Opens the file myfile.mat and reads out variables that have been named x, y and z.", true)]
 		[Arguments(1, 1)]
         public void Function(StringValue filename, ArgumentsValue args)
         {

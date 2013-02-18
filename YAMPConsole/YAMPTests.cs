@@ -27,6 +27,8 @@
 
 using System;
 using System.Diagnostics;
+using YAMP;
+using YAMP.Help;
 
 namespace YAMPConsole
 {
@@ -41,18 +43,96 @@ namespace YAMPConsole
         {
             Console.WriteLine("DEBUG MODE");
             Console.WriteLine("----------");
+
+            Console.WriteLine();
             Console.WriteLine("Testing the core . . .");
             TestCore();
 
             Console.WriteLine("Press any key to continue . . .");
             Console.ReadKey();
+
+            Console.WriteLine();
             Console.WriteLine("Testing physics library . . .");
             TestPhysics();
+
+            Console.WriteLine("Press any key to continue . . .");
+            Console.ReadKey();
+
+            Console.WriteLine();
+            Console.WriteLine("Testing examples . . .");
+            TestExamples();
+        }
+
+        static void TestExamples()
+        {
+            var success = 0;
+            var failed = 0;
+            var doc = Documentation.Create(Parser.PrimaryContext);
+            var count = 0;
+
+            Console.WriteLine();
+
+            foreach (var section in doc.Sections)
+            {
+                if (section is HelpFunctionSection)
+                {
+                    var f = (HelpFunctionSection)section;
+
+                    foreach (var usage in f.Usages)
+                    {
+                        foreach (var example in usage.Examples)
+                        {
+                            if (example.IsFile)
+                                continue;
+
+                            count++;
+
+                            try
+                            {
+                                var parser = YAMP.Parser.Parse(example.Example);
+                                parser.Execute();
+                                success++;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Caution:");
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.WriteLine(ex.Message);
+                                Console.ResetColor();
+                                Console.WriteLine("At example: " + example.Example);
+                                Console.Write("For usage: " + usage.Usage);
+                                Console.WriteLine("In function: " + f.Name);
+                                Console.WriteLine();
+                                failed++;
+                            }
+
+                            if (count % 20 == 0)
+                                Console.WriteLine("{0} elements have been processed . . .", count);
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine("Test finished. Result: {0} / {1} seem to be working.", success, success + failed);
+
+            if (failed != 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Overall: Test failed!");
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Overall: Test succeeded!");
+                Console.ResetColor();
+            }
         }
 
         static void TestCore()
         {
-            YAMP.Parser.UseScripting = true;
+            Parser.UseScripting = true;
             success = 0;
             total = 0;
             var sw = Stopwatch.StartNew();
@@ -106,6 +186,7 @@ namespace YAMPConsole
             Test("det([1;2]*[2,1])", 0.0);
             Test("X=(Y=5)+2", 7.0);
             Test("Y", 5.0);
+            Test("2^-2", 0.25);
             Test("[1,2,3;4,5,6;7,8,9](2,3)", 6.0);
             Test("|cos(1+i)|", 1.2934544550420957);
             Test("|arccos(0.83373002513-0.988897705i)|", 1.4142135618741407);
@@ -128,8 +209,8 @@ namespace YAMPConsole
             Test(" [2 2 * 2 - 2^3 4](1, 2) ", -4.0);
             Test("sum([0:10, 2^(0:2:20), 2^(1:2:21)](:,1))", 55.0);
             Test("length(-pi/4:0.1:pi/4)", 16.0);
-            Test("polar(-pi/4:0.1:pi/4, [sin(-pi/4:0.1:pi/4), cos(-pi/4:0.1:pi/4), tan(-pi/4:0.1:pi/4)])", 3);
-            Test("plot([0:10, 2^(0:2:20), 2^(1:2:21)])", 2);
+            Test("polar(-pi/4:0.1:pi/4, [sin(-pi/4:0.1:pi/4), cos(-pi/4:0.1:pi/4), tan(-pi/4:0.1:pi/4)])", new PlotSeries(3));
+            Test("plot([0:10, 2^(0:2:20), 2^(1:2:21)])", new PlotSeries(2));
             Test("|1:1:3|", Math.Sqrt(1 + 4 + 9));
             Test("|[1,2,3]|", Math.Sqrt(1 + 4 + 9));
             Test("|[1;2;3]|", Math.Sqrt(1 + 4 + 9));
@@ -160,7 +241,7 @@ namespace YAMPConsole
             Test("x = []; y = 0; for(i = 1; i <= 10; i+=1) { y+=i; x(i) = y; } x(10) - x(9)", 10.0);
             Test("x = 9; y = 5; if(x > y) { t = x; x = y; y = t; } y - x", 4.0);
             Test("x = [3 + randn(100, 1), 10 + 2 * randn(100, 1)]; sum(sum(Bootstrap(x, 200, avg) - Jackknife(x, 20, avg))) < 0.1", 1.0);
-            Test("sum(dim([\n1 2 3 4\n5 6 7 8]))", 6.0);
+            Test("sum(size([\n1 2 3 4\n5 6 7 8]))", 6.0);
             Test("zeta(0.5)", -1.4603545088095868);
             Test("zeta(0)", -0.49999999999999994);
             Test("eval(\"2+3\")", 5.0);
@@ -177,6 +258,8 @@ namespace YAMPConsole
             Test("sum(polyfit([0,1,2,3,4,5], [3,3,5,9,15,23], 2))", 3.0000000000000031);
             Test("([3 2 1] - [1 2 3])(3)", -2.0);
             Test("([3 2 1] + [1 2 3])(2)", 4.0);
+            Test("2^-1^-1", 0.5);
+            Test("(2^-1)^-1", 2.0);
 
             sw.Stop();
 
@@ -227,7 +310,7 @@ namespace YAMPConsole
 
         static bool Test(string query, double xmin, double xmax, CompareAction compare)
         {
-            var parser = YAMP.Parser.Parse(query);
+            var parser = Parser.Parse(query);
             Console.WriteLine("Testing: {0} = ...", query);
             var x = xmin;
             var success = 0;
@@ -250,20 +333,20 @@ namespace YAMPConsole
 
         static bool Test(string query, double x, double result)
         {
-            var parser = YAMP.Parser.Parse(query);
+            var parser = Parser.Parse(query);
             Console.WriteLine("Testing: {0} = ...", query);
             var value = parser.Execute(new { x });
             Console.WriteLine("with x = {2};\n{0}\n-> correct: {1}", value, result, x);
             return Assert(value, result);
         }
 
-        static bool Test(string query, int series)
+        static bool Test(string query, PlotSeries series)
         {
-            var parser = YAMP.Parser.Parse(query);
+            var parser = Parser.Parse(query);
             Console.WriteLine("Testing: {0} = ...", query);
             var value = (YAMP.PlotValue)parser.Execute();
-            Console.WriteLine("{0}\n-> correct: {1}", value.Count, series);
-            return Assert(value.Count, series);
+            Console.WriteLine("{0}\n-> correct: {1}", value.Count, series.Number);
+            return Assert(value.Count, series.Number);
         }
 
         static bool Test(string query, double result)
@@ -306,6 +389,16 @@ namespace YAMPConsole
             Console.ResetColor();
             Console.WriteLine("---");
             return isSuccess;
+        }
+
+        class PlotSeries
+        {
+            public PlotSeries(int num)
+            {
+                Number = num;
+            }
+
+            public int Number { get; private set; }
         }
 
         #endregion

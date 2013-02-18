@@ -35,8 +35,8 @@ namespace YAMP
         [Example("randr(3, 1, 10)", "Gives a 3x1 matrix with Rayleigh dist. rand. values with the mode sigma set to 10.")]
         public MatrixValue Function(ScalarValue rows, ScalarValue cols, ScalarValue sigma)
         {
-            var n = (int)rows.Value;
-            var l = (int)cols.Value;
+            var n = rows.GetIntegerOrThrowException("rows", Name);
+            var l = cols.GetIntegerOrThrowException("cols", Name);
             var m = new MatrixValue(n, l);
 
             for (var i = 1; i <= l; i++)

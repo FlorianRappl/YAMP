@@ -43,23 +43,40 @@ namespace YAMP
         /// </summary>
         /// <param name="example">The example to store.</param>
         /// <param name="description">The description to store.</param>
-        public ExampleAttribute(string example, string description)
+        /// <param name="file">The status if the file system is manipulated.</param>
+        public ExampleAttribute(string example, string description, bool file)
         {
             Example = example;
             Description = description;
+            IsFile = file;
         }
 
         /// <summary>
         /// Creates a new example attribute with the specified example string.
         /// </summary>
         /// <param name="example">The example to store.</param>
-        public ExampleAttribute(string example) : this(example, string.Empty)
+        /// <param name="description">The description to store.</param>
+        public ExampleAttribute(string example, string description)
+            : this(example, description, false)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new example attribute with the specified example string.
+        /// </summary>
+        /// <param name="example">The example to store.</param>
+        public ExampleAttribute(string example) : this(example, string.Empty, false)
         {
         }
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets if the example performs an operation on the file system.
+        /// </summary>
+        public bool IsFile { get; private set; }
 
         /// <summary>
         /// Gets the example.

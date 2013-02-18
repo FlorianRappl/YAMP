@@ -294,11 +294,13 @@ namespace YAMP
         /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
 		{
+            var p2 = new Plot2DValue();
+
 			using (var ds = Deserializer.Create(content))
 			{
-				Deserialize(ds);
-				IsLogX = ds.GetBoolean();
-				IsLogY = ds.GetBoolean();
+				p2.Deserialize(ds);
+                p2.IsLogX = ds.GetBoolean();
+                p2.IsLogY = ds.GetBoolean();
 				var length = ds.GetInt();
 
 				for (var i = 0; i < length; i++)
@@ -319,11 +321,11 @@ namespace YAMP
 						});
 					}
 
-					AddSeries(points);
+                    p2.AddSeries(points);
 				}
 			}
 
-			return this;
+			return p2;
 		}
 
 		#endregion

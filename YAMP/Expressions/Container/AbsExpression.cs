@@ -68,7 +68,7 @@ namespace YAMP
             {
                 var line = engine.CurrentLine;
                 var col = engine.CurrentColumn;
-                var container = engine.Advance().ParseStatement('|').Container;
+                var container = engine.Advance().ParseStatement('|', e => new YAMPTerminatorMissingError(line, col, '|')).Container;
                 return new AbsExpression(line, col, engine.Pointer - start, engine.Query, container);
             }
 

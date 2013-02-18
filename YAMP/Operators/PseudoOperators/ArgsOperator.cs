@@ -35,7 +35,7 @@ namespace YAMP
     /// <summary>
     /// Operator for arguments () for symbols (usually functions!).
     /// </summary>
-    class ArgsOperator : UnaryOperator
+    class ArgsOperator : RightUnaryOperator
     {
         #region Members
 

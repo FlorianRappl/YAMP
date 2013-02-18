@@ -19,8 +19,8 @@ namespace YAMP
 		[Description("Generates a n-by-n matrix with uniformly dist. random values between 0 and 1.")]
 		[Example("rand(5)", "Generates a 5x5 matrix with an uni. dist. rand. value in each cell.")]
 		public MatrixValue Function(ScalarValue dim)
-		{
-			var k = (int)dim.Value;
+        {
+            var k = dim.GetIntegerOrThrowException("dim", Name);
 
 			if (k < 1)
 				k = 1;
@@ -37,9 +37,9 @@ namespace YAMP
 		[Description("Generates a n-by-m matrix with uniformly dist. random values between 0 and 1.")]
 		[Example("rand(5, 2)", "Generates a 5x2 matrix with an uni. dist. rand. value in each cell.")]
 		public MatrixValue Function(ScalarValue rows, ScalarValue cols)
-		{
-			var k = (int)rows.Value;
-			var l = (int)cols.Value;
+        {
+            var k = rows.GetIntegerOrThrowException("rows", Name);
+            var l = cols.GetIntegerOrThrowException("cols", Name);
 			var m = new MatrixValue(k, l);
 			
 			for(var i = 1; i <= l; i++)

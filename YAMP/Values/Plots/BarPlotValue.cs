@@ -142,10 +142,12 @@ namespace YAMP
         /// <param name="content">The binary representation.</param>
         /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
-		{
+        {
+            var bp = new BarPlotValue();
+
 			using (var ds = Deserializer.Create(content))
 			{
-				Deserialize(ds);
+				bp.Deserialize(ds);
 				var length = ds.GetInt();
 
 				for (var i = 0; i < length; i++)
@@ -158,11 +160,11 @@ namespace YAMP
 					    points.Add(ds.GetDouble());
 
 					points.BarWidth = ds.GetDouble();
-					AddSeries(points);
+					bp.AddSeries(points);
 				}
 			}
 
-			return this;
+			return bp;
 		}
 
 		#endregion

@@ -294,11 +294,13 @@ namespace YAMP
         /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
+            var ep = new ErrorPlotValue();
+
             using (var ds = Deserializer.Create(content))
             {
-                Deserialize(ds);
-                IsLogX = ds.GetBoolean();
-                IsLogY = ds.GetBoolean();
+                ep.Deserialize(ds);
+                ep.IsLogX = ds.GetBoolean();
+                ep.IsLogY = ds.GetBoolean();
                 var length = ds.GetInt();
 
                 for (var i = 0; i < length; i++)
@@ -323,11 +325,11 @@ namespace YAMP
                         });
                     }
 
-                    AddSeries(points);
+                    ep.AddSeries(points);
                 }
             }
 
-            return this;
+            return ep;
         }
 
         #endregion

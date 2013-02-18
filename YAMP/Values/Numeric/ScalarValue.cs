@@ -189,7 +189,7 @@ namespace YAMP
         {
             get 
             {
-                return (double)IntValue == Value && ImaginaryValue == 0.0;
+                return Math.Floor(_real) == _real && _imag == 0.0;
             }
         }
 
@@ -200,7 +200,7 @@ namespace YAMP
         {
             get
             {
-                if (IsInt && IntValue > 0)
+                if (IsInt && _real > 0)
                     return IsPrimeNumber(IntValue);
 
                 return false;
@@ -232,6 +232,24 @@ namespace YAMP
             {
                 return _real == 0.0 && _imag == 0.0;
             }
+        }
+
+        #endregion
+
+        #region General methods
+
+        /// <summary>
+        /// Gets the integer value or throws an exception if either the imaginary part is not 0 or the real part is not integer.
+        /// </summary>
+        /// <param name="argumentName">The name of the variable that is requested.</param>
+        /// <param name="functionName">The name of the function where this is requested.</param>
+        /// <returns>The scalar value represented as an integer.</returns>
+        public int GetIntegerOrThrowException(string argumentName, string functionName)
+        {
+            if (!IsInt)
+                throw new YAMPArgumentWrongTypeException("Scalar", "Integer", functionName, argumentName);
+
+            return IntValue;
         }
 
         #endregion
@@ -636,9 +654,9 @@ namespace YAMP
         /// <returns>The new instance.</returns>
 		public override Value Deserialize(byte[] content)
 		{
-			_real = BitConverter.ToDouble(content, 0);
-			_imag = BitConverter.ToDouble(content, 8);
-			return this;
+			var real = BitConverter.ToDouble(content, 0);
+			var imag = BitConverter.ToDouble(content, 8);
+			return new ScalarValue(real, imag);
 		}
 
         #endregion

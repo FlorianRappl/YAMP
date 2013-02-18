@@ -2,37 +2,29 @@ using System;
 
 namespace YAMP
 {
-	[Description("Outputs the dimensions of the given object.")]
+	[Description("Outputs the dimension of the given object.")]
 	[Kind(PopularKinds.Function)]
-	class DimFunction : StandardFunction
+	class DimFunction : ArgumentFunction
 	{
-		[Description("Returns a row vector containing the number of rows (1, 1) and the number of columns (1, 2).")]
-		[Example("dim([1,2,3,4,5])", "Results in a vector with the elements 1 and 5, since we have 5 columns and 1 row.")]
-		public override Value Perform (Value argument)
+		[Description("Returns a scalar containing the dimension of the given matrix.")]
+		[Example("dim([1,2,3,4,5])", "Results in the value 5.")]
+		public ScalarValue Function(MatrixValue M)
 		{
-			var m = new MatrixValue();
-			var dimx = 1;
-			var dimy = 1;
-
-			if(argument is MatrixValue)
-			{
-				var t = argument as MatrixValue;
-				dimx = t.DimensionX;
-				dimy = t.DimensionY;
-			}
-			else if(argument is StringValue)
-			{
-				var t = argument as StringValue;
-				dimx = t.Value.Length;
-				dimy = 1;
-			}
-			else if(!(argument is ScalarValue))
-				throw new YAMPOperationInvalidException("length", argument);
-
-			m[1, 1] = new ScalarValue(dimy);
-			m[1, 2] = new ScalarValue(dimx);
-			return m;
+            return new ScalarValue(Math.Max(M.DimensionX, M.DimensionY));
 		}
+
+        [Description("Returns a scalar containing the length of the given scalar, which is always 1.")]
+        public ScalarValue Function(ScalarValue str)
+        {
+            return new ScalarValue(1);
+        }
+
+        [Description("Returns a scalar containing the length of the given string.")]
+        [Example("dim(\"hello\")", "Results in the value 5.")]
+        public ScalarValue Function(StringValue str)
+        {
+            return new ScalarValue(str.Length);
+        }
 	}
 }
 

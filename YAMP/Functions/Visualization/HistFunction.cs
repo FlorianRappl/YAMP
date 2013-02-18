@@ -46,18 +46,19 @@ namespace YAMP
 		[Description("Bins the elements in vector Y into nbins equally spaced containers and plots the number of elements as before.")]
 		[Example("hist(rand(100, 1), 20)", "Places 100 uniformly generated random numbers into 20 bins with a spacing that should be approximately 0.05.")]
 		public BarPlotValue Function(MatrixValue Y, ScalarValue nbins)
-		{
+        {
+            var nn = nbins.GetIntegerOrThrowException("nbins", Name);
 			var bp = new BarPlotValue();
 
 			if (Y.IsVector)
-				bp.AddPoints(Histogram(Y, nbins.IntValue));
+				bp.AddPoints(Histogram(Y, nn));
 			else
 			{
 				var M = new MatrixValue();
 
 				for (var i = 1; i <= Y.DimensionX; i++)
 				{
-					var N = Histogram(Y.GetColumnVector(i), nbins.IntValue);
+					var N = Histogram(Y.GetColumnVector(i), nn);
 
 					for (var j = 1; j <= N.Length; j++)
 						M[j, i] = N[j];

@@ -18,14 +18,14 @@ namespace YAMP
         [Arguments(3, 1)]
         public MatrixValue Function(MatrixValue cfgs, ScalarValue n, FunctionValue f, ArgumentsValue P)
         {
-            var NumberOfBlocks = n.IntValue;
+            var numberOfBlocks = n.GetIntegerOrThrowException("n", Name);
             var nConfigs = cfgs.DimensionY;
             var nData = cfgs.DimensionX;
 
-            if (NumberOfBlocks > nConfigs)
+            if (numberOfBlocks > nConfigs)
                 throw new YAMPException("Jackknife: The number of measurements n is greater than the number of configurations cfgs!");
 
-            if (NumberOfBlocks <= 1)
+            if (numberOfBlocks <= 1)
                 throw new YAMPException("Jackknife: The number of measurements n <= 1!");
 
             var parameters = new ArgumentsValue(cfgs);
@@ -43,14 +43,14 @@ namespace YAMP
             else
                 throw new YAMPException("Jackknife: Observable f has to return either a scalar or a matrix!");
 
-            var JackknifeObservable = new MatrixValue(NumberOfBlocks, nResult);
-            var BlockSize = nConfigs / NumberOfBlocks;
-            var nConfigsBlocked = BlockSize * NumberOfBlocks;
+            var JackknifeObservable = new MatrixValue(numberOfBlocks, nResult);
+            var BlockSize = nConfigs / numberOfBlocks;
+            var nConfigsBlocked = BlockSize * numberOfBlocks;
             var residualConfigs = nConfigs - nConfigsBlocked;
 
-            for (int i = 1; i <= NumberOfBlocks; i++)
+            for (int i = 1; i <= numberOfBlocks; i++)
             {
-                if (i <= NumberOfBlocks - residualConfigs)
+                if (i <= numberOfBlocks - residualConfigs)
                 {
                     //the first (NumberOfBlocks - residualConfigs) blocks discard (BlockSize) elements ...
                     var JackknifeConfigs = new MatrixValue(nConfigs - BlockSize, nData);
@@ -74,7 +74,7 @@ namespace YAMP
                     var JackknifeConfigs = new MatrixValue(nConfigs - BlockSize - 1, nData);
                     int j = 1;
 
-                    for (; j <= nConfigs - (NumberOfBlocks - (i - 1)) * (BlockSize + 1); j++)
+                    for (; j <= nConfigs - (numberOfBlocks - (i - 1)) * (BlockSize + 1); j++)
                         for (int k = 1; k <= nData; k++)
                             JackknifeConfigs[j, k] = cfgs[j, k];
 
@@ -105,7 +105,7 @@ namespace YAMP
 
             temp = AvgFunction.Average(JackknifeObservable);
 
-            for (int i = 1; i <= NumberOfBlocks; i++)
+            for (int i = 1; i <= numberOfBlocks; i++)
             {
                 if (temp is ScalarValue)
                 {
@@ -125,7 +125,7 @@ namespace YAMP
             }
 
             var error = AvgFunction.Average(JackknifeObservable);
-            var scale = NumberOfBlocks - 1.0;
+            var scale = numberOfBlocks - 1.0;
 
             if (error is ScalarValue)
                 error = ((ScalarValue)error) * scale;

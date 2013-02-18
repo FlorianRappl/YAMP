@@ -9,7 +9,7 @@ namespace YAMP
     class GMRESFunction : ArgumentFunction
     {
         [Description("Computes the solution vector x for a given matrix A and a source vector b.")]
-        [Example("gmres(A, b)", "Here A is an arbitrary matrix with n columns and b is an arbitrary source vector with n rows.")]
+        [Example("gmres(rand(3), rand(3,1))", "Here A is a random 3x3 matrix and b is a random source vector with 3 rows.")]
         public MatrixValue Function(MatrixValue A, MatrixValue b)
         {
             var gmres = new GMRESkSolver(A);
@@ -17,7 +17,7 @@ namespace YAMP
         }
 
         [Description("Computes the solution vector x for a given matrix A, a specified starting solution x0 (guess) and a source vector b.")]
-        [Example("gmres(A, x0, b)", "Here A is an arbitrary matrix with n columns, x0 is an arbitrary start vector with n rows and b is an arbitrary source vector with n rows.")]
+        [Example("gmres(rand(3), [1;0;0], rand(3,1))", "Here A is a random 3x3 matrix, x0 is a start vector with 3 rows (1,0,0) and b is a random source vector with 3 rows.")]
         public MatrixValue Function(MatrixValue A, MatrixValue x, MatrixValue b)
         {
             var gmres = new GMRESkSolver(A);

@@ -40,24 +40,30 @@ namespace YAMP.Physics
         [Example("ylm(1, 1, pi / 2, 0)", "Evaluates the spherical harmonics Ylm(theta ,phi) with l = 1, m = 1, theta = pi / 2 and phi = 0.")]
         public ScalarValue Function(ScalarValue l, ScalarValue m, ScalarValue theta, ScalarValue phi)
         {
-            if (l.IntValue < 0)
+            var nn = l.GetIntegerOrThrowException("l", Name);
+
+            if (nn < 0)
                 throw new Exception("Spherical harmonics of order l < 0 does not make sense.");
 
-            return new ScalarValue(Ylm(l.IntValue, m.IntValue, theta.Value, phi.Value));
+            var nm = m.GetIntegerOrThrowException("m", Name);
+            return new ScalarValue(Ylm(nn, nm, theta.Value, phi.Value));
         }
 
         [Description("Computes the spherical harmonics at given l, m with multiple values for theta and one value for phi. This results in a matrix of Ylm values for the given l, m at the given angles. The matrix has the dimension of theta.")]
         [Example("ylm(1, 1, [-pi / 2, pi / 2; 0, pi], 0)", "Evaluates the spherical harmonics Ylm(theta ,phi) with l = 1, m = 1, theta = a 2 x2 matrix and phi = 0.")]
         public MatrixValue Function(ScalarValue l, ScalarValue m, MatrixValue theta, ScalarValue phi)
         {
-            if (l.IntValue < 0)
+            var nn = l.GetIntegerOrThrowException("l", Name);
+
+            if (nn < 0)
                 throw new Exception("Spherical harmonics of order l < 0 does not make sense.");
 
+            var nm = m.GetIntegerOrThrowException("m", Name);
             var M = new MatrixValue(theta.DimensionY, theta.DimensionX);
 
             for(var i = 1; i <= theta.DimensionX; i++)
                 for(var j = 1; j <= theta.DimensionY; j++)
-                    M[j, i] = new ScalarValue(Ylm(l.IntValue, m.IntValue, theta[j, i].Value, phi.Value));
+                    M[j, i] = new ScalarValue(Ylm(nn, nm, theta[j, i].Value, phi.Value));
 
             return M;
         }
@@ -66,14 +72,17 @@ namespace YAMP.Physics
         [Example("ylm(1, 1, pi / 2, 0 : pi / 10 : pi)", "Evaluates the spherical harmonics Ylm(theta ,phi) with l = 1, m = 1, theta = pi / 2 and phi being a vector from 0 to pi with a spacing of pi / 10.")]
         public MatrixValue Function(ScalarValue l, ScalarValue m, ScalarValue theta, MatrixValue phi)
         {
+            var nn = l.GetIntegerOrThrowException("l", Name);
+
             if (l.IntValue < 0)
                 throw new Exception("Spherical harmonics of order l < 0 does not make sense.");
 
+            var nm = m.GetIntegerOrThrowException("m", Name);
             var M = new MatrixValue(phi.DimensionY, phi.DimensionX);
 
             for (var i = 1; i <= phi.DimensionX; i++)
                 for (var j = 1; j <= phi.DimensionY; j++)
-                    M[j, i] = new ScalarValue(Ylm(l.IntValue, m.IntValue, theta.Value, phi[j, i].Value));
+                    M[j, i] = new ScalarValue(Ylm(nn, nm, theta.Value, phi[j, i].Value));
 
             return M;
         }
@@ -82,14 +91,17 @@ namespace YAMP.Physics
         [Example("ylm(1, 1, [-pi / 2, pi / 2; 0, pi], 0 : pi / 10 : pi)", "Evaluates the spherical harmonics Ylm(theta ,phi) with l = 1, m = 1, theta = a 2 x2 matrix and phi = 0 : pi / 10 : pi.")]
         public MatrixValue Function(ScalarValue l, ScalarValue m, MatrixValue theta, MatrixValue phi)
         {
-            if (l.IntValue < 0)
+            var nn = l.GetIntegerOrThrowException("l", Name);
+
+            if (nn < 0)
                 throw new Exception("Spherical harmonics of order l < 0 does not make sense.");
 
             var M = new MatrixValue(theta.Length, phi.Length);
+            var nm = m.GetIntegerOrThrowException("m", Name);
 
             for (var i = 1; i <= phi.Length; i++)
                 for (var j = 1; j <= theta.Length; j++)
-                    M[j, i] = new ScalarValue(Ylm(l.IntValue, m.IntValue, theta[j].Value, phi[i].Value));
+                    M[j, i] = new ScalarValue(Ylm(nn, nm, theta[j].Value, phi[i].Value));
 
             return M;
         }

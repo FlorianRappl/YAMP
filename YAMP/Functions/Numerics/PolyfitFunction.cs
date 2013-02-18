@@ -15,7 +15,8 @@ namespace YAMP
             if (x.Length != y.Length)
                 throw new YAMPDifferentLengthsException(x.Length, y.Length);
 
-            var m = n.IntValue + 1;
+            var nn = n.GetIntegerOrThrowException("n", Name);
+            var m = nn + 1;
 
             if (m < 2)
                 throw new YAMPArgumentRangeException("n", 0.0);

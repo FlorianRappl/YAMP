@@ -43,5 +43,10 @@ namespace YAMP.Help
         /// Gets or sets the given description of the example.
         /// </summary>
 		public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets if the example accesses the file system.
+        /// </summary>
+        public bool IsFile { get; set; }
 	}
 }

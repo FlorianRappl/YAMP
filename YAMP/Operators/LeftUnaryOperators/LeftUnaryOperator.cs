@@ -26,31 +26,14 @@
 */
 
 using System;
-using System.Collections.Generic;
 
 namespace YAMP
 {
-    /// <summary>
-    /// This is the prefix decrement operator --.
-    /// </summary>
-    class PreDecOperator : LeftUnaryOperator
+    abstract class LeftUnaryOperator : UnaryOperator
     {
-        public PreDecOperator()
-            : base("--", 999)
+        public LeftUnaryOperator(string op, int level) : base(op, level)
         {
-        }
-
-        public override Value Handle(Expression left, Expression right, Dictionary<string, Value> symbols)
-        {
-            var a = MinusAssignmentOperator.CreateWithContext(Query);
-            a.Handle(right, new NumberExpression(new ScalarValue(1.0)), symbols);
-            return right.Interpret(symbols);
-        }
-
-        public override Operator Create()
-        {
-            return new PreDecOperator();
+            IsRightToLeft = false;
         }
     }
 }
-

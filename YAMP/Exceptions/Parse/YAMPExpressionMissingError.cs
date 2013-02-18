@@ -13,5 +13,10 @@ namespace YAMP
             : this(pe.CurrentLine, pe.CurrentColumn)
         {
         }
+
+        public YAMPExpressionMissingError(ParseEngine pe, Operator op, int found)
+            : base(pe.CurrentLine, pe.CurrentColumn, "The {0} operator requires {1} expression(s), but only {2} expression(s) have been found.", op.Op, op.Expressions, found)
+        {
+        }
     }
 }

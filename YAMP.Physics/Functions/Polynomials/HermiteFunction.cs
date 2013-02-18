@@ -39,23 +39,27 @@ namespace YAMP.Physics
         [Example("hermite(2, 1.5)", "Evaluates the Hermite polynomial of order 2 at the point z = 1.5.")]
         public ScalarValue Function(ScalarValue n, ScalarValue z)
         {
-            if (n.IntValue < 0)
+            var nn = n.GetIntegerOrThrowException("n", Name);
+
+            if (nn < 0)
                 throw new Exception("Hermite polynomial of order n < 0 does not make sense.");
 
-            return HermitePolynomial(n.IntValue, z);
+            return HermitePolynomial(nn, z);
         }
 
         [Description("Evaluates the Hermite polynomial of some order n at the given points of the matrix Z in C.")]
         [Example("hermite(3, [0, 0.5, 1.0 1.5])", "Evaluates the Hermite polynomial of order 3 at the points z = 0, 0.5, 1.0 and 1.5.")]
         public MatrixValue Function(ScalarValue n, MatrixValue Z)
         {
-            if (n.IntValue < 0)
+            var nn = n.GetIntegerOrThrowException("n", Name);
+
+            if (nn < 0)
                 throw new Exception("Hermite polynomial of order n < 0 does not make sense.");
 
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var i = 1; i <= Z.Length; i++)
-                M[i] = HermitePolynomial(n.IntValue, Z[i]);
+                M[i] = HermitePolynomial(nn, Z[i]);
 
             return M;
         }

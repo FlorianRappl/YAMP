@@ -40,10 +40,7 @@ namespace YAMP.Physics
         [Example("polylog(1, 0.3)", "Evaluates the polylogarithm for s = 1 and z = 0.3.")]
         public ScalarValue Function(ScalarValue s, ScalarValue z)
         {
-            if (!s.IsInt)
-                throw new YAMPArgumentWrongTypeException(s.Header, "Integer", Name);
-
-            var n = s.IntValue;
+            var n = s.GetIntegerOrThrowException("s", Name);
             return Polylog(n, z);
         }
 
@@ -51,10 +48,7 @@ namespace YAMP.Physics
         [Example("polylog(1, [0.1 0.3 0.5 1.0])", "Evaluates the polylogarithm for s = 1 at z = 0.1, z = 0.3, z = 0.5 and z = 1.0.")]
         public MatrixValue Function(ScalarValue s, MatrixValue Z)
         {
-            if (!s.IsInt)
-                throw new YAMPArgumentWrongTypeException(s.Header, "Integer", Name);
-
-            var n = s.IntValue;
+            var n = s.GetIntegerOrThrowException("s", Name);
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var j = 1; j <= Z.DimensionY; j++)

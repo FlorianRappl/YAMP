@@ -40,10 +40,7 @@ namespace YAMP.Physics
         [Example("psi(3, 1)", "Computes the polylogarithm with n = 3 at z = 1. The result is 3! * Hzeta(4, 1) or pi^4 / 15.")]
         public ScalarValue Function(ScalarValue n, ScalarValue z)
         {
-            if (!n.IsInt)
-                throw new YAMPArgumentWrongTypeException(n.Header, "Integer", Name);
-
-            var m = n.IntValue;
+            var m = n.GetIntegerOrThrowException("n", Name);
             return Psi(m, z);
         }
 
@@ -51,10 +48,7 @@ namespace YAMP.Physics
         [Example("psi(3, [0.5, 1, 1.5; 2, 2.5, 3])", "Computes the polylogarithm with n = 3 at z = 0.5, 1, 1.5, ..., 3.0. The result is given in form of a matrix with the same dimensions as Z.")]
         public MatrixValue Function(ScalarValue n, MatrixValue Z)
         {
-            if (!n.IsInt)
-                throw new YAMPArgumentWrongTypeException(n.Header, "Integer", Name);
-
-            var m = n.IntValue;
+            var m = n.GetIntegerOrThrowException("n", Name);
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var j = 1; j <= Z.DimensionY; j++)

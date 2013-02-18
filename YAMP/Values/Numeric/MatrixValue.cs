@@ -408,8 +408,9 @@ namespace YAMP
         /// <returns>The new instance.</returns>
         public override Value Deserialize(byte[] content)
         {
-            dimY = BitConverter.ToInt32(content, 0);
-            dimX = BitConverter.ToInt32(content, 4);
+            var dimY = BitConverter.ToInt32(content, 0);
+            var dimX = BitConverter.ToInt32(content, 4);
+            var M = new MatrixValue(dimY, dimX);
             var count = BitConverter.ToInt32(content, 8);
             var pos = 12;
 
@@ -419,7 +420,7 @@ namespace YAMP
                 var col = BitConverter.ToInt32(content, pos + 4);
                 var re = BitConverter.ToDouble(content, pos + 8);
                 var im = BitConverter.ToDouble(content, pos + 16);
-                _values.Add(new MatrixIndex
+                M._values.Add(new MatrixIndex
                 {
                     Column = col,
                     Row = row
@@ -428,7 +429,7 @@ namespace YAMP
                 pos += 24;
             }
 
-            return this;
+            return M;
         }
 
         #endregion
