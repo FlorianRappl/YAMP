@@ -205,7 +205,7 @@ namespace YAMP
                     if (Output is ArgumentsValue)
                         Output = ((ArgumentsValue)Output).First();
 
-                    Context.AssignVariable("$", Output);
+                    Context.AssignVariable(YAMP.Parser.answer, Output);
                 }
             }
 		}

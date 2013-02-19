@@ -51,6 +51,38 @@ namespace YAMP
         #region Properties
 
         /// <summary>
+        /// Gets if the matrix has any non-zero elements.
+        /// </summary>
+        public virtual bool HasElements
+        {
+            get 
+            {
+                for (var j = 1; j <= dimY; j++)
+                    for (var i = 1; i <= dimX; i++)
+                        if (this[i, j] != ScalarValue.Zero)
+                            return true;
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets if the matrix has only non-zero elements.
+        /// </summary>
+        public virtual bool HasNoZeros
+        {
+            get
+            {
+                for (var j = 1; j <= dimY; j++)
+                    for (var i = 1; i <= dimX; i++)
+                        if (this[i, j] == ScalarValue.Zero)
+                            return false;
+
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Gets the status of the matrix - is it dense?
         /// Def. of dense: # of values \neq 0 greater 1.5 * \sqrt length.
         /// Example: Rows = 10, Columns = 10, i.e. more than 15 elements = dense.
@@ -228,6 +260,27 @@ namespace YAMP
 				}
 			}
 		}
+
+        /// <summary>
+        /// Constructs a new matrix based on the jagged double array.
+        /// </summary>
+        /// <param name="values">The values to use.</param>
+        /// <param name="rows">The number of rows in the new matrix.</param>
+        /// <param name="cols">The number of columns in the matrix.</param>
+        public MatrixValue(ScalarValue[][] values, int rows, int cols)
+            : this(rows, cols)
+        {
+            for (var j = 0; j < values.Length; j++)
+            {
+                for (var i = 0; i < values[j].Length; i++)
+                {
+                    if (values[j][i] == 0.0)
+                        continue;
+
+                    this[j + 1, i + 1] = values[j][i];
+                }
+            }
+        }
 
         /// <summary>
         /// Constructs a new matrix based on the given two dimensional array.
@@ -920,7 +973,7 @@ namespace YAMP
 				}
 
 				var lu = new YAMP.Numerics.LUDecomposition(this);
-				return new ScalarValue(lu.Determinant());
+				return lu.Determinant();
 			}
 
 			return new ScalarValue();
@@ -1105,6 +1158,25 @@ namespace YAMP
 
 			return array;
 		}
+
+        /// <summary>
+        /// Gets a real matrix of the complete matrix.
+        /// </summary>
+        /// <returns>A jagged 2D array.</returns>
+        public ScalarValue[][] GetComplexMatrix()
+        {
+            var array = new ScalarValue[DimensionY][];
+
+            for (var j = 0; j < DimensionY; j++)
+            {
+                array[j] = new ScalarValue[DimensionX];
+
+                for (var i = 0; i < DimensionX; i++)
+                    array[j][i] = this[j + 1, i + 1];
+            }
+
+            return array;
+        }
 
         /// <summary>
         /// Creates a sub matrix of the given instance.

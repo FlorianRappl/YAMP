@@ -26,6 +26,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using YAMP;
 using YAMP.Help;
@@ -114,6 +115,7 @@ namespace YAMPConsole
                 }
             }
 
+            Console.WriteLine();
             Console.WriteLine("Test finished. Result: {0} / {1} seem to be working.", success, success + failed);
 
             if (failed != 0)
@@ -163,10 +165,10 @@ namespace YAMPConsole
             Test("cos(0)*exp(0)*sin(3*pi/2)", -1.0);
             Test("e^3-pi^3", Math.Pow(Math.E, 3.0) - Math.Pow(Math.PI, 3.0));
             Test("5!-1000/5+4*20", 0.0);
-            Test("2*x-4", 2.0, 0.0);
+            Test("2*x-4", "x", 2.0, 0.0);
             Test("2*x-4", -2.0, 2.0, x => 2 * x - 4.0);
-            Test("x!", 5.0, 120.0);
-            Test("x^2-3*x/4", 0.75, 0.0);
+            Test("x!", "x", 5.0, 120.0);
+            Test("x^2-3*x/4", "x", 0.75, 0.0);
             Test("2^2^2^2", 65536.0);
             Test("2-(3*5)^2+7/(2-8)*2", -225.0 - 1.0 / 3.0);
             Test("|[2,3,1]-[1,3,1]|", 1.0);
@@ -174,11 +176,11 @@ namespace YAMPConsole
             Test("|4*(2i-5)/3i|", 4.0 * Math.Sqrt(29.0) / 3.0);
             Test("|[3,2,1]*[1;2;3]|", 10.0);
             Test("|[1;2;3]|-|[1,2,3]|", 0.0);
-            Test("|(2+3i)^2|", 12.999999999999998);
+            Test("|(2+3i)^2|", 13.0, 1e-8);
             Test("|1^(i+5)|", 1.0);
             Test("|1^(i+5)|", 1.0);
-            Test("|(5+8i)^(i+1)|", 3.4284942595728127);
-            Test("|(2+3i)/(1+8i)|", 0.447213595499958);
+            Test("|(5+8i)^(i+1)|", 3.4284942595728127, 1e-8);
+            Test("|(2+3i)/(1+8i)|", 0.447213595499958, 1e-8);
             Test("|2*[1,2;1,2]|", 0.0);
             Test("|max([1,5,7,9,8+5i])|", Math.Sqrt(89.0));
             Test("|[2,1;3,5]-[2,1;3,5]'|", 4.0);
@@ -188,8 +190,8 @@ namespace YAMPConsole
             Test("Y", 5.0);
             Test("2^-2", 0.25);
             Test("[1,2,3;4,5,6;7,8,9](2,3)", 6.0);
-            Test("|cos(1+i)|", 1.2934544550420957);
-            Test("|arccos(0.83373002513-0.988897705i)|", 1.4142135618741407);
+            Test("|cos(1+i)|", 1.2934544550420957, 1e-8);
+            Test("|arccos(0.83373002513-0.988897705i)|", 1.4142135618741407, 1e-8);
             Test("|(x=[1,2,3;4,5,6;7,8,9])(:,1)|", Math.Sqrt(66.0));
             Test("17>12", 1.0);
             Test("7<-1.5", 0.0);
@@ -202,7 +204,7 @@ namespace YAMPConsole
             Test("abs(3+4i)", 5.0);
             Test("eig([1,2;4,5])(1)(1)", 3.0 - Math.Sqrt(12));
             Test("eigval([1,2;4,5])(1)", 3.0 - Math.Sqrt(12));
-            Test("abs(eigval([1,2;4,5])(1:2))", 6.48074069840786);
+            Test("abs(eigval([1,2;4,5])(1:2))", 6.48074069840786, 1e-8);
             Test("abs(eigvec([1,2;4,5])(1:2))", 1.0);
             Test("|[2 3 4]|", Math.Sqrt(29.0));
             Test("[2 3 4\n1 2 3](2, 2)", 2.0);
@@ -217,23 +219,23 @@ namespace YAMPConsole
             Test("-sin([1,2,3])(2)", -Math.Sin(2));
             Test("f = x => x.^2; f(2)", 4.0);
             Test("f = (x, y) => x*y'; f([1,2,3],[1,2,3])", 14.0);
-            Test("[a,b,c]=12.0;b", 12.0);
+            Test("[a, b, c] = 12.0;b", 12.0);
             Test("round(sum(randn(10000, 1)) / 1000)", 0.0);
             Test("round(sum(rand(10000, 1)) / 1000)", 5.0);
             Test("round(sum(randi(10000, 1, 1, 9)) / 10000)", 5.0);
             Test("2+3//This is a line-comment!\n-4", 1.0);
             Test("1-8* /* this is another comment */ 0.25", -1.0);
             Test("1-8* /* this is \nanother comment\nwith new lines */ 0.5+4", 1.0);
-            Test("ode((t, x) => -x, 0:0.01:1, 1.0)(101, 2)", 0.36818409421192455);
-            Test("root(x => x.^2-4, 3)", 2.0000000000519473);
-            Test("sort([25,1,0,29,105,0,-5])(4)", 1.0);
+            Test("ode((t, x) => -x, 0:0.01:1, 1.0)(101, 2)", 0.36818409421192455, 1e-8);
+            Test("root(x => x.^2-4, 3)", 2.0, 1e-8);
+            Test("sort([25, 1, 0, 29, 105, 0, -5])(4)", 1.0);
             Test("(-5)^2", 25.0);
             Test("(5)^2", 25.0);
             Test("(-75)^2", Math.Pow(75.0, 2.0));
-            Test("real(2+5i)", 2.0);
-            Test("imag(2+5i)", 5.0);
-            Test("bessel(2, 4.5)", 0.21784898358785076);
-            Test("erf(1.4)", 0.9522851197626383);
+            Test("real(2 + 5i)", 2.0);
+            Test("imag(2 + 5i)", 5.0);
+            Test("bessel(2, 4.5)", 0.21784898358785076, 1e-8);
+            Test("erf(1.4)", 0.9522851197626383, 1e-8);
             Test("x = round(sum(sum([1, 0; 0, 100] * Jackknife([3 + randn(1000, 1), 10 + 2 * randn(1000, 1)], 10, avg)))); sum([x < 29, x > 18]) / 2", 1.0);
             Test("x = round(sum(sum([1, 0; 0, 10] * Jackknife([3 + randn(1000, 1), 10 + 2 * randn(1000, 1)], 10, var)*[10,0;0,1]))); sum([x < 24, x > 16]) / 2", 1.0);
             Test("sum(sum(round(cor([3 + randn(100, 1), 10 + 2 * randn(100, 1)]))))", 2.0);
@@ -242,8 +244,8 @@ namespace YAMPConsole
             Test("x = 9; y = 5; if(x > y) { t = x; x = y; y = t; } y - x", 4.0);
             Test("x = [3 + randn(100, 1), 10 + 2 * randn(100, 1)]; sum(sum(Bootstrap(x, 200, avg) - Jackknife(x, 20, avg))) < 0.1", 1.0);
             Test("sum(size([\n1 2 3 4\n5 6 7 8]))", 6.0);
-            Test("zeta(0.5)", -1.4603545088095868);
-            Test("zeta(0)", -0.49999999999999994);
+            Test("zeta(0.5)", -1.4603545088095868, 1e-8);
+            Test("zeta(0)", -0.5, 1e-8);
             Test("eval(\"2+3\")", 5.0);
             Test("eval(\"|[1,2,3]|\")", Math.Sqrt(14.0));
             Test("cast(\"3.5\")", 3.5);
@@ -253,13 +255,20 @@ namespace YAMPConsole
             Test("hex2dec(\"123\")", 291.0);
             Test("oct2dec(\"1627\")", 919.0);
             Test("oct2dec(\"77\")", 63.0);
-            Test("trace(inv([1,2,3;4,5,6;7,8,10]))", 4.0000000000000009);
-            Test("polyval([1 2 3], 5)", 86.0);
-            Test("sum(polyfit([0,1,2,3,4,5], [3,3,5,9,15,23], 2))", 3.0000000000000031);
+            Test("trace(inv([1, 2, 3; 4, 5, 6; 7, 8, 10]))", 4.0, 1e-8);
+            Test("polyval([1 2 3], 5)", 86.0, 1e-8);
+            Test("sum(polyfit([0, 1, 2, 3, 4, 5], [3, 3, 5, 9, 15, 23], 2))", 3.0, 1e-8);
             Test("([3 2 1] - [1 2 3])(3)", -2.0);
             Test("([3 2 1] + [1 2 3])(2)", 4.0);
             Test("2^-1^-1", 0.5);
             Test("(2^-1)^-1", 2.0);
+            Test("det(cholesky([1, 1i; -1i, pi]))", Math.Sqrt(Math.PI - 1.0), 1e-8);
+            Test("A=[4, 3; 6, 3]; [L, U, p] = lu(A); sum(sum(A - p * L * U))", 0.0, 1e-8);
+            Test("A=[12,-51,4;6,167,-68;-4,24,-41]; [q, r] = qr(A); det(q)", -1.0, 1e-8);
+            Test("any([1, 0; 0, 0])", 1.0);
+            Test("all([1, 0; 0, 0])", 0.0);
+            Test("any([0, 0; 0, 0])", 0.0);
+            Test("all([1, 1; 5, 3])", 1.0);
 
             sw.Stop();
 
@@ -281,24 +290,24 @@ namespace YAMPConsole
             Test("ylm(0, 0, 10, 0)", 0.5 / Math.Sqrt(Math.PI));
             Test("ylm(0, 0, 0, 5)", 0.5 / Math.Sqrt(Math.PI));
             Test("ylm(1, 0, pi / 3, 0)", 0.5 * Math.Sqrt(3.0 / Math.PI) * Math.Cos(Math.PI / 3.0));
-            Test("ylm(2, 2, pi / 3, 0)", 0.28970565151739147);
-            Test("imag(ylm(2, 1, pi / 3, 0.5))", -0.16037899974811717);
+            Test("ylm(2, 2, pi / 3, 0)", 0.28970565151739147, 1e-8);
+            Test("imag(ylm(2, 1, pi / 3, 0.5))", -0.16037899974811717, 1e-8);
             Test("clebsch(0.5, 0.5)(1, 5)", 1.0);
             Test("clebsch(0.5, 0.5)(5, 5)", 1.0 / Math.Sqrt(2.0));
             Test("legendre(3, 1)", 1.0);
             Test("hermite(3, 2)", 40.0);
-            Test("laguerre(2, 2)", -0.99999999999999956);
+            Test("laguerre(2, 2)", -1.0, 1e-8);
             Test("zernike(1, 1, 0.5)", 0.5);
             Test("zernike(2, 0, 0.5)", 2.0 * 0.25 - 1.0);
             Test("gegenbauer(1, 0.5, 0.25)", 2.0 * 0.5 * 0.25);
             Test("polylog(0, 3)", -1.5);
             Test("polylog(1, 0)", 0.0);
             Test("polylog(2, 1)", Math.PI * Math.PI / 6.0);
-            Test("polylog(3, 1)", 1.2020569031595945);
+            Test("polylog(3, 1)", 1.2020569031595945, 1e-8);
             Test("polylog(-3, 2)", 26.0);
-            Test("polylog(-5, 2)", 1082.0000000231821);
-            Test("polylog(-9, 0.1)", 86.621357524537643);
-            Test("hzeta(3, 1)", 1.2020569031595942853997381615114499907);
+            Test("polylog(-5, 2)", 1082.0000000231821, 1e-8);
+            Test("polylog(-9, 0.1)", 86.621357524537643, 1e-8);
+            Test("hzeta(3, 1)", 1.20205690315959428, 1e-8);
 
             sw.Stop();
 
@@ -331,13 +340,15 @@ namespace YAMPConsole
             return Assert(success, total);
         }
 
-        static bool Test(string query, double x, double result)
+        static bool Test(string query, string name, double val, double result, double prec = 0.0)
         {
             var parser = Parser.Parse(query);
             Console.WriteLine("Testing: {0} = ...", query);
-            var value = parser.Execute(new { x });
-            Console.WriteLine("with x = {2};\n{0}\n-> correct: {1}", value, result, x);
-            return Assert(value, result);
+            var arg = new Dictionary<string, Value>();
+            arg.Add(name, new ScalarValue(val));
+            var value = parser.Execute(arg);
+            Console.WriteLine("with {3} = {2};\n{0}\n-> correct: {1}", value, result, val, name);
+            return Assert(value, result, prec);
         }
 
         static bool Test(string query, PlotSeries series)
@@ -349,31 +360,31 @@ namespace YAMPConsole
             return Assert(value.Count, series.Number);
         }
 
-        static bool Test(string query, double result)
+        static bool Test(string query, double result, double prec = 0.0)
         {
             var parser = YAMP.Parser.Parse(query);
             Console.WriteLine("Testing: {0} = ...", query);
             var value = parser.Execute();
             Console.WriteLine("{0}\n-> correct: {1}", value, result);
-            return Assert(value as YAMP.ScalarValue, result);
+            return Assert(value, result, prec);
         }
 
-        static bool Assert(int total, int result)
+        static bool Assert(int total, int result, double prec = 0.0)
         {
-            return Assert((double)total, (double)result);
+            return Assert((double)total, (double)result, prec);
         }
 
-        static bool Assert(YAMP.Value value, double result)
+        static bool Assert(Value value, double result, double prec = 0.0)
         {
-            return Assert((value as YAMP.ScalarValue).Value, result);
+            return Assert(((ScalarValue)value).Value, result, prec);
         }
 
-        static bool Assert(double value, double result)
+        static bool Assert(double value, double result, double prec = 0.0)
         {
             var isSuccess = true;
             total++;
 
-            if (value == result)
+            if (Math.Abs(value - result) <= prec)
             {
                 success++;
                 Console.ForegroundColor = ConsoleColor.Green;

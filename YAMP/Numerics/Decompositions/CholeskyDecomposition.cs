@@ -18,7 +18,7 @@ namespace YAMP.Numerics
         /// <summary>
         /// Array for internal storage of decomposition.
         /// </summary>
-        double[][] L;
+        ScalarValue[][] L;
 
         /// <summary>
         /// Row and column dimension (square matrix).
@@ -42,40 +42,40 @@ namespace YAMP.Numerics
         public CholeskyDecomposition(MatrixValue Arg)
         {
             // Initialize.
-            double[][] A = Arg.GetRealMatrix();
+            var A = Arg.GetComplexMatrix();
             n = Arg.DimensionY;
-            L = new double[n][];
+            L = new ScalarValue[n][];
 
             for (int i = 0; i < n; i++)
-                L[i] = new double[n];
+                L[i] = new ScalarValue[n];
 
-            isspd = (Arg.DimensionX == n);
+            isspd = Arg.DimensionX == n;
 
             // Main loop.
             for (int j = 0; j < n; j++)
             {
-                double[] Lrowj = L[j];
-                double d = 0.0;
+                var Lrowj = L[j];
+                var d = ScalarValue.Zero;
 
                 for (int k = 0; k < j; k++)
                 {
-                    double[] Lrowk = L[k];
-                    double s = 0.0;
+                    var Lrowk = L[k];
+                    var s = ScalarValue.Zero;
 
                     for (int i = 0; i < k; i++)
-                        s += Lrowk[i] * Lrowj[i];
+                        s += Lrowk[i] * Lrowj[i].Conjugate();
                     
                     Lrowj[k] = s = (A[j][k] - s) / L[k][k];
-                    d = d + s * s;
+                    d = d + s * s.Conjugate();
                     isspd = isspd & (A[k][j] == A[j][k]);
                 }
 
                 d = A[j][j] - d;
-                isspd = isspd & (d > 0.0);
-                L[j][j] = Math.Sqrt(Math.Max(d, 0.0));
+                isspd = isspd & (d.Abs() > 0.0);
+                L[j][j] = d.Sqrt();
 
                 for (int k = j + 1; k < n; k++)
-                    L[j][k] = 0.0;
+                    L[j][k] = ScalarValue.Zero;
             }
         }
 
@@ -126,7 +126,7 @@ namespace YAMP.Numerics
                 throw new YAMPMatrixFormatException(SpecialMatrixFormat.SymmetricPositiveDefinite);
 
             // Copy right hand side.
-            double[][] X = B.GetRealMatrix();
+            var X = B.GetComplexMatrix();
             int nx = B.DimensionX;
 
             // Solve L*Y = B;

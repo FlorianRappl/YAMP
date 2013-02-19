@@ -7,7 +7,7 @@ namespace YAMP.Numerics
     /// QR Decomposition.
     /// For an m-by-n matrix A with m >= n, the QR decomposition is an m-by-n
     /// orthogonal matrix Q and an n-by-n upper triangular matrix R so that
-    /// A = Q*R.
+    /// A = Q * R.
     /// The QR decompostion always exists, even if the matrix does not have
     /// full rank, so the constructor will never fail.  The primary use of the
     /// QR decomposition is in the least squares solution of nonsquare systems
@@ -21,7 +21,8 @@ namespace YAMP.Numerics
         /// <summary>
         /// Array for internal storage of decomposition.
         /// </summary>
-        double[][] QR;
+        //double[][] QR;
+        ScalarValue[][] QR;
 
         /// <summary>
         /// Row and column dimensions.
@@ -31,7 +32,8 @@ namespace YAMP.Numerics
         /// <summary>
         /// Array for internal storage of diagonal of R.
         /// </summary>
-        double[] Rdiag;
+        //double[] Rdiag;
+        ScalarValue[] Rdiag;
 
         #endregion //  Class variables
 
@@ -45,35 +47,35 @@ namespace YAMP.Numerics
         public QRDecomposition(MatrixValue A)
         {
             // Initialize.
-            QR = A.GetRealMatrix();
+            QR = A.GetComplexMatrix();
             m = A.DimensionY;
             n = A.DimensionX;
-            Rdiag = new double[n];
+            Rdiag = new ScalarValue[n];
 
             // Main loop.
             for (int k = 0; k < n; k++)
             {
-                // Compute 2-norm of k-th column without under/overflow.
                 var nrm = 0.0;
 
                 for (int i = k; i < m; i++)
-                    nrm = Helpers.Hypot(nrm, QR[i][k]);
+                    nrm = Helpers.Hypot(nrm, QR[i][k].Value);
 
                 if (nrm != 0.0)
                 {
                     // Form k-th Householder vector.
-                    if (QR[k][k] < 0)
+
+                    if (QR[k][k].Value < 0)
                         nrm = -nrm;
                     
                     for (int i = k; i < m; i++)
                         QR[i][k] /= nrm;
                     
-                    QR[k][k] += 1.0;
+                    QR[k][k] += ScalarValue.One;
 
                     // Apply transformation to remaining columns.
                     for (int j = k + 1; j < n; j++)
                     {
-                        var s = 0.0;
+                        var s = ScalarValue.Zero;
 
                         for (int i = k; i < m; i++)
                             s += QR[i][k] * QR[i][j];
@@ -85,7 +87,7 @@ namespace YAMP.Numerics
                     }
                 }
 
-                Rdiag[k] = -nrm;
+                Rdiag[k] = new ScalarValue(-nrm);
             }
         }
 
@@ -103,7 +105,7 @@ namespace YAMP.Numerics
             {
                 for (int j = 0; j < n; j++)
                 {
-                    if (Rdiag[j] == 0)
+                    if (Rdiag[j] == ScalarValue.Zero)
                         return false;
                 }
 
@@ -126,7 +128,7 @@ namespace YAMP.Numerics
                     for (int j = 1; j <= n; j++)
                     {
                         if (i >= j)
-                            X[i, j] = new ScalarValue(QR[i - 1][j - 1]);
+                            X[i, j] = QR[i - 1][j - 1];
                     }
                 }
 
@@ -150,9 +152,9 @@ namespace YAMP.Numerics
                     for (int j = 1; j <= n; j++)
                     {
                         if (i < j)
-                            X[i, j] = new ScalarValue(QR[i - 1][j - 1]);
+                            X[i, j] = QR[i - 1][j - 1];
                         else if (i == j)
-                            X[i, j] = new ScalarValue(Rdiag[i - 1]);
+                            X[i, j] = Rdiag[i - 1];
                     }
                 }
 
@@ -183,7 +185,7 @@ namespace YAMP.Numerics
 
                         if (QR[l][l] != 0)
                         {
-                            var s = 0.0;
+                            var s = ScalarValue.Zero;
 
                             for (int i = k; i <= m; i++)
                                 s += QR[i - 1][l] * X[i, j].Value;
@@ -221,14 +223,14 @@ namespace YAMP.Numerics
 
             // Copy right hand side
             var nx = B.DimensionX;
-            var X = B.GetRealMatrix();
+            var X = B.GetComplexMatrix();
 
             // Compute Y = transpose(Q)*B
             for (int k = 0; k < n; k++)
             {
                 for (int j = 0; j < nx; j++)
                 {
-                    var s = 0.0;
+                    var s = ScalarValue.Zero;
 
                     for (int i = k; i < m; i++)
                         s += QR[i][k] * X[i][j];
@@ -240,7 +242,7 @@ namespace YAMP.Numerics
                 }
             }
 
-            // Solve R*X = Y;
+            // Solve R * X = Y;
             for (int k = n - 1; k >= 0; k--)
             {
                 for (int j = 0; j < nx; j++)

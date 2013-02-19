@@ -43,6 +43,7 @@ namespace YAMP
 
 		QueryContext _query;
 
+        internal static string answer = "$";
 		static ParseContext primary;
 
         #endregion
@@ -107,6 +108,21 @@ namespace YAMP
 		#endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets or sets the name of the last answer.
+        /// </summary>
+        public static string Answer
+        {
+            get { return answer; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    return;
+
+                answer = value;
+            }
+        }
 
         /// <summary>
         /// Gets a list of the available keywords.
