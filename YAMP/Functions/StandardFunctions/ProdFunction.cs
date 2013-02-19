@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Computes the product of a given vector or the sum for each column vector of a matrix.")]
 	[Kind(PopularKinds.Function)]
-	class ProductFunction : StandardFunction
+	class ProdFunction : StandardFunction
 	{
 		public override Value Perform(Value argument)
 		{
@@ -33,8 +33,8 @@ namespace YAMP
 		}
 
         [Description("Evaluates the vector(s) and outputs the product(s) of the vector(s).")]
-        [Example("product([1,2,3,4,5,6,7,-1])", "Computes the product of the vector, which is -5040 in this case.")]
-        [Example("product([1,2;3,4;5,6;7,-1])", "Computes the product of the two vectors, which are 105 and -48 in this case.")]
+        [Example("prod([1,2,3,4,5,6,7,-1])", "Computes the product of the vector, which is -5040 in this case.")]
+        [Example("prod([1,2;3,4;5,6;7,-1])", "Computes the product of the two vectors, which are 105 and -48 in this case.")]
         public override MatrixValue Function(MatrixValue x)
         {
             return base.Function(x);

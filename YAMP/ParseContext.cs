@@ -483,6 +483,18 @@ namespace YAMP
         #region Variables Methods
 
         /// <summary>
+        /// Clears the list of assigned variables.
+        /// </summary>
+        public ParseContext Clear()
+        {
+            foreach (var pair in variables)
+                RaiseVariableRemoved(pair.Key, pair.Value);
+
+            variables.Clear();
+            return this;
+        }
+
+        /// <summary>
         /// Assigns a value to a symbolic name.
         /// </summary>
         /// <param name="name">

@@ -120,9 +120,9 @@ namespace YAMP
         Value Assign(SymbolExpression left, Value value, Dictionary<string, Value> symbols)
 		{
             if (symbols.ContainsKey(left.SymbolName))
-                symbols[left.SymbolName] = value;
+                symbols[left.SymbolName] = value.Copy();
             else
-                Context.AssignVariable(left.SymbolName, value);
+                Context.AssignVariable(left.SymbolName, value.Copy());
 
 			return value;
         }

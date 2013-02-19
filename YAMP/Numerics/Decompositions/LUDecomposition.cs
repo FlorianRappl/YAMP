@@ -23,7 +23,7 @@ namespace YAMP.Numerics
         /// <summary>
         /// Array for internal storage of decomposition.
         /// </summary>
-        double[][] LU;
+        ScalarValue[][] LU;
 
         /// <summary>
         /// Row and column dimensions, and pivot sign.
@@ -47,7 +47,7 @@ namespace YAMP.Numerics
         public LUDecomposition(MatrixValue A)
         {
             // Use a "left-looking", dot-product, Crout / Doolittle algorithm.
-            LU = A.GetRealMatrix();
+            LU = A.GetComplexMatrix();
             m = A.DimensionY;
             n = A.DimensionX;
             piv = new int[m];
@@ -56,8 +56,8 @@ namespace YAMP.Numerics
                 piv[i] = i;
             
             pivsign = 1;
-            var LUrowi = new double[0];
-            var LUcolj = new double[m];
+            var LUrowi = new ScalarValue[0];
+            var LUcolj = new ScalarValue[m];
 
             // Outer loop.
             for (int j = 0; j < n; j++)
@@ -73,7 +73,7 @@ namespace YAMP.Numerics
 
                     // Most of the time is spent in the following dot product.
                     var kmax = Math.Min(i, j);
-                    var s = 0.0;
+                    var s = ScalarValue.Zero;
 
                     for (int k = 0; k < kmax; k++)
                         s += LUrowi[k] * LUcolj[k];
@@ -86,7 +86,7 @@ namespace YAMP.Numerics
 
                 for (int i = j + 1; i < m; i++)
                 {
-                    if (Math.Abs(LUcolj[i]) > Math.Abs(LUcolj[p]))
+                    if (LUcolj[i].Abs() > LUcolj[p].Abs())
                         p = i;
                 }
 
@@ -129,7 +129,7 @@ namespace YAMP.Numerics
             {
                 for (int j = 0; j < n; j++)
                 {
-                    if (LU[j][j] == 0)
+                    if (LU[j][j] == ScalarValue.Zero)
                         return false;
                 }
 
@@ -152,9 +152,9 @@ namespace YAMP.Numerics
                     for (int j = 1; j <= n; j++)
                     {
                         if (i > j)
-                            X[i, j] = new ScalarValue(LU[i - 1][j - 1]);
+                            X[i, j] = LU[i - 1][j - 1];
                         else if (i == j)
-                            X[i, j] = new ScalarValue(1.0);
+                            X[i, j] = ScalarValue.One;
                     }
                 }
 
@@ -177,7 +177,7 @@ namespace YAMP.Numerics
                     for (int j = 1; j <= n; j++)
                     {
                         if (i <= j)
-                            X[i, j] = new ScalarValue(LU[i - 1][j - 1]);
+                            X[i, j] = LU[i - 1][j - 1];
                     }
                 }
 
@@ -196,7 +196,7 @@ namespace YAMP.Numerics
 				var P = new MatrixValue(m, m);
 
                 for (var i = 1; i <= m; i++)
-					P[i, piv[i - 1] + 1] = new ScalarValue(1.0);
+					P[i, piv[i - 1] + 1] = ScalarValue.One;
                 
                 return P;
             }
@@ -210,12 +210,12 @@ namespace YAMP.Numerics
         /// Determinant
         /// </summary>
         /// <returns>det(A)</returns>
-        public virtual double Determinant()
+        public virtual ScalarValue Determinant()
         {
             if (m != n)
                 throw new YAMPMatrixFormatException(SpecialMatrixFormat.Square);
             
-            var d = (double)pivsign;
+            var d = new ScalarValue(pivsign);
 
             for (int j = 0; j < n; j++)
                 d = d * LU[j][j];
@@ -238,7 +238,7 @@ namespace YAMP.Numerics
 
             // Copy right hand side with pivoting
             var nx = B.DimensionX;
-            var X = B.GetSubMatrix(piv, 0, nx).GetRealMatrix();
+            var X = B.GetSubMatrix(piv, 0, nx).GetComplexMatrix();
 
             // Solve L*Y = B(piv,:)
             for (int k = 0; k < n; k++)

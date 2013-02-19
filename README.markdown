@@ -37,6 +37,22 @@ builds are available:
 
 Version history
 -------------------------------------------------------
+**1.2.3:**
+- Added documentation tests
+- Included more tests
+- Improved QR, LU, Cholesky decomposition
+- Added conversion functions for cartesian, spherical and polar coordinates
+- Added functions for `all` and `any`
+- Added the `find` function for getting indices
+- Renamed the `product` function to `prod`
+- Added `triu` and `tril` functions
+- Added a `magic` function to shuffle new matrices
+- Renamed the `printf` function to `notify`
+- Added a `printf` function to format strings
+- Changed the (unary) operator concept
+- Added a function `Cholesky` to access the cholesky algorithm
+- Fixed a bug in the assignment operator
+
 **1.2.2:**
 - Improved stability of the parser
 - Included more tests

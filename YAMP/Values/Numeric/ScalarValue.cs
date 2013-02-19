@@ -437,6 +437,19 @@ namespace YAMP
         }
 
         /// <summary>
+        /// Gives the signum of the scalar.
+        /// </summary>
+        /// <returns>The sign of the value.</returns>
+        public ScalarValue Sign()
+        {
+            if (this == ScalarValue.Zero)
+                return ScalarValue.Zero;
+
+            var arg = Arg();
+            return new ScalarValue(Math.Cos(arg), Math.Sin(arg));
+        }
+
+        /// <summary>
         /// Takes the cosine of the scalar.
         /// </summary>
         /// <returns>The cosine of the value.</returns>

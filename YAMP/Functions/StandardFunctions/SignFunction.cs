@@ -21,7 +21,7 @@ namespace YAMP
 
         protected override ScalarValue GetValue(ScalarValue value)
         {
-            return new ScalarValue(Math.Sign(value.Value));
+            return value.Sign();
         }
     }
 }
