@@ -407,12 +407,16 @@
     <Compile Include="Functions\Conversions\Bin2DecFunction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Functions\Conversions\Cart2PolFunction.cs" />
+    <Compile Include="Functions\Conversions\Cart2SphFunction.cs" />
     <Compile Include="Functions\Conversions\Hex2DecFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Functions\Conversions\Oct2DecFunction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Functions\Conversions\Pol2CartFunction.cs" />
+    <Compile Include="Functions\Conversions\Sph2CartFunction.cs" />
     <Compile Include="Functions\Fractals\MandelbrotFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -420,9 +424,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Functions\FunctionDelegate.cs" />
+    <Compile Include="Functions\Helpers\AllFunction.cs" />
+    <Compile Include="Functions\Helpers\AnyFunction.cs" />
+    <Compile Include="Functions\Helpers\FindFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\CGFunction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Functions\LinearAlgebra\CholeskyFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\DetFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -457,6 +465,8 @@
     <Compile Include="Functions\LinearAlgebra\TraceFunction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Functions\LinearAlgebra\TrilFunction.cs" />
+    <Compile Include="Functions\LinearAlgebra\TriuFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\VectorFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -631,9 +641,7 @@
     <Compile Include="Functions\StandardFunctions\MinFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\StandardFunctions\ProductFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Functions\StandardFunctions\ProdFunction.cs" />
     <Compile Include="Functions\StandardFunctions\RealFunction.cs">
       <SubType>Code</SubType>
     </Compile>
