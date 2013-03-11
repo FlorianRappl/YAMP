@@ -39,6 +39,7 @@ namespace YAMP
     {
         #region Members
 
+        List<YAMPParseError> errors;
         Stack<Expression> _expressions;
         Stack<Operator> _operators;
         int maxLevel;
@@ -56,6 +57,7 @@ namespace YAMP
         public Statement()
         {
             maxLevel = -100;
+            errors = new List<YAMPParseError>();
             _expressions = new Stack<Expression>();
             _operators = new Stack<Operator>();
             takeOperator = false;
@@ -184,6 +186,13 @@ namespace YAMP
                         while (true)
                         {
                             var count = _operators.Peek().Expressions;
+
+                            if (count > _expressions.Count)
+                            {
+                                errors.Add(new YAMPExpressionMissingError(_operator.StartLine, _operator.StartColumn));
+                                break;
+                            }
+
                             var exp = new Expression[count];
 
                             for (var i = count - 1; i >= 0; i--)
@@ -247,6 +256,14 @@ namespace YAMP
         {
             if (finalized)
                 return this;
+
+            if (errors.Count != 0)
+            {
+                foreach (var error in errors)
+                    engine.AddError(error);
+
+                return this;
+            }
 
             if (_expressions.Count == 0 && _operators.Count > 0)
             {

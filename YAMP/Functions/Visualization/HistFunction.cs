@@ -2,7 +2,7 @@
 
 namespace YAMP
 {
-	[Description("A histogram shows the distribution of data values.")]
+	[Description("Plots the histogram that shows the distribution of of given values.")]
 	[Kind(PopularKinds.Plot)]
 	class HistFunction : VisualizationFunction
 	{
@@ -24,14 +24,14 @@ namespace YAMP
 				X[i] = x[i + 1].Value;
 
 			if (Y.IsVector)
-				bp.AddPoints(Histogram(Y, X));
+                bp.AddPoints(YMath.Histogram(Y, X));
 			else
 			{
 				var M = new MatrixValue();
 
 				for (var i = 1; i <= Y.DimensionX; i++)
 				{
-					var N = Histogram(Y.GetColumnVector(i), X);
+					var N = YMath.Histogram(Y.GetColumnVector(i), X);
 
 					for (var j = 1; j <= N.Length; j++)
 						M[j, i] = N[j];
@@ -51,14 +51,14 @@ namespace YAMP
 			var bp = new BarPlotValue();
 
 			if (Y.IsVector)
-				bp.AddPoints(Histogram(Y, nn));
+                bp.AddPoints(YMath.Histogram(Y, nn));
 			else
 			{
 				var M = new MatrixValue();
 
 				for (var i = 1; i <= Y.DimensionX; i++)
 				{
-					var N = Histogram(Y.GetColumnVector(i), nn);
+                    var N = YMath.Histogram(Y.GetColumnVector(i), nn);
 
 					for (var j = 1; j <= N.Length; j++)
 						M[j, i] = N[j];
@@ -68,72 +68,6 @@ namespace YAMP
 			}
 
 			return bp;
-		}
-
-		static MatrixValue Histogram(MatrixValue v, double[] centers)
-		{
-            if (centers.Length == 0)
-                throw new YAMPWrongLengthException(0, 1);
-
-			var H = new MatrixValue(centers.Length, 1);
-			var N = new int[centers.Length];
-			var last = centers.Length - 1;
-
-			for (var i = 1; i <= v.Length; i++)
-			{
-				var y = v[i].Value;
-
-				if (y < centers[0])
-					N[0]++;
-				else if (y > centers[last])
-					N[last]++;
-				else
-				{
-					var min = double.MaxValue;
-					var index = 0;
-
-					for (var j = 0; j < centers.Length; j++)
-					{
-						var dist = Math.Abs(y - centers[j]);
-
-						if (dist < min)
-						{
-							index = j;
-							min = dist;
-						}
-					}
-
-					N[index]++;
-				}
-			}
-
-			for (var i = 1; i <= centers.Length; i++)
-				H[i, 1] = new ScalarValue(N[i - 1]);
-
-			return H;
-		}
-
-		static MatrixValue Histogram(MatrixValue v, int nbins)
-		{
-			var min = double.MaxValue;
-			var max = double.MinValue;
-
-			for (var i = 1; i <= v.Length; i++)
-			{
-				if (v[i].Value > max)
-					max = v[i].Value;
-
-				if (v[i].Value < min)
-					min = v[i].Value;
-			}
-
-			var delta = (max - min) / nbins;
-			var D = new double[nbins];
-
-			for (var i = 0; i < nbins; i++)
-				D[i] = delta * (i + 0.5);
-
-			return Histogram(v, D);
 		}
 	}
 }

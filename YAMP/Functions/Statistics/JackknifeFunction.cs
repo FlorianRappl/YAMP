@@ -103,7 +103,7 @@ namespace YAMP
                 }
             }
 
-            temp = AvgFunction.Average(JackknifeObservable);
+            temp = YMath.Average(JackknifeObservable);
 
             for (int i = 1; i <= numberOfBlocks; i++)
             {
@@ -124,7 +124,7 @@ namespace YAMP
                 }
             }
 
-            var error = AvgFunction.Average(JackknifeObservable);
+            var error = YMath.Average(JackknifeObservable);
             var scale = numberOfBlocks - 1.0;
 
             if (error is ScalarValue)

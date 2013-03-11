@@ -12,39 +12,7 @@ namespace YAMP
         [Example("avg([1, 2, 3; 2, 3, 2])", "Computes the arithmetic mean over the columns, i.e. the result is a row [1.5,2.5,2.5].")]
         public Value Function(MatrixValue M)
         {
-            return Average(M);
-        }
-
-        public static Value Average(MatrixValue M)
-        {
-            if (M.Length == 0)
-                return new ScalarValue();
-
-            if (M.IsVector)
-            {
-                var s = new ScalarValue();
-
-                for (var i = 1; i <= M.Length; i++)
-                    s += M[i];
-
-                return s / M.Length;
-            }
-            else
-            {
-                var scale = 1.0;
-                var s = new MatrixValue(1, M.DimensionX);
-
-                for (var i = 1; i <= M.DimensionY; i++)
-                    for (int j = 1; j <= M.DimensionX; j++)
-                        s[1, j] += M[i, j];
-
-                scale /= M.DimensionY;
-
-                for (int j = 1; j <= s.DimensionX; j++)
-                    s[1, j] *= scale;
-
-                return s;
-            }
+            return YMath.Average(M);
         }
     }
 }

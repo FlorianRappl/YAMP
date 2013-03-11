@@ -12,7 +12,7 @@ namespace YAMP.Numerics
         /// <summary>
         /// Creates a new Newton instance with the default number of iterations (32).
         /// </summary>
-        public Newton() : this(32)
+        public Newton() : this(255)
         {
         }
 
@@ -50,14 +50,14 @@ namespace YAMP.Numerics
             var iter = 0;
             var maxiter = MaxIterations;
             var zn = new ScalarValue(x, y);
-            var pz = new ScalarValue(1, 0);
-            var pzd = new ScalarValue(1, 0);
+            var pz = ScalarValue.One;
+            var pzd = ScalarValue.Zero;
 
             if(x != 0 || y != 0)
             {
                 while ((iter < maxiter) && pz.AbsSquare() > 1e-8)
                 {
-                    pz = zn.Pow(new ScalarValue(3)) - 2.0;
+                    pz = zn.Pow(new ScalarValue(3)) - 1.0;
                     pzd = 3.0 * zn.Square();
                     zn = zn - pz / pzd;
                     iter++;

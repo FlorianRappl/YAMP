@@ -36,6 +36,8 @@ namespace YAMP.Numerics
         /// <param name="restart">Should restarts be executed?</param>
         public GMRESkSolver(MatrixValue A, bool restart) : base(A)
         {
+            MaxIterations = A.Length;
+
             if(restart)
                 Restart = MaxIterations / 10;
             else //No Restart
@@ -72,29 +74,29 @@ namespace YAMP.Numerics
 
             H = new MatrixValue(k + 1, k);
             V = new MatrixValue(X0.DimensionY, k);
-            c = new MatrixValue(k, 1);
-            s = new MatrixValue(k, 1);
+            c = new MatrixValue(k - 1, 1);
+            s = new MatrixValue(k - 1, 1);
             gamma = new MatrixValue(k + 1, 1);
             var converged = false;
-            var arnoldi = new Arnoldi(A, H, V);
 
             do
             {
                 var j = 0;
                 x = X0.Clone();
                 var r0 = b - A * x;
-                var beta = r0.Abs();
+                var beta = r0.Abs().Re;
 
                 H.Clear();
                 V.Clear();
                 gamma.Clear();
-                gamma[1] = beta.Clone();
+
+                gamma[1] = new ScalarValue(beta);
                 c.Clear();
                 s.Clear();
 
-                V.SetColumnVector(1, r0 / beta);
+                V.SetColumnVector(1, r0 / gamma[1]);
 
-                if (beta.Value < Tolerance)
+                if (beta < Tolerance)
                     break;
 
                 do
@@ -102,40 +104,56 @@ namespace YAMP.Numerics
                     j++;
                     i++;
 
-                    if (arnoldi.Next())
+                    var Avj = A * V.GetColumnVector(j);
+                    var sum = new MatrixValue(Avj.DimensionY, Avj.DimensionX);
+
+                    for (int m = 1; m <= j; m++)
+                    {
+                        var w = V.GetColumnVector(m);
+                        H[m, j] = w.ComplexDot(Avj);
+                        sum += H[m, j] * w;
+                    }
+
+                    var wj = Avj - sum;
+                    H[j + 1, j] = wj.Abs();
+                    Rotate(j);
+
+                    if (H[j + 1, j].AbsSquare() == 0.0)
                     {
                         converged = true;
                         break;
                     }
 
-                    Rotate(j);
-                    beta = new ScalarValue(gamma[j + 1].Abs());
+                    V.SetColumnVector(j + 1, wj / H[j + 1, j]);
+                    beta = gamma[j + 1].Abs();
 
-                    if (beta.Value < Tolerance)
+                    if (beta < Tolerance)
                     {
                         converged = true;
                         break;
                     }
                 }
-                while (j < k && !converged);
+                while (j < k);
 
-                var y = new MatrixValue(j + 1, 1);
+                var y = new MatrixValue(j, 1);
 
                 for (int l = j; l >= 1; l--)
                 {
                     var sum = new ScalarValue();
 
                     for (int m = l + 1; m <= j; m++)
-                        sum = sum + (H[l, m] * y[m]);
+                        sum += H[l, m] * y[m];
 
                     y[l] = (gamma[l] - sum) / H[l, l];
                 }
 
                 for (int l = 1; l <= j; l++)
-                    x = x + y[l] * V.GetColumnVector(l);
+                    x += y[l] * V.GetColumnVector(l);
 
                 if (converged)
                     break;
+
+                X0 = x;
             }
             while (i < MaxIterations);
 

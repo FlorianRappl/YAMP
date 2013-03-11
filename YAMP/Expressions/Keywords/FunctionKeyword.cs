@@ -129,6 +129,14 @@ namespace YAMP
             }
 
             kw.arguments = Elements.Instance.FindExpression<BracketExpression>().Scan(engine) as BracketExpression;
+
+            if (engine.Pointer == engine.Characters.Length)
+            {
+                kw.Length = engine.Pointer - start;
+                engine.AddError(new YAMPFunctionBodyMissing(engine), kw.arguments);
+                return kw;
+            }
+
             kw.Body = engine.ParseStatement();
             kw.Length = engine.Pointer - start;
 

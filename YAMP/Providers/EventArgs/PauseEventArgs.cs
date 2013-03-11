@@ -26,47 +26,32 @@
 */
 
 using System;
+using System.Threading;
 
 namespace YAMP
 {
     /// <summary>
-    /// This is the class used for the operator that seperated various arguments
-    /// in round brackets.
+    /// Data used for giving user prompts.
     /// </summary>
-	class CommaOperator : BinaryOperator
+    public class PauseEventArgs : EventArgs
     {
-        #region ctor
+        EventWaitHandle handle;
 
-        public CommaOperator() : base(",", 1)
-		{
-		}
-
-        public CommaOperator(ParseEngine engine)
-            : this()
+        /// <summary>
+        /// Creates a new user input event argument.
+        /// </summary>
+        /// <param name="waitHandle">The wait handle where the waiting is based on.</param>
+        public PauseEventArgs(EventWaitHandle waitHandle)
         {
-            StartLine = engine.CurrentLine;
-            StartColumn = engine.CurrentColumn;
+            handle = waitHandle;
         }
 
-        #endregion
-
-        #region Methods
-
-        public override Value Perform(Value left, Value right)
-		{
-			return ArgumentsValue.Create(left, right);
-		}
-
-		public override void RegisterElement()
-		{
-            //Nothing to do here.
-		}
-
-        public override Operator Create()
+        /// <summary>
+        /// Continues with the given input.
+        /// </summary>
+        public void Continue()
         {
-            return new CommaOperator();
+            handle.Set();
         }
-
-        #endregion
     }
 }

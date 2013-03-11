@@ -58,7 +58,7 @@ namespace YAMP.Numerics
                 var nrm = 0.0;
 
                 for (int i = k; i < m; i++)
-                    nrm = Helpers.Hypot(nrm, QR[i][k].Value);
+                    nrm = Math.Sqrt(nrm * nrm + QR[i][k].AbsSquare());
 
                 if (nrm != 0.0)
                 {

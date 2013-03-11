@@ -41,6 +41,13 @@ namespace YAMP
 		{
 		}
 
+        public ColumnOperator(ParseEngine engine)
+            : this()
+        {
+            StartColumn = engine.CurrentColumn;
+            StartLine = engine.CurrentLine;
+        }
+
         #endregion
 
         #region Methods

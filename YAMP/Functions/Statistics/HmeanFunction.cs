@@ -12,39 +12,7 @@ namespace YAMP
         [Example("hmean([1, 4, 8; 2, 5, 7])", "Computes the harmonic mean of 1, 4 and 8, as well as 2, 5 and 7. The result is a 1x2 matrix.")]
         public Value Function(MatrixValue M)
         {
-            return HarmonicMean(M);
-        }
-
-        public static Value HarmonicMean(MatrixValue M)
-        {
-            if (M.Length == 0)
-                return new ScalarValue();
-
-            if (M.IsVector)
-            {
-                var s = new ScalarValue();
-
-                for (var i = 1; i <= M.Length; i++)
-                    s += (1.0 / M[i]);
-
-                return M.Length / s;
-            }
-            else
-            {
-                var s = new MatrixValue(1, M.DimensionX);
-
-                for (var i = 1; i < M.DimensionX; i++)
-                    s[1, i] = new ScalarValue();
-
-                for (var i = 1; i <= M.DimensionY; i++)
-                    for (int j = 1; j <= M.DimensionX; j++)
-                        s[1, j] += (1.0 / M[i, j]);
-
-                for (int j = 1; j <= s.DimensionX; j++)
-                    s[1, j] = (M.DimensionY / s[1, j]);
-
-                return s;
-            }
+            return YMath.HarmonicMean(M);
         }
     }
 }

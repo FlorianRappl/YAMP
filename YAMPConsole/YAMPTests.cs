@@ -42,8 +42,17 @@ namespace YAMPConsole
 
         public static void Run()
         {
+            Parser.UseScripting = true;
+
             Console.WriteLine("DEBUG MODE");
             Console.WriteLine("----------");
+
+            Console.WriteLine();
+            Console.WriteLine("Testing the engine . . .");
+            TestEngine();
+
+            Console.WriteLine("Press any key to continue . . .");
+            Console.ReadKey();
 
             Console.WriteLine();
             Console.WriteLine("Testing the core . . .");
@@ -64,12 +73,43 @@ namespace YAMPConsole
             TestExamples();
         }
 
+        static void TestEngine()
+        {
+            success = 0;
+            total = 0;
+
+            var sw = Stopwatch.StartNew();
+
+            Test("mandelbrot(-2,,-2,2,100,100)", true);
+            Test("[1,2,3](2)", false);
+            Test("2^-2", false);
+            Test("2^^2", true);
+            Test("function f(", true);
+            Test("for() { }", true);
+            Test("for() { ", true);
+            Test("for(i=0 { }", true);
+            Test("for(i=0, i != 2, i++) { }", true);
+            Test("for(i = 0; i != 2; i++) { }", false);
+            Test("newton(", true);
+            Test("do{ ", true);
+            Test("do{ }", false);
+            Test("while() {}", true);
+            Test("while(true) {}", false);
+            Test("do {} while(0 > 2)", false);
+
+            sw.Stop();
+
+            Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
+            Console.WriteLine("Time for the tests ... {0} ms", sw.ElapsedMilliseconds);
+        }
+
         static void TestExamples()
         {
-            var success = 0;
-            var failed = 0;
+            success = 0;
+            total = 0;
+            var sw = Stopwatch.StartNew();
+
             var doc = Documentation.Create(Parser.PrimaryContext);
-            var count = 0;
 
             Console.WriteLine();
 
@@ -86,7 +126,7 @@ namespace YAMPConsole
                             if (example.IsFile)
                                 continue;
 
-                            count++;
+                            total++;
 
                             try
                             {
@@ -105,36 +145,24 @@ namespace YAMPConsole
                                 Console.Write("For usage: " + usage.Usage);
                                 Console.WriteLine("In function: " + f.Name);
                                 Console.WriteLine();
-                                failed++;
                             }
 
-                            if (count % 20 == 0)
-                                Console.WriteLine("{0} elements have been processed . . .", count);
+                            if (total % 20 == 0)
+                                Console.WriteLine("{0} elements have been processed . . .", total);
                         }
                     }
                 }
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Test finished. Result: {0} / {1} seem to be working.", success, success + failed);
+            sw.Stop();
 
-            if (failed != 0)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Overall: Test failed!");
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Overall: Test succeeded!");
-                Console.ResetColor();
-            }
+            Console.WriteLine();
+            Console.WriteLine("{0} / {1} tests completed successfully ({2} %)", success, total, success * 100 / total);
+            Console.WriteLine("Time for the tests ... {0} ms", sw.ElapsedMilliseconds);
         }
 
         static void TestCore()
         {
-            Parser.UseScripting = true;
             success = 0;
             total = 0;
             var sw = Stopwatch.StartNew();
@@ -360,9 +388,18 @@ namespace YAMPConsole
             return Assert(value.Count, series.Number);
         }
 
+        static bool Test(string query, bool hasErrors)
+        {
+            var parser = Parser.Parse(query);
+            Console.WriteLine("Testing: {0} = ...", query);
+            var value = parser.Context.Parser.HasErrors;
+            Console.WriteLine("{0}\n-> correct: {1}", value, hasErrors);
+            return Assert(value ? 1.0 : 0.0, hasErrors ? 1.0 : 0.0);
+        }
+
         static bool Test(string query, double result, double prec = 0.0)
         {
-            var parser = YAMP.Parser.Parse(query);
+            var parser = Parser.Parse(query);
             Console.WriteLine("Testing: {0} = ...", query);
             var value = parser.Execute();
             Console.WriteLine("{0}\n-> correct: {1}", value, result);

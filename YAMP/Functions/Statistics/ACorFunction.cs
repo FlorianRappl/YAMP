@@ -22,7 +22,7 @@ namespace YAMP
                     nOffset = 0;
                 else if (nOffset >= M.Length)
                     nOffset = M.Length - 1;
-                return XCorFunction.CrossCorrelation(M, M, nOffset);
+                return YMath.CrossCorrelation(M, M, nOffset);
             }
         }
 
@@ -39,7 +39,7 @@ namespace YAMP
             else if (nOffset >= M.Length)
                 nOffset = M.Length - 1;
 
-            return XCorFunction.CrossCorrelation(M, M, nOffset);
+            return YMath.CrossCorrelation(M, M, nOffset);
         }
     }
 }

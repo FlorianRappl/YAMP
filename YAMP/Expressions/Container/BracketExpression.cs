@@ -70,8 +70,9 @@ namespace YAMP
                 {
                     if (ch == ',')
                     {
+                        var op = new CommaOperator(engine);
                         engine.Advance();
-                        statement.Push(engine, new CommaOperator());
+                        statement.Push(engine, op);
                         return true;
                     }
 

@@ -76,7 +76,7 @@ namespace YAMP
                 }
             }
 
-            temp = AvgFunction.Average(BootstrapObservable);
+            temp = YMath.Average(BootstrapObservable);
 
             for (int i = 1; i <= numberOfBootstrapSamples; i++)
             {
@@ -97,7 +97,7 @@ namespace YAMP
                 }
             }
 
-            var error = AvgFunction.Average(BootstrapObservable);
+            var error = YMath.Average(BootstrapObservable);
             var sqrt = new SqrtFunction();
             error = sqrt.Perform(error);
             var result = new MatrixValue(2, nResult);

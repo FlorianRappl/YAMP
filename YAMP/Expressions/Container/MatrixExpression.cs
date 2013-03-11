@@ -113,14 +113,14 @@ namespace YAMP
                     {
                         ws = false;
                         nl = false;
-                        statement.Push(engine, new ColumnOperator());
+                        statement.Push(engine, new ColumnOperator(engine));
                         engine.Advance();
                     }
                     else if (chars[engine.Pointer] == ';')
                     {
                         ws = false;
                         nl = false;
-                        statement.Push(engine, new RowOperator());
+                        statement.Push(engine, new RowOperator(engine));
                         engine.Advance();
                     }
                     else if (engine.Pointer < chars.Length - 1 && ParseEngine.IsComment(chars[engine.Pointer], chars[engine.Pointer + 1]))
@@ -132,7 +132,7 @@ namespace YAMP
                     }
                     else
                     {
-                        engine.ParseBlock(statement, nl ? (Operator)new RowOperator() : (ws ? new ColumnOperator() : null));
+                        engine.ParseBlock(statement, nl ? (Operator)new RowOperator(engine) : (ws ? new ColumnOperator(engine) : null));
                         ws = false;
                         nl = false;
                     }

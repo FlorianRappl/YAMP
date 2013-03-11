@@ -591,6 +591,23 @@ namespace YAMP
         #region Methods
 
         /// <summary>
+        /// Performs the operation f on each element of the matrix, creating a new matrix
+        /// B where each entry is given by B_jk = f(A_jk).
+        /// </summary>
+        /// <param name="f">The function to use.</param>
+        /// <returns>The created matrix.</returns>
+        public MatrixValue ForEach(Func<ScalarValue, ScalarValue> f)
+        {
+            var M = new MatrixValue(dimY, dimX);
+
+            for (var j = 1; j <= dimY; j++)
+                for (var i = 1; i <= dimX; i++)
+                    M[j, i] = f(this[j, i]);
+
+            return M;
+        }
+
+        /// <summary>
         /// Sorts the values of the matrix and outputs the values in a
         /// new vector.
         /// </summary>

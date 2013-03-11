@@ -88,8 +88,10 @@
     <Compile Include="Functions\Fractals\NewtonFunction.cs" />
     <Compile Include="Functions\Helpers\AllFunction.cs" />
     <Compile Include="Functions\Helpers\AnyFunction.cs" />
+    <Compile Include="Functions\Helpers\CumprodFunction.cs" />
+    <Compile Include="Functions\Helpers\CumsumFunction.cs" />
     <Compile Include="Functions\Helpers\FindFunction.cs" />
-    <Compile Include="Functions\LinearAlgebra\CholeskyFunction.cs" />
+    <Compile Include="Functions\LinearAlgebra\CholFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\MagicFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\TrilFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\TriuFunction.cs" />
@@ -102,11 +104,14 @@
     <Compile Include="Functions\RandomNumbers\RandlFunction.cs" />
     <Compile Include="Functions\RandomNumbers\RandwFunction.cs" />
     <Compile Include="Functions\Spectroscopy\ConvnFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\ConjFunction.cs" />
     <Compile Include="Functions\StandardFunctions\Log10Function.cs" />
     <Compile Include="Functions\StandardFunctions\Log2Function.cs" />
     <Compile Include="Functions\StandardFunctions\SizeFunction.cs" />
+    <Compile Include="Functions\Statistics\HistogramFunction.cs" />
     <Compile Include="Functions\SystemFunctions\NotifyFunction.cs" />
     <Compile Include="Functions\SystemFunctions\EvalFunction.cs" />
+    <Compile Include="Functions\SystemFunctions\PauseFunction.cs" />
     <Compile Include="Functions\Trigonometric\ArtanhFunction.cs" />
     <Compile Include="Functions\Trigonometric\ArsechFunction.cs" />
     <Compile Include="Functions\Trigonometric\ArcsecFunction.cs" />
@@ -189,9 +194,11 @@
     <Compile Include="Providers\Enumerations\NotificationType.cs" />
     <Compile Include="Providers\Enumerations\PopularKinds.cs" />
     <Compile Include="Providers\EventArgs\NotificationEventArgs.cs" />
+    <Compile Include="Providers\EventArgs\PauseEventArgs.cs" />
     <Compile Include="Providers\EventArgs\UserInputEventArgs.cs" />
     <Compile Include="Providers\Mapping\MatrixContent.cs" />
     <Compile Include="Providers\Plugin.cs" />
+    <Compile Include="Providers\YMath.cs" />
     <Compile Include="Values\Plots\HeatmapPlotValue.cs" />
     <Compile Include="Values\Plots\SurfacePlotValue.cs" />
     <Compile Include="Values\Plots\XYPlotValue.cs" />
@@ -382,7 +389,6 @@
     <Compile Include="Numerics\Random\PoissonDistribution.cs" />
     <Compile Include="Numerics\Random\RayleighDistribution.cs" />
     <Compile Include="Numerics\Random\WeibullDistribution.cs" />
-    <Compile Include="Numerics\Solvers\Arnoldi.cs" />
     <Compile Include="Numerics\Solvers\CGSolver.cs" />
     <Compile Include="Numerics\Solvers\GMRESkSolver.cs" />
     <Compile Include="Numerics\Solvers\IterativeSolver.cs" />

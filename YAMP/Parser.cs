@@ -60,6 +60,11 @@ namespace YAMP
         /// </summary>
         public static event EventHandler<UserInputEventArgs> OnUserInputRequired;
 
+        /// <summary>
+        /// If the user is required to press a key in order to continue this event is fired.
+        /// </summary>
+        public static event EventHandler<PauseEventArgs> OnPauseDemanded;
+
         #endregion
 
         #region ctor
@@ -592,6 +597,19 @@ namespace YAMP
                 OnUserInputRequired(sender, e);
             else
                 e.Continue(string.Empty);
+        }
+
+        /// <summary>
+        /// Raises the input prompt if in interactive mode.
+        /// </summary>
+        /// <param name="sender">The sending context that demands the user input.</param>
+        /// <param name="e">The input arguments.</param>
+        public static void RaisePause(ParseContext sender, PauseEventArgs e)
+        {
+            if (InteractiveMode && OnPauseDemanded != null)
+                OnPauseDemanded(sender, e);
+            else
+                e.Continue();
         }
 
         /// <summary>

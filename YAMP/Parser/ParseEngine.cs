@@ -421,6 +421,7 @@ namespace YAMP
         /// More custom parsing of a statement (ends with a custom termination char).
         /// </summary>
         /// <param name="termination">The custom termination character (e.g. ; for the standard case).</param>
+        /// <param name="terminationMissing">Function (to generate an error) that is called if the termination character is not found.</param>
         /// <param name="handleCharacter">An optional function that is invoked for every character.</param>
         /// <returns>The finalized statement.</returns>
         internal Statement ParseStatement(char termination, Func<ParseEngine, YAMPParseError> terminationMissing = null, Func<char, Statement, bool> handleCharacter = null)

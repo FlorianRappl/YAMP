@@ -88,6 +88,10 @@ namespace YAMP
                 var ln = engine.CurrentLine;
                 var col = engine.CurrentColumn;
                 kw.Condition = engine.Advance().ParseStatement(')', e => new YAMPBracketNotClosedError(ln, col));
+
+                if (kw.Condition.Container == null || !kw.Condition.Container.HasContent)
+                    engine.AddError(new YAMPIfArgumentsMissing(engine), kw);
+
                 kw.Body = engine.ParseStatement();
             }
             else

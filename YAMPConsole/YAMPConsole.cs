@@ -61,6 +61,7 @@ namespace YAMPConsole
 
             Parser.OnNotificationReceived += OnNotified;
             Parser.OnUserInputRequired += OnUserPrompt;
+            Parser.OnPauseDemanded += OnPauseDemanded;
 
             while (true)
             {
@@ -119,6 +120,13 @@ namespace YAMPConsole
             }
         }
 
+        static void OnPauseDemanded(object sender, PauseEventArgs e)
+        {
+            Console.WriteLine("Press any key to continue . . . ");
+            Console.ReadKey(true);
+            e.Continue();
+        }
+
         static void OnUserPrompt(object sender, UserInputEventArgs e)
         {
             Console.WriteLine();
@@ -129,6 +137,7 @@ namespace YAMPConsole
 
         static void OnNotified(object sender, NotificationEventArgs e)
         {
+            Console.WriteLine(e.Message);
             Trace.WriteLine(e.Message);
         }
     }
