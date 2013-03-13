@@ -340,23 +340,37 @@ namespace YAMP.Numerics
         /// <returns>The greatest common divisor.</returns>
         public static int GCD(int A, int B)
         {
-            if (A == B)
-                return A;
+            if (A == 0)
+                return Math.Max(B, 1);
 
-            if (A == 1 || B == 1)
-                return 1;
+            if (B == 0)
+                return Math.Max(A, 1);
 
-            if ((A % 2 == 0) && (B % 2 == 0))
-                return 2 * GCD(A / 2, B / 2);
-            else if ((A % 2 == 0) && (B % 2 != 0))
-                return GCD(A / 2, B);
-            else if ((A % 2 != 0) && (B % 2 == 0))
-                return GCD(A, B / 2);
+            int f = 1;
 
-            if (A > B)
-                return GCD((A - B) / 2, B);
+            while (true)
+            {
+                if (A == B)
+                    return f * A;
 
-            return GCD(A, (B - A) / 2);
+                if (A == 1 || B == 1)
+                    return f;
+
+                if ((A % 2 == 0) && (B % 2 == 0))
+                {
+                    f = 2 * f;
+                    A = A / 2;
+                    B = B / 2;
+                }
+                else if ((A % 2 == 0) && (B % 2 != 0))
+                    A = A / 2;
+                else if ((A % 2 != 0) && (B % 2 == 0))
+                    B = B / 2;
+                else if (A > B)
+                    A = (A - B) / 2;
+                else
+                    B = (B - A) / 2;
+            }
         }  
 
         /// <summary>

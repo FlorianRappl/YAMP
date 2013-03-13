@@ -25,6 +25,9 @@ namespace YAMP.Numerics
                 c[Nb - i] = c[i];
             }
 
+            for (int i = R; i <= Nb - R; i++)
+                c[i] = new ScalarValue();
+
             bt = ft.Transform(c);
         }
 
@@ -81,6 +84,9 @@ namespace YAMP.Numerics
                 for (int i = 0; i < R; i++)
                     c[i] = b[i] * x[i].Conjugate();
             }
+
+            for (int i = R; i < c.Length; i++)
+                c[i] = new ScalarValue();
 
             var ct = ft.Transform(c);
 

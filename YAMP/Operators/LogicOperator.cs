@@ -45,6 +45,16 @@ namespace YAMP
 		{
 		}
 
+        /// <summary>
+        /// Creates a new logic operator.
+        /// </summary>
+        /// <param name="op">The operator string.</param>
+        /// <param name="level">The operator level.</param>
+        public LogicOperator(string op, int level)
+            : base(op, level)
+        {
+        }
+
         #endregion
 
         #region Methods

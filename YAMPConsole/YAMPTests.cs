@@ -96,6 +96,8 @@ namespace YAMPConsole
             Test("while() {}", true);
             Test("while(true) {}", false);
             Test("do {} while(0 > 2)", false);
+            Test("a([4)", true);
+            Test("f(", true);
 
             sw.Stop();
 
@@ -290,13 +292,26 @@ namespace YAMPConsole
             Test("([3 2 1] + [1 2 3])(2)", 4.0);
             Test("2^-1^-1", 0.5);
             Test("(2^-1)^-1", 2.0);
-            Test("det(cholesky([1, 1i; -1i, pi]))", Math.Sqrt(Math.PI - 1.0), 1e-8);
+            Test("det(chol([1, 1i; -1i, pi]))", Math.Sqrt(Math.PI - 1.0), 1e-8);
             Test("A=[4, 3; 6, 3]; [L, U, p] = lu(A); sum(sum(A - p * L * U))", 0.0, 1e-8);
             Test("A=[12,-51,4;6,167,-68;-4,24,-41]; [q, r] = qr(A); det(q)", -1.0, 1e-8);
             Test("any([1, 0; 0, 0])", 1.0);
             Test("all([1, 0; 0, 0])", 0.0);
             Test("any([0, 0; 0, 0])", 0.0);
             Test("all([1, 1; 5, 3])", 1.0);
+            Test("length(fft(ones(31,1)))", 31.0);
+            Test("1 == 1", 1.0);
+            Test("1 == 0", 0.0);
+            Test("1 ~= 0", 1.0);
+            Test("1 ~= 1", 0.0);
+            Test("1 && 1", 1.0);
+            Test("1 && 0", 0.0);
+            Test("0 && 1", 0.0);
+            Test("0 && 0", 0.0);
+            Test("1 || 1", 1.0);
+            Test("0 || 1", 1.0);
+            Test("0 || 0", 0.0);
+            Test("1 || 0", 1.0);
 
             sw.Stop();
 

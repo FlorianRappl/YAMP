@@ -98,7 +98,7 @@ namespace YAMP
             var D = new double[nbins];
 
             for (var i = 0; i < nbins; i++)
-                D[i] = delta * (i + 0.5);
+                D[i] = delta * (i + 0.5) + min;
 
             return Histogram(v, D);
         }

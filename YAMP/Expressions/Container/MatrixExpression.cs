@@ -91,7 +91,7 @@ namespace YAMP
                 var statement = new Statement();
                 bool ws = false, nl = false;
 
-                while (engine.Pointer < chars.Length)
+                while (engine.Pointer < chars.Length && engine.IsParsing)
                 {
                     if (ParseEngine.IsWhiteSpace(chars[engine.Pointer]))
                     {

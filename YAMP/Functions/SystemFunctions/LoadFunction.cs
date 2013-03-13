@@ -357,7 +357,7 @@ namespace YAMP
                 {
                     for (int j = 0; j < tokensPerLine[i]; j++)
                     {
-                        if (double.TryParse(lines[numberOfHeaderLines + i][j], out parseResult))
+                        if (double.TryParse(lines[numberOfHeaderLines + i][j], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out parseResult))
                             result[i + 1, j + 1] = new ScalarValue(parseResult);
                         else
                             result[i + 1, j + 1] = new ScalarValue(double.NaN);

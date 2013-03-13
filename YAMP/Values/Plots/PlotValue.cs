@@ -85,6 +85,15 @@ namespace YAMP
 		#region Methods
 
         /// <summary>
+        /// Passes a reference (not a copy!) to the current object.
+        /// </summary>
+        /// <returns>The reference to the current object.</returns>
+        public override Value Copy()
+        {
+            return this;
+        }
+
+        /// <summary>
         /// Invokes the OnPlotChanged event if it has been set.
         /// </summary>
         /// <param name="property">The property name to take as argument.</param>

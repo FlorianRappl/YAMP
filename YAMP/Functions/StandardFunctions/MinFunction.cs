@@ -44,12 +44,12 @@ namespace YAMP
 		ScalarValue GetVectorMin(MatrixValue vec)
 		{
 			var buf = new ScalarValue();
-			var min = double.PositiveInfinity;
+			var min = double.MaxValue;
 			var temp = 0.0;
 
 			for(var i = 1; i <= vec.Length; i++)
 			{
-				temp = vec[i].Abs();
+				temp = vec.IsComplex ? vec[i].Abs() : vec[i].Re;
 
 				if (temp < min)
 				{

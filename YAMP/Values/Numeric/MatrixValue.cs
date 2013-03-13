@@ -191,7 +191,7 @@ namespace YAMP
 			{
 				for (var i = 1; i <= dimY; i++)
 				{
-					for (var j = 1; j < dimX; j++)
+					for (var j = 1; j <= dimX; j++)
 					{
 						if (this[i, j].IsComplex)
 							return true;
@@ -617,7 +617,7 @@ namespace YAMP
 			var v = new MatrixValue(1, Length);
 
 			for (var k = 1; k <= Length; k++)
-				v._values.Add(GetIndex(k), this[k].Clone());
+				v._values.Add(new MatrixIndex(1, k), this[k].Clone());
 
 			for (var i = 1; i < Length; i++)
 			{

@@ -42,12 +42,12 @@ namespace YAMP
 		ScalarValue GetVectorMax(MatrixValue vec)
 		{
 			var buf = new ScalarValue();
-			var max = double.NegativeInfinity;
+			var max = double.MinValue;
 			var temp = 0.0;
 
 			for(var i = 1; i <= vec.Length; i++)
 			{
-				temp = vec[i].Abs();
+				temp = vec.IsComplex ? vec[i].Abs() : vec[i].Re;
 
 				if (temp > max)
 				{

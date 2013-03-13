@@ -108,6 +108,7 @@
     <Compile Include="Functions\StandardFunctions\Log10Function.cs" />
     <Compile Include="Functions\StandardFunctions\Log2Function.cs" />
     <Compile Include="Functions\StandardFunctions\SizeFunction.cs" />
+    <Compile Include="Functions\StandardFunctions\SplitFunction.cs" />
     <Compile Include="Functions\Statistics\HistogramFunction.cs" />
     <Compile Include="Functions\SystemFunctions\NotifyFunction.cs" />
     <Compile Include="Functions\SystemFunctions\EvalFunction.cs" />
@@ -128,6 +129,8 @@
     <Compile Include="Numerics\Fractals\Julia.cs" />
     <Compile Include="Numerics\Fractals\Newton.cs" />
     <Compile Include="Numerics\Matrices\BlasL3.cs" />
+    <Compile Include="Operators\LogicOperators\AndOperator.cs" />
+    <Compile Include="Operators\LogicOperators\OrOperator.cs" />
     <Compile Include="Operators\RightUnaryOperators\RightUnaryOperator.cs" />
     <Compile Include="Operators\LeftUnaryOperators\LeftUnaryOperator.cs" />
     <Compile Include="Operators\LeftUnaryOperators\NegateOperator.cs" />
