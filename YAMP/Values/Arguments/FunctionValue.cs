@@ -58,6 +58,43 @@ namespace YAMP
         }
 
         /// <summary>
+        /// Creates a new instance of a FunctionValue with a delegate argument.
+        /// </summary>
+        /// <param name="f">Delegate to be wrapped in a function</param>
+        /// <param name="standardFunctionBehaviour">indicates if the wrapper
+        /// should include the StandardFunction behaviour, i.e. scalar execution
+        /// for ScalarValues and matrix execution for MatrixValues </param>
+        public FunctionValue(Func<ParseContext, Value, Value> f, bool standardFunctionBehaviour = false)
+        {
+            canSerialize = false;
+            if (standardFunctionBehaviour)
+            {
+                perform = (context, argument) =>
+                {
+                    if (argument is ScalarValue)
+                        return f(context, argument);
+                    else if (argument is MatrixValue)
+                    {
+                        var A = argument as MatrixValue;
+                        var M = new MatrixValue(A.DimensionY, A.DimensionX);
+
+                        for (var j = 1; j <= A.DimensionY; j++)
+                            for (var i = 1; i <= A.DimensionX; i++)
+                                M[j, i] = f(context, A[j, i]) as ScalarValue;
+
+                        return M;
+                    }
+                    else
+                        throw new YAMPArgumentWrongTypeException(argument.GetType().ToString(), typeof(ScalarValue).Name + " or " + typeof(MatrixValue).Name, "dynamically created function");
+                };
+            }
+            else
+            {
+                perform = f;
+            }
+        }
+
+        /// <summary>
         /// Creates a new FunctionValue with data to parse.
         /// </summary>
         /// <param name="arguments">The list of argument identifiers.</param>

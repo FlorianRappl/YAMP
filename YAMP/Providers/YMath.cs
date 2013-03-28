@@ -264,5 +264,31 @@ namespace YAMP
 
             return s;
         }
+
+        public static ScalarValue Median(MatrixValue M)
+        {
+            if (M.Length == 0)
+                return new ScalarValue();
+            else if (M.Length == 1)
+                return M[1];
+
+            M = M.VectorSort();
+            int midPoint;
+            var sum = new ScalarValue();
+
+            if (M.Length % 2 == 1)
+            {
+                midPoint = M.Length / 2;
+                sum = M[midPoint + 1];
+            }
+            else
+            {
+                midPoint = (M.Length / 2);
+                sum = M[midPoint] + M[midPoint + 1];
+                sum /= 2.0;
+            }
+
+            return sum;
+        }
     }
 }

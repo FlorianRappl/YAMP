@@ -95,6 +95,7 @@
     <Compile Include="Functions\LinearAlgebra\MagicFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\TrilFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\TriuFunction.cs" />
+    <Compile Include="Functions\Numerics\LinearfitFunction.cs" />
     <Compile Include="Functions\Numerics\PolyfitFunction.cs" />
     <Compile Include="Functions\Numerics\PolyvalFunction.cs" />
     <Compile Include="Functions\RandomNumbers\RandbFunction.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="Functions\StandardFunctions\SizeFunction.cs" />
     <Compile Include="Functions\StandardFunctions\SplitFunction.cs" />
     <Compile Include="Functions\Statistics\HistogramFunction.cs" />
+    <Compile Include="Functions\Statistics\DistFunction.cs" />
     <Compile Include="Functions\SystemFunctions\NotifyFunction.cs" />
     <Compile Include="Functions\SystemFunctions\EvalFunction.cs" />
     <Compile Include="Functions\SystemFunctions\PauseFunction.cs" />
