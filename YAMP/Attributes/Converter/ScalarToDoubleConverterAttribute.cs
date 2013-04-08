@@ -38,7 +38,7 @@ namespace YAMP.Converter
         /// Creates a new Scalar To Double Converter.
         /// </summary>
         public ScalarToDoubleConverterAttribute()
-            : base(typeof(ScalarValue), v => (v as ScalarValue).Value)
+            : base(typeof(ScalarValue), v => (v as ScalarValue).Re)
         {
         }
     }

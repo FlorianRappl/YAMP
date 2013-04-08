@@ -70,6 +70,7 @@ namespace YAMP
             var start = engine.Pointer;
             var chars = engine.Characters;
             var ch = chars[start];
+            var isreal = false;
 
             if(ParseEngine.IsNumber(ch) || (ch == '.' && start < chars.Length && ParseEngine.IsNumber(chars[start + 1])))
             {
@@ -92,6 +93,7 @@ namespace YAMP
                 
                 if (ch == '.')
                 {
+                    isreal = true;
                     index++;
 
                     if (index < chars.Length && ParseEngine.IsNumber(chars[index]))
@@ -108,6 +110,7 @@ namespace YAMP
 
                 if (ch == 'e' || ch == 'E')
                 {
+                    isreal = true;
                     var epow = 0;
                     var sign = 1;
                     index++;
@@ -135,8 +138,10 @@ namespace YAMP
                     exp.value = new ScalarValue(0.0, value);
                     index++;
                 }
-                else
+                else if (isreal)
                     exp.value = new ScalarValue(value);
+                else
+                    exp.value = new ScalarValue((int)value);
 
                 exp.Length = index - start;
                 engine.SetPointer(index);

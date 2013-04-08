@@ -5,7 +5,7 @@ namespace YAMP
 {
     [Description("Find indices and values of nonzero elements.")]
     [Kind(PopularKinds.Function)]
-    class FindFunction : ArgumentFunction
+    sealed class FindFunction : ArgumentFunction
     {
         [Description("Locates all nonzero elements of the matrix M, and returns the linear indices of those elements in a column vector. If M contains no nonzero elements, then an empty matrix will be returned.")]
         [Example("find(isprime(1:1000))", "Returns all indices of the matrix which are related to non-zero entries.")]

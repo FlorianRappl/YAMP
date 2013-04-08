@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Gets information about the type of variables.")]
 	[Kind(PopularKinds.System)]
-    class TypeFunction : StandardFunction
+    sealed class TypeFunction : StandardFunction
     {
         [Description("Requests information about the type for the specified variable.")]
         [Example("type(x)", "Gets the type information of the variable x.")]

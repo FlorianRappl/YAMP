@@ -5,7 +5,7 @@ namespace YAMP
     [Description("In statistics the Bootstrap is a method to estimate the statistical error of observables measured on a set of data.")]
     [Kind(PopularKinds.Statistic)]
     [Link("http://en.wikipedia.org/wiki/Bootstrapping")]
-    class BootstrapFunction : SystemFunction
+    sealed class BootstrapFunction : SystemFunction
     {
         [Description("This function implements the Bootstrap method for functions of a set of vector data saved as the rows of a matrix. The function has to take a matrix of data as the first argument and has to return either a scalar or a matrix.")]
         [Example("Bootstrap([3 + randn(100, 1), 10 + 2 * randn(100, 1)], 200, avg)", "Gives the statistical Bootstrap estimate for the mean and the error on the mean of a dataset with 100 measurements, mean [3, 10], and gaussian noise of width [1, 4] for 200 bootstrap samples.")]

@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Outputs the length of the given object.")]
 	[Kind(PopularKinds.Function)]
-	class LengthFunction : ArgumentFunction
+    sealed class LengthFunction : ArgumentFunction
 	{
         [Description("Returns a scalar that is basically the number of rows times the number of columns.")]
         [Example("length([1,2,3,4,5;6,7,8,9,10])", "Results in a scalar value of 10, since we have 5 columns and 2 rows.")]

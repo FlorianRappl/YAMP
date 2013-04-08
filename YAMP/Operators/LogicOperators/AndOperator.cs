@@ -41,7 +41,7 @@ namespace YAMP
 
 		public override ScalarValue Compare (ScalarValue left, ScalarValue right)
 		{
-			return new ScalarValue(left.IsTrue && right.IsTrue);
+            return new ScalarValue(left.IsTrue && right.IsTrue);
 		}
 
         public override Operator Create()

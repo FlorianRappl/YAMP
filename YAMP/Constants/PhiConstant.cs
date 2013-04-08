@@ -10,7 +10,7 @@ namespace YAMP
     [Link("http://en.wikipedia.org/wiki/Golden_ratio")]
 	class PhiConstant : BaseConstant
 	{
-		static readonly ScalarValue phi = new ScalarValue(1.61803398874989484820458683436563811);
+        static readonly ScalarValue phi = new ScalarValue(1.61803398874989484820458683436563811);
 
 		public override Value Value
 		{

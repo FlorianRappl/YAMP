@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Deletes variables from memory.")]
 	[Kind(PopularKinds.System)]
-    class ClearFunction : SystemFunction
+    sealed class ClearFunction : SystemFunction
     {
         [Description("Clears all variables.")]
         [ExampleAttribute("clear()")]

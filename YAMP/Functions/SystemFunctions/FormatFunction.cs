@@ -5,7 +5,7 @@ namespace YAMP
 {
     [Description("Sets the output formatting of numeric values to a certain pre-defined style.")]
     [Kind(PopularKinds.System)]
-    class FormatFunction : SystemFunction
+    sealed class FormatFunction : SystemFunction
     {
         [Description("Returns the currently used output format.")]
         public StringValue Function()

@@ -312,6 +312,7 @@ namespace YAMPConsole
             Test("0 || 1", 1.0);
             Test("0 || 0", 0.0);
             Test("1 || 0", 1.0);
+            Test("A = rand(3); A(2, 2) = 0.5i; x = solve(A, eye(3,1)); abs(A * x - eye(3,1))", 0.0, 1e-8);
 
             sw.Stop();
 
@@ -428,7 +429,7 @@ namespace YAMPConsole
 
         static bool Assert(Value value, double result, double prec = 0.0)
         {
-            return Assert(((ScalarValue)value).Value, result, prec);
+            return Assert(((ScalarValue)value).Re, result, prec);
         }
 
         static bool Assert(double value, double result, double prec = 0.0)

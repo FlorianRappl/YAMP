@@ -6,7 +6,7 @@ namespace YAMP
     [Description("Calculates values within the Mandelbrot fractal.")]
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Newton_fractal")]
-    class NewtonFunction : ArgumentFunction
+    sealed class NewtonFunction : ArgumentFunction
     {
         [Description("Calculates the most interesting region of the Newton fractal.")]
         [Example("newton()", "Computes the most interesting region x in (-1.0, 1.0), y in (-1.0, 1.0) with a resolution of 150 x 150 points.")]
@@ -21,7 +21,7 @@ namespace YAMP
         public ScalarValue Function(ScalarValue z)
         {
             var m = new Newton();
-            return new ScalarValue(m.Run(z.Value, z.ImaginaryValue));
+            return new ScalarValue(m.Run(z.Re, z.Im));
         }
 
         [Description("Calculates a point in the Newton fractal.")]
@@ -29,15 +29,15 @@ namespace YAMP
         public ScalarValue Function(ScalarValue x, ScalarValue y)
         {
             var m = new Newton();
-            return new ScalarValue(m.Run(x.Value, y.Value));
+            return new ScalarValue(m.Run(x.Re, y.Re));
         }
 
         [Description("Calculates a subset of the Newton fractal.")]
-        [Example("newton(-2.5 - i, 1 + i, 10 + 8i)", "Computes a matrix (8 rows, 10 columns) within x = -2.5..1 and y = -1..1.")]
+        [Example("newton(-2.5 - i, 1 + i, 10)", "Computes a matrix (10 rows, 10 columns) within x = -2.5..1 and y = -1..1.")]
         public MatrixValue Function(ScalarValue start, ScalarValue end, ScalarValue steps)
         {
             var m = new Newton();
-            return m.CalculateMatrix(start.Value, end.Value, start.ImaginaryValue, end.ImaginaryValue, steps.IntValue, steps.ImaginaryIntValue);
+            return m.CalculateMatrix(start.Re, end.Re, start.Im, end.Im, steps.IntValue, steps.IntValue);
         }
 
         [Description("Calculates a subset of the Newton fractal.")]
@@ -45,9 +45,9 @@ namespace YAMP
         public MatrixValue Function(ScalarValue x0, ScalarValue xn, ScalarValue y0, ScalarValue yn)
         {
             var m = new Newton();
-            var xsteps = (int)Math.Abs(Math.Ceiling((xn.Value - x0.Value) / 0.1));
-            var ysteps = (int)Math.Abs(Math.Ceiling((yn.Value - y0.Value) / 0.1));
-            return m.CalculateMatrix(x0.Value, xn.Value, y0.Value, yn.Value, xsteps, ysteps);
+            var xsteps = (int)Math.Abs(Math.Ceiling((xn.Re - x0.Re) / 0.1));
+            var ysteps = (int)Math.Abs(Math.Ceiling((yn.Re - y0.Re) / 0.1));
+            return m.CalculateMatrix(x0.Re, xn.Re, y0.Re, yn.Re, xsteps, ysteps);
         }
 
         [Description("Calculates a subset of the Newton fractal.")]
@@ -55,7 +55,7 @@ namespace YAMP
         public MatrixValue Function(ScalarValue x0, ScalarValue xn, ScalarValue y0, ScalarValue yn, ScalarValue xsteps, ScalarValue ysteps)
         {
             var m = new Newton();
-            return m.CalculateMatrix(x0.Value, xn.Value, y0.Value, yn.Value, xsteps.IntValue, ysteps.IntValue);
+            return m.CalculateMatrix(x0.Re, xn.Re, y0.Re, yn.Re, xsteps.IntValue, ysteps.IntValue);
         }
     }
 }

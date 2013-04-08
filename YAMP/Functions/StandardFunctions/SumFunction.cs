@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Computes the sum of a given vector or the sum for each column vector of a matrix.")]
 	[Kind(PopularKinds.Function)]
-	class SumFunction : ArgumentFunction
+    sealed class SumFunction : ArgumentFunction
     {
         [Description("Just returns the value, since the sum of one scalar is the scalar itself.")]
         public ScalarValue Function(ScalarValue x)
@@ -34,7 +34,7 @@ namespace YAMP
 		
 		ScalarValue GetVectorSum(MatrixValue vec)
 		{
-			var sum = new ScalarValue(0.0);
+			var sum = ScalarValue.Zero;
 			
 			for(var i = 1; i <= vec.Length; i++)
 				sum = sum + vec[i];

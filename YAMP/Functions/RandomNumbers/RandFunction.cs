@@ -6,14 +6,14 @@ namespace YAMP
 	[Description("Generates a matrix with uniformly distributed random values between 0 and 1.")]
     [Kind(PopularKinds.Random)]
     [Link("http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)")]
-	class RandFunction : ArgumentFunction
+    sealed class RandFunction : ArgumentFunction
 	{
 		static readonly ContinuousUniformDistribution ran = new ContinuousUniformDistribution();
 
 		[Description("Generates one uniformly dist. random value between 0 and 1.")]
 		public ScalarValue Function()
 		{
-			return new ScalarValue(ran.NextDouble());
+            return new ScalarValue(ran.NextDouble());
 		}
 
 		[Description("Generates a n-by-n matrix with uniformly dist. random values between 0 and 1.")]
@@ -29,7 +29,7 @@ namespace YAMP
 			
 			for(var i = 1; i <= k; i++)
 				for(var j = 1; j <= k; j++)
-					m[j, i] = new ScalarValue(ran.NextDouble());
+                    m[j, i] = new ScalarValue(ran.NextDouble());
 			
 			return m;
 		}
@@ -44,7 +44,7 @@ namespace YAMP
 			
 			for(var i = 1; i <= l; i++)
 				for(var j = 1; j <= k; j++)
-					m[j, i] = new ScalarValue(ran.NextDouble());
+                    m[j, i] = new ScalarValue(ran.NextDouble());
 			
 			return m;
 		}

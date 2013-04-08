@@ -5,7 +5,7 @@ namespace YAMP
 {
     [Kind(PopularKinds.System)]
     [Description("Changes the current working directory.")]
-    class CdFunction : SystemFunction
+    sealed class CdFunction : SystemFunction
     {
         [Description("The change directory method changes the currently set working directory. This enables you to access all files in the new directory with their file name only.")]
         [Example("cd(\"..\")", "Navigates to the upper directory of the current working directory.", true)]

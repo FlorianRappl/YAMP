@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Determine whether any matrix element is nonzero.")]
     [Kind(PopularKinds.Logic)]
-    class AnyFunction : ArgumentFunction
+    sealed class AnyFunction : ArgumentFunction
     {
         [Description("Tests whether any of the elements along various dimensions of an array is nonzero.")]
         [Example("any([0, 0; 0, 0])", "Tests the 2x2 matrix with only zeros. Returns false.")]

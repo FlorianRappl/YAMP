@@ -154,7 +154,7 @@ namespace YAMP
                 if(i == 1)
                     return GetValue(j);
 
-                return new ScalarValue();
+                return ScalarValue.Zero;
             }
             set
             {

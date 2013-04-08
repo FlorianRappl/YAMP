@@ -9,7 +9,7 @@ namespace YAMP
 {
 	[Description("Loads compatible files into YAMP.")]
 	[Kind(PopularKinds.System)]
-    class LoadFunction : SystemFunction
+    sealed class LoadFunction : SystemFunction
     {
         #region Constants
 

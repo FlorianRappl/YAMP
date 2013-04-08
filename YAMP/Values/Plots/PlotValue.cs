@@ -183,12 +183,11 @@ namespace YAMP
 		protected double[] Convert(MatrixValue m, int offset, int length)
 		{
 			var values = new double[length];
-			var complex = m.IsComplex;
 			var j = offset + 1;
 
 			for (int i = 0; i < length; i++)
 			{
-				values[i] = complex ? m[j].Abs() : m[j].Value;
+				values[i] = m[j].Re;
 				j++;
 			}
 
@@ -206,13 +205,12 @@ namespace YAMP
 		protected double[] ConvertX(MatrixValue m, int dx, int length, int dy)
 		{
 			var values = new double[length];
-			var complex = m.IsComplex;
 			var j = dy + 1;
 			var k = dx + 1;
 
 			for (int i = 0; i < length; i++)
 			{
-				values[i] = complex ? m[j, k].Abs() : m[j, k].Value;
+				values[i] = m[j, k].Re;
 				k++;
 			}
 
@@ -230,13 +228,12 @@ namespace YAMP
 		protected double[] ConvertY(MatrixValue m, int dy, int length, int dx)
 		{
 			var values = new double[length];
-			var complex = m.IsComplex;
 			var j = dy + 1;
 			var k = dx + 1;
 
 			for (int i = 0; i < length; i++)
 			{
-				values[i] = complex ? m[j, k].Abs() : m[j, k].Value;
+				values[i] = m[j, k].Re;
 				j++;
 			}
 

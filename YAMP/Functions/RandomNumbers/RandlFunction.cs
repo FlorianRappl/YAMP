@@ -6,7 +6,7 @@ namespace YAMP
     [Description("Generates a matrix with Laplace distributed random values. In probability theory and statistics, the Laplace distribution is a continuous probability distribution named after Pierre-Simon Laplace. It is also sometimes called the double exponential distribution, because it can be thought of as two exponential distributions (with an additional location parameter) spliced together back-to-back, but the term double exponential distribution is also sometimes used to refer to the Gumbel distribution. The difference between two independent identically distributed exponential random variables is governed by a Laplace distribution, as is a Brownian motion evaluated at an exponentially distributed random time. Increments of Laplace motion or a variance gamma process evaluated over the time scale also have a Laplace distribution.")]
     [Kind(PopularKinds.Random)]
     [Link("http://en.wikipedia.org/wiki/Laplace_distribution")]
-    class RandlFunction : ArgumentFunction
+    sealed class RandlFunction : ArgumentFunction
     {
         static readonly LaplaceDistribution ran = new LaplaceDistribution();
 
@@ -41,7 +41,7 @@ namespace YAMP
 
             for (var i = 1; i <= l; i++)
                 for (var j = 1; j <= n; j++)
-                    m[j, i] = new ScalarValue(Laplace(mu.Value, b.Value));
+                    m[j, i] = new ScalarValue(Laplace(mu.Re, b.Re));
 
             return m;
         }

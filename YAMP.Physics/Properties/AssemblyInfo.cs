@@ -36,4 +36,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("(c) Florian Rappl, 2012 - 2013.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.0.1.*")]
+[assembly: AssemblyVersion("1.3.0.*")]

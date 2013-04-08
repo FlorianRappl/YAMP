@@ -47,7 +47,7 @@ namespace YAMP.Converter
 
                 for (var i = 0; i < m.Length; i++)
                 {
-                    m[i] = v[i + 1].Value;
+                    m[i] = v[i + 1].Re;
                 }
 
                 return m;

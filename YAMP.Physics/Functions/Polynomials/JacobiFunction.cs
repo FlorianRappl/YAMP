@@ -107,7 +107,7 @@ namespace YAMP.Physics
 
             var p = n_over_m[0] * gamma_alpha_beta_n_m_1[0] / gamma_alpha_m_1[0];
             var z_minus_1_over_2 = z; z_minus_1_over_2 -= 1; z_minus_1_over_2 /= 2;
-            var z_minus_1_over_2_to_the_m = new ScalarValue(1.0);
+            var z_minus_1_over_2_to_the_m = ScalarValue.One;
 
             for (int k = 1; k < m; k++)
             {

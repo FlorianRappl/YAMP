@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("A contour plot displays isolines of matrix Z. A contour line (also isoline, isopleth, or isarithm) of a function of two variables is a curve along which the function has a constant value.")]
 	[Kind(PopularKinds.Plot)]
-	class ContourFunction : VisualizationFunction
+	sealed class ContourFunction : VisualizationFunction
 	{
 		[Description("This draws a contour plot of matrix Z, where Z is interpreted as heights with respect to the x-y plane. Z must be at least a 2-by-2 matrix that contains at least two different values. The number of contour lines and the values of the contour lines are chosen automatically based on the minimum and maximum values of Z. The ranges of the x- and y-axis are [1:n] and [1:m], where [m,n] = size(Z).")]
 		[Example("contour([1, 2, 3; 4, 5, 6; 7, 8, 9])", "Creates a contour plot of the given matrix.")]

@@ -6,7 +6,7 @@ namespace YAMP
 {
     [Kind(PopularKinds.System)]
 	[Description("Lists the contents of the current working directory.")]
-	class LsFunction : SystemFunction
+    sealed class LsFunction : SystemFunction
 	{
 		[Description("Reads the file system table and lists the contents of the current working directory.")]
 		[Example("ls()", "Lists name, attributes and the time of the last modification of the current working directory's files and sub-directories.", true)]

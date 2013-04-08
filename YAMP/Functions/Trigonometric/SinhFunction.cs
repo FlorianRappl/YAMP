@@ -5,7 +5,7 @@ namespace YAMP
     [Description("The standard sinh(x) function. This is the hyperbolic sine.")]
     [Kind(PopularKinds.Trigonometric)]
     [Link("http://en.wikipedia.org/wiki/Hyperbolic_function")]
-    class SinhFunction : StandardFunction
+    sealed class SinhFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)
         {

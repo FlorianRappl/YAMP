@@ -41,7 +41,7 @@ namespace YAMP.Physics
         public ScalarValue Function(ScalarValue n, ScalarValue alpha, ScalarValue z)
         {
             var nn = n.GetIntegerOrThrowException("n", Name);
-            return Gegenbauer(nn, alpha.Value, z);
+            return Gegenbauer(nn, alpha.Re, z);
         }
 
         [Description("Computes the Gegenbauer polynomial with order n, parameter alpha at the points in Z.")]
@@ -53,7 +53,7 @@ namespace YAMP.Physics
 
             for(var i = 1; i <= Z.DimensionX; i++)
                 for (var j = 1; j <= Z.DimensionY; j++)
-                    M[j, i] = Gegenbauer(nn, alpha.Value, Z[j, i]);
+                    M[j, i] = Gegenbauer(nn, alpha.Re, Z[j, i]);
 
             return M;
         }
@@ -71,7 +71,7 @@ namespace YAMP.Physics
             if (x.Abs() > 1.0)
                 throw new YAMPArgumentRangeException("x", -1, 1);
 
-            var C0 = new ScalarValue(1.0);
+            var C0 = ScalarValue.One;
 
             if (n == 0)
                 return C0;

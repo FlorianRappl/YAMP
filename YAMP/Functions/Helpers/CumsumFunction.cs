@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Computes the cumulative sum of the given arguments.")]
     [Kind(PopularKinds.Function)]
-    class CumsumFunction : ArgumentFunction
+    sealed class CumsumFunction : ArgumentFunction
     {
         [Description("Just returns the given scalar, since the cumulative sum of one scalar is the scalar itself.")]
         public ScalarValue Function(ScalarValue x)

@@ -10,7 +10,7 @@ namespace YAMP
     [Link("http://en.wikipedia.org/wiki/Pi")]
 	class PiConstant : BaseConstant
 	{
-		static readonly ScalarValue pi = new ScalarValue(Math.PI);
+        static readonly ScalarValue pi = new ScalarValue(Math.PI);
 
 		public override Value Value
 		{

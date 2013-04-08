@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Generates a matrix with only ones.")]
 	[Kind(PopularKinds.Function)]
-    class OnesFunction : ArgumentFunction
+    sealed class OnesFunction : ArgumentFunction
     {
         [Description("Generates a 1x1 matrix.")]
         public MatrixValue Function()
@@ -16,7 +16,7 @@ namespace YAMP
         [Example("ones(5)", "Returns a 5x5 matrix with 1 in each cell.")]
         public MatrixValue Function(ScalarValue dim)
         {
-            var k = (int)dim.Value;
+            var k = (int)dim.Re;
             return MatrixValue.Ones(k, k);
         }
 
@@ -24,8 +24,8 @@ namespace YAMP
         [Example("ones(5,2)", "Returns a 5x2 matrix with 1 in each cell.")]
         public MatrixValue Function(ScalarValue rows, ScalarValue cols)
         {
-            var k = (int)rows.Value;
-            var l = (int)cols.Value;
+            var k = (int)rows.Re;
+            var l = (int)cols.Re;
             return MatrixValue.Ones(k, l);
         }
     }

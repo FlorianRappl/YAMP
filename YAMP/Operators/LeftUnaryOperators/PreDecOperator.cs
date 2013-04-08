@@ -43,7 +43,7 @@ namespace YAMP
         public override Value Handle(Expression value, Dictionary<string, Value> symbols)
         {
             var a = MinusAssignmentOperator.CreateWithContext(Query);
-            a.Handle(value, new NumberExpression(new ScalarValue(1.0)), symbols);
+            a.Handle(value, new NumberExpression(ScalarValue.One), symbols);
             return value.Interpret(symbols);
         }
 

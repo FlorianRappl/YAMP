@@ -75,10 +75,10 @@ namespace YAMP.Physics
         static ScalarValue HermitePolynomial(int m, ScalarValue z)
         {
             var mh = m / 2;
-            var p = new ScalarValue();
+            var p = ScalarValue.Zero;
             var two_z = z * 2;
             var two_z_squared = two_z * two_z;
-            var two_z_to_the_n_minus_2_times_m = m % 2 == 0 ? new ScalarValue(1) : two_z;
+            var two_z_to_the_n_minus_2_times_m = m % 2 == 0 ? ScalarValue.One : two_z;
             var s = Math.Pow(-1, mh);
 
             for (int k = mh; k >= 0; k--)

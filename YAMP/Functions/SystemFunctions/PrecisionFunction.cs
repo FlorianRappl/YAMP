@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Gets or sets the precision set for display purposes.")]
 	[Kind(PopularKinds.System)]
-    class PrecisionFunction : SystemFunction
+    sealed class PrecisionFunction : SystemFunction
     {
         [Description("Gets the currently set precision in digits.")]
         [Example("precision()")]

@@ -95,7 +95,7 @@
     <Compile Include="Functions\LinearAlgebra\MagicFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\TrilFunction.cs" />
     <Compile Include="Functions\LinearAlgebra\TriuFunction.cs" />
-    <Compile Include="Functions\Numerics\LinearfitFunction.cs" />
+    <Compile Include="Functions\Numerics\LinfitFunction.cs" />
     <Compile Include="Functions\Numerics\PolyfitFunction.cs" />
     <Compile Include="Functions\Numerics\PolyvalFunction.cs" />
     <Compile Include="Functions\RandomNumbers\RandbFunction.cs" />
@@ -127,6 +127,8 @@
     <Compile Include="Functions\Visualization\MeshFunction.cs" />
     <Compile Include="Functions\Visualization\SetDefFunction.cs" />
     <Compile Include="Functions\Visualization\SurfFunction.cs" />
+    <Compile Include="Numerics\Decompositions\GivensDecomposition.cs" />
+    <Compile Include="Numerics\Decompositions\HouseholderDecomposition.cs" />
     <Compile Include="Numerics\Fractals\Fractal.cs" />
     <Compile Include="Numerics\Fractals\Julia.cs" />
     <Compile Include="Numerics\Fractals\Newton.cs" />
@@ -201,6 +203,7 @@
     <Compile Include="Providers\EventArgs\NotificationEventArgs.cs" />
     <Compile Include="Providers\EventArgs\PauseEventArgs.cs" />
     <Compile Include="Providers\EventArgs\UserInputEventArgs.cs" />
+    <Compile Include="Providers\Extensions.cs" />
     <Compile Include="Providers\Mapping\MatrixContent.cs" />
     <Compile Include="Providers\Plugin.cs" />
     <Compile Include="Providers\YMath.cs" />
@@ -376,7 +379,7 @@
     <Compile Include="Numerics\Decompositions\LUDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\QRDecomposition.cs" />
     <Compile Include="Numerics\Decompositions\SingularValueDecomposition.cs" />
-    <Compile Include="Numerics\NumericHelpers.cs" />
+    <Compile Include="Numerics\Helpers.cs" />
     <Compile Include="Numerics\Others\ErrorFunction.cs" />
     <Compile Include="Numerics\Spectroscopy\FFT.cs" />
     <Compile Include="Numerics\Others\Gamma.cs" />

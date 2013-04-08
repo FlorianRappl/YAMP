@@ -44,7 +44,7 @@ namespace YAMP
         {
             var a = PlusAssignmentOperator.CreateWithContext(Query);
             var origin = expression.Interpret(symbols);
-            a.Handle(expression, new NumberExpression(new ScalarValue(1.0)), symbols);
+            a.Handle(expression, new NumberExpression(ScalarValue.One), symbols);
             return origin;
         }
 

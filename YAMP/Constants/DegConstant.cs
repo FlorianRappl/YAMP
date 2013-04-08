@@ -10,7 +10,7 @@ namespace YAMP
     [Link("http://en.wikipedia.org/wiki/Degree_(angle)")]
     class DegConstant : BaseConstant
     {
-        static readonly ScalarValue deg = new ScalarValue(Math.PI / 180.0, 0.0);
+        static readonly ScalarValue deg = new ScalarValue(Math.PI / 180.0);
 
         public override Value Value
         {

@@ -5,7 +5,7 @@ namespace YAMP
 {
     [Description("Converts a hexadecimal number to a decimal number.")]
     [Kind(PopularKinds.Conversion)]
-    class Hex2DecFunction : ArgumentFunction
+    sealed class Hex2DecFunction : ArgumentFunction
     {
         [Description("The function ignores white spaces and converts the given hexadecimal input to the equivalent decimal number.")]
         [Example("hex2dec(\"FF\")", "Hexadecimal FF converts to decimal 255.")]

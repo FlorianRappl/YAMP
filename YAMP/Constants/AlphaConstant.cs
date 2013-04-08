@@ -10,7 +10,7 @@ namespace YAMP
     [Link("http://en.wikipedia.org/wiki/Feigenbaum_constant")]
 	class AlphaConstant : BaseConstant
 	{
-		static readonly ScalarValue alpha = new ScalarValue(2.50290787509589282228390287321821578);
+        static readonly ScalarValue alpha = new ScalarValue(2.50290787509589282228390287321821578);
 
 		public override Value Value
 		{

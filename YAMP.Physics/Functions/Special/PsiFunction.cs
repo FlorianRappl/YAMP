@@ -297,7 +297,7 @@ namespace YAMP.Physics
             int i;
 
             if (z.Re == 0.0 && z.Im == 0.0)
-                return new ScalarValue();
+                return ScalarValue.Zero;
 
             /* compute the number of recurrences to apply */
             if (z.Re < 20.0 && Math.Abs(z.Im) < 20.0)

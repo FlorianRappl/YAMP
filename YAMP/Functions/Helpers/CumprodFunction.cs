@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Computes the cumulative product of the given arguments.")]
     [Kind(PopularKinds.Function)]
-    class CumprodFunction : ArgumentFunction
+    sealed class CumprodFunction : ArgumentFunction
     {
         [Description("Just returns the given scalar, since the cumulative product of one scalar is the scalar itself.")]
         public ScalarValue Function(ScalarValue x)

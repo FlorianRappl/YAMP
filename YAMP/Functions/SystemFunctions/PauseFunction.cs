@@ -5,7 +5,7 @@ namespace YAMP
 {
     [Description("Waits for the user to press some key.")]
     [Kind(PopularKinds.System)]
-    class PauseFunction : SystemFunction
+    sealed class PauseFunction : SystemFunction
     {
         [Description("Waits until the user presses some key.")]
         [Example("pause()", "Shows the user a prompt with a default message.")]

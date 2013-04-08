@@ -53,7 +53,7 @@ namespace YAMP
 			var all = false;
 			
 			if(left is ScalarValue)
-				start = (left as ScalarValue).Value;
+				start = (left as ScalarValue).Re;
 			else if (left is RangeValue)
 			{
 				var m = left as RangeValue;
@@ -65,7 +65,7 @@ namespace YAMP
 				throw new YAMPOperationInvalidException(":", left);
 
 			if(right is ScalarValue)
-				end = (right as ScalarValue).Value;
+				end = (right as ScalarValue).Re;
 			else if (right is RangeValue)
 			{
 				var m = right as RangeValue;

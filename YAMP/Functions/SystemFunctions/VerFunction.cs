@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Returns the version of the YAMP parser engine.")]
     [Kind(PopularKinds.System)]
-    class VerFunction : SystemFunction
+    sealed class VerFunction : SystemFunction
     {
         [Description("Gets a string containing the current version of the running YAMP engine.")]
         [Example("ver()", "Gets a string containing the version of YAMP.")]

@@ -153,13 +153,13 @@ namespace YAMP.Numerics
 
 		static ScalarValue LogGamma_Stirling(ScalarValue z)
 		{
-			if (z.ImaginaryValue < 0.0)
+			if (z.Im < 0.0)
 				return LogGamma_Stirling(z.Conjugate()).Conjugate();
 
 			var f = (z - 0.5) * z.Ln() - z + Math.Log(2.0 * Math.PI) / 2.0;
-			var reduce = f.ImaginaryValue / (2.0 * Math.PI);
-			reduce = f.ImaginaryValue - (int)(reduce) * 2.0 * Math.PI;
-			f = new ScalarValue(f.Value, reduce);
+			var reduce = f.Im / (2.0 * Math.PI);
+			reduce = f.Im - (int)(reduce) * 2.0 * Math.PI;
+            f = new ScalarValue(f.Re, reduce);
 
 			var zsqu = z * z;
 			var zp = z.Clone();
@@ -194,7 +194,7 @@ namespace YAMP.Numerics
 
 		static ScalarValue LanczosLogGamma(ScalarValue z)
 		{
-            var sum = new ScalarValue(Helpers.LanczosD[0], 0.0);
+            ScalarValue sum = new ScalarValue(Helpers.LanczosD[0], 0.0);
 
             for (int i = 1; i < Helpers.LanczosD.Length; i++)
                 sum += Helpers.LanczosD[i] / (z + i);

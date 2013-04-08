@@ -41,7 +41,7 @@ namespace YAMP.Numerics
             var sum = 0.0;
 
             for (var i = 1; i < N - 1; i+=2)
-                sum += (x[i + 2].Value - x[i].Value) * (y[i].Value + 4.0 * y[i + 1].Value + y[i + 2].Value);
+                sum += (x[i + 2].Re - x[i].Re) * (y[i].Re + 4.0 * y[i + 1].Re + y[i + 2].Re);
 
             return new ScalarValue(sum / 6.0);
         }

@@ -6,7 +6,7 @@ namespace YAMP
     [Description("Generates a matrix with Weibull distributed random values. In probability theory and statistics, the Weibull distribution is a continuous probability distribution.")]
     [Kind(PopularKinds.Random)]
     [Link("http://en.wikipedia.org/wiki/Weibull_distribution")]
-    class RandwFunction : ArgumentFunction
+    sealed class RandwFunction : ArgumentFunction
     {
         static readonly WeibullDistribution ran = new WeibullDistribution();
 
@@ -41,7 +41,7 @@ namespace YAMP
 
             for (var i = 1; i <= l; i++)
                 for (var j = 1; j <= n; j++)
-                    m[j, i] = new ScalarValue(Weibull(lambda.Value, k.Value));
+                    m[j, i] = new ScalarValue(Weibull(lambda.Re, k.Re));
 
             return m;
         }

@@ -33,7 +33,7 @@ namespace YAMP
     /// <summary>
     /// Contains the data for surface and mesh plots.
     /// </summary>
-    public class SurfacePlotValue : XYZPlotValue
+    public sealed class SurfacePlotValue : XYZPlotValue
     {
         #region Members
 

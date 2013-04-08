@@ -46,7 +46,7 @@ namespace YAMP.Physics
                 throw new Exception("Spherical harmonics of order l < 0 does not make sense.");
 
             var nm = m.GetIntegerOrThrowException("m", Name);
-            return new ScalarValue(Ylm(nn, nm, theta.Value, phi.Value));
+            return Ylm(nn, nm, theta.Re, phi.Re);
         }
 
         [Description("Computes the spherical harmonics at given l, m with multiple values for theta and one value for phi. This results in a matrix of Ylm values for the given l, m at the given angles. The matrix has the dimension of theta.")]
@@ -63,7 +63,7 @@ namespace YAMP.Physics
 
             for(var i = 1; i <= theta.DimensionX; i++)
                 for(var j = 1; j <= theta.DimensionY; j++)
-                    M[j, i] = new ScalarValue(Ylm(nn, nm, theta[j, i].Value, phi.Value));
+                    M[j, i] = Ylm(nn, nm, theta[j, i].Re, phi.Re);
 
             return M;
         }
@@ -82,7 +82,7 @@ namespace YAMP.Physics
 
             for (var i = 1; i <= phi.DimensionX; i++)
                 for (var j = 1; j <= phi.DimensionY; j++)
-                    M[j, i] = new ScalarValue(Ylm(nn, nm, theta.Value, phi[j, i].Value));
+                    M[j, i] = Ylm(nn, nm, theta.Re, phi[j, i].Re);
 
             return M;
         }
@@ -101,7 +101,7 @@ namespace YAMP.Physics
 
             for (var i = 1; i <= phi.Length; i++)
                 for (var j = 1; j <= theta.Length; j++)
-                    M[j, i] = new ScalarValue(Ylm(nn, nm, theta[j].Value, phi[i].Value));
+                    M[j, i] = Ylm(nn, nm, theta[j].Re, phi[i].Re);
 
             return M;
         }

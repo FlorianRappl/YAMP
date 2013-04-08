@@ -75,26 +75,24 @@ namespace YAMP.Numerics
                 return new ScalarValue(double.PositiveInfinity);
             else if (s.Re >= 0.0)
                 return RiemannZetaGt0(s);
-            else
-            {
-                //See real zeta function for more information
-                var zeta_one_minus_s = RiemannZeta1msLt0(s);
-                var sin_term = (0.5 * Math.PI * s).Sin() / Math.PI;
-                var sabs = s.Abs();
 
-                if (sin_term == 0.0)
-                    return new ScalarValue();
-                else if (sabs < 170)
-                {
-                    //See below
-                    int n = (int)Math.Floor(sabs / 10.0);
-                    var p = new ScalarValue(2.0 * Math.PI).Pow(s + 10.0 * n) / Helpers.TwoPIpow[n];
-                    var g = Gamma.LinearGamma(1.0 - s);
-                    return p * g * sin_term * zeta_one_minus_s;
-                }
-                else
-                    throw new YAMPNumericOverflowException("Zeta");
+            //See real zeta function for more information
+            var zeta_one_minus_s = RiemannZeta1msLt0(s);
+            var sin_term = (0.5 * Math.PI * s).Sin() / Math.PI;
+            var sabs = s.Abs();
+
+            if (sin_term == 0.0)
+                return ScalarValue.Zero;
+            else if (sabs < 170)
+            {
+                //See below
+                int n = (int)Math.Floor(sabs / 10.0);
+                var p = new ScalarValue(2.0 * Math.PI).Pow(s + 10.0 * n) / Helpers.TwoPIpow[n];
+                var g = Gamma.LinearGamma(1.0 - s);
+                return p * g * sin_term * zeta_one_minus_s;
             }
+                
+            throw new YAMPNumericOverflowException("Zeta");
         }
 
         /// <summary>

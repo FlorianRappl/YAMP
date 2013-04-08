@@ -98,13 +98,13 @@ namespace YAMP.Physics
 
         static ScalarValue DiLog1(ScalarValue e)
         {
-            var f = new ScalarValue(Math.PI * Math.PI / 6.0);
+            ScalarValue f = new ScalarValue(Math.PI * Math.PI / 6.0);
 
             if (e == 0.0) 
                 return f;
 
             var L = e.Ln();
-            var ek = new ScalarValue(1.0);
+            var ek = ScalarValue.One;
 
             for (int k = 1; k < 250; k++)
             {

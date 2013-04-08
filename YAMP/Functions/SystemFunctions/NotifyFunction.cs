@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Formats some text using placeholders like {0} etc. and notifies the user using the formatted string.")]
 	[Kind(PopularKinds.System)]
-	class NotifyFunction : SystemFunction
+    sealed class NotifyFunction : SystemFunction
 	{
 		[Description("Formats some text using placeholders like {0} etc. and notifies the user using the formatted string. This function does not return the string.")]
 		[Example("notify(\"{2} The result of {0} + {1} is {3}\", 2.0, 7i, \"Hi!\", 2.0 + 7i)", "Evaluates the arguments and includes them in the string given by the first argument.")]

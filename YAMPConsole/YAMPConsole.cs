@@ -56,7 +56,7 @@ namespace YAMPConsole
             Parser.InteractiveMode = true;
             Parser.UseScripting = true;
 
-            Parser.AddCustomFunction("G", v => new ScalarValue((v as ScalarValue).Value * Math.PI));
+            Parser.AddCustomFunction("G", v => new ScalarValue(((ScalarValue)v).Re * Math.PI));
             Parser.AddCustomConstant("R", 2.53);
 
             Parser.OnNotificationReceived += OnNotified;

@@ -6,7 +6,7 @@ namespace YAMP
     [Description("Generates a matrix with gamma distributed random values. In probability theory and statistics, the gamma distribution is a two-parameter family of continuous probability distributions.")]
     [Kind(PopularKinds.Random)]
     [Link("http://en.wikipedia.org/wiki/Gamma_distribution")]
-    class RandgFunction : ArgumentFunction
+    sealed class RandgFunction : ArgumentFunction
     {
         static readonly GammaDistribution ran = new GammaDistribution();
 
@@ -41,7 +41,7 @@ namespace YAMP
 
             for (var i = 1; i <= l; i++)
                 for (var j = 1; j <= n; j++)
-                    m[j, i] = new ScalarValue(Gamma(theta.Value, k.Value));
+                    m[j, i] = new ScalarValue(Gamma(theta.Re, k.Re));
 
             return m;
         }

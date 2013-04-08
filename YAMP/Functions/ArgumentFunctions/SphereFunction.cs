@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("The sphere function generates the x-, y-, and z-coordinates of a unit sphere for use with surf and mesh.")]
     [Kind(PopularKinds.Function)]
-    class SphereFunction : ArgumentFunction
+    sealed class SphereFunction : ArgumentFunction
     {
         [Description("Draws a surf plot of an 20-by-20 sphere in the current figure.")]
         [Example("[X, Y, Z] = sphere()", "Returns the three matrices with x-, y-, and Z coordinates for a unit sphere. The matrices are saved in the variables X, Y, Z.")]

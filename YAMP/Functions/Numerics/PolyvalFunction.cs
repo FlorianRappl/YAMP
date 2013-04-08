@@ -5,7 +5,7 @@ namespace YAMP
     [Description("The function provides polynomial evaluation. In mathematics, a polynomial is an expression of finite length constructed from variables (also called indeterminates) and constants, using only the operations of addition, subtraction, multiplication, and non-negative integer exponents. However, the division by a constant is allowed, because the multiplicative inverse of a non zero constant is also a constant.")]
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Polynomial")]
-    class PolyvalFunction : ArgumentFunction
+    sealed class PolyvalFunction : ArgumentFunction
     {
         [Description("The function returns the value of a polynomial of degree n evaluated at X. The input argument p is a vector of length n + 1 whose elements are the coefficients in ascending powers of the polynomial to be evaluated.")]
         [Example("polyval([1 2 3], [5 7 9])", "The polynomial p(x) = 3 * x^2 + 2 * x + 1 is evaluated at x = 5, 7, and 9 with the result 86, 162, 262.")]

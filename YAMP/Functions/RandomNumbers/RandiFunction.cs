@@ -6,7 +6,7 @@ namespace YAMP
 	[Description("Generates a matrix with uniformly distributed integer values.")]
     [Kind(PopularKinds.Random)]
     [Link("http://en.wikipedia.org/wiki/Uniform_distribution_(discrete)")]
-	class RandiFunction : ArgumentFunction
+    sealed class RandiFunction : ArgumentFunction
 	{
 		static readonly DiscreteUniformDistribution ran = new DiscreteUniformDistribution();
 
@@ -34,7 +34,7 @@ namespace YAMP
 			
 			for(var i = 1; i <= k; i++)
 				for(var j = 1; j <= k; j++)
-					m[j, i] = new ScalarValue(ran.Next());
+                    m[j, i] = new ScalarValue(ran.Next());
 			
 			return m;
 		}
@@ -51,7 +51,7 @@ namespace YAMP
 			
 			for(var i = 1; i <= l; i++)
 				for(var j = 1; j <= k; j++)
-					m[j, i] = new ScalarValue(ran.Next());
+                    m[j, i] = new ScalarValue(ran.Next());
 			
 			return m;
 		}

@@ -52,30 +52,31 @@ namespace YAMP.Numerics
             isspd = Arg.DimensionX == n;
 
             // Main loop.
-            for (int j = 0; j < n; j++)
+            for (int i = 0; i < n; i++)
             {
-                var Lrowj = L[j];
+                var Lrowi = L[i];
                 var d = ScalarValue.Zero;
 
-                for (int k = 0; k < j; k++)
+                for (int j = 0; j < i; j++)
                 {
-                    var Lrowk = L[k];
-                    var s = ScalarValue.Zero;
+                    var Lrowj = L[j];
+                    var s = new ScalarValue();
 
-                    for (int i = 0; i < k; i++)
-                        s += Lrowk[i] * Lrowj[i].Conjugate();
-                    
-                    Lrowj[k] = s = (A[j][k] - s) / L[k][k];
-                    d = d + s * s.Conjugate();
-                    isspd = isspd & (A[k][j] == A[j][k]);
+                    for (int k = 0; k < j; k++)
+                        s += Lrowi[k] * Lrowj[k].Conjugate();
+
+                    s = (A[i][j] - s) / L[j][j];
+                    Lrowi[j] = s;
+                    d += s * s.Conjugate();
+                    isspd = isspd && (A[j][i] == A[i][j]);
                 }
 
-                d = A[j][j] - d;
+                d = A[i][i] - d;
                 isspd = isspd & (d.Abs() > 0.0);
-                L[j][j] = d.Sqrt();
+                L[i][i] = d.Sqrt();
 
-                for (int k = j + 1; k < n; k++)
-                    L[j][k] = ScalarValue.Zero;
+                for (int k = i + 1; k < n; k++)
+                    L[i][k] = ScalarValue.Zero;
             }
         }
 

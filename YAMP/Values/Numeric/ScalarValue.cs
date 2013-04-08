@@ -35,7 +35,7 @@ namespace YAMP
     /// <summary>
     /// A scalar value, which is a complex double type.
     /// </summary>
-	public class ScalarValue : NumericValue
+    public class ScalarValue : NumericValue
     {
         #region Constants
 
@@ -46,7 +46,7 @@ namespace YAMP
         #region Members
 
         double _real;
-		double _imag;
+        double _imag;
 
         #endregion
 
@@ -55,44 +55,48 @@ namespace YAMP
         /// <summary>
         /// Creates a new empty scalar value.
         /// </summary>
-        public ScalarValue () : this(0.0, 0.0)
-		{
-		}
+        public ScalarValue()
+            : this(0.0, 0.0)
+        {
+        }
 
         /// <summary>
         /// Creates a new scalar value from a boolean, i.e. 1.0 or 0.0.
         /// </summary>
         /// <param name="boolean">True for 1.0, False for 0.0.</param>
-		public ScalarValue(bool boolean) : this(boolean ? 1.0 : 0.0, 0.0)
-		{
-		}
-		
+        public ScalarValue(bool boolean)
+            : this(boolean ? 1.0 : 0.0, 0.0)
+        {
+        }
+
         /// <summary>
         /// Creates a new scalar value which is real.
         /// </summary>
         /// <param name="real">The real value.</param>
-		public ScalarValue(double real) : this(real, 0.0)
-		{
-		}
-		
+        public ScalarValue(double real)
+            : this(real, 0.0)
+        {
+        }
+
         /// <summary>
         /// Creates a new scalar value from the given one.
         /// </summary>
         /// <param name="value">Copies the contents of the given value.</param>
-		public ScalarValue(ScalarValue value) : this(value._real, value._imag)
-		{
-		}
-		
+        public ScalarValue(ScalarValue value)
+            : this(value._real, value._imag)
+        {
+        }
+
         /// <summary>
         /// Creates a new scalar value with the given complex parameters.
         /// </summary>
         /// <param name="real">The real part of the complex scalar.</param>
         /// <param name="imag">The imaginary part of the complex scalar.</param>
-		public ScalarValue(double real, double imag)
-		{
-			_real = real;
-			_imag = imag;
-		}
+        public ScalarValue(double real, double imag)
+        {
+            _real = real;
+            _imag = imag;
+        }
 
         #endregion
 
@@ -103,7 +107,7 @@ namespace YAMP
         /// </summary>
         public bool IsTrue
         {
-            get { return this == TrueConstant._true; }
+            get { return this == ScalarValue.True; }
         }
 
         /// <summary>
@@ -111,7 +115,7 @@ namespace YAMP
         /// </summary>
         public bool IsFalse
         {
-            get { return this == FalseConstant._false; }
+            get { return this == ScalarValue.False; }
         }
 
         /// <summary>
@@ -163,23 +167,23 @@ namespace YAMP
         {
             get { return (int)_imag; }
         }
-		
+
         /// <summary>
         /// Gets or sets the real part of the scalar.
         /// </summary>
-		public double Value 
-		{
-			get { return _real; }
-			set { _real = value; }
-		}
-		
+        public double Value
+        {
+            get { return _real; }
+            set { _real = value; }
+        }
+
         /// <summary>
         /// Gets or sets the imaginary part of the scalar.
         /// </summary>
-		public double ImaginaryValue 
-		{
-			get { return _imag; }
-			set { _imag = value; }
+        public double ImaginaryValue
+        {
+            get { return _imag; }
+            set { _imag = value; }
         }
 
         /// <summary>
@@ -187,7 +191,7 @@ namespace YAMP
         /// </summary>
         public bool IsInt
         {
-            get 
+            get
             {
                 return Math.Floor(_real) == _real && _imag == 0.0;
             }
@@ -262,6 +266,10 @@ namespace YAMP
 
         static readonly ScalarValue _ZERO = new ScalarValue(0.0, 0.0);
 
+        static readonly ScalarValue _TRUE = new ScalarValue(true);
+
+        static readonly ScalarValue _FALSE = new ScalarValue(false);
+
         static readonly ScalarValue _REINFINITY = new ScalarValue(double.PositiveInfinity, 0.0);
 
         static readonly ScalarValue _IMINFINITY = new ScalarValue(0.0, double.PositiveInfinity);
@@ -291,6 +299,22 @@ namespace YAMP
         public static ScalarValue Zero
         {
             get { return _ZERO; }
+        }
+
+        /// <summary>
+        /// Gets the constant for true.
+        /// </summary>
+        public static ScalarValue True
+        {
+            get { return _TRUE; }
+        }
+
+        /// <summary>
+        /// Gets the constant for false.
+        /// </summary>
+        public static ScalarValue False
+        {
+            get { return _FALSE; }
         }
 
         /// <summary>
@@ -377,10 +401,10 @@ namespace YAMP
         /// Computes z x z = z^2.
         /// </summary>
         /// <returns>The square of the current instance.</returns>
-		public ScalarValue Square()
-		{
-			return this * this;
-		}
+        public ScalarValue Square()
+        {
+            return this * this;
+        }
 
         /// <summary>
         /// Computes z^* x z = |z|^2, which is AbsSquare().
@@ -390,15 +414,15 @@ namespace YAMP
         {
             return new ScalarValue(_real * _real + _imag * _imag);
         }
-		
+
         /// <summary>
         /// Conjugates the current scalar value, i.e. switches the sign of the imaginary value.
         /// </summary>
         /// <returns>The conjugated scalar value.</returns>
-		public ScalarValue Conjugate()
-		{
-			return new ScalarValue(_real, -_imag);
-		}
+        public ScalarValue Conjugate()
+        {
+            return new ScalarValue(_real, -_imag);
+        }
 
         /// <summary>
         /// Raises the scalar to the specified power.
@@ -630,12 +654,12 @@ namespace YAMP
         /// <returns>The factorial of the scalar x!+iy!.</returns>
         public ScalarValue Factorial()
         {
-            var re = 0.0; 
-            var im = 0.0; 
+            var re = 0.0;
+            var im = 0.0;
 
             if (_imag != 0.0)
                 im = _imag == Math.Floor(_imag) ? Helpers.Factorial((int)_imag) : Gamma.LinearGamma(_imag + 1.0);
-            
+
             if (_real != 0.0 || _imag == 0.0)
                 re = _real == Math.Floor(_real) ? Helpers.Factorial((int)_real) : Gamma.LinearGamma(_real + 1.0);
 
@@ -651,103 +675,103 @@ namespace YAMP
         /// </summary>
         /// <returns>The binary representation.</returns>
         public override byte[] Serialize()
-		{
-			var re = BitConverter.GetBytes(_real);
-			var im = BitConverter.GetBytes(_imag);
-			var ov = new byte[re.Length + im.Length];
-			re.CopyTo(ov, 0);
-			im.CopyTo(ov, re.Length);
-			return ov;
-		}
+        {
+            var re = BitConverter.GetBytes(_real);
+            var im = BitConverter.GetBytes(_imag);
+            var ov = new byte[re.Length + im.Length];
+            re.CopyTo(ov, 0);
+            im.CopyTo(ov, re.Length);
+            return ov;
+        }
 
         /// <summary>
         /// Transforms a binary representation into a new instance.
         /// </summary>
         /// <param name="content">The binary data.</param>
         /// <returns>The new instance.</returns>
-		public override Value Deserialize(byte[] content)
-		{
-			var real = BitConverter.ToDouble(content, 0);
-			var imag = BitConverter.ToDouble(content, 8);
-			return new ScalarValue(real, imag);
-		}
+        public override Value Deserialize(byte[] content)
+        {
+            var real = BitConverter.ToDouble(content, 0);
+            var imag = BitConverter.ToDouble(content, 8);
+            return new ScalarValue(real, imag);
+        }
 
         #endregion
 
         #region Math Helpers
 
         static bool IsPrimeNumber(int n)
-		{
-			if (n < 8)
-				return ((n == 2) || (n == 3) || (n == 5) || (n == 7));
-			else
-			{
-				if (n % 2 == 0) 
-					return (false);
+        {
+            if (n < 8)
+                return ((n == 2) || (n == 3) || (n == 5) || (n == 7));
+            else
+            {
+                if (n % 2 == 0)
+                    return (false);
 
-				int m = n - 1;
-				int d = m;
-				int s = 0;
+                int m = n - 1;
+                int d = m;
+                int s = 0;
 
-				while (d % 2 == 0)
-				{
-					s++;
-					d = d / 2;
-				}
+                while (d % 2 == 0)
+                {
+                    s++;
+                    d = d / 2;
+                }
 
-				if (n < 1373653)
-					return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 3));
-				
-				return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 7) && IsProbablyPrime(n, m, s, d, 61));
+                if (n < 1373653)
+                    return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 3));
 
-			}
-		}
+                return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 7) && IsProbablyPrime(n, m, s, d, 61));
 
-		static bool IsProbablyPrime(int n, int m, int s, int d, int w)
-		{
-			int x = PowMod(w, d, n);
+            }
+        }
 
-			if ((x == 1) || (x == m))
-				return true;
+        static bool IsProbablyPrime(int n, int m, int s, int d, int w)
+        {
+            int x = PowMod(w, d, n);
 
-			for (int i = 0; i < s; i++)
-			{
-				x = PowMod(x, 2, n);
-				if (x == 1) 
-					return false;
-				if (x == m) 
-				
-					return true;
-			}
-			return false;
-		}
+            if ((x == 1) || (x == m))
+                return true;
 
-		static int PowMod(int b, int e, int m)
-		{
-			if (b < 0) 
-				throw new ArgumentOutOfRangeException("b");
+            for (int i = 0; i < s; i++)
+            {
+                x = PowMod(x, 2, n);
+                if (x == 1)
+                    return false;
+                if (x == m)
 
-			if (e < 1) 
-				throw new ArgumentOutOfRangeException("e");
+                    return true;
+            }
+            return false;
+        }
 
-			if (m < 1) 
-				throw new ArgumentOutOfRangeException("m");
+        static int PowMod(int b, int e, int m)
+        {
+            if (b < 0)
+                throw new ArgumentOutOfRangeException("b");
 
-			long bb = Convert.ToInt64(b);
-			long mm = Convert.ToInt64(m);
-			long rr = 1;
+            if (e < 1)
+                throw new ArgumentOutOfRangeException("e");
 
-			while (e > 0)
-			{
-				if ((e & 1) == 1)
-					rr = checked((rr * bb) % mm);
+            if (m < 1)
+                throw new ArgumentOutOfRangeException("m");
 
-				e = e >> 1;
-				bb = checked((bb * bb) % mm);
-			}
+            long bb = Convert.ToInt64(b);
+            long mm = Convert.ToInt64(m);
+            long rr = 1;
 
-			return Convert.ToInt32(rr);
-		}
+            while (e > 0)
+            {
+                if ((e & 1) == 1)
+                    rr = checked((rr * bb) % mm);
+
+                e = e >> 1;
+                bb = checked((bb * bb) % mm);
+            }
+
+            return Convert.ToInt32(rr);
+        }
 
         #endregion
 
@@ -759,26 +783,26 @@ namespace YAMP
         /// <param name="obj">The compare object.</param>
         /// <returns>A boolean.</returns>
         public override bool Equals(object obj)
-		{
-			if(obj is ScalarValue)
-			{
-				var sv = obj as ScalarValue;
-				return sv._real == _real && sv._imag == _imag;
-			}
-			
-			if(obj is double && _imag == 0.0)
-				return (double)obj == _real;
-			
-			return false;
-		}
-		
+        {
+            if (obj is ScalarValue)
+            {
+                var sv = obj as ScalarValue;
+                return sv._real == _real && sv._imag == _imag;
+            }
+
+            if (obj is double && _imag == 0.0)
+                return (double)obj == _real;
+
+            return false;
+        }
+
         /// <summary>
         /// Computes the hashcode of the value inside.
         /// </summary>
         /// <returns>The hash code.</returns>
-		public override int GetHashCode()
-		{
-			return (_real + _imag).GetHashCode();
+        public override int GetHashCode()
+        {
+            return (_real + _imag).GetHashCode();
         }
 
         #endregion
@@ -941,17 +965,17 @@ namespace YAMP
         /// <param name="r">Right operand</param>
         /// <returns>The result.</returns>
         public static bool operator <(ScalarValue l, ScalarValue r)
-		{
-			if(l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
-			{
-				if(l._real < r._real)
-					return true;
-			}
-			else if(l.Abs() < r.Abs ())
-				return true;
+        {
+            if (l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
+            {
+                if (l._real < r._real)
+                    return true;
+            }
+            else if (l.Abs() < r.Abs())
+                return true;
 
-			return false;
-		}
+            return false;
+        }
 
         /// <summary>
         /// l greater than r.
@@ -960,16 +984,16 @@ namespace YAMP
         /// <param name="r">Right operand</param>
         /// <returns>The result.</returns>
         public static bool operator >(ScalarValue l, ScalarValue r)
-		{
-			if(l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
-			{
-				if(l._real > r._real)
-					return true;
-			}
-			else if(l.Abs() > r.Abs ())
-				return true;
-			
-			return false;
+        {
+            if (l.ImaginaryValue == 0.0 && r.ImaginaryValue == 0)
+            {
+                if (l._real > r._real)
+                    return true;
+            }
+            else if (l.Abs() > r.Abs())
+                return true;
+
+            return false;
         }
 
         /// <summary>
@@ -1027,7 +1051,7 @@ namespace YAMP
             if (Math.Abs(l.ImaginaryValue - r.ImaginaryValue) > epsilon)
                 return false;
 
-            if(Math.Abs(l.Value - r.Value) > epsilon)
+            if (Math.Abs(l.Value - r.Value) > epsilon)
                 return false;
 
             return true;
@@ -1041,7 +1065,7 @@ namespace YAMP
         /// <returns>The result.</returns>
         public static bool operator ==(ScalarValue l, double r)
         {
-            if(l.ImaginaryValue != 0.0)
+            if (l.ImaginaryValue != 0.0)
                 return false;
 
             if (l.Value == r)
@@ -1081,6 +1105,17 @@ namespace YAMP
         public static ScalarValue operator *(ScalarValue a, double b)
         {
             return new ScalarValue(a._real * b, a._imag * b);
+        }
+
+        /// <summary>
+        /// a % b.
+        /// </summary>
+        /// <param name="a">Left operand</param>
+        /// <param name="b">Right operand</param>
+        /// <returns>The result.</returns>
+        public static ScalarValue operator %(ScalarValue a, ScalarValue b)
+        {
+            return new ScalarValue(a.IntValue % b.IntValue);
         }
 
         /// <summary>
@@ -1230,7 +1265,7 @@ namespace YAMP
         {
             var l = (ScalarValue)left;
             var r = (ScalarValue)right;
-            return ModFunction.Mod(l, r);
+            return l % r;
         }
 
         #endregion

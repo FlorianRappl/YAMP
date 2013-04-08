@@ -253,7 +253,7 @@ namespace YAMP.Numerics
             var ZN = WeidemanL + ScalarValue.I * z;
             var ZD = WeidemanL - ScalarValue.I * z;
             var ZQ = ZN / ZD;
-            var f = new ScalarValue(WeidemanCoefficients[40]);
+            ScalarValue f = new ScalarValue(WeidemanCoefficients[40]);
 
             for (int k = 39; k > 0; k--)
                 f = f * ZQ + WeidemanCoefficients[k];

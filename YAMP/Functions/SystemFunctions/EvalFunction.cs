@@ -5,7 +5,7 @@ namespace YAMP
 {
     [Description("Evaluates some user input by executing the given code.")]
     [Kind(PopularKinds.System)]
-    class EvalFunction : SystemFunction
+    sealed class EvalFunction : SystemFunction
     {
         [Description("Evaluates the given string as code and returns the value.")]
         [Example("eval(\"2+3\")", "Evaluates the input and returns the value 5.")]

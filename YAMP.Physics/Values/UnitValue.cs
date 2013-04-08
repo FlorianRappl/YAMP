@@ -35,40 +35,45 @@ namespace YAMP.Physics
     {
         #region Members
 
-        string unit;
+        string _unit;
 
         #endregion
 
         #region ctor
 
-        public UnitValue() : this(string.Empty)
+        public UnitValue() 
+            : this(0.0)
         {
         }
 
         public UnitValue(string unit)
-        {
-            this.unit = unit;
-        }
-
-        public UnitValue(double real) : base(real)
-        {
-            unit = string.Empty;
-        }
-
-        public UnitValue(double real, string unit) : base(real)
-        {
-            this.unit = unit;
-        }
-
-        public UnitValue(ScalarValue value, string unit) : this(value.Value, unit)
+            : this(0.0, unit)
         {
         }
 
-        public UnitValue(UnitValue value) : this(value.Value, value.Unit)
+        public UnitValue(double value)
+            : this(value, string.Empty)
         {
         }
 
-        public UnitValue(ScalarValue value, StringValue unit) : this(value.Value, unit.Value)
+        public UnitValue(double value, string unit)
+            : base(value)
+        {
+            this._unit = unit;
+        }
+
+        public UnitValue(ScalarValue value, string unit)
+            : this(value.Re, unit)
+        {
+        }
+
+        public UnitValue(UnitValue value)
+            : this(value.Re, value.Unit)
+        {
+        }
+
+        public UnitValue(ScalarValue value, StringValue unit)
+            : this(value.Re, unit.Value)
         {
         }
 
@@ -76,27 +81,73 @@ namespace YAMP.Physics
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets the unit.
+        /// </summary>
         public string Unit
         {
-            get { return unit; }
-            set
-            {
-                unit = value;
-            }
+            get { return _unit; }
+            set { _unit = value; }
+        }
+
+        #endregion
+
+        #region Serialization
+
+        /// <summary>
+        /// Transforms the instance into a binary representation.
+        /// </summary>
+        /// <returns>The binary representation.</returns>
+        public override byte[] Serialize()
+        {
+            var bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Re));
+            bytes.AddRange(BitConverter.GetBytes(Im));
+            bytes.AddRange(BitConverter.GetBytes(_unit.Length));
+
+            for (int i = 0; i < _unit.Length; i++)
+                bytes.AddRange(BitConverter.GetBytes(_unit[i]));
+
+            return bytes.ToArray();
+        }
+
+        /// <summary>
+        /// Transforms a binary representation into a new instance.
+        /// </summary>
+        /// <param name="content">The binary data.</param>
+        /// <returns>The new instance.</returns>
+        public override Value Deserialize(byte[] content)
+        {
+            var unit = new UnitValue();
+            unit.Re = BitConverter.ToDouble(content, 0);
+            unit.Im = BitConverter.ToDouble(content, 8);
+            var str = new char[BitConverter.ToInt32(content, 16)];
+
+            for (int i = 0; i < str.Length; i++)
+                str[i] = BitConverter.ToChar(content, 20 + 2 * i);
+
+            unit._unit = new string(str);
+            return unit;
         }
 
         #endregion
 
         #region Methods
 
+        public override void Clear()
+        {
+            _unit = string.Empty;
+            base.Clear();
+        }
+
         public override ScalarValue Clone()
         {
- 	         return new UnitValue(Value, Unit);
+ 	         return new UnitValue(Re, Unit);
         }
 
         public override string ToString(ParseContext context)
         {
-            return base.ToString(context) + " " + unit;
+            return base.ToString(context) + " " + _unit;
         }
 
         #endregion
@@ -183,7 +234,7 @@ namespace YAMP.Physics
         {
             var left = (UnitValue)a;
             var right = (ScalarValue)b;
-            return new UnitValue(left.Pow(right), new CombinedUnit(left.unit).Raise(right.Value).Unpack());
+            return new UnitValue(left.Pow(right), new CombinedUnit(left._unit).Raise(right.Re).Unpack());
         }
 
         #endregion

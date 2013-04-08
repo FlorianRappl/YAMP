@@ -5,7 +5,7 @@ namespace YAMP
 {
 	[Kind(PopularKinds.System)]
 	[Description("Moves a source file to a new target and / or renames the file.")]
-	class MvFunction : SystemFunction
+    sealed class MvFunction : SystemFunction
 	{
 		[Description("Moves one file from a source location to a new target location.")]
 		[Example("mv(\"myfile.data\", \"evaluation.txt\")", "Renames the file myfile.data to evaluation.txt. The file must be available in the current working directory.", true)]

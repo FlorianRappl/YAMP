@@ -40,7 +40,7 @@ namespace YAMP
 
 		public override ScalarValue Compare (ScalarValue left, ScalarValue right)
 		{
-			return new ScalarValue(left == right);
+            return new ScalarValue(left == right);
 		}
 
         public override Value Perform(Value left, Value right)

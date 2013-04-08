@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Creates a linear-log representation of plotting data.")]
 	[Kind(PopularKinds.Plot)]
-	class SemiLogYFunction : VisualizationFunction
+	sealed class SemiLogYFunction : VisualizationFunction
 	{
 		[Description("Performs the linear-log plot of a matrix. The first column is interpreted as x-values if more than one column is given. All other columns will be interpreted as y-values.")]
 		[Example("semilogy(2^1:16)", "Plots the powers of 2 with y = 2, 4, 8, ..., 65536 at x = 1, 2, ..., 16 (since no X values are given) in a linear-log plot.")]

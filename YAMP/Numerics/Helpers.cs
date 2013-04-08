@@ -299,6 +299,57 @@ namespace YAMP.Numerics
         #region Functions
 
         /// <summary>
+        /// Returns a boolean if the given integer is a prime number.
+        /// </summary>
+        /// <param name="n">The integer to examine.</param>
+        /// <returns>The result of the test.</returns>
+        public static bool IsPrimeNumber(int n)
+        {
+            if (n < 8)
+                return ((n == 2) || (n == 3) || (n == 5) || (n == 7));
+            else
+            {
+                if (n % 2 == 0)
+                    return (false);
+
+                int m = n - 1;
+                int d = m;
+                int s = 0;
+
+                while (d % 2 == 0)
+                {
+                    s++;
+                    d = d / 2;
+                }
+
+                if (n < 1373653)
+                    return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 3));
+
+                return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 7) && IsProbablyPrime(n, m, s, d, 61));
+
+            }
+        }
+
+        static bool IsProbablyPrime(int n, int m, int s, int d, int w)
+        {
+            int x = PowMod(w, d, n);
+
+            if ((x == 1) || (x == m))
+                return true;
+
+            for (int i = 0; i < s; i++)
+            {
+                x = PowMod(x, 2, n);
+                if (x == 1)
+                    return false;
+                if (x == m)
+
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Computes a power of an integer in modular arithmetic.
         /// </summary>
         /// <param name="b">The base, which must be positive.</param>
@@ -593,8 +644,8 @@ namespace YAMP.Numerics
         public static ScalarValue ChebEval(ChebSeries cs, ScalarValue z)
         {
             int j;
-            var d = new ScalarValue();
-            var dd = new ScalarValue();
+            var d = ScalarValue.Zero;
+            var dd = ScalarValue.Zero;
             var y = (2.0 * z - cs.LowerPoint - cs.UpperPoint) / (cs.UpperPoint - cs.LowerPoint);
             var y2 = 2.0 * y;
 

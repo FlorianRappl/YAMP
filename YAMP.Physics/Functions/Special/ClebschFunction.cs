@@ -39,24 +39,24 @@ namespace YAMP.Physics
         public MatrixValue Function(ScalarValue j1, ScalarValue j2)
         {
             if (isNotHalf(j1))
-                throw new ArgumentException("0, +-0.5, +-1, +-1.5, ...", j1.Value.ToString());
+                throw new ArgumentException("0, +-0.5, +-1, +-1.5, ...", j1.Re.ToString());
 
             if (isNotHalf(j2))
-                throw new ArgumentException("0, +-0.5, +-1, +-1.5, ...", j2.Value.ToString());
+                throw new ArgumentException("0, +-0.5, +-1, +-1.5, ...", j2.Re.ToString());
 
             var l = 1;
             var M = new MatrixValue();
 
-            for (var m1 = -j1.Value; m1 <= j1.Value; m1 += 1.0)
+            for (var m1 = -j1.Re; m1 <= j1.Re; m1 += 1.0)
             {
-                for (var m2 = -j2.Value; m2 <= j2.Value; m2 += 1.0)
+                for (var m2 = -j2.Re; m2 <= j2.Re; m2 += 1.0)
                 {
                     var m = m1 + m2;
-                    var ja = j1.Value + j2.Value;
+                    var ja = j1.Re + j2.Re;
 
                     for (var j = Math.Abs(m); j <= ja; j += 1.0)
                     {
-                        var v = CGCoefficients(j1.Value, j2.Value, j, m1, m2);
+                        var v = CGCoefficients(j1.Re, j2.Re, j, m1, m2);
                         M[l, 1] = new ScalarValue(m);
                         M[l, 2] = new ScalarValue(m1);
                         M[l, 3] = new ScalarValue(m2);
@@ -118,7 +118,7 @@ namespace YAMP.Physics
 
         static bool isNotHalf(ScalarValue j)
         {
-            return Math.IEEERemainder(j.Value, 0.5) != 0.0;
+            return Math.IEEERemainder(j.Re, 0.5) != 0.0;
         }
 
         #endregion

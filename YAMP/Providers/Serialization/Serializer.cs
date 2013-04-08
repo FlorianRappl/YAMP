@@ -158,9 +158,9 @@ namespace YAMP
         /// <returns>The current instance.</returns>
         public Serializer Serialize(ScalarValue value)
         {
-            var real = BitConverter.GetBytes(value.Value);
+            var real = BitConverter.GetBytes(value.Re);
             stream.Write(real, 0, real.Length);
-            var imag = BitConverter.GetBytes(value.ImaginaryValue);
+            var imag = BitConverter.GetBytes(value.Im);
             stream.Write(imag, 0, imag.Length);
             return this;
         }

@@ -72,11 +72,11 @@ namespace YAMP.Physics
 
             // n and m have the same parity
             if ((n - m) % 2 != 0)
-                return new ScalarValue();
+                return ScalarValue.Zero;
 
             // R00
             if (n == 0)
-                return new ScalarValue(1.0);
+                return ScalarValue.One;
 
             var absrho = rho.Abs();
 

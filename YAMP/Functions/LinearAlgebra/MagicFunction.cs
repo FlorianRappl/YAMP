@@ -6,7 +6,7 @@ namespace YAMP
 {
     [Description("The magic function randomly generates matrices that consist only of unique entries 1 <= k <= n^2, where n is the dimension of the matrix. The determinant of a magic matrix is always 0.")]
     [Kind(PopularKinds.Function)]
-    class MagicFunction : ArgumentFunction
+    sealed class MagicFunction : ArgumentFunction
     {
         static readonly DiscreteUniformDistribution ran = new DiscreteUniformDistribution();
 

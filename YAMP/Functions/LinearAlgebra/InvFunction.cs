@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Inverts the given matrix.")]
 	[Kind(PopularKinds.Function)]
-	class InvFunction : ArgumentFunction
+    sealed class InvFunction : ArgumentFunction
 	{
 		[Description("Finds the inverse of a given number.")]
 		[Example("inv(5)", "Inverts the number 5, resulting in 0.2.")]

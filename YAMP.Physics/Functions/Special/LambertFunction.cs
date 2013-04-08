@@ -49,7 +49,7 @@ namespace YAMP.Physics
             double EI = 1.0 / Math.E;
 
             // use an initial approximation
-            ScalarValue W = new ScalarValue();
+            ScalarValue W = ScalarValue.Zero;
             var abs = x.Abs();
 
             if (abs < EI / 2.0)

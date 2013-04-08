@@ -5,7 +5,7 @@ namespace YAMP
 {
 	[Description("Solves a system of linear equations by picking the best algorithm.")]
 	[Kind(PopularKinds.Function)]
-	class SolveFunction : ArgumentFunction
+    sealed class SolveFunction : ArgumentFunction
 	{
 		[Description("Searches a solution vector x for the matrix M and the source vector phi.")]
 		[Example("solve(rand(3), rand(3,1))", "Solves the equation M * x = b for a random 3x3 matrix M and a random vector phi.")]

@@ -215,7 +215,7 @@ namespace YAMP.Numerics
             if (m != n)
                 throw new YAMPMatrixFormatException(SpecialMatrixFormat.Square);
             
-            var d = new ScalarValue(pivsign);
+            ScalarValue d = new ScalarValue(pivsign);
 
             for (int j = 0; j < n; j++)
                 d = d * LU[j][j];

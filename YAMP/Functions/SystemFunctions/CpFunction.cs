@@ -5,7 +5,7 @@ namespace YAMP
 {
 	[Kind(PopularKinds.System)]
 	[Description("Copies a source file to the specified target.")]
-	class CpFunction : SystemFunction
+	sealed class CpFunction : SystemFunction
 	{
 		[Description("Copies one file from a source location to some target location.")]
 		[Example("cp(\"myfile.data\", \"evaluation.txt\")", "Copies the file myfile.data to evaluation.txt. The file myfile.data must be available in the current working directory.", true)]

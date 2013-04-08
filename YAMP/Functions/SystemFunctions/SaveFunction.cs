@@ -7,7 +7,7 @@ namespace YAMP
 {
 	[Description("Saves variables from memory in the filesystem.")]
 	[Kind(PopularKinds.System)]
-    class SaveFunction : SystemFunction
+    sealed class SaveFunction : SystemFunction
 	{
         [Description("Saves all variables that are currently available.")]
         [Example("save(\"myfile.mat\")", "Saves all variables in the file myfile.mat.", true)]

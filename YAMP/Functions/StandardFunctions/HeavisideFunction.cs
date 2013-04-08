@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Represents the heaviside step function.")]
 	[Kind(PopularKinds.Function)]
-    class HeavisideFunction : StandardFunction
+    sealed class HeavisideFunction : StandardFunction
     {
         public override Value Perform(Value argument)
         {
@@ -13,7 +13,7 @@ namespace YAMP
 
         protected override ScalarValue GetValue(ScalarValue value)
         {
-            return new ScalarValue(value.Value > 0);
+            return new ScalarValue(value.Re > 0 ? 1.0 : 0.0);
         }
 
         [Description("Returns 0 for values smaller or equal to 0, else 1.")]

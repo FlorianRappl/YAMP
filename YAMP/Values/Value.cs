@@ -101,10 +101,14 @@ namespace YAMP
         /// <returns>The exponent n (10^n) of the double value.</returns>
         protected int GetExponent(double value)
         {
-            if (value < 10.0)
-                return 0;
+            double log;
+            value = Math.Abs(value);
+            
+            if (value < 1.0)
+                log = Math.Log10(1.0 / value);
+            else
+                log = Math.Log10(value);
 
-            var log = Math.Log10(Math.Abs(value));
             return (int)Math.Floor(log);
         }
 

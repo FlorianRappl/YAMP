@@ -21,7 +21,7 @@ namespace YAMP.Numerics
             h = new double[Np];
 
             for (int i = 2; i <= Np; i++)
-                h[i - 1] = samples[i, 1].Value - samples[i - 1, 1].Value;
+                h[i - 1] = samples[i, 1].Re - samples[i - 1, 1].Re;
 
             if (Np > 2)
             {
@@ -35,7 +35,7 @@ namespace YAMP.Numerics
                     diag[j] = (h[j] + h[j + 1]) / 3;
                     sup[j] = h[j + 1] / 6;
                     sub[j] = h[j] / 6;
-                    a[j] = (samples[i + 1, 2].Value - samples[i, 2].Value) / h[j + 1] - (samples[i, 2].Value - samples[i - 1, 2].Value) / h[j];
+                    a[j] = (samples[i + 1, 2].Re - samples[i, 2].Re) / h[j + 1] - (samples[i, 2].Re - samples[i - 1, 2].Re) / h[j];
 
                 }
 
@@ -59,16 +59,16 @@ namespace YAMP.Numerics
 
                 for (int i = 1; i < a.Length; i++)
                 {
-                    if (samples[i, 1].Value < x && (i == 1 || samples[i, 1].Value > previous))
+                    if (samples[i, 1].Re < x && (i == 1 || samples[i, 1].Re > previous))
                     {
-                        previous = samples[i, 1].Value;
+                        previous = samples[i, 1].Re;
                         gap = i;
                     }
                 }
 
                 double x1 = x - previous;
                 double x2 = h[gap] - x1;
-                return ((-a[gap - 1] / 6 * (x2 + h[gap]) * x1 + samples[gap, 2].Value) * x2 + (-a[gap] / 6 * (x1 + h[gap]) * x2 + samples[gap + 1, 2].Value) * x1) / h[gap];
+                return ((-a[gap - 1] / 6 * (x2 + h[gap]) * x1 + samples[gap, 2].Re) * x2 + (-a[gap] / 6 * (x1 + h[gap]) * x2 + samples[gap + 1, 2].Re) * x1) / h[gap];
             }
 
             return 0;

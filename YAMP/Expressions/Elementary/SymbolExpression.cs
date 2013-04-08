@@ -95,10 +95,18 @@ namespace YAMP
             if (function != null)
                 return new FunctionValue(function);
 
-            function = Context.LoadFunction(symbolName);
+            function = Query.GetFromBuffer(symbolName);
 
             if (function != null)
                 return new FunctionValue(function);
+
+            function = Context.LoadFunction(symbolName);
+
+            if (function != null)
+            {
+                Query.SetToBuffer(symbolName, function);
+                return new FunctionValue(function);
+            }
             
             throw new YAMPSymbolMissingException(symbolName);
         }

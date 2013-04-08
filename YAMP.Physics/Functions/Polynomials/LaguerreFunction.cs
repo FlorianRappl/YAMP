@@ -68,14 +68,14 @@ namespace YAMP.Physics
         [Example("laguerre(3, 1.5)", "Evaluates the Laguerre polynomial of order 3 at the point z = 1.5.")]
         public ScalarValue Function(ScalarValue n, ScalarValue z)
         {
-            return Function(n, new ScalarValue(), z);
+            return Function(n, ScalarValue.Zero, z);
         }
 
         [Description("Evaluates the Laguerre polynomial of some order n with the parameter alpha set to 0 at the given points of the matrix Z in C.")]
         [Example("laguerre(2, [0.5, 1.5, 2.5])", "Evaluates the Laguerre polynomial of order 2 at the points z = 0.5, 1.5 and 2.5")]
         public MatrixValue Function(ScalarValue n, MatrixValue Z)
         {
-            return Function(n, new ScalarValue(), Z);
+            return Function(n, ScalarValue.Zero, Z);
         }
 
         #region Algorithm
@@ -89,7 +89,7 @@ namespace YAMP.Physics
         /// <returns>Value</returns>
         static ScalarValue LaguerrePolynomial(int n, ScalarValue alpha, ScalarValue z)
         {
-            var p = new ScalarValue();
+            var p = ScalarValue.Zero;
             var m = n + 1;
             var s = 1;
 

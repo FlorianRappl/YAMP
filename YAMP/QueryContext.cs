@@ -41,6 +41,7 @@ namespace YAMP
         bool _stop;
         ParseEngine parser;
         Statement currentStatement;
+        Dictionary<string, IFunction> functionBuffer;
 
 		#endregion
 
@@ -54,6 +55,7 @@ namespace YAMP
 		{
 			Input = input;
             parser = new ParseEngine(this);
+            functionBuffer = new Dictionary<string, IFunction>();
 		}
 
 		/// <summary>
@@ -170,6 +172,22 @@ namespace YAMP
 		#endregion
 
         #region Methods
+
+        internal IFunction GetFromBuffer(string functionName)
+        {
+            if (functionBuffer.ContainsKey(functionName))
+                return functionBuffer[functionName];
+
+            return null;
+        }
+
+        internal void SetToBuffer(string functionName, IFunction function)
+        {
+            if (functionBuffer.ContainsKey(functionName))
+                functionBuffer[functionName] = function;
+            else
+                functionBuffer.Add(functionName, function);
+        }
 
         /// <summary>
         /// Begins the interpretation of the current parse tree.

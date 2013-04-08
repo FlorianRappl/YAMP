@@ -8,7 +8,7 @@ namespace YAMP
 {
 	[Description("Shows detailled help for various topics.")]
 	[Kind(PopularKinds.System)]
-    class HelpFunction : SystemFunction
+    sealed class HelpFunction : SystemFunction
     {
         const string SPACING = "   ";
 

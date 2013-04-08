@@ -5,7 +5,7 @@ namespace YAMP
 {
 	[Description("Computes the minimum value of a given vector or minimum value of each column vector of a matrix.")]
 	[Kind(PopularKinds.Function)]
-	class MinFunction : StandardFunction
+    sealed class MinFunction : StandardFunction
 	{
 		public override Value Perform(Value argument)
 		{
@@ -43,7 +43,7 @@ namespace YAMP
 		
 		ScalarValue GetVectorMin(MatrixValue vec)
 		{
-			var buf = new ScalarValue();
+			var buf = ScalarValue.Zero;
 			var min = double.MaxValue;
 			var temp = 0.0;
 

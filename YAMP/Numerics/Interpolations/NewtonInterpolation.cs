@@ -26,19 +26,19 @@ namespace YAMP.Numerics
             double F, LN, XX, X = 1;
             int i, j, k;
 
-            for (i = 2, LN = Samples[1, 2].Value; i <= Np; i++)
+            for (i = 2, LN = Samples[1, 2].Re; i <= Np; i++)
             {
-                X *= (t - Samples[i, 1].Value);
+                X *= (t - Samples[i, 1].Re);
 
                 for (j = 1, F = 0; j <= i; j++)
                 {
                     for (k = 1, XX = 1; k <= i; k++)
                     {
                         if (k != j)
-                            XX *= Samples[j, 1].Value - Samples[k, 1].Value;
+                            XX *= Samples[j, 1].Re - Samples[k, 1].Re;
                     }
 
-                    F += Samples[j, 2].Value / XX;
+                    F += Samples[j, 2].Re / XX;
                 }
 
                 LN += X * F;

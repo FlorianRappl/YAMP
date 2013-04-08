@@ -5,7 +5,7 @@ namespace YAMP
     [Description("In statistics the Jackknife is a method to estimate the statistical error of observables measured on a set of data.")]
     [Kind(PopularKinds.Statistic)]
     [Link("http://en.wikipedia.org/wiki/Resampling_(statistics)")]
-    class JackknifeFunction : SystemFunction
+    sealed class JackknifeFunction : SystemFunction
     {
         [Description("This function implements the blocked Jackknife for functions of a set of vector data saved as the rows of a matrix. The function has to take a matrix of data as the first argument and has to return either a scalar or a matrix.")]
         [Example("Jackknife([3 + randn(100, 1), 10 + 2 * randn(100, 1)], 20, avg)", "Gives the statistical Jackknife estimate for the mean and the error on the mean of a dataset with 100 measurements, mean [3, 10], and gaussian noise of width [1, 4] for a blocksize of 20.")]

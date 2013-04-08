@@ -6,7 +6,7 @@ namespace YAMP
 	[Description("Calculates values within the Mandelbrot fractal.")]
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Mandelbrot_set")]
-    class MandelbrotFunction : ArgumentFunction
+    sealed class MandelbrotFunction : ArgumentFunction
     {
         [Description("Calculates the most interesting region of the Mandelbrot fractal.")]
         [Example("mandelbrot()", "Computes the most interesting region x in (-2.5, 1.0), y in (-1.0, 1.0) with a resolution of 150 x 150 points.")]
@@ -21,7 +21,7 @@ namespace YAMP
 		public ScalarValue Function(ScalarValue z)
 		{
 			var m = new Mandelbrot();
-			return new ScalarValue(m.Run(z.Value, z.ImaginaryValue));
+            return new ScalarValue(m.Run(z.Re, z.Im));
 		}
 
         [Description("Calculates a point in the Mandelbrot fractal.")]
@@ -29,7 +29,7 @@ namespace YAMP
         public ScalarValue Function(ScalarValue x, ScalarValue y)
         {
             var m = new Mandelbrot();
-            return new ScalarValue(m.Run(x.Value, y.Value));
+            return new ScalarValue(m.Run(x.Re, y.Re));
         }
 
         [Description("Calculates a subset of the Mandelbrot fractal.")]
@@ -38,7 +38,7 @@ namespace YAMP
         {
             var s = steps.GetIntegerOrThrowException("steps", Name);
             var m = new Mandelbrot();
-            return m.CalculateMatrix(start.Value, end.Value, start.ImaginaryValue, end.ImaginaryValue, s, s);
+            return m.CalculateMatrix(start.Re, end.Re, start.Im, end.Im, s, s);
         }
 
         [Description("Calculates a subset of the Mandelbrot fractal.")]
@@ -46,9 +46,9 @@ namespace YAMP
         public MatrixValue Function(ScalarValue x0, ScalarValue xn, ScalarValue y0, ScalarValue yn)
         {
             var m = new Mandelbrot();
-            var xsteps = (int)Math.Abs(Math.Ceiling((xn.Value - x0.Value) / 0.1));
-            var ysteps = (int)Math.Abs(Math.Ceiling((yn.Value - y0.Value) / 0.1));
-            return m.CalculateMatrix(x0.Value, xn.Value, y0.Value, yn.Value, xsteps, ysteps);
+            var xsteps = (int)Math.Abs(Math.Ceiling((xn.Re - x0.Re) / 0.1));
+            var ysteps = (int)Math.Abs(Math.Ceiling((yn.Re - y0.Re) / 0.1));
+            return m.CalculateMatrix(x0.Re, xn.Re, y0.Re, yn.Re, xsteps, ysteps);
         }
 
         [Description("Calculates a subset of the Mandelbrot fractal.")]
@@ -58,7 +58,7 @@ namespace YAMP
             var xs = xsteps.GetIntegerOrThrowException("xsteps", Name);
             var ys = ysteps.GetIntegerOrThrowException("ysteps", Name);
             var m = new Mandelbrot();
-            return m.CalculateMatrix(x0.Value, xn.Value, y0.Value, yn.Value, xs, ys);
+            return m.CalculateMatrix(x0.Re, xn.Re, y0.Re, yn.Re, xs, ys);
         }
     }
 }

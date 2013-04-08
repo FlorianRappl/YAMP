@@ -6,7 +6,7 @@ namespace YAMP
     [Description("Generates a matrix with Poisson distributed random values. In probability theory and statistics, the Poisson distribution is a discrete probability distribution that expresses the probability of a given number of events occurring in a fixed interval of time and / or space if these events occur with a known average rate and independently of the time since the last event. The Poisson distribution can also be used for the number of events in other specified intervals such as distance, area or volume.")]
     [Kind(PopularKinds.Random)]
     [Link("http://en.wikipedia.org/wiki/Poisson_distribution")]
-    class RandpFunction : ArgumentFunction
+    sealed class RandpFunction : ArgumentFunction
     {
         static readonly PoissonDistribution ran = new PoissonDistribution();
 
@@ -41,7 +41,7 @@ namespace YAMP
 
             for (var i = 1; i <= l; i++)
                 for (var j = 1; j <= n; j++)
-                    m[j, i] = new ScalarValue(Poisson(lambda.Value));
+                    m[j, i] = new ScalarValue(Poisson(lambda.Re));
 
             return m;
         }

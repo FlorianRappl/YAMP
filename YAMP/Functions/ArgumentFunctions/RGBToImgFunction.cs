@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Fuses three matrices containing the reg, green, and blue values of an image separately into one single matrix which contains the information of the three matrices. It is the inverse function to ImgToRgb.")]
 	[Kind(PopularKinds.Function)]
-    class RGBToImgFunction : ArgumentFunction
+    sealed class RGBToImgFunction : ArgumentFunction
     {
         const int rfactor = 256 * 256;
         const int gfactor = 256;

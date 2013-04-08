@@ -89,7 +89,7 @@ namespace YAMP
                 if (vec[i].IsComplex)
                     value = vec[i].Abs();
                 else
-                    value = vec[i].Value;
+                    value = vec[i].Re;
 
                 if (value < MinY)
                     MinY = value;

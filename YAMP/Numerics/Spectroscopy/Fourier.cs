@@ -135,10 +135,7 @@ namespace YAMP.Numerics
 
         int GetSign()
         {
-            if (signConvention == FourierSign.Positive)
-                return 1;
-            else
-                return -1;
+            return signConvention == FourierSign.Positive ? 1 : -1;
         }
 
         static void Normalize(ScalarValue[] x, double f)

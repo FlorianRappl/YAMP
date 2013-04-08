@@ -51,7 +51,7 @@ namespace YAMP.Physics
         {
             var cu = new CombinedUnit(fromValue.Unit);
             var conversations = cu.ConvertTo(targetUnit);
-            var re = fromValue.Value;
+            var re = fromValue.Re;
 
             foreach (var conversation in conversations)
                 re = conversation(re);

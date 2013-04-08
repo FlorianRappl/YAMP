@@ -5,7 +5,7 @@ namespace YAMP
     [Description("Generates an identity matrix. In linear algebra, the identity matrix or unit matrix of size n is the n x n square matrix with ones on the main diagonal and zeros elsewhere.")]
 	[Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Identity_matrix")]
-    class EyeFunction : ArgumentFunction
+    sealed class EyeFunction : ArgumentFunction
     {
         [Description("Generates the 1x1 identity matrix, which is just 1.")]
         public MatrixValue Function()

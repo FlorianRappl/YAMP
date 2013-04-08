@@ -5,7 +5,7 @@ namespace YAMP
 {
     [Description("Converts a octal number to a decimal number.")]
     [Kind(PopularKinds.Conversion)]
-    class Oct2DecFunction : ArgumentFunction
+    sealed class Oct2DecFunction : ArgumentFunction
     {
         [Description("The function ignores white spaces and converts the given octal input to the equivalent decimal number.")]
         [Example("oct2dec(\"1627\")", "Octal 1627 converts to decimal 919.")]

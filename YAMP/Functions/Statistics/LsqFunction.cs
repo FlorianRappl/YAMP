@@ -5,7 +5,7 @@ namespace YAMP
 	[Description("The method of least squares is a standard approach to the approximate solution of overdetermined systems, i.e., sets of equations in which there are more equations than unknowns.")]
     [Kind(PopularKinds.Statistic)]
     [Link("http://en.wikipedia.org/wiki/Least_squares")]
-	class LsqFunction : ArgumentFunction
+    sealed class LsqFunction : ArgumentFunction
 	{
 		[Description("In statistics and mathematics, linear least squares is an approach to fitting a mathematical or statistical model to data in cases where the idealized value provided by the model for any data point is expressed linearly in terms of the unknown parameters of the model.")]
 		[Example("lsq([1,6;2,5;3,7;4,10])", "Computes the slope and the offset for a linear function a * x + b that should fit the points (1, 6), (2, 5), (3, 7) and (4, 10). The result is a = 1.4 and b = 3.5.")]
@@ -27,12 +27,12 @@ namespace YAMP
 			if (X.Length != Y.Length)
 				throw new YAMPDifferentLengthsException(X.Length, Y.Length);
 
-			var x1 = new ScalarValue();
-			var y1 = new ScalarValue();
-			var xy = new ScalarValue();
-			var x2 = new ScalarValue();
-			var slope = new ScalarValue();
-			var offset = new ScalarValue();
+            ScalarValue x1 = new ScalarValue();
+            ScalarValue y1 = new ScalarValue();
+            ScalarValue xy = new ScalarValue();
+            ScalarValue x2 = new ScalarValue();
+            ScalarValue slope = new ScalarValue();
+            ScalarValue offset = new ScalarValue();
 
 			for (var i = 1; i <= X.Length; i++)
 			{
@@ -44,10 +44,10 @@ namespace YAMP
 
 			var J = ((double)X.Length * x2) - (x1 * x1);
 
-			if (J.Value != 0.0)
+			if (J.Re != 0.0)
 			{
-				slope = (((double)X.Length * xy) - (x1 * y1)) / J.Value;
-				offset = ((y1 * x2) - (x1 * xy)) / J.Value;
+				slope = (((double)X.Length * xy) - (x1 * y1)) / J.Re;
+				offset = ((y1 * x2) - (x1 * xy)) / J.Re;
 			}
 
 			return new ArgumentsValue(slope, offset);

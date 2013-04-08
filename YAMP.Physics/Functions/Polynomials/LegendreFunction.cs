@@ -45,7 +45,7 @@ namespace YAMP.Physics
                 throw new Exception("Legendre polynomial of order n < 0 does not make sense.");
 
             var f = GetPolynom(nn);
-            return new ScalarValue(f(x.Value));
+            return new ScalarValue(f(x.Re));
         }
 
         [Description("Evaluates the Legendre polynomial of some order n at the given points in the matrix X in R.")]
@@ -61,7 +61,7 @@ namespace YAMP.Physics
             var f = GetPolynom(nn);
 
             for(var i = 1; i <= X.Length; i++)
-                M[i] = new ScalarValue(f(X[i].Value));
+                M[i] = new ScalarValue(f(X[i].Re));
 
             return M;
         }

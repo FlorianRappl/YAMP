@@ -6,7 +6,7 @@ namespace YAMP
     [Description("Differentiates a given vector numerically by differences and returns the derivative vector.")]
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Derivative")]
-    class DiffFunction : ArgumentFunction
+    sealed class DiffFunction : ArgumentFunction
 	{
 		[Description("Differentiates a given vector numerically by differences and returns the derivative vector.")]
         [Example("diff([0,1,3,6,8;0,2,3,3,2])", "Differentiates the function values given in the matrix and returns the antiderivative matrix [1,2,3,2;2,1,0,-1].")]
@@ -18,7 +18,7 @@ namespace YAMP
             {
                 for (int t = 1; t <= func.DimensionX - 1; t++)
                 {
-                    adm[i, t] = new ScalarValue(func[i, t + 1].Value - func[i, t].Value);
+                    adm[i, t] = new ScalarValue(func[i, t + 1].Re - func[i, t].Re);
                 }
             }
 

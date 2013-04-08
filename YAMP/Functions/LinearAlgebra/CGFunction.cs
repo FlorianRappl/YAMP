@@ -6,7 +6,7 @@ namespace YAMP
 	[Description("Uses the conjugate gradient algorithm to solve a linear system of equations.")]
 	[Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Conjugate_gradient_method")]
-    class CGFunction : ArgumentFunction
+    sealed class CGFunction : ArgumentFunction
     {
         [Description("Computes the solution vector x for a given matrix A and a source vector b.")]
         [Example("cg([1,2,1;2,3,4;1,4,2], rand(3,1))", "Here A is an arbitrary symmetric positive definite matrix and b is a random source vector.")]

@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Conjugates the given complex number to transform it from x + iy to x - iy.")]
     [Kind(PopularKinds.Function)]
-    class ConjFunction : StandardFunction
+    sealed class ConjFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)
         {

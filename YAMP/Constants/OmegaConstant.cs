@@ -10,7 +10,7 @@ namespace YAMP
     [Link("http://en.wikipedia.org/wiki/Omega_constant")]
     class OmegaConstant : BaseConstant
     {
-        static readonly ScalarValue omega = new ScalarValue(0.5671432904097838729999686622, 0.0);
+        static readonly ScalarValue omega = new ScalarValue(0.5671432904097838729999686622);
 
         public override Value Value
         {

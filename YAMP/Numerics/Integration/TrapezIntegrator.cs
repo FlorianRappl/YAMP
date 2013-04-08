@@ -38,12 +38,12 @@ namespace YAMP.Numerics
             if (x.Length != y.Length)
                 throw new YAMPDifferentLengthsException(x.Length, y.Length);
 
-            var sum = (x[2].Value - x[1].Value) * y[1] + (x[N].Value - x[N - 1].Value) * y[N];
+            var sum = (x[2].Re - x[1].Re) * y[1] + (x[N].Re - x[N - 1].Re) * y[N];
 
             for (var i = 2; i < N; i++)
-                sum += (x[i + 1].Value - x[i - 1].Value) * y[i].Value;
+                sum += (x[i + 1].Re - x[i - 1].Re) * y[i].Re;
 
-            return new ScalarValue(0.5 * sum);
+            return 0.5 * sum;
         }
     }
 }

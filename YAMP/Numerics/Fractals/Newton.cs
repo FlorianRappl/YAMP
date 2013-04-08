@@ -49,9 +49,10 @@ namespace YAMP.Numerics
         {
             var iter = 0;
             var maxiter = MaxIterations;
-            var zn = new ScalarValue(x, y);
-            var pz = ScalarValue.One;
-            var pzd = ScalarValue.Zero;
+
+            ScalarValue zn = new ScalarValue(x, y);
+            ScalarValue pz = ScalarValue.One;
+            ScalarValue pzd = ScalarValue.Zero;
 
             if(x != 0 || y != 0)
             {

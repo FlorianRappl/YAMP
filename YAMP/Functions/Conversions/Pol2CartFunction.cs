@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Converts a vector given in polar coordinates to a cartesian coordinates.")]
     [Kind(PopularKinds.Conversion)]
-    class Pol2CartFunction : ArgumentFunction
+    sealed class Pol2CartFunction : ArgumentFunction
     {
         [Description("Converts a set of values (r, phi) to a column vector with 2 rows (x, y).")]
         [Example("pol2cart(4, pi/2)", "Computes the cartesian coordinates of the given polar coordinates r = 4, phi = pi / 2.")]

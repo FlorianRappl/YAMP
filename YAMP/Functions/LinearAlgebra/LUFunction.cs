@@ -6,7 +6,7 @@ namespace YAMP
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/LU_decomposition")]
 	[Description("In linear algebra, LU decomposition (also called LU factorization) factorizes a matrix as the product of a lower triangular matrix and an upper triangular matrix. The product sometimes includes a permutation matrix as well. The LU decomposition can be viewed as the matrix form of Gaussian elimination.")]
-	class LUFunction : ArgumentFunction
+    sealed class LUFunction : ArgumentFunction
 	{
 		[Description("An LU decomposition is a decomposition of the form PA = LU, where L is a lower triangular matrix, P is a permutation matrix containing the pivot elements and U is an upper triangular matrix.")]
 		[Example("lu([4, 3; 6, 3])", "Computes the LU-decomposition of the matrix and returns the lower matrix L.")]

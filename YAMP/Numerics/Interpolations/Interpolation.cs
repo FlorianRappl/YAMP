@@ -60,7 +60,7 @@ namespace YAMP.Numerics
 
             for (var i = 1; i <= x.DimensionX; i++)
                 for (var j = 1; j <= x.DimensionY; j++)
-                    y[j, i].Value = ComputeValue(x[j, i].Value);
+                    y[j, i].Re = ComputeValue(x[j, i].Re);
 
             return y;
         }

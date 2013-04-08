@@ -6,7 +6,7 @@ namespace YAMP
     [Description("Generates a matrix with binomial distributed random values. In probability theory and statistics, the binomial distribution is the discrete probability distribution of the number of successes in a sequence of n independent yes/no experiments, each of which yields success with probability p. Such a success/failure experiment is also called a Bernoulli experiment or Bernoulli trial; when n = 1, the binomial distribution is a Bernoulli distribution. The binomial distribution is the basis for the popular binomial test of statistical significance.")]
     [Kind(PopularKinds.Random)]
     [Link("http://en.wikipedia.org/wiki/Binomial_distribution")]
-    class RandbFunction : ArgumentFunction
+    sealed class RandbFunction : ArgumentFunction
     {
         static readonly BinomialDistribution ran = new BinomialDistribution();
 
@@ -42,7 +42,7 @@ namespace YAMP
 
             for (var i = 1; i <= l; i++)
                 for (var j = 1; j <= k; j++)
-                    m[j, i] = new ScalarValue(Binomial(p.Value, nn));
+                    m[j, i] = new ScalarValue(Binomial(p.Re, nn));
 
             return m;
         }

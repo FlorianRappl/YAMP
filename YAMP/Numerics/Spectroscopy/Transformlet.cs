@@ -80,7 +80,7 @@ namespace YAMP.Numerics
         public virtual void FftKernel(ScalarValue[] x, ScalarValue[] y, int y0, int dy, int sign)
         {
             int yi = y0;
-            y[yi] = new ScalarValue();
+            y[yi] = ScalarValue.Zero;
 
             for (int j = 0; j < R; j++)
                 y[yi] += x[j];

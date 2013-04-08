@@ -10,11 +10,11 @@ namespace YAMP
         public static Value Average(MatrixValue M)
         {
             if (M.Length == 0)
-                return new ScalarValue();
+                return ScalarValue.Zero;
 
             if (M.IsVector)
             {
-                var q = new ScalarValue();
+                var q = ScalarValue.Zero;
 
                 for (var i = 1; i <= M.Length; i++)
                     q += M[i];
@@ -48,7 +48,7 @@ namespace YAMP
 
             for (var i = 1; i <= v.Length; i++)
             {
-                var y = v[i].Value;
+                var y = v[i].Re;
 
                 if (y < centers[0])
                     N[0]++;
@@ -87,11 +87,11 @@ namespace YAMP
 
             for (var i = 1; i <= v.Length; i++)
             {
-                if (v[i].Value > max)
-                    max = v[i].Value;
+                if (v[i].Re > max)
+                    max = v[i].Re;
 
-                if (v[i].Value < min)
-                    min = v[i].Value;
+                if (v[i].Re < min)
+                    min = v[i].Re;
             }
 
             var delta = (max - min) / nbins;
@@ -106,11 +106,11 @@ namespace YAMP
         public static Value Mean(MatrixValue M)
         {
             if (M.Length == 0)
-                return new ScalarValue();
+                return ScalarValue.Zero;
 
             if (M.IsVector)
             {
-                var q = new ScalarValue(1.0);
+                var q = ScalarValue.One;
 
                 for (var i = 1; i <= M.Length; i++)
                     q *= M[i];
@@ -121,7 +121,7 @@ namespace YAMP
             var s = new MatrixValue(1, M.DimensionX);
 
             for (var i = 1; i < M.DimensionX; i++)
-                s[1, i] = new ScalarValue(1.0);
+                s[1, i] = ScalarValue.One;
 
             for (var i = 1; i <= M.DimensionY; i++)
                 for (int j = 1; j <= M.DimensionX; j++)
@@ -136,11 +136,11 @@ namespace YAMP
         public static Value HarmonicMean(MatrixValue M)
         {
             if (M.Length == 0)
-                return new ScalarValue();
+                return ScalarValue.Zero;
 
             if (M.IsVector)
             {
-                var q = new ScalarValue();
+                var q = ScalarValue.Zero;
 
                 for (var i = 1; i <= M.Length; i++)
                     q += (1.0 / M[i]);
@@ -151,7 +151,7 @@ namespace YAMP
             var s = new MatrixValue(1, M.DimensionX);
 
             for (var i = 1; i < M.DimensionX; i++)
-                s[1, i] = new ScalarValue();
+                s[1, i] = ScalarValue.Zero;
 
             for (var i = 1; i <= M.DimensionY; i++)
                 for (int j = 1; j <= M.DimensionX; j++)
@@ -235,11 +235,11 @@ namespace YAMP
         public static Value Variance(MatrixValue M)
         {
             if (M.Length == 0)
-                return new ScalarValue();
+                return ScalarValue.Zero;
 
             if (M.IsVector)
             {
-                var variance = new ScalarValue();
+                var variance = ScalarValue.Zero;
                 var mean = M.Sum() / M.Length;
 
                 for (int i = 1; i <= M.Length; i++)
@@ -268,13 +268,13 @@ namespace YAMP
         public static ScalarValue Median(MatrixValue M)
         {
             if (M.Length == 0)
-                return new ScalarValue();
+                return ScalarValue.Zero;
             else if (M.Length == 1)
                 return M[1];
 
             M = M.VectorSort();
             int midPoint;
-            var sum = new ScalarValue();
+            var sum = ScalarValue.Zero;
 
             if (M.Length % 2 == 1)
             {

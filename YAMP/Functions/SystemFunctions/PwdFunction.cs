@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Kind(PopularKinds.System)]
 	[Description("Outputs the currently set working directory. This directory is used for all relative paths.")]
-	class PwdFunction : SystemFunction
+    sealed class PwdFunction : SystemFunction
 	{
 		[Description("Prints the working directory.")]
 		[Example("pwd()", "Outputs the current directory.")]

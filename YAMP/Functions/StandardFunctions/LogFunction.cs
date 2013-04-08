@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("This is the more general logarithm, i.e. by default the natural logarith, but with the ability to define the basis.")]
 	[Kind(PopularKinds.Function)]
-	class LogFunction : ArgumentFunction
+    sealed class LogFunction : ArgumentFunction
 	{
         [Description("Evaluates the natural logarithm of the given scalar value.")]
         [Example("log(e)", "The natural logarithm for Euler's constant is 1.")]
@@ -41,7 +41,7 @@ namespace YAMP
             return M;
         }
 
-		protected ScalarValue GetValue(ScalarValue value, double newBase)
+		ScalarValue GetValue(ScalarValue value, double newBase)
 		{
 			return value.Log(newBase);
 		}

@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Computes the product of a given vector or the sum for each column vector of a matrix.")]
 	[Kind(PopularKinds.Function)]
-	class ProdFunction : ArgumentFunction
+    sealed class ProdFunction : ArgumentFunction
     {
         [Description("Just returns the value, since the product of one scalar is the scalar itself.")]
         public Value Function(ScalarValue x)
@@ -34,7 +34,7 @@ namespace YAMP
 		
 		ScalarValue GetVectorProduct(MatrixValue vec)
 		{
-			var prod = new ScalarValue(1.0);
+			var prod = ScalarValue.One;
 			
 			for(var i = 1; i <= vec.Length; i++)
 				prod = prod * vec[i];

@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Visualizes a given set of points in form of a graph.")]
 	[Kind(PopularKinds.Plot)]
-	class PlotFunction : VisualizationFunction
+	sealed class PlotFunction : VisualizationFunction
 	{
 		[Description("Performs the plot of a matrix. The first column is interpreted as x-values if more than one column is given. All other columns will be interpreted as y-values.")]
 		[Example("plot(2^1:16)", "Plots the powers of 2 with y = 2, 4, 8, ..., 65536 at x = 1, 2, ..., 16 (since no X values are given).")]

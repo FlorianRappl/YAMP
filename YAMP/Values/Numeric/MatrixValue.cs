@@ -170,10 +170,10 @@ namespace YAMP
 				{
 					for (var j = 1; j < i; j++)
 					{
-						if (this[i, j].Value != this[j, i].Value)
+						if (this[i, j].Re != this[j, i].Re)
 							return false;
 
-						if (this[i, j].ImaginaryValue != -this[j, i].ImaginaryValue)
+						if (this[i, j].Im != -this[j, i].Im)
 							return false;
 					}
 				}
@@ -307,7 +307,7 @@ namespace YAMP
 		public MatrixValue(double[] vector) : this(vector.Length, 1)
 		{
 			for (var j = 0; j < vector.Length; j++)
-				this[j + 1] = new ScalarValue(vector[j]);
+                this[j + 1] = new ScalarValue(vector[j]);
 		}
 
         /// <summary>
@@ -378,7 +378,7 @@ namespace YAMP
 			var m = new MatrixValue(dimension, dimension);
 
 			for (var i = 1; i <= dimension; i++)
-				m[i, i] = new ScalarValue(1.0);
+                m[i, i] = new ScalarValue(1);
 
 			return m;
 		}
@@ -395,7 +395,7 @@ namespace YAMP
             var dim = Math.Min(rows, columns);
 
             for (var i = 1; i <= dim; i++)
-                m[i, i] = new ScalarValue(1.0);
+                m[i, i] = new ScalarValue(1);
 
             return m;
         }
@@ -412,7 +412,7 @@ namespace YAMP
 
 			for (var j = 1; j <= rows; j++)
 				for (var i = 1; i <= cols; i++)
-					m[j, i] = new ScalarValue(1.0);
+                    m[j, i] = new ScalarValue(1);
 
 			return m;
 		}
@@ -502,7 +502,7 @@ namespace YAMP
         /// </summary>
         public void Randomize()
         {
-            var r = new YAMP.Numerics.ContinuousUniformDistribution();
+            var r = new ContinuousUniformDistribution();
 
             for (var j = 1; j <= dimY; j++)
                 for (var i = 1; i <= dimX; i++)
@@ -670,7 +670,7 @@ namespace YAMP
         public virtual MatrixIndex Max()
         {
             var maxIndex = new MatrixIndex();
-            var max = new ScalarValue(double.MinValue);
+            ScalarValue max = new ScalarValue(double.MinValue);
 
             foreach (var _value in _values)
             {
@@ -691,7 +691,7 @@ namespace YAMP
         public virtual MatrixIndex Min()
         {
             var minIndex = new MatrixIndex();
-            var min = new ScalarValue(double.MaxValue);
+            ScalarValue min = new ScalarValue(double.MaxValue);
 
             foreach (var _value in _values)
             {
@@ -888,7 +888,7 @@ namespace YAMP
                 return cho.Solve(target);
             }
 
-            var qr = new YAMP.Numerics.QRDecomposition(this);
+            var qr = YAMP.Numerics.QRDecomposition.Create(this);
             return qr.Solve(target);
         }
 
@@ -901,7 +901,7 @@ namespace YAMP
 			var m = Transpose();
 
 			foreach (var pair in m._values)
-				pair.Value.ImaginaryValue = -pair.Value.ImaginaryValue;
+				pair.Value.Im = -pair.Value.Im;
 
 			return m;
 		}
@@ -941,8 +941,8 @@ namespace YAMP
 
 			for (var i = 1; i <= n; i++)
 			{
-				sum.Value += this[i, i].Value;
-				sum.ImaginaryValue += this[i, i].ImaginaryValue;
+				sum.Re += this[i, i].Re;
+				sum.Im += this[i, i].Im;
 			}
 
 			return sum;
@@ -993,7 +993,7 @@ namespace YAMP
 				return lu.Determinant();
 			}
 
-			return new ScalarValue();
+			return ScalarValue.Zero;
 		}
 
         #endregion
@@ -1137,7 +1137,7 @@ namespace YAMP
             for (var i = 1 + xoffset; i <= xlength; i++)
             {
                 for (var j = 1 + yoffset; j <= ylength; j++)
-                    array[k++] = this[j, i].Value;
+                    array[k++] = this[j, i].Re;
             }
 
             return array;
@@ -1152,7 +1152,7 @@ namespace YAMP
 			var array = new double[Length];
 
 			for (var i = 1; i <= Length; i++)
-				array[i - 1] = this[i].Value;
+				array[i - 1] = this[i].Re;
 
 			return array;
 		}
@@ -1170,7 +1170,7 @@ namespace YAMP
 				array[j] = new double[DimensionX];
 
 				for (var i = 0; i < DimensionX; i++)
-					array[j][i] = this[j + 1, i + 1].Value;
+					array[j][i] = this[j + 1, i + 1].Re;
 			}
 
 			return array;
@@ -1319,7 +1319,7 @@ namespace YAMP
         /// <returns>Returns the sum of all entries.</returns>
         public ScalarValue Sum()
         {
-            var s = new ScalarValue();
+            var s = ScalarValue.Zero;
 
             for (var i = 1; i <= DimensionX; i++)
                 for (var j = 1; j <= DimensionY; j++)
@@ -1337,7 +1337,7 @@ namespace YAMP
         public ScalarValue Dot(MatrixValue w)
         {
             var length = Math.Min(Length, w.Length);
-            var sum = new ScalarValue();
+            var sum = ScalarValue.Zero;
 
             for (var i = 1; i <= length; i++)
                 sum += this[i] * w[i];
@@ -1354,7 +1354,7 @@ namespace YAMP
         public ScalarValue ComplexDot(MatrixValue w)
         {
             var length = Math.Min(Length, w.Length);
-            var sum = new ScalarValue();
+            var sum = ScalarValue.Zero;
 
             for (var i = 1; i <= length; i++)
                 sum += this[i].Conjugate() * w[i];
@@ -1388,7 +1388,7 @@ namespace YAMP
 				if(_values.ContainsKey(index))
 					return _values[index];
 
-				return new ScalarValue();
+				return ScalarValue.Zero;
 			}
 			set
             {
@@ -1847,12 +1847,12 @@ namespace YAMP
             if (l.DimensionX != l.DimensionY)
                 throw new YAMPMatrixFormatException(SpecialMatrixFormat.Square);
 
-            if (exp.ImaginaryValue != 0.0 || Math.Floor(exp.Value) != exp.Value)
+            if (exp.Im != 0.0 || Math.Floor(exp.Re) != exp.Re)
                 throw new YAMPOperationInvalidException("^", exponent);
 
             var eye = MatrixValue.One(l.DimensionX);
-            var multiplier = exp.Value < 0 ? l.Inverse() : l;
-            var count = (int)Math.Abs(exp.Value);
+            var multiplier = exp.Re < 0 ? l.Inverse() : l;
+            var count = (int)Math.Abs(exp.Re);
 
             for (var i = 0; i < count; i++)
                 eye = eye * multiplier;
@@ -2302,7 +2302,7 @@ namespace YAMP
             {
                 for (var j = 1; j <= m.DimensionY; j++)
                 {
-                    if (m[j, i].Value != 0.0)
+                    if (m[j, i].Re != 0.0)
                     {
                         indices.Add(new MatrixIndex
                         {

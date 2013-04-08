@@ -6,7 +6,7 @@ namespace YAMP
 	[Description("Uses the GMRES / GMRES(k) algorithm to solve a linear system of equations.")]
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Generalized_minimal_residual_method")]
-    class GMRESFunction : ArgumentFunction
+    sealed class GMRESFunction : ArgumentFunction
     {
         [Description("Computes the solution vector x for a given matrix A and a source vector b.")]
         [Example("gmres(rand(3), rand(3,1))", "Here A is a random 3x3 matrix and b is a random source vector with 3 rows.")]

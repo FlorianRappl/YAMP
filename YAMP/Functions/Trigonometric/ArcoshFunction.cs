@@ -5,7 +5,7 @@ namespace YAMP
 	[Description("The inverse of the cosh(x) function.")]
     [Kind(PopularKinds.Trigonometric)]
     [Link("http://en.wikipedia.org/wiki/Inverse_hyperbolic_function")]
-    class ArcoshFunction : StandardFunction
+    sealed class ArcoshFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)
         {

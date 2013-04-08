@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Kind(PopularKinds.Function)]
 	[Description("Creates a diagonal matrix that has the given numeric values on the diagonal.")]
-	class DiagFunction : ArgumentFunction
+    sealed class DiagFunction : ArgumentFunction
     {
         [Description("Creates a diagonal matrix with the values from the given matrix.")]
         [Example("diag(rand(5))", "Creates a matrix with dimension 25 x 25, containing random values on the diagonal.")]

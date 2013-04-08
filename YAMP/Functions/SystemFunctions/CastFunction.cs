@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Casts a given string value to a real scalar.")]
     [Kind(PopularKinds.System)]
-    class CastFunction : SystemFunction
+    sealed class CastFunction : SystemFunction
     {
         [Description("Uses a given string and casts it into a real scalar.")]
         [Example("cast(\"5\")", "Casts a string 5 to a number 5.")]

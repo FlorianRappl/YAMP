@@ -10,7 +10,7 @@ namespace YAMP
     [Link("http://en.wikipedia.org/wiki/Euler–Mascheroni_constant")]
 	class Gamma1Constant : BaseConstant
 	{
-		static readonly ScalarValue gamma = new ScalarValue(0.57721566490153286060651209008240243);
+        static readonly ScalarValue gamma = new ScalarValue(0.57721566490153286060651209008240243);
 
 		public override Value Value
 		{

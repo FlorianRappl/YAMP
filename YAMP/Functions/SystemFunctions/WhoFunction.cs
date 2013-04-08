@@ -7,7 +7,7 @@ namespace YAMP
 {
 	[Description("Lists the available variables.")]
 	[Kind(PopularKinds.System)]
-    class WhoFunction : SystemFunction
+    sealed class WhoFunction : SystemFunction
     {
         [Description("Lists all variables from the current workspace.")]
         [Example("who()")]

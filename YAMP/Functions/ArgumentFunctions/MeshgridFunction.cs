@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Generate X and Y matrices for three-dimensional plots.")]
     [Kind(PopularKinds.Function)]
-    class MeshgridFunction : ArgumentFunction
+    sealed class MeshgridFunction : ArgumentFunction
     {
         [Description("The function call is the same as [X, Y] = meshgrid(x, x), i.e. the input value is seen as both, X and Y vector.")]
         [Returns(typeof(MatrixValue), "The generated X value matrix.", 0)]

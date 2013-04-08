@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Outputs the dimension of the given object.")]
 	[Kind(PopularKinds.Function)]
-	class DimFunction : ArgumentFunction
+    sealed class DimFunction : ArgumentFunction
 	{
 		[Description("Returns a scalar containing the dimension of the given matrix.")]
 		[Example("dim([1,2,3,4,5])", "Results in the value 5.")]

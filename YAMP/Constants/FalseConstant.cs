@@ -9,11 +9,9 @@ namespace YAMP
     [Kind(PopularKinds.Constant)]
     class FalseConstant : BaseConstant
     {
-        public static readonly ScalarValue _false = new ScalarValue(false);
-
         public override Value Value
         {
-            get { return _false; }
+            get { return ScalarValue.False; }
         }
     }
 }

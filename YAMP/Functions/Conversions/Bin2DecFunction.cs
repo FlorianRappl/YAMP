@@ -5,7 +5,7 @@ namespace YAMP
 {
     [Description("Converts a binary number to a decimal number.")]
     [Kind(PopularKinds.Conversion)]
-    class Bin2DecFunction : ArgumentFunction
+    sealed class Bin2DecFunction : ArgumentFunction
     {
         [Description("The function ignores white spaces and converts the given binary input to the equivalent decimal number.")]
         [Example("bin2dec(\"010111\")", "Binary 010111 converts to decimal 23.")]

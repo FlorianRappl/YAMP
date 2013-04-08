@@ -5,7 +5,7 @@ namespace YAMP
 {
     [Description("Prompts the user to input something.")]
     [Kind(PopularKinds.System)]
-    class PromptFunction : SystemFunction
+    sealed class PromptFunction : SystemFunction
     {
         [Description("Waits until the user made some input with a default message.")]
         [Example("prompt()", "Shows the user a prompt with a default message. Returns the user input as String.")]

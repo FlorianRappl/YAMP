@@ -6,7 +6,7 @@ namespace YAMP
 {
 	[Kind(PopularKinds.Plot)]
 	[Description("Sets properties of a plot.")]
-	class SetFunction : SystemFunction
+	sealed class SetFunction : SystemFunction
     {
         #region Functions
 

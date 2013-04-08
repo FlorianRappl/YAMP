@@ -4,7 +4,7 @@ namespace YAMP
 {
     [Description("Converts a vector given in cartesian coordinates to a spherical coordinates.")]
     [Kind(PopularKinds.Conversion)]
-    class Cart2SphFunction : ArgumentFunction
+    sealed class Cart2SphFunction : ArgumentFunction
     {
         [Description("Converts a set of values (x, y, z) to a column vector with 3 rows (r, phi, theta).")]
         [Example("cart2sph(3, 2, 1)", "Computes the spherical coordinates of the given cartesian coordinates x = 3, y = 2 and z = 1.")]

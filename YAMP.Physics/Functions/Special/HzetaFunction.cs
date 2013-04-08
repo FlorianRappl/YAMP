@@ -147,7 +147,7 @@ namespace YAMP.Physics
             var ln_term0 = -s * q.Log();
             var qabs = q.Abs();
             var sabs = s.Abs();
-            var ss = new ScalarValue(s);
+            var ss = s;
 
             if ((sabs > max_bits && qabs < 1.0) || (sabs > 0.5 * max_bits && qabs < 0.25))
                 return q.Pow(-ss);

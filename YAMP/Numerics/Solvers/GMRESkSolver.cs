@@ -139,7 +139,7 @@ namespace YAMP.Numerics
 
                 for (int l = j; l >= 1; l--)
                 {
-                    var sum = new ScalarValue();
+                    var sum = ScalarValue.Zero;
 
                     for (int m = l + 1; m <= j; m++)
                         sum += H[l, m] * y[m];
@@ -170,11 +170,11 @@ namespace YAMP.Numerics
                 H[i + 1, j] = c[i] * v2 - s[i] * v1;
             }
 
-            var beta = new ScalarValue(Math.Sqrt(H[j, j].AbsSquare() + H[j + 1, j].AbsSquare()));
+            var beta = Math.Sqrt(H[j, j].AbsSquare() + H[j + 1, j].AbsSquare());
 
             s[j] = H[j + 1, j] / beta;
             c[j] = H[j, j] / beta;
-            H[j, j] = beta;
+            H[j, j] = new ScalarValue(beta);
 
             gamma[j + 1] = -(s[j] * gamma[j]);
             gamma[j] = c[j].Conjugate() * gamma[j];

@@ -5,7 +5,7 @@ namespace YAMP
 {
 	[Description("Computes the maximum value of a given vector or maximum value of each column vector of a matrix.")]
 	[Kind(PopularKinds.Function)]
-	class MaxFunction : StandardFunction
+    sealed class MaxFunction : StandardFunction
 	{
 		public override Value Perform(Value argument)
 		{
@@ -41,7 +41,7 @@ namespace YAMP
 		
 		ScalarValue GetVectorMax(MatrixValue vec)
 		{
-			var buf = new ScalarValue();
+			var buf = ScalarValue.Zero;
 			var max = double.MinValue;
 			var temp = 0.0;
 

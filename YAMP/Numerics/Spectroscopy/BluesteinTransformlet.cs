@@ -17,7 +17,7 @@ namespace YAMP.Numerics
             // compute the Bluestein coeffcients and compute the FT of the filter based on them
             b = ComputeBluesteinCoefficients(R);
             var c = new ScalarValue[Nb];
-            c[0] = new ScalarValue(1.0);
+            c[0] = ScalarValue.One;
 
             for (int i = 1; i < R; i++)
             {
@@ -26,7 +26,7 @@ namespace YAMP.Numerics
             }
 
             for (int i = R; i <= Nb - R; i++)
-                c[i] = new ScalarValue();
+                c[i] = ScalarValue.Zero;
 
             bt = ft.Transform(c);
         }
@@ -86,7 +86,7 @@ namespace YAMP.Numerics
             }
 
             for (int i = R; i < c.Length; i++)
-                c[i] = new ScalarValue();
+                c[i] = ScalarValue.Zero;
 
             var ct = ft.Transform(c);
 

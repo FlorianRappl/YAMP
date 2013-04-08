@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("Represents the sign function.")]
 	[Kind(PopularKinds.Function)]
-    class SignFunction : StandardFunction
+    sealed class SignFunction : StandardFunction
     {
         public override Value Perform(Value argument)
         {

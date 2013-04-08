@@ -75,7 +75,7 @@ namespace YAMP
 			Levels = new double[v.Length];
 
 			for (var i = 1; i <= v.Length; i++)
-				Levels[i - 1] = v[i].Value;
+				Levels[i - 1] = v[i].Re;
 		}
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace YAMP
 
 			for (var i = 1; i <= Z.DimensionX; i++)
 				for (var j = 1; j <= Z.DimensionY; j++)
-					z[i - 1, j - 1] = Z[j, i].Value;
+					z[i - 1, j - 1] = Z[j, i].Re;
 
 			AddValues(x, y, z);
 		}
@@ -120,7 +120,7 @@ namespace YAMP
 
 			for (var i = 1; i <= M.DimensionX; i++)
 				for (var j = 1; j <= M.DimensionY; j++)
-					z[i - 1, j - 1] = M[j, i].Value;
+					z[i - 1, j - 1] = M[j, i].Re;
 
 			AddValues(x, y, z);
 		}

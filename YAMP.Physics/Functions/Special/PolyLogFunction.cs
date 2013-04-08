@@ -116,12 +116,12 @@ namespace YAMP.Physics
         static ScalarValue PolylogInversion(int n, ScalarValue z)
         {
             int j;
-            var p = ScalarValue.Zero;
-            var q = ScalarValue.Zero;
-            var w = (-z).Log();
-            var s = ScalarValue.Zero;
-            var m1 = new ScalarValue(-1.0);
-            var nh = n / 2;
+            int nh = n / 2;
+            ScalarValue p = ScalarValue.Zero;
+            ScalarValue q = ScalarValue.Zero;
+            ScalarValue w = (-z).Log();
+            ScalarValue s = ScalarValue.Zero;
+            ScalarValue m1 = new ScalarValue(-1.0);
 
             for (var r = 1; r <= nh; r++)
             {

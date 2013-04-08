@@ -5,7 +5,7 @@ namespace YAMP
 {
 	[Description("Splits a string into tokens using a list of separators.")]
 	[Kind(PopularKinds.Function)]
-    class SplitFunction : ArgumentFunction
+    sealed class SplitFunction : ArgumentFunction
 	{
         [Description("Splits a string into tokens using a list of separators.")]
 		[Example("tokens = split(\"hello world!\", \"o\", \"e\")", "Returns a list of all tokens.")]

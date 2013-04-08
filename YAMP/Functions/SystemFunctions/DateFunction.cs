@@ -4,7 +4,7 @@ namespace YAMP
 {
 	[Description("The date() function allows you to get dates with or without offset.")]
 	[Kind(PopularKinds.System)]
-	class DateFunction : SystemFunction
+	sealed class DateFunction : SystemFunction
 	{
 		[Description("Gets the current date, taken at the moment of the query request.")]
 		[Example("date()", "Prints the current date.")]
@@ -18,7 +18,7 @@ namespace YAMP
 		[Example("date(100)", "Prints the date in 100 days.")]
 		public StringValue Function(ScalarValue offset)
 		{
-			var dt = DateTime.Today.AddDays(offset.Value);
+			var dt = DateTime.Today.AddDays(offset.Re);
 			return new StringValue(dt.ToString("d"));
 		}
 	}
