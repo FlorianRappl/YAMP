@@ -89,7 +89,7 @@ namespace YAMP.Numerics
         /// <summary>
         /// Least squares solution of A * X = B
         /// </summary>
-        /// <param name="B">A Matrix with as many rows as A and any number of columns.</param>
+        /// <param name="b">A Matrix with as many rows as A and any number of columns.</param>
         /// <returns>X that minimizes the two norm of Q*R*X-B.</returns>
         /// <exception cref="System.ArgumentException"> Matrix row dimensions must agree.</exception>
         /// <exception cref="System.SystemException"> Matrix is rank deficient.</exception>

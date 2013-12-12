@@ -30,7 +30,7 @@ using System;
 namespace YAMP
 {
     /// <summary>
-    /// The basic and && operator.
+    /// The basic and &amp;&amp; operator.
     /// </summary>
     class AndOperator : LogicOperator
     {

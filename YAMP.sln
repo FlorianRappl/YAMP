@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMPConsole", "YAMPConsole\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMP.Physics", "YAMP.Physics\YAMP.Physics.csproj", "{149AFC43-83EF-4549-B582-92C69456E12F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMP.Portable", "YAMP\YAMP.Portable.csproj", "{A63FB450-11A4-4F93-A9C6-D07E16268B3F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Benchmarks|Any CPU = Benchmarks|Any CPU
@@ -45,6 +47,14 @@ Global
 		{149AFC43-83EF-4549-B582-92C69456E12F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{149AFC43-83EF-4549-B582-92C69456E12F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{149AFC43-83EF-4549-B582-92C69456E12F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Benchmarks|Any CPU.ActiveCfg = Release|Any CPU
+		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Benchmarks|Any CPU.Build.0 = Release|Any CPU
+		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Console|Any CPU.ActiveCfg = Release|Any CPU
+		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Console|Any CPU.Build.0 = Release|Any CPU
+		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A63FB450-11A4-4F93-A9C6-D07E16268B3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

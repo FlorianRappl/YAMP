@@ -40,6 +40,11 @@ namespace YAMP.Numerics
             n = A.DimensionX;
         }
 
+        /// <summary>
+        /// Creates the right QR decomposition (Givens or Householder) depending on the given matrix.
+        /// </summary>
+        /// <param name="A">The matrix to decompose.</param>
+        /// <returns>The right QR decomposition implementation.</returns>
         public static QRDecomposition Create(MatrixValue A)
         {
             if (A.IsComplex)

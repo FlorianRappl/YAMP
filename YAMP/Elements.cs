@@ -58,6 +58,7 @@ namespace YAMP
 			expressions = new List<Expression>();
 			keywords = new Dictionary<string, Keyword>();
             plugins = new Dictionary<int, Plugin>();
+            var list = new List<int>();
 		}
 		
 		#endregion
