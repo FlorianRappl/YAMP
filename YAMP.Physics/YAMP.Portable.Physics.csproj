@@ -8,8 +8,8 @@
     <ProjectGuid>{6F521146-B625-4C6F-A3CA-440A8153E6F7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>YAMP.Physics</RootNamespace>
-    <AssemblyName>YAMP.Physics</AssemblyName>
+    <RootNamespace>YAMP.Portable.Physics</RootNamespace>
+    <AssemblyName>YAMP.Portable.Physics</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile2</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -36,9 +36,9 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\YAMP\Portable.YAMP.csproj">
+    <ProjectReference Include="..\YAMP\YAMP.Portable.csproj">
       <Project>{a63fb450-11a4-4f93-a9c6-d07e16268b3f}</Project>
-      <Name>Portable.YAMP</Name>
+      <Name>YAMP.Portable</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
