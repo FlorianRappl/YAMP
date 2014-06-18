@@ -71,6 +71,9 @@ namespace YAMP
         /// <returns>The function (if found) or NULL.</returns>
         public override IFunction LoadFunction(String symbolName)
         {
+            if (!Parser.UseScripting)
+                return null;
+
             var script = String.Empty;
 
             var function = new FunctionBuffer
