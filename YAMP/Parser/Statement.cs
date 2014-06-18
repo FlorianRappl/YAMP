@@ -222,7 +222,7 @@ namespace YAMP
 
         void ReduceUnary(ContainerExpression container)
         {
-            while (_operators.Count != 0 && _operators.Peek().Expressions == 1)
+            while (_operators.Count != 0 && _operators.Peek().Expressions == 1 && _operators.Peek().Level >= container.Operator.Level)
             {
                 var e = container.Expressions[0];
                 container.Expressions[0] = new ContainerExpression(e, _operators.Pop());
