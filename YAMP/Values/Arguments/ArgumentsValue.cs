@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2012-2013, Florian Rappl.
+    Copyright (c) 2012-2014, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

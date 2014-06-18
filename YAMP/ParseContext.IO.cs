@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright (c) 2012-2013, Florian Rappl.
+    Copyright (c) 2012-2014, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,9 +26,9 @@
 */
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace YAMP
 {
@@ -48,7 +48,7 @@ namespace YAMP
         /// Loads the workspace from the given file.
         /// </summary>
         /// <param name="fromFileName">The path to the file.</param>
-        public void Load(string fromFileName)
+        public void Load(String fromFileName)
         {
             var lf = new LoadFunction();
             lf.Context = this;
@@ -59,7 +59,7 @@ namespace YAMP
         /// Saves the workspace in the given file.
         /// </summary>
         /// <param name="toFileName">The path to the file.</param>
-        public void Save(string toFileName)
+        public void Save(String toFileName)
         {
             SaveFunction.Save(toFileName, variables);
         }
@@ -69,9 +69,9 @@ namespace YAMP
         /// </summary>
         /// <param name="symbolName">The name of the function (equals the name of the file).</param>
         /// <returns>The function (if found) or NULL.</returns>
-        public override IFunction LoadFunction(string symbolName)
+        public override IFunction LoadFunction(String symbolName)
         {
-            var script = string.Empty;
+            var script = String.Empty;
 
             var function = new FunctionBuffer
             {
@@ -82,7 +82,7 @@ namespace YAMP
             if (!File.Exists(function.FileName))
                 return null;
 
-            for(var i = buffer.Count - 1; i >= 0; i--)
+            for (var i = buffer.Count - 1; i >= 0; i--)
                 if(!buffer[i].Directory.Equals(Environment.CurrentDirectory, StringComparison.CurrentCultureIgnoreCase))
                     buffer.RemoveAt(i);
 
@@ -112,7 +112,7 @@ namespace YAMP
                 return null;
             }
 
-            if (!string.IsNullOrEmpty(script))
+            if (!String.IsNullOrEmpty(script))
             {
                 function.Context = new ParseContext(parent);
                 var p = Parser.Parse(function.Context, script);

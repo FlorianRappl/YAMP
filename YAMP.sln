@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMP", "YAMP\YAMP.csproj", "{0F183B45-E213-4DB0-9734-3CE7E26EB318}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMPCompare", "YAMPCompare\YAMPCompare.csproj", "{0E8EFCFC-EE84-4125-A801-CB436BD0C197}"

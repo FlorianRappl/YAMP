@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2012-2013, Florian Rappl.
+	Copyright (c) 2012-2014, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace YAMP
@@ -117,12 +115,12 @@ namespace YAMP
         /// <summary>
         /// Gets or sets the name of the last answer.
         /// </summary>
-        public static string Answer
+        public static String Answer
         {
             get { return answer; }
             set
             {
-                if (string.IsNullOrEmpty(value))
+                if (String.IsNullOrEmpty(value))
                     return;
 
                 answer = value;
@@ -132,7 +130,7 @@ namespace YAMP
         /// <summary>
         /// Gets a list of the available keywords.
         /// </summary>
-        public static string[] Keywords
+        public static String[] Keywords
         {
             get
             {
@@ -143,7 +141,7 @@ namespace YAMP
         /// <summary>
         /// Gets the version of the YAMP parser.
         /// </summary>
-        public static string Version
+        public static String Version
         {
             get
             {
@@ -156,9 +154,6 @@ namespace YAMP
         /// <summary>
 		/// Gets the context of the current parser instance (expression, value, ...).
 		/// </summary>
-		/// <value>
-		/// The current context of this parser instance.
-		/// </value>
 		public QueryContext Context
 		{
 			get { return _query; }
@@ -167,9 +162,6 @@ namespace YAMP
 		/// <summary>
 		/// Gets the primary context of the parser (not the root context).
 		/// </summary>
-		/// <value>
-		/// The parser's primary context.
-		/// </value>
 		public static ParseContext PrimaryContext
 		{
 			get
@@ -183,11 +175,10 @@ namespace YAMP
 
 		/// <summary>
 		/// Gets or sets of scripting should be enabled (allowed / activated).
+        /// Scripting will activate loop constructs and conditionals. This will
+        /// also activate file system access in the non-portable version.
 		/// </summary>
-		/// <value>
-		/// The current setting.
-		/// </value>
-		public static bool UseScripting
+		public static Boolean UseScripting
 		{
 			get;
 			set;
@@ -195,11 +186,9 @@ namespace YAMP
 
         /// <summary>
         /// Gets or sets if YAMP should run in interactive mode.
+        /// The interactive mode will fire events.
         /// </summary>
-        /// <value>
-        /// The current setting.
-        /// </value>
-        public static bool InteractiveMode
+        public static Boolean InteractiveMode
         {
             get;
             set;
