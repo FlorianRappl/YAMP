@@ -314,6 +314,9 @@ namespace YAMPConsole
             Test("1 || 0", 1.0);
             Test("A = rand(3); A(2, 2) = 0.5i; x = solve(A, eye(3,1)); abs(A * x - eye(3,1))", 0.0, 1e-8);
             Test("-2^2", -4.0);
+            Test("-2-2", -4.0);
+            Test("-2*2", -4.0);
+            Test("-2^2+4", 0.0);
 
             sw.Stop();
 
