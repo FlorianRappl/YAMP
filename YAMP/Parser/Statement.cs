@@ -204,7 +204,7 @@ namespace YAMP
                             _expressions.Push(container);
                             ReduceUnary(container);
 
-                            if (_operators.Count > 0 && _operators.Peek().Level > _operator.Level)
+                            if (_operators.Count > 0 && _operators.Peek().Level >= _operator.Level)
                                 continue;
 
                             maxLevel = _operator.Level;
