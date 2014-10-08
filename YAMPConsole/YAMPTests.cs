@@ -319,6 +319,8 @@ namespace YAMPConsole
             Test("-2^2+4", 0.0);
             Test("3-4*1-1", -2.0);
             Test("3-4^1-1", -2.0);
+            Test("2/2/2", 0.5);
+            Test("2^2^2", 16.0);
 
             sw.Stop();
 
