@@ -1,5 +1,5 @@
 ﻿/*
-	Copyright (c) 2012-2013, Florian Rappl.
+	Copyright (c) 2012-2014, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -313,6 +313,14 @@ namespace YAMPConsole
             Test("0 || 0", 0.0);
             Test("1 || 0", 1.0);
             Test("A = rand(3); A(2, 2) = 0.5i; x = solve(A, eye(3,1)); abs(A * x - eye(3,1))", 0.0, 1e-8);
+            Test("-2^2", -4.0);
+            Test("-2-2", -4.0);
+            Test("-2*2", -4.0);
+            Test("-2^2+4", 0.0);
+            Test("3-4*1-1", -2.0);
+            Test("3-4^1-1", -2.0);
+            Test("2/2/2", 0.5);
+            Test("2^2^2", 16.0);
 
             sw.Stop();
 

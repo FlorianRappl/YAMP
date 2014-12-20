@@ -1,5 +1,5 @@
 ﻿/*
-	Copyright (c) 2012-2013, Florian Rappl.
+	Copyright (c) 2012-2014, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -468,45 +468,7 @@ namespace YAMP
             if (!terminated)
                 AddError(terminationMissing != null ? terminationMissing(this) : new YAMPTerminatorMissingError(currentLine, currentColumn, termination));
 
-
             return statement.Finalize(this);
-        }
-        
-        /// <summary>
-        /// Parses a block and adds the block to the current statement.
-        /// </summary>
-        /// <param name="statement">The statement that should get the block.</param>
-        /// <returns>The statement again (allows chaining).</returns>
-        internal Statement ParseBlock(Statement statement)
-        {
-            currentStatement = statement;
-
-            if (statement.IsOperator)
-            {
-                var op = Elements.Instance.FindOperator(this);
-
-                if (op == null)
-                    AddError(new YAMPOperatorMissingError(currentLine, currentColumn));
-
-                statement.Push(this, op);
-            }
-            else
-            {
-                var op = Elements.Instance.FindLeftUnaryOperator(this);
-
-                if (op == null)
-                {
-                    var exp = Elements.Instance.FindExpression(this);
-
-                    if (exp == null)
-                        AddError(new YAMPExpressionExpectedError(currentLine, currentColumn));
-
-                    statement.Push(this, exp);
-                }
-                else statement.Push(this, op);
-            }
-
-            return statement;
         }
 
         /// <summary>
@@ -515,13 +477,17 @@ namespace YAMP
         /// <param name="statement">The statement that should get the block.</param>
         /// <param name="defaultOperator">The default operator if no operator has been found.</param>
         /// <returns>The statement again (allows chaining).</returns>
-        internal Statement ParseBlock(Statement statement, Operator defaultOperator)
+        internal Statement ParseBlock(Statement statement, Operator defaultOperator = null)
         {
             currentStatement = statement;
 
             if (statement.IsOperator)
             {
                 var op = Elements.Instance.FindOperator(this) ?? defaultOperator;
+
+                if (op == null)
+                    AddError(new YAMPOperatorMissingError(currentLine, currentColumn));
+
                 statement.Push(this, op);
             }
             else

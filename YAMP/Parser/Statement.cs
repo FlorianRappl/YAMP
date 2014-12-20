@@ -1,5 +1,5 @@
 ﻿/*
-	Copyright (c) 2012-2013, Florian Rappl.
+	Copyright (c) 2012-2014, Florian Rappl.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -174,7 +174,9 @@ namespace YAMP
             _operator = _operator ?? Operator.Void;
 
             if (_operator.Expressions == 1 && _operator.IsRightToLeft)
+            {
                 _expressions.Push(new ContainerExpression(_expressions.Pop(), _operator));
+            }
             else
             {
                 if (_operator.Expressions == 2)
@@ -202,7 +204,7 @@ namespace YAMP
                             _expressions.Push(container);
                             ReduceUnary(container);
 
-                            if (_operators.Count > 0 && _operators.Peek().Level > _operator.Level)
+                            if (_operators.Count > 0 && _operators.Peek().Level >= _operator.Level)
                                 continue;
 
                             maxLevel = _operator.Level;
@@ -220,7 +222,7 @@ namespace YAMP
 
         void ReduceUnary(ContainerExpression container)
         {
-            while (_operators.Count != 0 && _operators.Peek().Expressions == 1)
+            while (_operators.Count != 0 && _operators.Peek().Expressions == 1 && _operators.Peek().Level >= container.Operator.Level)
             {
                 var e = container.Expressions[0];
                 container.Expressions[0] = new ContainerExpression(e, _operators.Pop());

@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2012-2013, Florian Rappl.
+    Copyright (c) 2012-2014, Florian Rappl.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Florian Rappl et al.")]
 [assembly: AssemblyProduct("YAMP")]
-[assembly: AssemblyCopyright("(c) Florian Rappl, 2012 - 2013.")]
+[assembly: AssemblyCopyright("(c) Florian Rappl, 2012 - 2014.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.3.0.*")]
+[assembly: AssemblyVersion("1.4.0.*")]
