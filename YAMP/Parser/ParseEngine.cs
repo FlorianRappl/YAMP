@@ -25,34 +25,35 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
     /// <summary>
     /// The parse engine of YAMP. This engine has been introduced with YAMP v1.2
     /// and is called YAMP-PE, which stands for YAMP-ParseEngine.
     /// </summary>
     public sealed class ParseEngine
     {
-        #region Members
+        #region Fields
 
-        QueryContext query;
+        readonly QueryContext query;
+        readonly List<YAMPParseError> errors;
+        readonly List<Statement> statements;
+
+        Char[] characters;
         ParseEngine parent;
-        List<YAMPParseError> errors;
-        int currentLine;
-        int currentColumn;
-        bool parsed;
-        bool parsing;
-        bool useKeywords;
-        List<Statement> statements;
+        Int32 currentLine;
+        Int32 currentColumn;
+        Boolean parsed;
+        Boolean parsing;
+        Boolean useKeywords;
         Statement currentStatement;
-        char[] characters;
-        bool terminated;
+        Boolean terminated;
         Marker markers;
-        int ptr;
+        Int32 ptr;
 
         #endregion
 
@@ -81,11 +82,11 @@ namespace YAMP
         /// <summary>
         /// Gets the names of all collected (user-defined) symbols.
         /// </summary>
-        public string[] CollectedSymbols
+        public String[] CollectedSymbols
         {
             get
             {
-                var symbols = new List<string>();
+                var symbols = new List<String>();
 
                 for (var i = 0; i < statements.Count; i++)
                 {
@@ -125,7 +126,7 @@ namespace YAMP
         /// <summary>
         /// Gets the number of errors found during parsing the input.
         /// </summary>
-        public int ErrorCount
+        public Int32 ErrorCount
         {
             get { return errors.Count; }
         }
@@ -133,7 +134,7 @@ namespace YAMP
         /// <summary>
         /// Gets the current character pointer position.
         /// </summary>
-        internal int Pointer
+        internal Int32 Pointer
         {
             get { return ptr; }
         }
@@ -157,7 +158,7 @@ namespace YAMP
         /// <summary>
         /// Gets the status of the current parse tree. Can the tree be interpreted?
         /// </summary>
-        public bool CanRun
+        public Boolean CanRun
         {
             get { return parsed && errors.Count == 0; }
         }
@@ -165,7 +166,7 @@ namespace YAMP
         /// <summary>
         /// Gets the status of the parser. Has it been executed?
         /// </summary>
-        public bool IsParsed
+        public Boolean IsParsed
         {
             get { return parsed; }
         }
@@ -173,7 +174,7 @@ namespace YAMP
         /// <summary>
         /// Gets the status of the termination. Has it been terminated properly?
         /// </summary>
-        public bool IsTerminated
+        public Boolean IsTerminated
         {
             get { return terminated; }
         }
@@ -181,7 +182,7 @@ namespace YAMP
         /// <summary>
         /// Gets the status of the parser. Is it currently parsing?
         /// </summary>
-        public bool IsParsing
+        public Boolean IsParsing
         {
             get { return parsing; }
         }
@@ -189,7 +190,7 @@ namespace YAMP
         /// <summary>
         /// Gets the current line of the parser.
         /// </summary>
-        public int CurrentLine
+        public Int32 CurrentLine
         {
             get { return currentLine; }
         }
@@ -197,7 +198,7 @@ namespace YAMP
         /// <summary>
         /// Gets the current column of the parser.
         /// </summary>
-        public int CurrentColumn
+        public Int32 CurrentColumn
         {
             get { return currentColumn; }
         }
@@ -205,7 +206,7 @@ namespace YAMP
         /// <summary>
         /// Gets a value if the parser found errors in the query.
         /// </summary>
-        public bool HasErrors
+        public Boolean HasErrors
         {
             get { return errors.Count > 0; }
         }
@@ -253,7 +254,7 @@ namespace YAMP
         /// <summary>
         /// Gets a boolean indicating if scripting (keywords) is (are) enabled for this parser.
         /// </summary>
-        public bool UseKeywords
+        public Boolean UseKeywords
         {
             get { return useKeywords; }
         }
@@ -261,7 +262,7 @@ namespace YAMP
         /// <summary>
         /// Gets the number of statements that have been found in the query.
         /// </summary>
-        public int Count
+        public Int32 Count
         {
             get { return statements.Count; }
         }
@@ -269,7 +270,7 @@ namespace YAMP
         /// <summary>
         /// Gets the characters of the query input.
         /// </summary>
-        public char[] Characters
+        public Char[] Characters
         {
             get { return characters; }
         }
@@ -326,7 +327,7 @@ namespace YAMP
         /// </summary>
         /// <param name="input">The (updated) content (query) to use.</param>
         /// <returns>The current (reseted) parse engine.</returns>
-        public ParseEngine Reset(string input)
+        public ParseEngine Reset(String input)
         {
             useKeywords = Parser.UseScripting;
             query.Input = input;
@@ -424,7 +425,7 @@ namespace YAMP
         /// <param name="terminationMissing">Function (to generate an error) that is called if the termination character is not found.</param>
         /// <param name="handleCharacter">An optional function that is invoked for every character.</param>
         /// <returns>The finalized statement.</returns>
-        internal Statement ParseStatement(char termination, Func<ParseEngine, YAMPParseError> terminationMissing = null, Func<char, Statement, bool> handleCharacter = null)
+        internal Statement ParseStatement(Char termination, Func<ParseEngine, YAMPParseError> terminationMissing = null, Func<Char, Statement, Boolean> handleCharacter = null)
         {
             var terminated = false;
             var statement = new Statement();
@@ -519,7 +520,7 @@ namespace YAMP
         /// <param name="index">The index of the character to be replaced.</param>
         /// <param name="replacement">The character to replace the old one.</param>
         /// <returns>The current instance.</returns>
-        internal ParseEngine Replace(int index, char replacement)
+        internal ParseEngine Replace(Int32 index, Char replacement)
         {
             if(index >= 0 && index < characters.Length)
                 characters[index] = replacement;
@@ -550,7 +551,7 @@ namespace YAMP
         /// </summary>
         /// <param name="shift">The positive or negative shift.</param>
         /// <returns>The current instance.</returns>
-        internal ParseEngine Advance(int shift)
+        internal ParseEngine Advance(Int32 shift)
         {
             return SetPointer(ptr + shift);
         }
@@ -578,7 +579,7 @@ namespace YAMP
         /// </summary>
         /// <param name="target">The sequence of characters fo find.</param>
         /// <returns>The current instance.</returns>
-        internal ParseEngine AdvanceTo(string target)
+        internal ParseEngine AdvanceTo(String target)
         {
             return AdvanceTo(target.ToCharArray());
         }
@@ -588,9 +589,9 @@ namespace YAMP
         /// </summary>
         /// <param name="target">The character to find.</param>
         /// <returns>The current instance.</returns>
-        internal ParseEngine AdvanceTo(char target)
+        internal ParseEngine AdvanceTo(Char target)
         {
-            return AdvanceTo(new char[] { target });
+            return AdvanceTo(new [] { target });
         }
 
         /// <summary>
@@ -598,7 +599,7 @@ namespace YAMP
         /// </summary>
         /// <param name="target">The sequence of characters to find.</param>
         /// <returns>The current instance.</returns>
-        internal ParseEngine AdvanceTo(char[] target)
+        internal ParseEngine AdvanceTo(Char[] target)
         {
             while (ptr < characters.Length)
             {
@@ -669,7 +670,7 @@ namespace YAMP
         /// <param name="line">The new line value.</param>
         /// <param name="column">The new column value.</param>
         /// <returns>The current instance.</returns>
-        internal ParseEngine SetOffset(int line, int column)
+        internal ParseEngine SetOffset(Int32 line, Int32 column)
         {
             currentLine = line;
             currentColumn = column;
@@ -681,13 +682,13 @@ namespace YAMP
         /// </summary>
         /// <param name="newPosition">The new position of the character pointer ptr.</param>
         /// <returns>The current instance.</returns>
-        internal ParseEngine SetPointer(int newPosition)
+        internal ParseEngine SetPointer(Int32 newPosition)
         {
             var shift = newPosition > ptr ? 1 : -1;
 
             while (ptr != newPosition)
             {
-                if(IsNewLine(characters[ptr]))
+                if (IsNewLine(characters[ptr]))
                 {
                     currentLine += shift;
                     currentColumn = 1;
@@ -713,25 +714,22 @@ namespace YAMP
 
         internal ParseEngine RemoveMarker(Marker marker)
         {
-            if(HasMarker(marker))
+            if (HasMarker(marker))
                 markers = markers ^ marker;
 
             return this;
         }
 
-        internal bool HasMarker(Marker marker)
+        internal Boolean HasMarker(Marker marker)
         {
-            if ((markers & marker) == marker)
-                return true;
-
-            return false;
+            return (markers & marker) == marker;
         }
 
         #endregion
 
         #region Static Helpers
 
-        static readonly string unicodeWhitespaces =
+        static readonly String unicodeWhitespaces =
             "\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\uFEFF";
 
         /// <summary>
@@ -739,7 +737,7 @@ namespace YAMP
         /// </summary>
         /// <param name="ch">The character to be examined.</param>
         /// <returns>True if the character represents a letter (a-zA-Z).</returns>
-        public static bool IsLetter(char ch)
+        public static Boolean IsLetter(Char ch)
         {
             return (ch >= 65 && ch <= 90) ||
                 (ch >= 97 && ch <= 123);
@@ -750,7 +748,7 @@ namespace YAMP
         /// </summary>
         /// <param name="ch">The character to be examined.</param>
         /// <returns>True if the character represents the start of an identifier (a-zA-Z$_).</returns>
-        public static bool IsIdentifierStart(char ch) {
+        public static Boolean IsIdentifierStart(Char ch) {
             return (ch == 36) || (ch == 95) ||  // $ (dollar) and _ (underscore)
                 (ch >= 65 && ch <= 90) ||       // A..Z
                 (ch >= 97 && ch <= 122);        // a..z
@@ -761,7 +759,7 @@ namespace YAMP
         /// </summary>
         /// <param name="ch">The character to be examined.</param>
         /// <returns>True if the character represents the part of an identifier (a-zA-Z$_).</returns>
-        public static bool IsIdentifierPart(char ch) {
+        public static Boolean IsIdentifierPart(Char ch) {
             return (ch == 36) || (ch == 95) ||    // $ (dollar) and _ (underscore)
                 (ch >= 65 && ch <= 90) ||         // A..Z
                 (ch >= 97 && ch <= 122) ||        // a..z
@@ -773,12 +771,9 @@ namespace YAMP
         /// </summary>
         /// <param name="ch">The character to be examined.</param>
         /// <returns>True if the character represents a number (0-9).</returns>
-        public static bool IsNumber(char ch)
+        public static Boolean IsNumber(Char ch)
         {
-            if (ch >= 48 && ch <= 57)
-                return true;
-
-            return false;
+            return ch >= 48 && ch <= 57;
         }
         
         /// <summary>
@@ -786,7 +781,7 @@ namespace YAMP
         /// </summary>
         /// <param name="ch">The character to be examined.</param>
         /// <returns>True if the character represents a white space.</returns>
-        public static bool IsWhiteSpace(char ch)
+        public static Boolean IsWhiteSpace(Char ch)
         {
             return (ch == 32) ||  // space
                 (ch == 9) ||      // horizontal tab
@@ -801,7 +796,7 @@ namespace YAMP
         /// </summary>
         /// <param name="ch">The character to be examined.</param>
         /// <returns>True if the character represents a new line.</returns>
-        public static bool IsNewLine(char ch)
+        public static Boolean IsNewLine(Char ch)
         {
             return (ch == 10) ||  // line feed
                 (ch == 13) ||	  // carriage return
@@ -815,7 +810,7 @@ namespace YAMP
         /// <param name="ch1">The leading character to be examined.</param>
         /// <param name="ch2">The succeeding character to be investigated.</param>
         /// <returns>True if a line comment has been found.</returns>
-        public static bool IsComment(char ch1, char ch2)
+        public static Boolean IsComment(Char ch1, Char ch2)
         {
             return IsLineComment(ch1, ch2) || IsBlockComment(ch1, ch2);
         }
@@ -826,7 +821,7 @@ namespace YAMP
         /// <param name="ch1">The leading character to be examined.</param>
         /// <param name="ch2">The succeeding character to be investigated.</param>
         /// <returns>True if a line comment has been found.</returns>
-        public static bool IsLineComment(char ch1, char ch2)
+        public static Boolean IsLineComment(Char ch1, Char ch2)
         {
             return ch1 == '/' && ch2 == '/';
         }
@@ -837,7 +832,7 @@ namespace YAMP
         /// <param name="ch1">The leading character to be examined.</param>
         /// <param name="ch2">The succeeding character to be investigated.</param>
         /// <returns>True if a block comment has been found.</returns>
-        public static bool IsBlockComment(char ch1, char ch2)
+        public static Boolean IsBlockComment(Char ch1, Char ch2)
         {
             return ch1 == '/' && ch2 == '*';
         }
@@ -850,14 +845,12 @@ namespace YAMP
         /// Transforms the contained expression blocks into one string.
         /// </summary>
         /// <returns>The string representation of the parser content.</returns>
-        public override string ToString()
+        public override String ToString()
         {
             var sb = new StringBuilder();
 
             foreach (var statement in statements)
-            {
                 sb.Append("::").AppendLine(statement.ToString());
-            }
 
             return sb.ToString();
         }

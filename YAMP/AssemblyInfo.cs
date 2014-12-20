@@ -26,7 +26,6 @@
 */
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("YAMP")]
 [assembly: AssemblyDescription("Yet Another Math Parser (YAMP) Core System with M# scripting language and all base types and functions.")]

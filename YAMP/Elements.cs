@@ -25,27 +25,25 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Linq;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-
 namespace YAMP
 {
-	/// <summary>
-	/// Provides internal access to the elements and handles the element registration and variable assignment.
-	/// </summary>
-	sealed class Elements
-	{
-		#region Members
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
 
-        IDictionary<string, Operator> operators;
-        IDictionary<string, Operator> unaryOperators;
-		List<Expression> expressions;
-		IDictionary<string, Keyword> keywords;
-        IDictionary<int, Plugin> plugins;
+    /// <summary>
+    /// Provides internal access to the elements and handles the element registration and variable assignment.
+    /// </summary>
+    sealed class Elements
+	{
+		#region Fields
+
+        readonly IDictionary<String, Operator> operators;
+        readonly IDictionary<String, Operator> unaryOperators;
+		readonly List<Expression> expressions;
+		readonly IDictionary<String, Keyword> keywords;
+        readonly IDictionary<Int32, Plugin> plugins;
 		
 		#endregion
 
@@ -53,12 +51,12 @@ namespace YAMP
 
 		Elements ()
 		{
-            operators = new Dictionary<string, Operator>();
-            unaryOperators = new Dictionary<string, Operator>();
+            operators = new Dictionary<String, Operator>();
+            unaryOperators = new Dictionary<String, Operator>();
 			expressions = new List<Expression>();
-			keywords = new Dictionary<string, Keyword>();
-            plugins = new Dictionary<int, Plugin>();
-            var list = new List<int>();
+			keywords = new Dictionary<String, Keyword>();
+            plugins = new Dictionary<Int32, Plugin>();
+            var list = new List<Int32>();
 		}
 		
 		#endregion
@@ -68,12 +66,9 @@ namespace YAMP
         /// <summary>
         /// Gets the list of possible keywords.
         /// </summary>
-        public string[] Keywords
+        public String[] Keywords
         {
-            get
-            {
-                return keywords.Keys.ToArray();
-            }
+            get { return keywords.Keys.ToArray(); }
         }
 
         #endregion
@@ -109,13 +104,13 @@ namespace YAMP
 				if (type.IsAbstract)
 					continue;
 
-                if (type.Name.EndsWith("Value"))
+                if (type.Name.EndsWith("Value", StringComparison.Ordinal))
                 {
                     var ctor = type.GetConstructor(Value.EmptyTypes);
 
                     if (ctor != null)
                     {
-                        (ctor.Invoke(null) as IRegisterElement).RegisterElement();
+                        ((IRegisterElement)ctor.Invoke(null)).RegisterElement();
                         plugin.ValueTypes.Add(type.Name.RemoveValueConvention());
                     }
 
@@ -128,18 +123,18 @@ namespace YAMP
 				{
 					var ctor = type.GetConstructor(Value.EmptyTypes);
 
-					if(ctor != null)
-						(ctor.Invoke(null) as IRegisterElement).RegisterElement();
+					if (ctor != null)
+						((IRegisterElement)ctor.Invoke(null)).RegisterElement();
 				}
 
                 if (interfaces.Any(iface => iface.Name.Equals(fu)))
 				{
 					var ctor = type.GetConstructor(Value.EmptyTypes);
 
-					if(ctor != null)
+					if (ctor != null)
 					{
 						var name = type.Name.RemoveFunctionConvention().ToLower();
-						var method = ctor.Invoke(null) as IFunction;
+						var method = (IFunction)ctor.Invoke(null);
                         plugin.Functions.Add(name);
 						context.AddFunction(name, method);
 					}
@@ -151,7 +146,7 @@ namespace YAMP
 
 					if (ctor != null)
 					{
-                        var instc = ctor.Invoke(null) as IConstants;
+                        var instc = (IConstants)ctor.Invoke(null);
                         plugin.Functions.Add(instc.Name);
 						context.AddConstant(instc.Name, instc);
 					}
@@ -165,13 +160,11 @@ namespace YAMP
         /// <summary>
         /// Removes a previously added assembly.
         /// </summary>
-        /// <param name="pluginID">The id of the plugin to remove.</param>
-        public void RemoveAssembly(int pluginID)
+        /// <param name="pluginId">The id of the plugin to remove.</param>
+        public void RemoveAssembly(Int32 pluginId)
         {
-            if (plugins.ContainsKey(pluginID))
-            {
-                plugins[pluginID].Uninstall();
-            }
+            if (plugins.ContainsKey(pluginId))
+                plugins[pluginId].Uninstall();
         }
 		
 		#endregion
@@ -183,7 +176,7 @@ namespace YAMP
         /// </summary>
         /// <param name="pattern">The operator pattern, i.e. += for add and assign.</param>
         /// <param name="op">The instance of the operator.</param>
-		public void AddOperator(string pattern, Operator op)
+		public void AddOperator(String pattern, Operator op)
 		{
             if (!op.IsRightToLeft && op.Expressions == 1)
                 unaryOperators.Add(pattern, op);
@@ -205,7 +198,7 @@ namespace YAMP
         /// </summary>
         /// <param name="pattern">The exact keyword pattern, i.e. for for the for-loop.</param>
         /// <param name="keyword">The instance of the keyword.</param>
-        public void AddKeyword(string pattern, Keyword keyword)
+        public void AddKeyword(String pattern, Keyword keyword)
         {
             keywords.Add(pattern, keyword);
         }
@@ -220,7 +213,7 @@ namespace YAMP
         /// <param name="keyword">The keyword to look for.</param>
         /// <param name="engine">The engine to use.</param>
 		/// <returns>Keyword that matches the given keyword.</returns>
-        public Expression FindKeywordExpression(string keyword, ParseEngine engine)
+        public Expression FindKeywordExpression(String keyword, ParseEngine engine)
         {
             if (keywords.ContainsKey(keyword))
                 return keywords[keyword].Scan(engine);
@@ -233,11 +226,14 @@ namespace YAMP
         /// </summary>
         /// <typeparam name="T">The type of the keyword.</typeparam>
         /// <returns>The keyword or null.</returns>
-        public T FindKeywordExpression<T>() where T : Keyword
+        public T FindKeywordExpression<T>()
+            where T : Keyword
         {
             foreach (var keyword in keywords.Values)
+            {
                 if (keyword is T)
                     return (T)keyword;
+            }
 
             return null;
         }
@@ -265,11 +261,14 @@ namespace YAMP
         /// </summary>
         /// <typeparam name="T">The type of the expression.</typeparam>
         /// <returns>The expression or null.</returns>
-        public T FindExpression<T>() where T : Expression
+        public T FindExpression<T>()
+            where T : Expression
         {
             foreach (var exp in expressions)
+            {
                 if (exp is T)
                     return (T)exp;
+            }
 
             return null;
         }
@@ -304,9 +303,9 @@ namespace YAMP
             return unaryOperators[maxop].Create(engine);
         }
 
-        string FindArbitraryOperator(IEnumerable<string> operators, ParseEngine engine)
+        String FindArbitraryOperator(IEnumerable<String> operators, ParseEngine engine)
         {
-            var maxop = string.Empty;
+            var maxop = String.Empty;
             var notfound = true;
             var chars = engine.Characters;
             var ptr = engine.Pointer;
@@ -323,8 +322,10 @@ namespace YAMP
                 notfound = false;
 
                 for (var i = 0; i < op.Length; i++)
+                {
                     if (notfound = (chars[ptr + i] != op[i]))
                         break;
+                }
 
                 if (notfound == false)
                     maxop = op;
@@ -338,15 +339,20 @@ namespace YAMP
         /// </summary>
         /// <typeparam name="T">The type of the operator.</typeparam>
         /// <returns>The operator or null.</returns>
-        public T FindOperator<T>() where T : Operator
+        public T FindOperator<T>() 
+            where T : Operator
         {
             foreach (var op in operators.Values)
+            {
                 if (op is T)
                     return (T)op;
+            }
 
             foreach (var op in unaryOperators.Values)
+            {
                 if (op is T)
                     return (T)op;
+            }
 
             return null;
         }
@@ -361,7 +367,7 @@ namespace YAMP
 		{
 			get
 			{
-				if(_instance == null)
+				if (_instance == null)
 				{
 					_instance = new Elements();
 					_instance.RegisterElements();

@@ -25,23 +25,24 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Collections.Generic;
-
 namespace YAMP
 {
-	/// <summary>
-	/// Represents the context that is used for the current input query.
-	/// </summary>
-	public class QueryContext
-	{
-		#region Members
+    using System;
+    using System.Collections.Generic;
 
-		string _input;
-        bool _stop;
-        ParseEngine parser;
+    /// <summary>
+    /// Represents the context that is used for the current input query.
+    /// </summary>
+    public class QueryContext
+	{
+		#region Fields
+
+        readonly ParseEngine parser;
+        readonly Dictionary<String, IFunction> functionBuffer;
+
+        String _input;
+        Boolean _stop;
         Statement currentStatement;
-        Dictionary<string, IFunction> functionBuffer;
 
 		#endregion
 
@@ -51,18 +52,19 @@ namespace YAMP
 		/// Creates a new query context.
 		/// </summary>
 		/// <param name="input">The input to parse</param>
-		public QueryContext(string input)
+		public QueryContext(String input)
 		{
 			Input = input;
             parser = new ParseEngine(this);
-            functionBuffer = new Dictionary<string, IFunction>();
+            functionBuffer = new Dictionary<String, IFunction>();
 		}
 
 		/// <summary>
 		/// Creates a new (underlying) QueryContext
 		/// </summary>
 		/// <param name="query">The query context to copy</param>
-		internal QueryContext(QueryContext query) : this(query.Input)
+		internal QueryContext(QueryContext query)
+            : this(query.Input)
 		{
 			Parent = query;
             parser.Parent = query.Parser;
@@ -104,12 +106,12 @@ namespace YAMP
 		/// <summary>
 		/// Gets the result in a string representation.
 		/// </summary>
-		public string Result
+		public String Result
 		{
 			get
 			{
 				if (Output == null)
-					return string.Empty;
+					return String.Empty;
 
 				return Output.ToString(Context);
 			}
@@ -118,19 +120,19 @@ namespace YAMP
 		/// <summary>
 		/// Gets or sets the input that is being used by the parser.
 		/// </summary>
-		public string Input
+		public String Input
 		{
 			get { return _input; }
 			set
 			{
-				_input = value ?? string.Empty;
+				_input = value ?? String.Empty;
 			}
 		}
 
 		/// <summary>
 		/// Gets a boolean indicating whether the result should be printed.
 		/// </summary>
-		public bool IsMuted
+		public Boolean IsMuted
 		{
 			get { return Output == null; }
 		}
@@ -173,7 +175,7 @@ namespace YAMP
 
         #region Methods
 
-        internal IFunction GetFromBuffer(string functionName)
+        internal IFunction GetFromBuffer(String functionName)
         {
             if (functionBuffer.ContainsKey(functionName))
                 return functionBuffer[functionName];
@@ -181,7 +183,7 @@ namespace YAMP
             return null;
         }
 
-        internal void SetToBuffer(string functionName, IFunction function)
+        internal void SetToBuffer(String functionName, IFunction function)
         {
             if (functionBuffer.ContainsKey(functionName))
                 functionBuffer[functionName] = function;
@@ -193,7 +195,7 @@ namespace YAMP
         /// Begins the interpretation of the current parse tree.
         /// </summary>
         /// <param name="values">A dictionary with additional symbols to consider.</param>
-		internal void Interpret(Dictionary<string, Value> values)
+		internal void Interpret(Dictionary<String, Value> values)
 		{
             if (!parser.CanRun)
             {
@@ -244,9 +246,9 @@ namespace YAMP
         /// Outputs the string representation of the query context.
         /// </summary>
         /// <returns>A string variable.</returns>
-		public override string ToString()
+		public override String ToString()
 		{
-			return string.Format("{0} = {1}{2}", Input, Environment.NewLine, Output);
+			return String.Format("{0} = {1}{2}", Input, Environment.NewLine, Output);
 		}
 
 		#endregion

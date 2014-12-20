@@ -25,23 +25,23 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text.RegularExpressions;
-
 namespace YAMP
 {
-	/// <summary>
-	/// The YAMP interaction class.
-	/// </summary>
-	public sealed class Parser
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Text.RegularExpressions;
+
+    /// <summary>
+    /// The YAMP interaction class.
+    /// </summary>
+    public sealed class Parser
 	{
-		#region Members
+		#region Fields
 
 		QueryContext _query;
 
-        internal static string answer = "$";
+        internal static String answer = "$";
 		static ParseContext primary;
 
         #endregion
@@ -67,7 +67,7 @@ namespace YAMP
 
         #region ctor
 
-        private Parser(ParseContext context, QueryContext query)
+        Parser(ParseContext context, QueryContext query)
 		{
 			_query = query;
 			query.Context = context;
@@ -84,7 +84,7 @@ namespace YAMP
 		/// The expression to evaluate.
 		/// </param>
 		/// <returns>The parser instance.</returns>
-		public static Parser Parse(string input)
+		public static Parser Parse(String input)
 		{
 			var p = new Parser(PrimaryContext, new QueryContext(input));
             p._query.Parser.Parse();
@@ -101,7 +101,7 @@ namespace YAMP
 		/// The expression to evaluate.
 		/// </param>
 		/// <returns>The parser instance.</returns>
-		public static Parser Parse(ParseContext context, string input)
+		public static Parser Parse(ParseContext context, String input)
 		{
 			var p = new Parser(context, new QueryContext(input));
             p._query.Parser.Parse();
@@ -132,10 +132,7 @@ namespace YAMP
         /// </summary>
         public static String[] Keywords
         {
-            get
-            {
-                return Elements.Instance.Keywords;
-            }
+            get { return Elements.Instance.Keywords; }
         }
 
         /// <summary>
@@ -204,7 +201,7 @@ namespace YAMP
 		/// <returns>The value from the evaluation.</returns>
 		public Value Execute()
 		{
-			return Execute(new Dictionary<string, Value>());
+			return Execute(new Dictionary<String, Value>());
 		}
 
 		/// <summary>
@@ -214,7 +211,7 @@ namespace YAMP
 		/// The values in an Hashtable containing string (name), Value (value) pairs.
 		/// </param>
 		/// <returns>The value from the evaluation.</returns>
-		public Value Execute(Dictionary<string, Value> values)
+		public Value Execute(Dictionary<String, Value> values)
 		{
 			_query.Interpret(values);
 			return _query.Output;
@@ -227,9 +224,9 @@ namespace YAMP
 		/// The values in an anonymous object - containing name - value pairs.
 		/// </param>
 		/// <returns>The value from the evaluation.</returns>
-		public Value Execute(object values)
+		public Value Execute(Object values)
 		{
-			var symbols = new Dictionary<string, Value>();
+			var symbols = new Dictionary<String, Value>();
 
 			if (values != null)
 			{
@@ -237,17 +234,11 @@ namespace YAMP
 
 				foreach (var prop in props)
 				{
-					Value v = null;
 					var s = prop.GetValue(values, null);
+                    var v = Convert(s);
 
-					if (s is Value)
-						v = s as Value;
-					else if (s is double || s is int || s is float || s is long)
-						v = new ScalarValue((double)s);
-					else if (s is string || s is char)
-						v = new StringValue(s.ToString());
-					else
-						throw new ArgumentException("Cannot execute YAMP queries with a list of values that contains types, which are not of a Value, numeric (int, double, float, long) or string (char, stirng) type.", "values");
+                    if (v == null)
+						throw new ArgumentException("Cannot execute YAMP queries with a list of values that contains types, which are not of a Value, numeric (int, double, float, long) or string (char, string) type.", "values");
 
 					symbols.Add(prop.Name, v);
 
@@ -256,6 +247,18 @@ namespace YAMP
 
 			return Execute(symbols);
 		}
+
+        static Value Convert(Object s)
+        {
+            if (s is Value)
+                return (Value)s;
+            else if (s is Double || s is Int32 || s is Single || s is Int64)
+                return new ScalarValue((Double)s);
+            else if (s is String || s is Char)
+                return new StringValue(s.ToString());
+
+            return null;
+        }
 
 		#endregion
 
@@ -271,7 +274,7 @@ namespace YAMP
 		/// The value of the constant.
 		/// </param>
 		/// <returns>The default context.</returns>
-		public static ParseContext AddCustomConstant(string name, double constant)
+		public static ParseContext AddCustomConstant(String name, Double constant)
 		{
 			return AddCustomConstant(PrimaryContext, name, constant);
 		}
@@ -289,7 +292,7 @@ namespace YAMP
 		/// The value of the constant.
 		/// </param>
 		/// <returns>The given context.</returns>
-		public static ParseContext AddCustomConstant(ParseContext context, string name, double constant)
+		public static ParseContext AddCustomConstant(ParseContext context, String name, Double constant)
 		{
 			context.AddConstant(name, new ContainerConstant(name, new ScalarValue(constant)));
 			return context;
@@ -305,7 +308,7 @@ namespace YAMP
 		/// The value of the constant.
 		/// </param>
 		/// <returns>The default context.</returns>
-		public static ParseContext AddCustomConstant(string name, Value constant)
+		public static ParseContext AddCustomConstant(String name, Value constant)
 		{
 			return AddCustomConstant(PrimaryContext, name, constant);
 		}
@@ -323,7 +326,7 @@ namespace YAMP
 		/// The value of the constant.
 		/// </param>
 		/// <returns>The given context.</returns>
-		public static ParseContext AddCustomConstant(ParseContext context, string name, Value constant)
+		public static ParseContext AddCustomConstant(ParseContext context, String name, Value constant)
 		{
 			context.AddConstant(name, new ContainerConstant(name, constant));
 			return context;
@@ -336,7 +339,7 @@ namespace YAMP
 		/// The name of the symbol corresponding to the constant that should be removed.
 		/// </param>
 		/// <returns>The default context.</returns>
-		public static ParseContext RemoveCustomConstant(string name)
+		public static ParseContext RemoveCustomConstant(String name)
 		{
 			return RemoveCustomConstant(PrimaryContext, name);
 		}
@@ -351,7 +354,7 @@ namespace YAMP
 		/// The name of the symbol corresponding to the constant that should be removed.
 		/// </param>
 		/// <returns>The given context.</returns>
-		public static ParseContext RemoveCustomConstant(ParseContext context, string name)
+		public static ParseContext RemoveCustomConstant(ParseContext context, String name)
 		{
 			context.RemoveConstant(name);
 			return context;
@@ -364,7 +367,7 @@ namespace YAMP
         /// <param name="oldName">The old name of the constant.</param>
         /// <param name="newName">The new name for the constant.</param>
         /// <returns>The given context.</returns>
-        public static ParseContext RenameConstant(ParseContext context, string oldName, string newName)
+        public static ParseContext RenameConstant(ParseContext context, String oldName, String newName)
         {
             context.RenameConstant(oldName, newName);
             return context;
@@ -377,7 +380,7 @@ namespace YAMP
         /// <param name="oldName">The old name of the function.</param>
         /// <param name="newName">The new name for the function.</param>
         /// <returns>The given context.</returns>
-        public static ParseContext RenameFunction(ParseContext context, string oldName, string newName)
+        public static ParseContext RenameFunction(ParseContext context, String oldName, String newName)
         {
             context.RenameFunction(oldName, newName);
             return context;
@@ -393,7 +396,7 @@ namespace YAMP
 		/// The function that fulfills the signature Value f(Value v).
 		/// </param>
 		/// <returns>The default context.</returns>
-		public static ParseContext AddCustomFunction(string name, FunctionDelegate f)
+		public static ParseContext AddCustomFunction(String name, FunctionDelegate f)
 		{
 			return AddCustomFunction(PrimaryContext, name, f);
 		}
@@ -411,7 +414,7 @@ namespace YAMP
 		/// The function that fulfills the signature Value f(Value v).
 		/// </param>
 		/// <returns>The given context.</returns>
-		public static ParseContext AddCustomFunction(ParseContext context, string name, FunctionDelegate f)
+		public static ParseContext AddCustomFunction(ParseContext context, String name, FunctionDelegate f)
 		{
 			context.AddFunction(name, new ContainerFunction(name, f));
 			return context;
@@ -424,7 +427,7 @@ namespace YAMP
 		/// The name of the symbol corresponding to the function that should be removed.
 		/// </param>
 		/// <returns>The default context.</returns>
-		public static ParseContext RemoveCustomFunction(string name)
+		public static ParseContext RemoveCustomFunction(String name)
 		{
 			return RemoveCustomFunction(PrimaryContext, name);
 		}
@@ -439,7 +442,7 @@ namespace YAMP
 		/// The name of the symbol corresponding to the function that should be removed.
 		/// </param>
 		/// <returns>The given context.</returns>
-		public static ParseContext RemoveCustomFunction(ParseContext context, string name)
+		public static ParseContext RemoveCustomFunction(ParseContext context, String name)
 		{
 			context.RemoveFunction(name);
 			return context;
@@ -455,7 +458,7 @@ namespace YAMP
 		/// The value of the variable.
 		/// </param>
 		/// <returns>The default context.</returns>
-		public static ParseContext AddVariable(string name, Value value)
+		public static ParseContext AddVariable(String name, Value value)
 		{
 			return AddVariable(PrimaryContext, name, value);
 		}
@@ -473,7 +476,7 @@ namespace YAMP
 		/// The value of the variable.
 		/// </param>
 		/// <returns>The given context.</returns>
-		public static ParseContext AddVariable(ParseContext context, string name, Value value)
+		public static ParseContext AddVariable(ParseContext context, String name, Value value)
 		{
 			context.Variables.Add(name, value);
 			return context;
@@ -486,7 +489,7 @@ namespace YAMP
 		/// The name of the symbol corresponding to the variable that should be removed.
 		/// </param>
 		/// <returns>The default context.</returns>
-		public static ParseContext RemoveVariable(string name)
+		public static ParseContext RemoveVariable(String name)
 		{
 			return RemoveVariable(PrimaryContext, name);
 		}
@@ -501,7 +504,7 @@ namespace YAMP
 		/// The name of the symbol corresponding to the variable that should be removed.
 		/// </param>
 		/// <returns>The given context.</returns>
-		public static ParseContext RemoveVariable(ParseContext context, string name)
+		public static ParseContext RemoveVariable(ParseContext context, String name)
 		{
 			if (context.Variables.ContainsKey(name))
 				context.Variables.Remove(name);
@@ -516,7 +519,7 @@ namespace YAMP
 		/// The assembly to load as a plugin.
         /// </param>
         /// <returns>The ID for the plugin.</returns>
-		public static int LoadPlugin(Assembly assembly)
+		public static Int32 LoadPlugin(Assembly assembly)
 		{
 			return LoadPlugin(PrimaryContext, assembly);
 		}
@@ -541,7 +544,7 @@ namespace YAMP
         /// </summary>
         /// <param name="pluginId">The ID for the assembly to unload.</param>
         /// <returns>The primary parse context.</returns>
-        public static ParseContext UnloadPlugin(int pluginId)
+        public static ParseContext UnloadPlugin(Int32 pluginId)
         {
             Elements.Instance.RemoveAssembly(pluginId);
             return PrimaryContext;
@@ -605,7 +608,7 @@ namespace YAMP
         /// Returns a string representation of the query.
         /// </summary>
         /// <returns>A string variable.</returns>
-		public override string ToString()
+		public override String ToString()
 		{
 			return _query.ToString();
 		}

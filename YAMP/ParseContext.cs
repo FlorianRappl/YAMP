@@ -25,26 +25,26 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Collections;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Class that describes the current parse context (available functions, constants, variables, ...).
     /// </summary>
     public sealed partial class ParseContext : BaseParseContext
     {
-        #region Members
+        #region Fields
 
-        IDictionary<string, Value> variables;
-        IDictionary<string, IFunction> functions;
-        IDictionary<string, IConstants> constants;
-        IDictionary<string, IDictionary<string, Value>> defaultProperties;
-        ParseContext parent;
-        int? precision = 5;
-        bool isReadOnly;
+        readonly IDictionary<String, Value> variables;
+        readonly IDictionary<String, IFunction> functions;
+        readonly IDictionary<String, IConstants> constants;
+        readonly IDictionary<String, IDictionary<String, Value>> defaultProperties;
+        readonly ParseContext parent;
+        readonly Boolean isReadOnly;
+
+        Int32? precision = 5;
         PlotValue lastPlot;
         DisplayStyle displayStyle;
 
@@ -76,38 +76,42 @@ namespace YAMP
 
         #region ctors
 
+        ParseContext(IDictionary<String, Value> shadowVariables)
+        {
+            isReadOnly = true;
+            variables = new ReadOnlyDictionary<String, Value>(shadowVariables);
+            functions = new Dictionary<String, IFunction>();
+            constants = new Dictionary<String, IConstants>();
+            defaultProperties = new Dictionary<String, IDictionary<String, Value>>();
+            parent = null;
+            precision = 6;
+            displayStyle = DisplayStyle.Default;
+        }
+
         /// <summary>
         /// Creates a new (fresh) context with the default context as parent.
         /// </summary>
-        public ParseContext() : this(_default)
+        public ParseContext() 
+            : this(_default)
         {
         }
 
         /// <summary>
         /// Creates a new context with a custom parent (nested, i.e. more local layer).
         /// </summary>
-        /// <param name="parent">
+        /// <param name="parentContext">
         /// The parent context for the new context.
         /// </param>
-        public ParseContext(ParseContext parent)
+        public ParseContext(ParseContext parentContext)
         {
             isReadOnly = false;
-            variables = new Dictionary<string, Value>();
-            functions = new Dictionary<string, IFunction>();
-            constants = new Dictionary<string, IConstants>();
-            defaultProperties = new Dictionary<string, IDictionary<string, Value>>();
-            this.parent = parent;
-
-            if (parent == null)
-            {
-                precision = 6;
-                displayStyle = DisplayStyle.Default;
-            }
-            else
-            {
-                precision = parent.Precision;
-                displayStyle = parent.displayStyle;
-            }
+            variables = new Dictionary<String, Value>();
+            functions = new Dictionary<String, IFunction>();
+            constants = new Dictionary<String, IConstants>();
+            defaultProperties = new Dictionary<String, IDictionary<String, Value>>();
+            parent = parentContext;
+            precision = parentContext.Precision;
+            displayStyle = parentContext.displayStyle;
         }
 
         #endregion
@@ -124,11 +128,7 @@ namespace YAMP
             get
             {
                 if (_default == null)
-                {
-                    _default = new ParseContext();
-                    _default.isReadOnly = true;
-                    _default.variables = new ReadOnlyDictionary<string, Value>(_default.variables);
-                }
+                    _default = new ParseContext(new Dictionary<String, Value>());
 
                 return _default;
             }
@@ -158,7 +158,7 @@ namespace YAMP
         /// <summary>
         /// Gets the constants that are present in the local context.
         /// </summary>
-        public IDictionary<string, IConstants> Constants
+        public IDictionary<String, IConstants> Constants
         {
             get { return constants; }
         }
@@ -166,11 +166,11 @@ namespace YAMP
         /// <summary>
         /// Gets all constants that are currently available in the workspace.
         /// </summary>
-		public IDictionary<string, IConstants> AllConstants
+		public IDictionary<String, IConstants> AllConstants
         {
             get
             {
-				var consts = new Dictionary<string, IConstants>(constants);
+				var consts = new Dictionary<String, IConstants>(constants);
                 var top = parent;
 
                 while (top != null)
@@ -188,7 +188,7 @@ namespace YAMP
         /// <summary>
         /// Gets the functions that are currently available in the local workspace.
         /// </summary>
-        public IDictionary<string, IFunction> Functions
+        public IDictionary<String, IFunction> Functions
         {
             get { return functions; }
         }
@@ -196,11 +196,11 @@ namespace YAMP
         /// <summary>
         /// Gets all functions that are currently available in the workspace.
         /// </summary>
-        public IDictionary<string, IFunction> AllFunctions
+        public IDictionary<String, IFunction> AllFunctions
         {
             get
             {
-                var funcs = new Dictionary<string, IFunction>(functions);
+                var funcs = new Dictionary<String, IFunction>(functions);
                 var top = parent;
 
                 while (top != null)
@@ -218,7 +218,7 @@ namespace YAMP
         /// <summary>
         /// Gets the currently assigned (local) variables.
         /// </summary>
-        public IDictionary<string, Value> Variables
+        public IDictionary<String, Value> Variables
         {
             get { return variables; }
         }
@@ -226,11 +226,11 @@ namespace YAMP
         /// <summary>
         /// Gets all currently assigned variables (local and global).
         /// </summary>
-        public IDictionary<string, Value> AllVariables
+        public IDictionary<String, Value> AllVariables
         {
             get
             {
-                var vars = new Dictionary<string, Value>(variables);
+                var vars = new Dictionary<String, Value>(variables);
                 var top = parent;
 
                 while (top != null)
@@ -250,7 +250,7 @@ namespace YAMP
         /// exponents are shown in times ten to the power of some superscript instead of
         /// the scientific exponential notation. 
         /// </summary>
-        public bool CustomExponent
+        public Boolean CustomExponent
         {
             get;
             set;
@@ -259,7 +259,7 @@ namespace YAMP
         /// <summary>
         /// Gets the value if the context is read only (the variables cannot be altered).
         /// </summary>
-        public bool IsReadOnly
+        public Boolean IsReadOnly
         {
             get { return isReadOnly; }
         }
@@ -267,7 +267,7 @@ namespace YAMP
         /// <summary>
         /// Gets or sets the current precision in decimal digits.
         /// </summary>
-        public int Precision
+        public Int32 Precision
         {
             get { return precision.HasValue ? precision.Value : parent.Precision; }
             set { precision = value; }
@@ -310,7 +310,7 @@ namespace YAMP
         /// The class instance of the constant.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext AddConstant(string name, IConstants constant)
+        public ParseContext AddConstant(String name, IConstants constant)
         {
             var lname = name.ToLower();
 
@@ -332,7 +332,7 @@ namespace YAMP
         /// The IFunction instance to add.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext AddFunction(string name, IFunction func)
+        public ParseContext AddFunction(String name, IFunction func)
         {
             var lname = name.ToLower();
 
@@ -355,7 +355,7 @@ namespace YAMP
         /// The name of the constant.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext RemoveConstant(string name)
+        public ParseContext RemoveConstant(String name)
         {
             var lname = name.ToLower();
 
@@ -372,7 +372,7 @@ namespace YAMP
         /// The name of the function.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext RemoveFunction(string name)
+        public ParseContext RemoveFunction(String name)
         {
             var lname = name.ToLower();
             
@@ -396,7 +396,7 @@ namespace YAMP
         /// The new name for the constant.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext RenameConstant(string oldName, string newName)
+        public ParseContext RenameConstant(String oldName, String newName)
         {
             var lname = oldName.ToLower();
 
@@ -420,7 +420,7 @@ namespace YAMP
         /// The new name for the function.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext RenameFunction(string oldName, string newName)
+        public ParseContext RenameFunction(String oldName, String newName)
         {
             var lname = oldName.ToLower();
 
@@ -445,7 +445,7 @@ namespace YAMP
         /// The symbolic name to retrieve.
         /// </param>
         /// <returns>The value of the constant.</returns>
-        public IConstants FindConstants(string name)
+        public IConstants FindConstants(String name)
         {
             var lname = name.ToLower();
 
@@ -465,7 +465,7 @@ namespace YAMP
         /// The symbolic name to retrieve.
         /// </param>
         /// <returns>The instance of the function's class.</returns>
-        public IFunction FindFunction(string name)
+        public IFunction FindFunction(String name)
         {
             var lname = name.ToLower();
 
@@ -504,7 +504,7 @@ namespace YAMP
         /// The value of the symbol.
         /// </param>
         /// <returns>The current context.</returns>
-        public ParseContext AssignVariable(string name, Value value)
+        public ParseContext AssignVariable(String name, Value value)
         {
             var context = GetVariableContext(name);
 
@@ -521,7 +521,7 @@ namespace YAMP
         /// <param name="context">The context, where to assign the variable to.</param>
         /// <param name="name">The name of the variable.</param>
         /// <param name="value">The value of the variable.</param>
-        static void AssignVariable(ParseContext context, string name, Value value)
+        static void AssignVariable(ParseContext context, String name, Value value)
         {
             if (value != null)
             {
@@ -553,7 +553,7 @@ namespace YAMP
         /// The variable's name.
         /// </param>
         /// <returns>The value of the variable or null.</returns>
-        public Value GetVariable(string name)
+        public Value GetVariable(String name)
         {
             if (variables.ContainsKey(name))
                 return variables[name] as Value;
@@ -569,7 +569,7 @@ namespace YAMP
         /// </summary>
         /// <param name="name">The name of the variable.</param>
         /// <returns>The context or NULL if nothing was found.</returns>
-        public ParseContext GetVariableContext(string name)
+        public ParseContext GetVariableContext(String name)
         {
             if (variables.ContainsKey(name))
                 return this;
@@ -603,7 +603,7 @@ namespace YAMP
         /// The input to parse and execute.
         /// </param>
         /// <returns>The current context.</returns>
-        public QueryContext Run(string query)
+        public QueryContext Run(String query)
         {
             var parser = Parser.Parse(this, query);
             parser.Execute();
@@ -620,7 +620,7 @@ namespace YAMP
         /// The volatile variables to consider.
         /// </param>
         /// <returns>The current context.</returns>
-        public QueryContext Run(string query, Dictionary<string, object> variables)
+        public QueryContext Run(String query, Dictionary<String, Object> variables)
         {
             var parser = Parser.Parse(this, query);
             parser.Execute(variables);
@@ -636,7 +636,7 @@ namespace YAMP
         /// </summary>
         /// <param name="name">The name of the variable.</param>
         /// <param name="value">The value of the variable.</param>
-        internal void RaiseVariableChanged(string name, Value value)
+        internal void RaiseVariableChanged(String name, Value value)
         {
             if (OnVariableChanged != null)
             {
@@ -650,7 +650,7 @@ namespace YAMP
         /// </summary>
         /// <param name="name">The name of the variable.</param>
         /// <param name="value">The value of the variable.</param>
-        internal void RaiseVariableCreated(string name, Value value)
+        internal void RaiseVariableCreated(String name, Value value)
         {
             if (OnVariableCreated != null)
             {
@@ -664,7 +664,7 @@ namespace YAMP
         /// </summary>
         /// <param name="name">The name of the variable.</param>
         /// <param name="value">The value of the variable.</param>
-        internal void RaiseVariableRemoved(string name, Value value)
+        internal void RaiseVariableRemoved(String name, Value value)
         {
             if (OnVariableRemoved != null)
             {
@@ -681,7 +681,7 @@ namespace YAMP
         {
             if (OnLastPlotChanged != null)
             {
-                var args = new PlotEventArgs(plot, string.Empty);
+                var args = new PlotEventArgs(plot, String.Empty);
                 OnLastPlotChanged(this, args);
             }
         }
@@ -697,10 +697,10 @@ namespace YAMP
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="propertyValue">The default value of the property.</param>
         /// <returns>The current context.</returns>
-        public ParseContext SetDefaultProperty(string binName, string propertyName, Value propertyValue)
+        public ParseContext SetDefaultProperty(String binName, String propertyName, Value propertyValue)
         {
             if (!defaultProperties.ContainsKey(binName))
-                defaultProperties.Add(binName, new Dictionary<string, Value>());
+                defaultProperties.Add(binName, new Dictionary<String, Value>());
 
             var bin = defaultProperties[binName];
 
@@ -722,12 +722,12 @@ namespace YAMP
         /// </summary>
         /// <param name="binName">The name of the template bin.</param>
         /// <returns>The read only key value pairs.</returns>
-        public ReadOnlyDictionary<string, Value> GetDefaultProperties(string binName)
+        public ReadOnlyDictionary<String, Value> GetDefaultProperties(String binName)
         {
             if(defaultProperties.ContainsKey(binName))
-                return new ReadOnlyDictionary<string, Value>(defaultProperties[binName]);
+                return new ReadOnlyDictionary<String, Value>(defaultProperties[binName]);
 
-            return new ReadOnlyDictionary<string, Value>();
+            return new ReadOnlyDictionary<String, Value>();
         }
 
         /// <summary>

@@ -25,13 +25,13 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
     /// <summary>
     /// Class that describes the current parse context (available functions, constants, variables, ...).
     /// </summary>
@@ -148,17 +148,17 @@ namespace YAMP
             /// <summary>
             /// Gets the file name (functionname + ys as extension).
             /// </summary>
-            public string FileName { get { return FunctionName + ".ys"; } }
+            public String FileName { get { return FunctionName + ".ys"; } }
 
             /// <summary>
             /// Gets or sets the directory that has been used.
             /// </summary>
-            public string Directory { get; set; }
+            public String Directory { get; set; }
 
             /// <summary>
             /// Gets or sets the name of the function.
             /// </summary>
-            public string FunctionName { get; set; }
+            public String FunctionName { get; set; }
 
             /// <summary>
             /// Gets or sets the used context.
