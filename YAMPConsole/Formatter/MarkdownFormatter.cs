@@ -116,7 +116,7 @@
 
             public void AddDescription(String description)
             {
-                _content.AppendLine(description);
+                _content.AppendLine(description).AppendLine();
             }
 
             public void AddLink(String link)
@@ -126,7 +126,7 @@
 
             public void AddVariable(String type, String name)
             {
-                _content.Append("**").Append(type).Append("** *").Append(name).AppendLine("*");
+                _content.Append("**").Append(type).Append("** *").Append(name).AppendLine("*").AppendLine();
             }
 
             public void AddCode(String code)
