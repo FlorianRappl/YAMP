@@ -53,11 +53,23 @@
     <Optimize>False</Optimize>
     <Externalconsole>True</Externalconsole>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Help|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Help\</OutputPath>
+    <DefineConstants>HELP</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Benchmarks.cs" />
+    <Compile Include="Formatter\IFormatter.cs" />
+    <Compile Include="Formatter\MarkdownFormatter.cs" />
+    <Compile Include="HelpPrinter.cs" />
     <Compile Include="YAMPTests.cs" />
     <Compile Include="YAMPConsole.cs" />
     <Compile Include="Main.cs" />

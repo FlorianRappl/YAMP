@@ -25,27 +25,25 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.IO;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Reflection;
-using YAMP;
-
 namespace YAMPConsole
 {
-	class MainClass
+    using System;
+    using System.Reflection;
+    using YAMP;
+    using Formatter;
+
+    class MainClass
     {
-		public static void Main (string[] args)
-		{
-			Console.WriteLine("Command Line Test Tool of YAMP");
-			Console.WriteLine();
-			Console.WriteLine("--------------------------");
-			Console.WriteLine();
-			Console.WriteLine(" YAMP VERSION " + YAMP.Parser.Version);
-			Console.WriteLine();
-			Console.WriteLine("--------------------------");
-			Console.WriteLine();
+        public static void Main(string[] args)
+        {
+            Console.WriteLine("Command Line Test Tool of YAMP");
+            Console.WriteLine();
+            Console.WriteLine("--------------------------");
+            Console.WriteLine();
+            Console.WriteLine(" YAMP VERSION " + YAMP.Parser.Version);
+            Console.WriteLine();
+            Console.WriteLine("--------------------------");
+            Console.WriteLine();
 
             LoadCore();
             LoadPhysics();
@@ -53,11 +51,14 @@ namespace YAMPConsole
             YAMPTests.Run();
 #elif BENCHMARKS
             Benchmarks.Run();
+#elif HELP
+            var output = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var formatter = new MarkdownFormatter(output);
+            HelpPrinter.Run(formatter);
 #elif CONSOLE
 			YAMPConsole.Run();
 #endif
-
-		}
+        }
 
         static void LoadCore()
         {
