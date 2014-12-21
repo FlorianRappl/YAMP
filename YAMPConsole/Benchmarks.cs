@@ -25,12 +25,12 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Diagnostics;
-using System.IO;
-
 namespace YAMPConsole
 {
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+
     static class Benchmarks
     {
         const string BMK_FILE = "benchmarks.data";

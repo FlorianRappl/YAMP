@@ -25,13 +25,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Diagnostics;
-using System.Text;
-using YAMP;
-
 namespace YAMPConsole
 {
+    using System;
+    using System.Diagnostics;
+    using System.Text;
+    using YAMP;
+
     static class YAMPConsole
     {
         public static void Run()

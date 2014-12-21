@@ -25,14 +25,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using YAMP;
-using YAMP.Help;
-
 namespace YAMPConsole
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using YAMP;
+    using YAMP.Help;
+
     static class YAMPTests
     {
         delegate double CompareAction(double x);
