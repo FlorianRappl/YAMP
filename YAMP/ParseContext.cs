@@ -92,7 +92,7 @@ namespace YAMP
         /// Creates a new (fresh) context with the default context as parent.
         /// </summary>
         public ParseContext() 
-            : this(_default)
+            : this(Default)
         {
         }
 
