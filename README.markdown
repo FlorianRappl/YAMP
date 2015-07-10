@@ -61,7 +61,7 @@ Change log
 - Some new functions (`cumprod`, `cumsum`, ...) available
 - Added `chol` function for accessing the Cholesky decomposition
 
-More changes can be found in the [version history][history.markdown].
+More changes can be found in the [version history](history.markdown).
 
 Where this parser is useful
 -------------------------------------------------------
