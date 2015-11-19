@@ -431,7 +431,7 @@ namespace YAMP
         /// <returns>A new scalar that represents the result of the operation.</returns>
         public ScalarValue Pow(ScalarValue exponent)
         {
-            if (Value == 0.0 && ImaginaryValue == 0.0)
+            if (Value == 0.0 && Math.Abs(ImaginaryValue) < 1e-8)
                 return new ScalarValue();
 
             var theta = _real == 0.0 ? Math.PI / 2 * Math.Sign(ImaginaryValue) : Math.Atan2(_imag, _real);
@@ -444,11 +444,7 @@ namespace YAMP
             var sin = Math.Sin(beta);
             var re = alpha * (cos * ri._real - sin * ri._imag);
             var im = alpha * (cos * ri._imag + sin * ri._real);
-
-            if (li < 0)
-                return new ScalarValue(-im, re);
-
-            return new ScalarValue(re, im);
+            return li < 0 ? new ScalarValue(-im, re) : new ScalarValue(re, im);
         }
 
         /// <summary>
