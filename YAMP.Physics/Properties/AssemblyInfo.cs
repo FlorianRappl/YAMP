@@ -8,4 +8,4 @@
 [assembly: AssemblyCopyright("(c) Florian Rappl, 2012 - 2016.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.4.0.*")]
+[assembly: AssemblyVersion("1.4.1.*")]
