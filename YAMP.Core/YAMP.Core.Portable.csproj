@@ -50,10 +50,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Attributes\ArgumentsAttribute.cs">
       <SubType>
       </SubType>
@@ -1644,6 +1642,7 @@
       <SubType>
       </SubType>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\BaseParseContext.cs">
       <SubType>
       </SubType>
