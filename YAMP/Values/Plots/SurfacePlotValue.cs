@@ -8,7 +8,7 @@
     /// </summary>
     public sealed class SurfacePlotValue : XYZPlotValue
     {
-        #region Members
+        #region Fields
 
         Points<Vertex> data;
 

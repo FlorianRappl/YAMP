@@ -9,7 +9,7 @@ namespace YAMP
     /// </summary>
     class Serializer : IDisposable
     {
-        #region Members
+        #region Fields
 
         MemoryStream stream;
 

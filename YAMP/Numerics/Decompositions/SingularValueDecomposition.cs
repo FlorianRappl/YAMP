@@ -16,7 +16,7 @@ namespace YAMP.Numerics
     /// </summary>
     public class SingularValueDecomposition
     {
-        #region Members
+        #region Fields
 
         /// <summary>
         /// Arrays for internal storage of U and V.

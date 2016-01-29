@@ -9,7 +9,7 @@
     /// </summary>
     public sealed class FunctionValue : Value, IFunction
     {
-        #region Members
+        #region Fields
 
         Func<ParseContext, Value, Value> perform;
         bool canSerialize;

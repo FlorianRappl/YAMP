@@ -9,7 +9,7 @@ namespace YAMP
     /// </summary>
     class LetKeyword : Keyword
     {
-        #region Members
+        #region Fields
 
         SymbolExpression name;
 

@@ -8,7 +8,7 @@ namespace YAMP.Numerics
     /// </summary>
     public abstract class ODEBase
     {
-        #region Members
+        #region Fields
 
         /// <summary>
         /// The function

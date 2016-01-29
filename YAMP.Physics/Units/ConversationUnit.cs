@@ -8,7 +8,7 @@ namespace YAMP.Physics
     /// </summary>
     class ConversationUnit : PhysicalUnit
     {
-        #region Members
+        #region Fields
 
         PhysicalUnit _from;
 

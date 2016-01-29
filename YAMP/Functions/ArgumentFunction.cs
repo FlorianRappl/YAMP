@@ -10,7 +10,7 @@ namespace YAMP
     /// </summary>
 	public abstract class ArgumentFunction : BaseFunction, IComparer<FunctionParameters>
 	{
-		#region Members
+		#region Fields
 
 		Value[] arguments;
 		readonly KeyValuePair<FunctionParameters, MethodInfo>[] functions;

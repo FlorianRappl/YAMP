@@ -12,7 +12,7 @@
     /// </summary>
 	public class Documentation
 	{
-		#region Members
+		#region Fields
 
 		List<HelpTopic> topics;
 		ParseContext context;
@@ -69,7 +69,7 @@
 
 		#endregion
 
-		#region Members
+		#region Fields
 
         /// <summary>
         /// Gets the access to an enumerable of all the HelpSections within the documention.

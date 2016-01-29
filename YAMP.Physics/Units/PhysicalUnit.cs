@@ -10,7 +10,7 @@ namespace YAMP.Physics
     /// </summary>
     abstract class PhysicalUnit
     {
-        #region Members
+        #region Fields
 
         Dictionary<PhysicalUnit, Func<double, double>> conversionTable;
         Dictionary<PhysicalUnit, Func<double, double>> invConversionTable;

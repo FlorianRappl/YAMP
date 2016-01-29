@@ -10,7 +10,7 @@ namespace YAMP
 	[Kind(PopularKinds.Function)]
     class ContainerFunction : IFunction
     {
-        #region Members
+        #region Fields
 
         string name;
         FunctionDelegate execution;

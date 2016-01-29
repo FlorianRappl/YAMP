@@ -10,7 +10,7 @@ namespace YAMP
     /// </summary>
     class ArgsOperator : RightUnaryOperator
     {
-        #region Members
+        #region Fields
 
         Expression _content;
 

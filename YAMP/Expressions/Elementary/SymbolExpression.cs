@@ -8,7 +8,7 @@ namespace YAMP
     /// </summary>
 	class SymbolExpression : Expression
     {
-        #region Members
+        #region Fields
 
         string symbolName;
 

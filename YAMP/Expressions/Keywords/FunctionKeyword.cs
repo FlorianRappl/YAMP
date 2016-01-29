@@ -11,7 +11,7 @@ namespace YAMP
     /// </summary>
     class FunctionKeyword : BodyKeyword
     {
-        #region Members
+        #region Fields
 
         BracketExpression arguments;
         SymbolExpression name;

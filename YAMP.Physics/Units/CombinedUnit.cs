@@ -12,7 +12,7 @@ namespace YAMP.Physics
     /// </summary>
     class CombinedUnit : PhysicalUnit
     {
-        #region Members
+        #region Fields
 
         string lastAddedUnit;
         double lastAddedFactor;

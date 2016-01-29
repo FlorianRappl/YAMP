@@ -7,7 +7,7 @@ namespace YAMP
 	/// </summary>
 	public abstract class BaseFunction : IFunction
     {
-        #region Members
+        #region Fields
 
         string name;
 

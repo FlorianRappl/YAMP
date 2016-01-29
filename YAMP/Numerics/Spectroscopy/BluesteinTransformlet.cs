@@ -33,7 +33,7 @@ namespace YAMP.Numerics
 
         #endregion
 
-        #region Members
+        #region Fields
 
         // Length of convolution transform
         int Nb;

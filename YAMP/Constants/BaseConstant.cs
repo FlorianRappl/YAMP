@@ -6,7 +6,7 @@
     /// </summary>
 	public abstract class BaseConstant : IConstants
     {
-        #region Members
+        #region Fields
 
         string name;
 

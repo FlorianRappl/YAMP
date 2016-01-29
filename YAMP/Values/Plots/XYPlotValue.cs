@@ -10,7 +10,7 @@
     /// </summary>
     public abstract class XYPlotValue : PlotValue
     {
-        #region Members
+        #region Fields
 
         /// <summary>
         /// The various included series.

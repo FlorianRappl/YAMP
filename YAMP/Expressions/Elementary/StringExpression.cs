@@ -9,7 +9,7 @@ namespace YAMP
     /// </summary>
 	class StringExpression : Expression
     {
-        #region Members
+        #region Fields
 
         bool literal;
         string value;

@@ -10,7 +10,7 @@ namespace YAMP
     /// </summary>
 	public abstract class Operator : Block, IRegisterElement
 	{
-		#region Members
+		#region Fields
 
 		string _op;
 

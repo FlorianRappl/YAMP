@@ -9,7 +9,7 @@
     /// </summary>
     public sealed class SubPlotValue : PlotValue, IFunction, ISetFunction
     {
-        #region Members
+        #region Fields
 
         List<SubPlot> subplots;
 

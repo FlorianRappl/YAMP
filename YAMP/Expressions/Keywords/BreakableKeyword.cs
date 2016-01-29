@@ -8,7 +8,7 @@ namespace YAMP
     /// </summary>
     abstract class BreakableKeyword : BodyKeyword
     {
-        #region Members
+        #region Fields
 
         bool hasMarker;
 

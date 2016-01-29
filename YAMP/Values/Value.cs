@@ -11,7 +11,7 @@
     /// </summary>
 	public abstract class Value : IRegisterElement
     {
-        #region Members
+        #region Fields
 
         static readonly Value _empty = new ScalarValue();
         static readonly NumberFormatInfo numberFormat = new CultureInfo("en-US").NumberFormat;

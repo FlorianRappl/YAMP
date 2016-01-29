@@ -12,7 +12,7 @@ namespace YAMP
     /// </summary>
 	public sealed class ArgumentsValue : Value, IFunction, IEnumerable<Value>
 	{
-		#region Members
+		#region Fields
 
 		List<Value> _values;
 

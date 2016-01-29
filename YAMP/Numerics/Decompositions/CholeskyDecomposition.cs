@@ -1,8 +1,7 @@
-using System;
-using YAMP;
-
 namespace YAMP.Numerics
 {
+    using YAMP;
+
     /// <summary>
     /// Cholesky Decomposition.
     /// For a symmetric, positive definite matrix A, the Cholesky decomposition
@@ -13,7 +12,7 @@ namespace YAMP.Numerics
     /// </summary>
     public class CholeskyDecomposition : DirectSolver
     {
-        #region Members
+        #region Fields
 
         /// <summary>
         /// Array for internal storage of decomposition.
@@ -113,10 +112,6 @@ namespace YAMP.Numerics
         /// </param>
         /// <returns>     X so that L*L'*X = B
         /// </returns>
-        /// <exception cref="System.ArgumentException">  Matrix row dimensions must agree.
-        /// </exception>
-        /// <exception cref="System.SystemException"> Matrix is not symmetric positive definite.
-        /// </exception>
 
         public override MatrixValue Solve(MatrixValue B)
         {

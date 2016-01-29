@@ -18,7 +18,7 @@ namespace YAMP.Numerics
     /// </summary>
     public class LUDecomposition : DirectSolver
     {
-        #region Members
+        #region Fields
 
         /// <summary>
         /// Array for internal storage of decomposition.

@@ -8,7 +8,7 @@ namespace YAMP.Numerics
     /// </summary>
     public abstract class Fractal
     {
-        #region Members
+        #region Fields
 
         int maxIterations;
         int colors;

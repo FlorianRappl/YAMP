@@ -8,7 +8,7 @@ namespace YAMP
     /// </summary>
     class Plugin
     {
-        #region Members
+        #region Fields
 
         static int _nextPluginIdentifier = 1000;
 

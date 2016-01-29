@@ -8,7 +8,7 @@ namespace YAMP
     /// </summary>
 	public abstract class DotOperator : BinaryOperator
     {
-        #region Members
+        #region Fields
 
         BinaryOperator _top;
 

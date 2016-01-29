@@ -7,7 +7,7 @@
     /// </summary>
     public sealed class ComplexPlotValue : XYPlotValue
     {
-        #region Members
+        #region Fields
 
         FunctionValue f;
 

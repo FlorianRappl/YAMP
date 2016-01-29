@@ -8,7 +8,7 @@ namespace YAMP.Numerics
     /// </summary>
     public class GMRESkSolver : IterativeSolver
     {
-        #region Members
+        #region Fields
 
         int i = 0;
         MatrixValue H;

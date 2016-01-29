@@ -7,7 +7,7 @@ namespace YAMP
     /// </summary>
     public struct MatrixIndex
     {
-        #region Members
+        #region Fields
 
         int _row;
         int _column;

@@ -8,7 +8,7 @@ namespace YAMP.Numerics
     /// </summary>
     public class Julia : Fractal
     {
-        #region Members
+        #region Fields
 
         double _cx;
         double _cy;

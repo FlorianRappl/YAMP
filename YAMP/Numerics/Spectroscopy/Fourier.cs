@@ -83,7 +83,7 @@ namespace YAMP.Numerics
 
         #endregion
 
-        #region Members
+        #region Fields
 
         int size;
         List<Factor> factors;

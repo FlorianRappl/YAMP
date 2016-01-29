@@ -9,7 +9,7 @@ namespace YAMP
     /// </summary>
 	public sealed class StringValue : Value, IFunction
 	{
-		#region Members
+		#region Fields
 
 		string _value;
 

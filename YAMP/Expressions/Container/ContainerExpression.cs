@@ -9,7 +9,7 @@ namespace YAMP
     /// </summary>
     public class ContainerExpression : Expression
     {
-        #region Members
+        #region Fields
 
         Expression[] _expressions;
         Operator _operator;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
     /// <summary>
     /// The Householder reflection is an implementation of a QR decomposition.
@@ -8,7 +6,7 @@ namespace YAMP.Numerics
     /// </summary>
     public class HouseholderDecomposition : QRDecomposition
     {
-        #region Members
+        #region Fields
 
         /// <summary>
         /// Array for internal storage of diagonal of R.
@@ -177,8 +175,6 @@ namespace YAMP.Numerics
         /// </summary>
         /// <param name="b">A Matrix with as many rows as A and any number of columns.</param>
         /// <returns>X that minimizes the two norm of Q*R*X-B.</returns>
-        /// <exception cref="System.ArgumentException"> Matrix row dimensions must agree.</exception>
-        /// <exception cref="System.SystemException"> Matrix is rank deficient.</exception>
         public override MatrixValue Solve(MatrixValue b)
         {
             if (b.DimensionY != m)

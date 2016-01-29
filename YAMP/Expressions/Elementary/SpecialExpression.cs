@@ -8,7 +8,7 @@ namespace YAMP
     /// </summary>
 	class SpecialExpression : Expression
     {
-        #region Members
+        #region Fields
 
         string specialName;
         Func<Dictionary<string, Value>, Value> specialValue;

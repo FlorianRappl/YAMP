@@ -9,7 +9,7 @@ namespace YAMP
     /// </summary>
 	public sealed class RangeValue : MatrixValue
     {
-        #region Members
+        #region Fields
 
         int count;
 

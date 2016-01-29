@@ -12,7 +12,7 @@ namespace YAMP
     /// </summary>
 	public class MatrixValue : NumericValue, IFunction, ISetFunction
 	{
-		#region Members
+		#region Fields
 
 		IDictionary<MatrixIndex, ScalarValue> _values;
 		

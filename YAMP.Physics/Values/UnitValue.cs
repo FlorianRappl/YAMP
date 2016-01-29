@@ -6,7 +6,7 @@
 
     public sealed class UnitValue : ScalarValue
     {
-        #region Members
+        #region Fields
 
         string _unit;
 

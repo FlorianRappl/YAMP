@@ -8,7 +8,7 @@
     /// </summary>
     public sealed class HeatmapPlotValue : XYPlotValue
     {
-        #region Members
+        #region Fields
 
         Points<HeatPoint> data;
 

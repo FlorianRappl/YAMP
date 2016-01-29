@@ -14,7 +14,7 @@
 
         #endregion
 
-        #region Members
+        #region Fields
 
         double _real;
         double _imag;

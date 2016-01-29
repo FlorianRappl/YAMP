@@ -19,7 +19,7 @@ namespace YAMP.Numerics
 
         #endregion
 
-        #region Members
+        #region Fields
 
         protected int R;
         protected int N;

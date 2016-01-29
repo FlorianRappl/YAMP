@@ -8,7 +8,7 @@ namespace YAMP
     /// </summary>
 	class NumberExpression : Expression
     {
-        #region Members
+        #region Fields
 
         ScalarValue value;
 

@@ -16,7 +16,7 @@ namespace YAMP.Numerics
     /// </summary>
     public abstract class QRDecomposition : DirectSolver
     {
-        #region Members
+        #region Fields
 
         /// <summary>
         /// Row and column dimensions.

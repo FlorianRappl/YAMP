@@ -10,7 +10,7 @@ namespace YAMP
     /// </summary>
     public class Statement
     {
-        #region Members
+        #region Fields
 
         List<YAMPParseError> errors;
         Stack<Expression> _expressions;

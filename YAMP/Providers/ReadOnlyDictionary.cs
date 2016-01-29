@@ -10,7 +10,7 @@ namespace YAMP
     /// <typeparam name="TValue">The value type to use.</typeparam>
     public class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
-        #region Members
+        #region Fields
 
         IDictionary<TKey, TValue> _dictionary;
 

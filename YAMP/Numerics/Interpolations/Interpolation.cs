@@ -8,7 +8,7 @@ namespace YAMP.Numerics
     /// </summary>
     public abstract class Interpolation
     {
-        #region Members
+        #region Fields
 
         int np;
         MatrixValue _samples;

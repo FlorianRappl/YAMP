@@ -8,7 +8,7 @@ namespace YAMP.Numerics
     /// </summary>
     public class FFT
     {
-        #region Members
+        #region Fields
 
         MatrixValue _values;
 

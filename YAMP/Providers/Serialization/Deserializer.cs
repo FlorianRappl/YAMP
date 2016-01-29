@@ -9,7 +9,7 @@ namespace YAMP
     /// </summary>
     class Deserializer : IDisposable
     {
-        #region Members
+        #region Fields
 
         MemoryStream stream;
         int length;
@@ -37,7 +37,7 @@ namespace YAMP
 
         #endregion
 
-        #region Members
+        #region Fields
 
         /// <summary>
         /// Reads the next bytes as boolean.
