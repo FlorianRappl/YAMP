@@ -41,6 +41,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="YAMP, Version=1.4.0.22422, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\YAMP.1.4.0\lib\net35\YAMP.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants\CConstant.cs" />
@@ -109,15 +113,11 @@
     <Compile Include="Values\UnitValue.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\YAMP\YAMP.csproj">
-      <Project>{0f183b45-e213-4db0-9734-3ce7e26eb318}</Project>
-      <Name>YAMP</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="icon.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
