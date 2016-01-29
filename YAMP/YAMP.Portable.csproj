@@ -1714,7 +1714,6 @@
       <SubType>
       </SubType>
     </Compile>
-    <Compile Include="Providers\Mapping\MatrixContent.cs" />
     <Compile Include="Providers\Mapping\OperatorMapping.cs">
       <SubType>
       </SubType>

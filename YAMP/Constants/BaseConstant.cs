@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     /// <summary>
     /// This class gives an abstract base class for your own implementations

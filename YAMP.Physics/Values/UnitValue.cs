@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using YAMP;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP;
+
     public sealed class UnitValue : ScalarValue
     {
         #region Members

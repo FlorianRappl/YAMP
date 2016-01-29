@@ -1,12 +1,12 @@
-using System;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using YAMP.Numerics;
-
 namespace YAMP
 {
+    using System;
+    using System.Text;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.IO;
+    using YAMP.Numerics;
+
     /// <summary>
     /// The class for representing a matrix value.
     /// </summary>

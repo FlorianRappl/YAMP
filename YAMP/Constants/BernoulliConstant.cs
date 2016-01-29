@@ -1,8 +1,7 @@
-﻿using System;
-using YAMP.Numerics;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using YAMP.Numerics;
+
 	/// <summary>
 	/// Gets the first values of the bernoulli series.
 	/// </summary>

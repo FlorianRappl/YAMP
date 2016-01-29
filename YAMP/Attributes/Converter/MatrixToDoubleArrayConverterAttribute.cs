@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP.Converter
+﻿namespace YAMP.Converter
 {
+    using System;
+
     /// <summary>
     /// Matrix (only the real parts) to double array converter.
     /// </summary>

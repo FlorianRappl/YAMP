@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// A function value, i.e. a lambda expression or existing function
     /// wrapped as a value that can be used within YAMP.

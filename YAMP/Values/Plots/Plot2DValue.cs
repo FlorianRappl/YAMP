@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using YAMP.Converter;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using YAMP.Converter;
+
     /// <summary>
     /// Is the type for basic 2D plotting.
     /// </summary>

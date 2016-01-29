@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-
-namespace YAMP.Converter
+﻿namespace YAMP.Converter
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+
     /// <summary>
     /// String to an arbitrary enumeration converter.
     /// </summary>

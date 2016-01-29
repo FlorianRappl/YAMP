@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP.Converter
+﻿namespace YAMP.Converter
 {
+    using System;
+
     /// <summary>
     /// scalar to boolean (1.0, rest) converter.
     /// </summary>

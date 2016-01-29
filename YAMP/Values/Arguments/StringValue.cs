@@ -1,9 +1,9 @@
-using System;
-using System.IO;
-using System.Text;
-
 namespace YAMP
 {
+    using System;
+    using System.IO;
+    using System.Text;
+
     /// <summary>
     /// The class for representing a string value.
     /// </summary>

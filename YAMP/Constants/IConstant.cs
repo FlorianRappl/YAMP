@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
 	/// <summary>
 	/// Gets the value of the imaginary constant.

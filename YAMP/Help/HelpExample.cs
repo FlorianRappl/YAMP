@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP.Help
+﻿namespace YAMP.Help
 {
+    using System;
+
     /// <summary>
     /// This is an example entry of a function help entry.
     /// </summary>

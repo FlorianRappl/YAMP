@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.ComponentModel;
+
     /// <summary>
     /// Class to enter examples for usage with help.
     /// </summary>

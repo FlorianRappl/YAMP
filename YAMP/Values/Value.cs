@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Reflection;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Reflection;
+    using System.Text;
+
     /// <summary>
     /// Abstract base value for any value type.
     /// </summary>

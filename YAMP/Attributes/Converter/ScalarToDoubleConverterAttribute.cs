@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP.Converter
+﻿namespace YAMP.Converter
 {
+    using System;
+
     /// <summary>
     /// String to double converter.
     /// </summary>

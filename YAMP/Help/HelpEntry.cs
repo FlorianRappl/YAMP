@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP.Help
+﻿namespace YAMP.Help
 {
+    using System;
+
     /// <summary>
     /// Represents an entry in the documentation.
     /// </summary>

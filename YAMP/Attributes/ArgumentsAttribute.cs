@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
 	/// <summary>
 	/// The attribute to store information about optional arguments.
     /// </summary>

@@ -1,10 +1,10 @@
-using System;
-using System.Text;
-using System.Collections.Generic;
-using System.IO;
-
 namespace YAMP
 {
+    using System;
+    using System.Text;
+    using System.Collections.Generic;
+    using System.IO;
+
     /// <summary>
     /// The value type for containing an array of arbitrary Value instances.
     /// This class is used for transporting arguments as well as returning

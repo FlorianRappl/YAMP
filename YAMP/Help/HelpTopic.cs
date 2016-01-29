@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP.Help
+﻿namespace YAMP.Help
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// This is the help topic, i.e. the list with help entries for a certain kind of
     /// function.

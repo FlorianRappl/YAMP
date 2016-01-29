@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using YAMP;
-using System.Reflection;
-using System.Text;
-
-namespace YAMP.Help
+﻿namespace YAMP.Help
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+    using YAMP;
+
     /// <summary>
     /// Represents the documention in as an object.
     /// </summary>

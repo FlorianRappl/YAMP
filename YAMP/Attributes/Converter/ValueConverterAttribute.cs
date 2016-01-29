@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-
-namespace YAMP.Converter
+﻿namespace YAMP.Converter
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
     /// <summary>
     /// Abstract base class for any value converter.
     /// </summary>

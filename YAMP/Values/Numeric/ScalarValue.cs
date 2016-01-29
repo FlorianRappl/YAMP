@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP.Numerics;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using YAMP.Numerics;
+
     /// <summary>
     /// A scalar value, which is a complex double type.
     /// </summary>

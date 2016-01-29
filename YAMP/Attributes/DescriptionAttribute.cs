@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// Provides a description attribute to be read by the help method.
     /// </summary>

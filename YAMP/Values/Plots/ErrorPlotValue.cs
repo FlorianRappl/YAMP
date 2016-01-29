@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP.Converter;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using YAMP.Converter;
+
     /// <summary>
     /// Is the type for errorbar plots.
     /// </summary>

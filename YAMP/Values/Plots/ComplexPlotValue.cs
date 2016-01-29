@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// Holds the complexplot data.
     /// </summary>

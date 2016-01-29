@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     /// <summary>
     /// A container constant is a wrapper for custom constants

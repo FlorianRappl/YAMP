@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP.Help
+﻿namespace YAMP.Help
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Represents one usage of the described function.
     /// </summary>

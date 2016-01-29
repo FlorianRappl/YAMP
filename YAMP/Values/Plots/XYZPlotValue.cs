@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using YAMP.Converter;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Converter;
+
     /// <summary>
     /// Abstract base class for plot values that are based on an XYZ
     /// (or similar) coordinate system.

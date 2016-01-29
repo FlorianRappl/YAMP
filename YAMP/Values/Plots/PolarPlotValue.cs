@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using YAMP.Converter;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Converter;
+
     /// <summary>
     /// Container for polar plot data.
     /// </summary>

@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+
     /// <summary>
     /// A special kind of matrix which is a range (vector).
     /// </summary>

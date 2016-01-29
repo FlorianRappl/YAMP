@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP.Help
+﻿namespace YAMP.Help
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// This is the extended version of the help section class (entry of an
     /// object) - specialized for functions.
