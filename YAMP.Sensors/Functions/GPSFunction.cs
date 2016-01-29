@@ -99,10 +99,16 @@
         {
             get
             {
-                if (sensor == null || geoCoordinate == null)
-                    return new double[3];
+                var position = new double[3];
 
-                return new double[] { Latitude, Longitude, Altitude };
+                if (sensor != null && geoCoordinate != null)
+                {
+                    position[0] = Latitude;
+                    position[1] = Longitude;
+                    position[2] = Altitude;
+                }
+
+                return position;
             }
         }
 
@@ -110,10 +116,17 @@
         {
             get
             {
-                if (sensor == null || geoCoordinate == null)
-                    return 0.0;
+                if (sensor != null && geoCoordinate != null)
+                {
+                    var point = geoCoordinate.Point;
 
-                return geoCoordinate.Longitude;
+                    if (point != null)
+                    {
+                        return point.Position.Longitude;
+                    }
+                }
+
+                return 0.0;
             }
         }
 
@@ -121,10 +134,17 @@
         {
             get
             {
-                if (sensor == null || geoCoordinate == null)
-                    return 0.0;
+                if (sensor != null && geoCoordinate != null)
+                {
+                    var point = geoCoordinate.Point;
 
-                return geoCoordinate.Latitude;
+                    if (point != null)
+                    {
+                        return point.Position.Latitude;
+                    }
+                }
+
+                return 0.0;
             }
         }
 
@@ -132,13 +152,17 @@
         {
             get 
             {
-                if (sensor == null || geoCoordinate == null)
-                    return 0.0;
+                if (sensor != null && geoCoordinate != null)
+                {
+                    var point = geoCoordinate.Point;
 
-                if (!geoCoordinate.Altitude.HasValue)
-                    return 0.0;
+                    if (point != null)
+                    {
+                        return point.Position.Altitude;
+                    }
+                }
 
-                return geoCoordinate.Altitude.Value;
+                return 0.0;
             }
         }
 
@@ -146,13 +170,15 @@
         {
             get
             {
-                if (sensor == null || geoCoordinate == null)
-                    return 0.0;
-                
-                if(!geoCoordinate.Speed.HasValue)
-                    return 0.0;
+                if (sensor != null || geoCoordinate != null)
+                {
+                    if (geoCoordinate.Speed.HasValue)
+                    {
+                        return geoCoordinate.Speed.Value;
+                    }
+                }
 
-                return geoCoordinate.Speed.Value;
+                return 0.0;
             }
         }
     }
