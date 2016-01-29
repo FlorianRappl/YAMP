@@ -20,7 +20,7 @@ overloading as well.
 Current status
 -------------------------------------------------------
 
-The current version number is **1.3.0**. A NuGet package (current version 1.3.0) is
+The current version number is **1.4.1**. A NuGet package (current version 1.4.1) is
 available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code -
 since the package aims to be cross platform (created with Mono), no particular unit testing
 framework has been chosen.
@@ -35,19 +35,15 @@ builds are available:
 - Benchmark: Performs benchmarks for YAMP and three other C# only parsers.
 - Release: Version to produce the NuGet library and other productive output.
 
-With version 1.3 the project will drive into a new direction. The next release will carry
-the version number 2. There will be major changes in the code, with only the functions
-remaining. YAMP will get a new scripting language called M# (MathSharp). The architecture
-of YAMP will also change dramatically. While YAMP was a kind of experimental project,
-YAMPv2 will aim for a package that allows mathematicians who love C# to do rapide
-prototyping. M# will be a scripting language that uses *some* parts of C# with a mix of
-mathematical operators (^, !, ', ...) and dynamic typing.
-
 Change log
 -------------------------------------------------------
 
-**1.3.0:**
+**1.4.0:**
 - Last version of YAMPv1
+- Some fixes (e.g., brackets)
+- Improved complex power
+
+**1.3.0:**
 - Added linear fitting function
 - Added distribution estimation function
 - Fixed typos in documentation
@@ -81,7 +77,7 @@ idea - do not be shy, I'd like to hear it.
 Some legal stuff
 ------------------
 
-Copyright (c) 2012-2013, Florian Rappl and collaborators.
+Copyright (c) 2012-2016, Florian Rappl and collaborators.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
