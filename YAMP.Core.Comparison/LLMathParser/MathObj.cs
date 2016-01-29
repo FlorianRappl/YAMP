@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Globalization;
-using System.Threading;
-using System.Diagnostics;
+using System.Text;
 
 namespace MathParserDataStructures
 {
-    [CLSCompliant(true)]
     public class MathObj
     {
         private Operation[] _polishPostfixExpression;
