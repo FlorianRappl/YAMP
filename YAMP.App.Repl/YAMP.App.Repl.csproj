@@ -76,17 +76,17 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\YAMP.Core.Comparison\YAMP.Core.Comparison.csproj">
+      <Project>{0e8efcfc-ee84-4125-a801-cb436bd0c197}</Project>
+      <Name>YAMP.Core.Comparison</Name>
+    </ProjectReference>
     <ProjectReference Include="..\YAMP.Physics\YAMP.Physics.csproj">
       <Project>{149afc43-83ef-4549-b582-92c69456e12f}</Project>
       <Name>YAMP.Physics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\YAMP\YAMP.csproj">
+    <ProjectReference Include="..\YAMP.Core\YAMP.Core.csproj">
       <Project>{0F183B45-E213-4DB0-9734-3CE7E26EB318}</Project>
-      <Name>YAMP</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\YAMPCompare\YAMPCompare.csproj">
-      <Project>{0E8EFCFC-EE84-4125-A801-CB436BD0C197}</Project>
-      <Name>YAMPCompare</Name>
+      <Name>YAMP.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
