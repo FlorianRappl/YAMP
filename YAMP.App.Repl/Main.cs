@@ -3,7 +3,6 @@ namespace YAMPConsole
     using System;
     using System.Reflection;
     using YAMP;
-    using Formatter;
 
     class MainClass
     {

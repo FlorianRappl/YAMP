@@ -5,26 +5,14 @@
     using System.Text;
     using YAMP;
 
-    static class YAMPConsole
+    static class Repl
     {
         public static void Run()
         {
-            var query = string.Empty;
+            var query = String.Empty;
             var buffer = new StringBuilder();
             var context = Parser.PrimaryContext;
-
-            Console.WriteLine();
-            Console.WriteLine("*****************************************************************");
-            Console.WriteLine("*                                                               *");
-            Console.WriteLine("*                                                               *");
-            Console.WriteLine("* Enter your own statements now (exit with the command 'exit'). *");
-            Console.WriteLine("*                                                               *");
-            Console.WriteLine("*                                                               *");
-            Console.WriteLine("* You are in interactive mode with scripting being enabled.     *");
-            Console.WriteLine("*                                                               *");
-            Console.WriteLine("*                                                               *");
-            Console.WriteLine("*****************************************************************");
-            Console.WriteLine();
+            var exit = false;
 
             Parser.InteractiveMode = true;
             Parser.UseScripting = true;
@@ -36,31 +24,28 @@
             Parser.OnUserInputRequired += OnUserPrompt;
             Parser.OnPauseDemanded += OnPauseDemanded;
 
-            while (true)
+            while (!exit)
             {
                 buffer.Remove(0, buffer.Length);
-                Console.Write(">> ");
+                Console.Write("> ");
 
                 while(true)
                 {
                     query = Console.ReadLine();
 
-                    if (query.Length != 0 && query[query.Length - 1] == '\\')
+                    if (query.Length == 0 || query[query.Length - 1] != '\\')
                     {
-                        buffer.Append(query.Substring(0, query.Length - 1)).Append("\n");
-                        continue;
-                    }
-                    else
                         buffer.Append(query);
+                        break;
+                    }
 
-                    break;
+                    buffer.Append(query.Substring(0, query.Length - 1)).Append("\n");
                 }
 
                 query = buffer.ToString();
+                exit = query.Equals("exit");
 
-                if (query.Equals("exit"))
-                    break;
-                else
+                if (!exit)
                 {
                     try
                     {

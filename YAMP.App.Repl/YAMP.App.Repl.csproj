@@ -70,8 +70,7 @@
     <Compile Include="Formatter\IFormatter.cs" />
     <Compile Include="Formatter\MarkdownFormatter.cs" />
     <Compile Include="HelpPrinter.cs" />
-    <Compile Include="YAMPTests.cs" />
-    <Compile Include="YAMPConsole.cs" />
+    <Compile Include="Repl.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
