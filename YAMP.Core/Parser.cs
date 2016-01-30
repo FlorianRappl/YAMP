@@ -150,7 +150,8 @@ namespace YAMP
         public Value Evaluate(String input, Dictionary<String, Value> values)
         {
             var query = new QueryContext(_primary, input);
-            return query.Interpret(values);
+            query.Interpret(values);
+            return query.Output;
 		}
 
 		/// <summary>

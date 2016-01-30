@@ -101,7 +101,7 @@
             {
                 function.Context = new ParseContext(_parent);
                 var query = new QueryContext(function.Context, script);
-                var p = query.Interpret(new Dictionary<String,Value>());
+                query.Interpret(new Dictionary<String,Value>());
 
                 if (!query.Parser.HasErrors)
                 {

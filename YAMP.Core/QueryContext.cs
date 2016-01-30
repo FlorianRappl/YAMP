@@ -172,7 +172,7 @@ namespace YAMP
         /// Begins the interpretation of the current parse tree.
         /// </summary>
         /// <param name="values">A dictionary with additional symbols to consider.</param>
-		internal Value Interpret(Dictionary<String, Value> values)
+		internal void Interpret(Dictionary<String, Value> values)
 		{
             if (!_parser.CanRun)
             {
@@ -213,8 +213,6 @@ namespace YAMP
                     Context.AssignVariable(_context.Answer, Output);
                 }
             }
-
-            return Output;
 		}
 
         /// <summary>
