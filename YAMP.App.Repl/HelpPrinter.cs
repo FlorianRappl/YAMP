@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using YAMP;
     using YAMP.Help;
+    using YAMP.Physics;
 
     class HelpPrinter
     {
@@ -14,7 +15,9 @@
         HelpPrinter(IFormatter formatter)
         {
             this.formatter = formatter;
-            doc = Documentation.Create(Parser.PrimaryContext);
+            var parser = new Parser();
+            parser.LoadPlugin(typeof(UnitValue).Assembly);
+            doc = Documentation.Create(parser.Context);
         }
 
         public static void Run()
@@ -30,7 +33,9 @@
             help.PrintSections();
 
             if (flush)
+            {
                 help.Flush();
+            }
         }
 
         void PrintSections()
@@ -44,64 +49,70 @@
 
         void PrintUsages(HelpFunctionSection section)
         {
-            if (section == null)
-                return;
-
-            foreach (var usage in section.Usages)
-                PrintUsage(usage);
+            if (section != null)
+            {
+                foreach (var usage in section.Usages)
+                {
+                    PrintUsage(usage);
+                }
+            }
         }
 
         void PrintUsage(HelpFunctionUsage usage)
         {
-            if (usage == null)
-                return;
-
-            formatter.AddUsage(usage.Usage);
-            formatter.AddDescription(usage.Description);
-
-            for (int i = 0; i < usage.ArgumentNames.Count; i++)
+            if (usage != null)
             {
-                formatter.AddArgument(usage.ArgumentNames[i]);
-                formatter.AddDescription(usage.Arguments[i]);
-            }
+                formatter.AddUsage(usage.Usage);
+                formatter.AddDescription(usage.Description);
 
-            for (int i = 0; i < usage.Returns.Count; i++)
-            {
-                formatter.AddReturn((i + 1) + ". entry");
-                formatter.AddDescription(usage.Returns[i]);
-            }
+                for (var i = 0; i < usage.ArgumentNames.Count; i++)
+                {
+                    formatter.AddArgument(usage.ArgumentNames[i]);
+                    formatter.AddDescription(usage.Arguments[i]);
+                }
 
-            PrintExamples(usage.Examples);
+                for (var i = 0; i < usage.Returns.Count; i++)
+                {
+                    formatter.AddReturn((i + 1) + ". entry");
+                    formatter.AddDescription(usage.Returns[i]);
+                }
+
+                PrintExamples(usage.Examples);
+            }
         }
 
         void PrintExamples(List<HelpExample> examples)
         {
-            if (examples == null)
-                return;
-
-            foreach (var example in examples)
-                PrintExample(example);
+            if (examples != null)
+            {
+                foreach (var example in examples)
+                {
+                    PrintExample(example);
+                }
+            }
         }
 
         void PrintExample(HelpExample example)
         {
-            if (example == null)
-                return;
-
-            formatter.AddExample(example.Example);
-            formatter.AddDescription(example.Description);
+            if (example != null)
+            {
+                formatter.AddExample(example.Example);
+                formatter.AddDescription(example.Description);
+            }
         }
 
         void PrintSection(HelpSection section)
         {
-            if (section == null)
-                return;
+            if (section != null)
+            {
+                formatter.AddSection(section.Name, section.Topic);
+                formatter.AddDescription(section.Description);
 
-            formatter.AddSection(section.Name, section.Topic);
-            formatter.AddDescription(section.Description);
-
-            if (section.HasLink)
-                formatter.AddLink(section.Link);
+                if (section.HasLink)
+                {
+                    formatter.AddLink(section.Link);
+                }
+            }
         }
 
         void Flush()

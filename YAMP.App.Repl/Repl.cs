@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using System.Text;
     using YAMP;
+    using YAMP.Physics;
 
     static class Repl
     {
@@ -11,18 +12,19 @@
         {
             var query = String.Empty;
             var buffer = new StringBuilder();
-            var context = Parser.PrimaryContext;
+            var parser = new Parser();
+            parser.LoadPlugin(typeof(UnitValue).Assembly);
             var exit = false;
 
-            Parser.InteractiveMode = true;
-            Parser.UseScripting = true;
+            parser.InteractiveMode = true;
+            parser.UseScripting = true;
 
-            Parser.AddCustomFunction("G", v => new ScalarValue(((ScalarValue)v).Re * Math.PI));
-            Parser.AddCustomConstant("R", 2.53);
+            parser.AddCustomFunction("G", v => new ScalarValue(((ScalarValue)v).Re * Math.PI));
+            parser.AddCustomConstant("R", 2.53);
 
-            Parser.OnNotificationReceived += OnNotified;
-            Parser.OnUserInputRequired += OnUserPrompt;
-            Parser.OnPauseDemanded += OnPauseDemanded;
+            parser.NotificationReceived += OnNotified;
+            parser.UserInputRequired += OnUserPrompt;
+            parser.PauseDemanded += OnPauseDemanded;
 
             while (!exit)
             {
@@ -49,11 +51,12 @@
                 {
                     try
                     {
-                        var result = context.Run(query);
+                        var value = parser.Evaluate(query);
 
-                        if (result.Output != null)
+                        if (value != null)
                         {
-                            Console.WriteLine(result.Result);
+                            var result = value.ToString(parser.Context);
+                            Console.WriteLine(result);
                         }
                     }
                     catch (YAMPParseException parseex)

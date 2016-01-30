@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.IO;
+    using YAMP;
 
     static class Benchmarks
     {
@@ -30,6 +31,7 @@
         static void AdditionBenchmark()
         {
             var n = 10000;
+            var parser = new Parser();
             Console.WriteLine("Running addition benchmarks ...");
 
             var sw = Stopwatch.StartNew();
@@ -39,7 +41,7 @@
 
             for (var i = 0; i < n; i++)
             {
-                YAMP.Parser.Parse("2+3").Execute();
+                parser.Evaluate("2+3");
             }
 
             sw.Stop();
@@ -133,7 +135,7 @@
 
         static void RunBenchmark(BenchmarkKind which)
         {
-            var yamp = YAMP.Parser.PrimaryContext;
+            var yamp = new YAMP.Parser();
             var mpparser = new MathParser.Parser();
             var mptk = new MathParserTK_NET.MathParserTK();
             var mpnet = new MathParserNet.Parser();
@@ -206,7 +208,7 @@
             Console.WriteLine("----------");
 
             // The implementation here... YAMP
-            Benchmark("YAMP", lines, query => yamp.Run(query));
+            Benchmark("YAMP", lines, query => yamp.Evaluate(query));
 
             //http://www.codeproject.com/Articles/53001/LL-Mathematical-Parser
             Benchmark("LLMathParser", lines, query => llmp.Evaluate(query, new char[0], new double[0]));
