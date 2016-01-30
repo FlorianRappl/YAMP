@@ -66,6 +66,8 @@ namespace YAMP
 			var ir = typeof(IRegisterElement).Name;
 			var fu = typeof(IFunction).Name;
 			var ct = typeof(IConstants).Name;
+            var at = new[] { typeof(ParseContext) };
+            var et = Value.EmptyTypes;
 
 			foreach (var type in types)
 			{
@@ -76,11 +78,12 @@ namespace YAMP
 
                 if (type.Name.EndsWith("Value", StringComparison.Ordinal))
                 {
-                    var ctor = type.GetConstructor(Value.EmptyTypes);
+                    var ctor = type.GetConstructor(et) ?? type.GetConstructor(at);
 
                     if (ctor != null)
                     {
-                        ((IRegisterElement)ctor.Invoke(null)).RegisterElement(this);
+                        var args = ctor.GetParameters().Length == 1 ? new[] { context } : null;
+                        ((IRegisterElement)ctor.Invoke(args)).RegisterElement(this);
                         plugin.ValueTypes.Add(type.Name.RemoveValueConvention());
                     }
 
@@ -91,22 +94,24 @@ namespace YAMP
 
 				if (interfaces.Any(iface => iface.Name.Equals(ir)))
 				{
-					var ctor = type.GetConstructor(Value.EmptyTypes);
+                    var ctor = type.GetConstructor(et) ?? type.GetConstructor(at);
 
                     if (ctor != null)
                     {
-                        ((IRegisterElement)ctor.Invoke(null)).RegisterElement(this);
+                        var args = ctor.GetParameters().Length == 1 ? new[] { context } : null;
+                        ((IRegisterElement)ctor.Invoke(args)).RegisterElement(this);
                     }
 				}
 
                 if (interfaces.Any(iface => iface.Name.Equals(fu)))
 				{
-					var ctor = type.GetConstructor(Value.EmptyTypes);
+                    var ctor = type.GetConstructor(et) ?? type.GetConstructor(at);
 
 					if (ctor != null)
-					{
+                    {
+                        var args = ctor.GetParameters().Length == 1 ? new[] { context } : null;
 						var name = type.Name.RemoveFunctionConvention().ToLower();
-						var method = (IFunction)ctor.Invoke(null);
+						var method = (IFunction)ctor.Invoke(args);
                         plugin.Functions.Add(name);
 						context.AddFunction(name, method);
 					}
@@ -114,11 +119,12 @@ namespace YAMP
 
                 if (interfaces.Any(iface => iface.Name.Equals(ct)))
 				{
-					var ctor = type.GetConstructor(Value.EmptyTypes);
+                    var ctor = type.GetConstructor(et) ?? type.GetConstructor(at);
 
 					if (ctor != null)
-					{
-                        var instc = (IConstants)ctor.Invoke(null);
+                    {
+                        var args = ctor.GetParameters().Length == 1 ? new[] { context } : null;
+                        var instc = (IConstants)ctor.Invoke(args);
                         plugin.Functions.Add(instc.Name);
 						context.AddConstant(instc.Name, instc);
 					}
