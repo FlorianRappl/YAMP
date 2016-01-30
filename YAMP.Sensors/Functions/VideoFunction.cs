@@ -13,9 +13,9 @@
 	{
 		#region Constants
 
-		const double rfactor = 256 * 256;
-		const double gfactor = 256;
-		const double bfactor = 1;
+		const Double rfactor = 256 * 256;
+		const Double gfactor = 256;
+		const Double bfactor = 1;
 
 		#endregion
 

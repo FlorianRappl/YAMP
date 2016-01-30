@@ -1,32 +1,40 @@
 ﻿namespace YAMP.Sensors
 {
+    using System;
     using Windows.Devices.Sensors;
 
     [Description("Provides access to the compass sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     public class CompFunction : SensorFunction
     {
-        static Compass sensor;
+        static readonly Compass sensor = GetSensor();
 
-        static CompFunction()
+        private static Compass GetSensor()
         {
             try
             {
-                sensor = Compass.GetDefault();
+                return Compass.GetDefault();
             }
-            catch { }
+            catch
+            {
+                return null;
+            }
         }
 
         protected override void InstallReadingChangedHandler()
         {
-            if(sensor != null)
+            if (sensor != null)
+            {
                 sensor.ReadingChanged += OnReadingChanged;
+            }
         }
 
         protected override void UninstallReadingChangedHandler()
         {
             if (sensor != null)
+            {
                 sensor.ReadingChanged -= OnReadingChanged;
+            }
         }
 
         void OnReadingChanged(Compass sender, CompassReadingChangedEventArgs args)
@@ -69,31 +77,35 @@
             }
         }
 
-        public static double HeadingMagneticNorth
+        public static Double HeadingMagneticNorth
         {
             get
             {
-                if (sensor == null)
-                    return 0.0;
+                if (sensor != null)
+                {
+                    var cmp = sensor.GetCurrentReading();
+                    return cmp.HeadingMagneticNorth;
+                }
 
-                var cmp = sensor.GetCurrentReading();
-                return cmp.HeadingMagneticNorth;
+                return 0.0;
             }
         }
 
-        public static double HeadingTrueNorth
+        public static Double HeadingTrueNorth
         {
             get
             {
-                if (sensor == null)
-                    return 0.0;
+                if (sensor != null)
+                {
+                    var cmp = sensor.GetCurrentReading();
 
-                var cmp = sensor.GetCurrentReading();
-
-                if (!cmp.HeadingTrueNorth.HasValue)
-                    return 0.0;
-
-                return cmp.HeadingTrueNorth.Value;
+                    if (cmp.HeadingTrueNorth.HasValue)
+                    {
+                        return cmp.HeadingTrueNorth.Value;
+                    }
+                }
+                    
+                return 0.0;
             }
         }
     }

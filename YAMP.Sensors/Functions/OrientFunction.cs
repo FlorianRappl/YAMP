@@ -1,32 +1,40 @@
 ﻿namespace YAMP.Sensors
 {
+    using System;
     using Windows.Devices.Sensors;
 
     [Description("Provides access to the orientation sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     public class OrientFunction : SensorFunction
     {
-        static OrientationSensor sensor;
+        static readonly OrientationSensor sensor = GetSensor();
 
-        static OrientFunction()
+        private static OrientationSensor GetSensor()
         {
             try
             {
-                sensor = OrientationSensor.GetDefault();
+                return OrientationSensor.GetDefault();
             }
-            catch { }
+            catch
+            {
+                return null;
+            }
         }
 
         protected override void InstallReadingChangedHandler()
         {
             if (sensor != null)
+            {
                 sensor.ReadingChanged += OnReadingChanged;
+            }
         }
 
         protected override void UninstallReadingChangedHandler()
         {
             if (sensor != null)
+            {
                 sensor.ReadingChanged -= OnReadingChanged;
+            }
         }
 
         void OnReadingChanged(OrientationSensor sender, OrientationSensorReadingChangedEventArgs args)
@@ -45,20 +53,29 @@
             return new MatrixValue(RotationMatrix);
         }
 
-        public static double[,] RotationMatrix
+        public static Double[,] RotationMatrix
         {
             get 
             {
-                if (sensor == null)
-                    return new double[3, 3];
+                var values = new Double[3, 3];
 
-                var orient = sensor.GetCurrentReading();
-                return new double[3,3] 
+                if (sensor != null)
                 {
-                    {orient.RotationMatrix.M11, orient.RotationMatrix.M12, orient.RotationMatrix.M13},
-                    {orient.RotationMatrix.M21, orient.RotationMatrix.M22, orient.RotationMatrix.M23},
-                    {orient.RotationMatrix.M31, orient.RotationMatrix.M32, orient.RotationMatrix.M33}
-                };
+                    var orient = sensor.GetCurrentReading();
+                    values[0, 0] = orient.RotationMatrix.M11;
+                    values[0, 1] = orient.RotationMatrix.M12;
+                    values[0, 2] = orient.RotationMatrix.M13;
+                    
+                    values[1, 0] = orient.RotationMatrix.M21;
+                    values[1, 1] = orient.RotationMatrix.M22;
+                    values[1, 2] = orient.RotationMatrix.M23;
+                    
+                    values[2, 0] = orient.RotationMatrix.M31;
+                    values[2, 1] = orient.RotationMatrix.M32;
+                    values[2, 2] = orient.RotationMatrix.M33;
+                }
+                
+                return values;
             }
         }
     }

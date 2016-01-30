@@ -1,32 +1,40 @@
 ﻿namespace YAMP.Sensors
 {
+    using System;
     using Windows.Devices.Sensors;
 
     [Description("Provides access to the inclinometer sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     public class IncFunction : SensorFunction
     {
-        static Inclinometer sensor;
+        static readonly Inclinometer sensor = GetSensor();
 
-        static IncFunction()
+        private static Inclinometer GetSensor()
         {
             try
             {
-                sensor = Inclinometer.GetDefault();
+                return Inclinometer.GetDefault();
             }
-            catch { }
+            catch
+            {
+                return null;
+            }
         }
 
         protected override void InstallReadingChangedHandler()
         {
             if (sensor != null)
+            {
                 sensor.ReadingChanged += OnReadingChanged;
+            }
         }
 
         protected override void UninstallReadingChangedHandler()
         {
             if (sensor != null)
+            {
                 sensor.ReadingChanged -= OnReadingChanged;
+            }
         }
 
         void OnReadingChanged(Inclinometer sender, InclinometerReadingChangedEventArgs args)
@@ -69,49 +77,63 @@
             }
         }
 
-        public static double[] Inclination
+        public static Double[] Inclination
         {
             get
             {
-                if (sensor == null)
-                    return new double[3];
+                var values = new Double[3];
 
-                var inc = sensor.GetCurrentReading();
-                return new double[] { inc.PitchDegrees, inc.RollDegrees, inc.YawDegrees };
+                if (sensor != null)
+                {
+                    var inc = sensor.GetCurrentReading();
+                    values[0] = inc.PitchDegrees;
+                    values[1] = inc.RollDegrees;
+                    values[2] = inc.YawDegrees;
+                }
+
+                return values;
             }
         }
 
-        public static double Pitch
+        public static Double Pitch
         {
             get
             {
-                if (sensor == null)
-                    return 0.0;
+                if (sensor != null)
+                {
+                    var inc = sensor.GetCurrentReading();
+                    return inc.PitchDegrees;
+                }
 
-                var inc = sensor.GetCurrentReading();
-                return inc.PitchDegrees;
+                return 0.0;
             }
         }
 
-        public static double Roll
+        public static Double Roll
         {
-            get {
-            if (sensor == null)
-                return 0.0;
+            get 
+            {
+                if (sensor != null)
+                {
+                    var inc = sensor.GetCurrentReading();
+                    return inc.RollDegrees;
+                }
 
-            var inc = sensor.GetCurrentReading();
-            return inc.RollDegrees;
+                return 0.0;
             }
         }
 
-        public static double Yaw
+        public static Double Yaw
         {
-            get {
-            if (sensor == null)
-                return 0.0;
+            get 
+            {
+                if (sensor != null)
+                {
+                    var inc = sensor.GetCurrentReading();
+                    return inc.YawDegrees;
+                }
 
-                var inc = sensor.GetCurrentReading();
-                return inc.YawDegrees;
+                return 0.0;
             }
         }
     }

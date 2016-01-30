@@ -1,32 +1,40 @@
 ﻿namespace YAMP.Sensors
 {
+    using System;
     using Windows.Devices.Sensors;
 
     [Description("Provides access to the ambient light sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     public class LightFunction : SensorFunction
     {
-        static LightSensor sensor;
+        static readonly LightSensor sensor = GetSensor();
 
-        static LightFunction()
+        private static LightSensor GetSensor()
         {
             try
             {
-                sensor = LightSensor.GetDefault();
+                return LightSensor.GetDefault();
             }
-            catch { }
+            catch
+            {
+                return null;
+            }
         }
 
         protected override void InstallReadingChangedHandler()
         {
             if (sensor != null)
+            {
                 sensor.ReadingChanged += OnReadingChanged;
+            }
         }
 
         protected override void UninstallReadingChangedHandler()
         {
             if (sensor != null)
+            {
                 sensor.ReadingChanged -= OnReadingChanged;
+            }
         }
 
         void OnReadingChanged(LightSensor sender, LightSensorReadingChangedEventArgs args)
@@ -45,15 +53,17 @@
             return new ScalarValue(Light);
         }
 
-        public static double Light
+        public static Double Light
         {
             get
             {
-                if (sensor == null)
-                    return 0.0;
+                if (sensor != null)
+                {
+                    var light = sensor.GetCurrentReading();
+                    return light.IlluminanceInLux;
+                }
 
-                var light = sensor.GetCurrentReading();
-                return light.IlluminanceInLux;
+                return 0.0;
             }
         }
     }

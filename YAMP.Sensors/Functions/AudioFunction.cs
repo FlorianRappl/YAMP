@@ -10,12 +10,12 @@
     [Kind("Sensor")]
     public class AudioFunction : ArgumentFunction
 	{
-		#region Members
+		#region Fields
 
 		WasapiCapture wasapiCapture;
-		List<byte[]> measurements;
-		int measured;
-		bool measuring;
+		List<Byte[]> measurements;
+		Int32 measured;
+		Boolean measuring;
 
 		#endregion
 
@@ -38,43 +38,53 @@
 
 		#region Measuring
 
-		void OnDataAvailable(object sender, NAudio.Wave.WaveInEventArgs e)
+		void OnDataAvailable(Object sender, NAudio.Wave.WaveInEventArgs e)
         {
             if (measuring)
             {
-                if(measured >= 0)
+                if (measured >= 0)
+                {
                     measurements.Add(e.Buffer.Take(e.BytesRecorded).ToArray());
+                }
+
                 measured++;
             }
 		}
 
-		async Task<MatrixValue> Audio(int n)
+		async Task<MatrixValue> Audio(Int32 n)
 		{
-			if (wasapiCapture == null)
-				return new MatrixValue();
+			if (wasapiCapture != null)
+            {
+                wasapiCapture.StartRecording();
 
-			wasapiCapture.StartRecording();
+                measurements = new List<Byte[]>();
+                measured = -1;
+                measuring = true;
 
-			measurements = new List<byte[]>();
-			measured = -1;
-			measuring = true;
+                while (measured < n)
+                {
+                    await Task.Delay(50);
+                }
 
-			while (measured < n)
-				await Task.Delay(50);
+                measuring = false;
+                wasapiCapture.StopRecording();
+                var lengths = measurements.Take(n).Select(a => a.Length).ToArray();
+                var result = new MatrixValue(1, lengths.Sum() / 4);
+                var k = 1;
 
-			measuring = false;
-			wasapiCapture.StopRecording();
-			var lengths = measurements.Take(n).Select(a => a.Length).ToArray();
-			var result = new MatrixValue(1, lengths.Sum() / 4);
-			int k = 1;
+                for (var j = 0; j < n; j++)
+                {
+                    for (var i = 0; i < lengths[j]; i += 4, k++)
+                    {
+                        var value = BitConverter.ToSingle(measurements[j], i);
+                        result[k] = new ScalarValue(value);
+                    }
+                }
 
-			for (int j = 0; j < n; j++)
-			{
-				for (int i = 0; i < lengths[j]; i += 4, k++)
-					result[k] = new ScalarValue(BitConverter.ToSingle(measurements[j], i));
-			}
+                return result;
+            }
 
-			return result;
+			return new MatrixValue();
 		}
 
 		#endregion
@@ -112,20 +122,22 @@
 			var conv = new YAMP.Converter.StringToEnumConverter(typeof(AudioProperty));
 			var property = (AudioProperty)conv.Convert(p);
 
-            if (wasapiCapture == null || wasapiCapture.WaveFormat == null)
-                return new ScalarValue();
+            if (wasapiCapture != null && wasapiCapture.WaveFormat != null)
+            {
+                switch (property)
+                {
+                    case AudioProperty.Rate:
+                        return new ScalarValue(wasapiCapture.WaveFormat.SampleRate);
+                    case AudioProperty.Channels:
+                        return new ScalarValue(wasapiCapture.WaveFormat.Channels);
+                    case AudioProperty.Bits:
+                        return new ScalarValue(wasapiCapture.WaveFormat.BitsPerSample);
+                }
 
-			switch (property)
-			{
-				case AudioProperty.Rate:
-					return new ScalarValue(wasapiCapture.WaveFormat.SampleRate);
-				case AudioProperty.Channels:
-					return new ScalarValue(wasapiCapture.WaveFormat.Channels);
-				case AudioProperty.Bits:
-					return new ScalarValue(wasapiCapture.WaveFormat.BitsPerSample);
-			}
+                return null;
+            }
 
-			return null;
+            return new ScalarValue();
 		}
 
 		#endregion

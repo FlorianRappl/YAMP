@@ -7,29 +7,37 @@
 	[Kind("Sensor")]
     public class GpsFunction : SensorFunction
     {
-        static Geolocator sensor;
+        static Geolocator sensor = GetSensor();
         static Geocoordinate geoCoordinate;
 
-        static GpsFunction()
+        private static Geolocator GetSensor()
         {
             try
             {
-                sensor = new Geolocator();
-                InitialPosition();
+                var sensor = new Geolocator();
+                InitialPosition(sensor);
+                return sensor;
             }
-            catch { }
+            catch
+            {
+                return null;
+            }
         }
 
         protected override void InstallReadingChangedHandler()
         {
-            if(sensor != null)
+            if (sensor != null)
+            {
                 sensor.PositionChanged += OnPositionChanged;
+            }
         }
 
         protected override void UninstallReadingChangedHandler()
         {
-            if(sensor != null)
+            if (sensor != null)
+            {
                 sensor.PositionChanged -= OnPositionChanged;
+            }
         }
 
         void OnPositionChanged(Geolocator sender, PositionChangedEventArgs args)
@@ -38,7 +46,7 @@
             RaiseReadingChanged(args.Position);
         }
 
-        async static void InitialPosition()
+        async static void InitialPosition(Geolocator sensor)
         {
             if (sensor != null)
             {
@@ -95,13 +103,13 @@
         }
 
         //LAT, LNG, ALT
-        public static double[] Position
+        public static Double[] Position
         {
             get
             {
-                var position = new double[3];
+                var position = new Double[3];
 
-                if (sensor != null && geoCoordinate != null)
+                if (geoCoordinate != null)
                 {
                     position[0] = Latitude;
                     position[1] = Longitude;
@@ -112,11 +120,11 @@
             }
         }
 
-        public static double Longitude
+        public static Double Longitude
         {
             get
             {
-                if (sensor != null && geoCoordinate != null)
+                if (geoCoordinate != null)
                 {
                     var point = geoCoordinate.Point;
 
@@ -134,7 +142,7 @@
         {
             get
             {
-                if (sensor != null && geoCoordinate != null)
+                if (geoCoordinate != null)
                 {
                     var point = geoCoordinate.Point;
 
@@ -152,7 +160,7 @@
         {
             get 
             {
-                if (sensor != null && geoCoordinate != null)
+                if (geoCoordinate != null)
                 {
                     var point = geoCoordinate.Point;
 
@@ -170,12 +178,9 @@
         {
             get
             {
-                if (sensor != null || geoCoordinate != null)
+                if (geoCoordinate != null && geoCoordinate.Speed.HasValue)
                 {
-                    if (geoCoordinate.Speed.HasValue)
-                    {
-                        return geoCoordinate.Speed.Value;
-                    }
+                    return geoCoordinate.Speed.Value;
                 }
 
                 return 0.0;

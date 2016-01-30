@@ -1,20 +1,24 @@
 ﻿namespace YAMP.Sensors
 {
+    using System;
     using Windows.Devices.Sensors;
 
     [Description("Provides access to the acceleration sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     public class AccFunction : SensorFunction
     {
-        static Accelerometer sensor;
+        static readonly Accelerometer sensor = GetSensor();
 
-        static AccFunction()
+        private static Accelerometer GetSensor()
         {
             try
             {
-                sensor = Accelerometer.GetDefault();
+                return Accelerometer.GetDefault();
             }
-            catch { }
+            catch 
+            {
+                return null;
+            }
         }
 
         protected override void InstallReadingChangedHandler()
@@ -45,15 +49,21 @@
             return new MatrixValue(Acceleration);
         }
 
-        public static double[] Acceleration
+        public static Double[] Acceleration
         {
             get
             {
-                if (sensor == null)
-                    return new double[3];
+                var values = new Double[3];
 
-                var acc = sensor.GetCurrentReading();
-                return new double[] { acc.AccelerationX, acc.AccelerationY, acc.AccelerationZ };
+                if (sensor != null)
+                {
+                    var acc = sensor.GetCurrentReading();
+                    values[0] = acc.AccelerationX;
+                    values[1] = acc.AccelerationY;
+                    values[2] = acc.AccelerationZ;
+                }
+
+                return values;
             }
         }
     }
