@@ -3,13 +3,16 @@
     using System;
     using Windows.Devices.Sensors;
 
+    /// <summary>
+    /// The acc function.
+    /// </summary>
     [Description("Provides access to the acceleration sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     public class AccFunction : SensorFunction
     {
         static readonly Accelerometer sensor = GetSensor();
 
-        private static Accelerometer GetSensor()
+        static Accelerometer GetSensor()
         {
             try
             {
@@ -39,9 +42,8 @@
         }
 
         /// <summary>
-        /// retrieves acceleration in (X,Y,Z)-direction in units of g
+        /// Retrieves acceleration in (X,Y,Z)-direction in units of g.
         /// </summary>
-        /// <returns></returns>
         [Description("Retrieves acceleration in (X, Y, Z)-direction in units of g. Hence usually (no movement) the returned vector will be (0, 0, 1).")]
         [ExampleAttribute("acc()", "Returns a 3x1 matrix of accelerations in the x, y and z directions.")]
         public MatrixValue Function()
@@ -49,6 +51,9 @@
             return new MatrixValue(Acceleration);
         }
 
+        /// <summary>
+        /// Gets the aceleration value.
+        /// </summary>
         public static Double[] Acceleration
         {
             get

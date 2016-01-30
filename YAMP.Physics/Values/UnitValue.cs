@@ -4,6 +4,9 @@
     using System.Collections.Generic;
     using YAMP;
 
+    /// <summary>
+    /// Scalar value with unit string.
+    /// </summary>
     public sealed class UnitValue : ScalarValue
     {
         #region Fields
@@ -14,37 +17,67 @@
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new unit value.
+        /// </summary>
         public UnitValue() 
             : this(0.0)
         {
         }
 
-        public UnitValue(string unit)
+        /// <summary>
+        /// Creates a new unit value.
+        /// </summary>
+        /// <param name="unit">The unit to hold.</param>
+        public UnitValue(String unit)
             : this(0.0, unit)
         {
         }
 
-        public UnitValue(double value)
-            : this(value, string.Empty)
+        /// <summary>
+        /// Creates a new unit value.
+        /// </summary>
+        /// <param name="value">The value to represent.</param>
+        public UnitValue(Double value)
+            : this(value, String.Empty)
         {
         }
 
-        public UnitValue(double value, string unit)
+        /// <summary>
+        /// Creates a new unit value.
+        /// </summary>
+        /// <param name="value">The value to represent.</param>
+        /// <param name="unit">The unit to hold.</param>
+        public UnitValue(Double value, String unit)
             : base(value)
         {
-            this._unit = unit;
+            _unit = unit;
         }
 
-        public UnitValue(ScalarValue value, string unit)
+        /// <summary>
+        /// Creates a new unit value.
+        /// </summary>
+        /// <param name="value">The value to represent.</param>
+        /// <param name="unit">The unit to hold.</param>
+        public UnitValue(ScalarValue value, String unit)
             : this(value.Re, unit)
         {
         }
 
+        /// <summary>
+        /// Creates a new unit value.
+        /// </summary>
+        /// <param name="value">The unit to copy.</param>
         public UnitValue(UnitValue value)
             : this(value.Re, value.Unit)
         {
         }
 
+        /// <summary>
+        /// Creates a new unit value.
+        /// </summary>
+        /// <param name="value">The value to represent.</param>
+        /// <param name="unit">The unit to hold.</param>
         public UnitValue(ScalarValue value, StringValue unit)
             : this(value.Re, unit.Value)
         {
@@ -71,15 +104,17 @@
         /// Transforms the instance into a binary representation.
         /// </summary>
         /// <returns>The binary representation.</returns>
-        public override byte[] Serialize()
+        public override Byte[] Serialize()
         {
-            var bytes = new List<byte>();
+            var bytes = new List<Byte>();
             bytes.AddRange(BitConverter.GetBytes(Re));
             bytes.AddRange(BitConverter.GetBytes(Im));
             bytes.AddRange(BitConverter.GetBytes(_unit.Length));
 
-            for (int i = 0; i < _unit.Length; i++)
+            for (var i = 0; i < _unit.Length; i++)
+            {
                 bytes.AddRange(BitConverter.GetBytes(_unit[i]));
+            }
 
             return bytes.ToArray();
         }
@@ -89,17 +124,19 @@
         /// </summary>
         /// <param name="content">The binary data.</param>
         /// <returns>The new instance.</returns>
-        public override Value Deserialize(byte[] content)
+        public override Value Deserialize(Byte[] content)
         {
             var unit = new UnitValue();
             unit.Re = BitConverter.ToDouble(content, 0);
             unit.Im = BitConverter.ToDouble(content, 8);
             var str = new char[BitConverter.ToInt32(content, 16)];
 
-            for (int i = 0; i < str.Length; i++)
+            for (var i = 0; i < str.Length; i++)
+            {
                 str[i] = BitConverter.ToChar(content, 20 + 2 * i);
+            }
 
-            unit._unit = new string(str);
+            unit._unit = new String(str);
             return unit;
         }
 
@@ -107,18 +144,30 @@
 
         #region Methods
 
+        /// <summary>
+        /// Clears the content.
+        /// </summary>
         public override void Clear()
         {
-            _unit = string.Empty;
+            _unit = String.Empty;
             base.Clear();
         }
 
+        /// <summary>
+        /// Clones the value.
+        /// </summary>
+        /// <returns>The exact clone.</returns>
         public override ScalarValue Clone()
         {
  	         return new UnitValue(Re, Unit);
         }
 
-        public override string ToString(ParseContext context)
+        /// <summary>
+        /// Stringifies the content.
+        /// </summary>
+        /// <param name="context">The context to use.</param>
+        /// <returns>The string representation.</returns>
+        public override String ToString(ParseContext context)
         {
             return base.ToString(context) + " " + _unit;
         }
