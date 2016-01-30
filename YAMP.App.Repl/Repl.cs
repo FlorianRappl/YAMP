@@ -54,7 +54,6 @@
                         if (result.Output != null)
                         {
                             Console.WriteLine(result.Result);
-                            Console.Write(result.Parser);
                         }
                     }
                     catch (YAMPParseException parseex)

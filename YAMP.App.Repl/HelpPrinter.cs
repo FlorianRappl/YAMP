@@ -17,6 +17,13 @@
             doc = Documentation.Create(Parser.PrimaryContext);
         }
 
+        public static void Run()
+        {
+            var output = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var formatter = new MarkdownFormatter(output);
+            Run(formatter);
+        }
+
         public static void Run(IFormatter formatter, Boolean flush = true)
         {
             var help = new HelpPrinter(formatter);
