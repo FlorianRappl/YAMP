@@ -5,6 +5,7 @@
     using System.Text;
     using YAMP;
     using YAMP.Physics;
+    using YAMP.Sensors;
 
     static class Repl
     {
@@ -14,6 +15,7 @@
             var buffer = new StringBuilder();
             var parser = new Parser();
             parser.LoadPlugin(typeof(UnitValue).Assembly);
+            parser.LoadPlugin(typeof(AccFunction).Assembly);
             var exit = false;
 
             parser.InteractiveMode = true;
