@@ -156,11 +156,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
+  <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
+    <Exec Command="nuget pack YAMP.Sensors.csproj -Prop Configuration=Release"></Exec>
+    <Exec Command="nuget push *.nupkg"></Exec>
+    <Exec Command="rm *.nupkg"></Exec>
   </Target>
-  -->
 </Project>
