@@ -5,18 +5,6 @@
     [TestFixture]
     public class Engine : Base
     {
-        [SetUp]
-        public void Setup()
-        {
-            Parser.UseScripting = true;
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            Parser.UseScripting = false;
-        }
-
         [Test]
         public void ParseMandelbrotFunctionCallMissingArgumentShouldFail()
         {

@@ -5,16 +5,11 @@
 
     public abstract class Base
     {
-        static Base()
-        {
-            Parser.Load();
-            Parser.LoadPlugin(typeof(UnitValue).Assembly);
-        }
-
         protected void Test(String query, Double result, Double prec = 0.0)
         {
-            var parser = Parser.Parse(query);
-            var value = parser.Execute();
+            var parser = new Parser();
+            parser.LoadPlugin(typeof(UnitValue).Assembly);
+            var value = parser.Evaluate(query);
             var real = ((ScalarValue)value).Re;
             Assert.AreEqual(result, real, prec);
         }

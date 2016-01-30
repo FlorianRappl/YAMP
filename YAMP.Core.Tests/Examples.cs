@@ -14,13 +14,15 @@
         [Theory]
         public void ExampleShouldBeValidYampCode(String example)
         {
-            var parser = Parser.Parse(example);
-            parser.Execute();
+            var parser = new Parser();
+            var query = parser.Parse(example);
+            Assert.IsFalse(query.Parser.HasErrors);
         }
 
         static String[] ObtainExamples()
         {
-            var doc = Documentation.Create(Parser.PrimaryContext);
+            var parser = new Parser();
+            var doc = Documentation.Create(parser.Context);
             var queries = new List<String>();
 
             foreach (var section in doc.Sections)

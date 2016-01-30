@@ -35,31 +35,31 @@
         [Test]
         public void YIsThePreviouslySetValue()
         {
-            Test("Y", 5.0);
+            Test("X=(Y=5)+2;Y", 5.0);
         }
 
         void Test(String query, String name, Double val, Double result, Double prec = 0.0)
         {
-            var parser = Parser.Parse(query);
+            var parser = new Parser();
             var argument = new Dictionary<String, Value>
             {
                 { name, new ScalarValue(val) }
             };
-            var value = parser.Execute(argument);
+            var value = parser.Evaluate(query, argument);
             var real = ((ScalarValue)value).Re;
             Assert.AreEqual(result, real, prec);
         }
 
         void Test(String query, Double xmin, Double xmax, Func<Double, Double> compare)
         {
-            var parser = Parser.Parse(query);
+            var parser = new Parser();
             var x = xmin;
             var success = 0;
             var total = 0;
 
             while (x < xmax)
             {
-                var value = parser.Execute(new { x });
+                var value = parser.Evaluate(query, new { x });
 
                 if (value.Equals(compare(x)))
                 {

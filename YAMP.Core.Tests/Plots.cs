@@ -19,9 +19,10 @@
 
         void Test(String query, Int32 number)
         {
-            var parser = Parser.Parse(query);
-            var value = (PlotValue)parser.Execute();
-            Assert.AreEqual(number, value.Count);
+            var parser = new Parser();
+            var value = parser.Evaluate(query);
+            var plot = (PlotValue)value;
+            Assert.AreEqual(number, plot.Count);
         }
     }
 }
