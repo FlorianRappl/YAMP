@@ -49,6 +49,7 @@ local.properties
 **/[Rr]elease/
 **/[Dd]ocumentation/
 /[Nn]uget/
+*.nupkg
 *_i.c
 *_p.c
 *.ilk
