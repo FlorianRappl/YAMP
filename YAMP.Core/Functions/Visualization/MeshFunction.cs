@@ -1,11 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     [Description("Produces wireframe surfaces that color only the lines connecting the defining points.")]
     [Kind(PopularKinds.Plot)]
     sealed class MeshFunction : VisualizationFunction
     {
+        public MeshFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Draws a wireframe mesh using X = 1:n and Y = 1:m, where [m, n] = size(Z). The height, Z, is a single-valued function defined over a rectangular grid. Color is proportional to surface height.")]
         public SurfacePlotValue Function(MatrixValue Z)
         {

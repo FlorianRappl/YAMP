@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Represents the abstract base class for expressions.
     /// </summary>
@@ -99,9 +98,9 @@ namespace YAMP
         /// <summary>
         /// Registers this element at some target.
         /// </summary>
-		public virtual void RegisterElement()
+        public virtual void RegisterElement(Elements elements)
 		{
-			Elements.Instance.AddExpression(this);
+			elements.AddExpression(this);
 		}
 
         #endregion

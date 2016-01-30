@@ -12,100 +12,84 @@ namespace YAMP
 	{
 		#region Fields
 
-		QueryContext _query;
-
-        internal static String answer = "$";
-		static ParseContext primary;
+        readonly ParseContext _primary;
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// If a new notification has been sent, this event is fired (only in interactive mode).
+        /// Events fired once notifications are received.
         /// </summary>
-        public static event EventHandler<NotificationEventArgs> OnNotificationReceived;
+        public event EventHandler<NotificationEventArgs> NotificationReceived
+        {
+            add { _primary.OnNotificationReceived += value; }
+            remove { _primary.OnNotificationReceived -= value; }
+        }
 
         /// <summary>
-        /// If the user is required to enter something this event is fired.
+        /// Events fired once user input is required.
         /// </summary>
-        public static event EventHandler<UserInputEventArgs> OnUserInputRequired;
+        public event EventHandler<UserInputEventArgs> UserInputRequired
+        {
+            add { _primary.OnUserInputRequired += value; }
+            remove { _primary.OnUserInputRequired -= value; }
+        }
 
         /// <summary>
-        /// If the user is required to press a key in order to continue this event is fired.
+        /// Events fired once an external pause is demanded.
         /// </summary>
-        public static event EventHandler<PauseEventArgs> OnPauseDemanded;
+        public event EventHandler<PauseEventArgs> PauseDemanded
+        {
+            add { _primary.OnPauseDemanded += value; }
+            remove { _primary.OnPauseDemanded -= value; }
+        } 
 
         #endregion
 
         #region ctor
 
-        Parser(ParseContext context, QueryContext query)
-		{
-			_query = query;
-			query.Context = context;
-		}
+        public Parser()
+            : this(new ParseContext())
+        {
+        }
 
-		#endregion
-
-		#region Static constructions
-
-		/// <summary>
-		/// Creates the parse tree for the given expression within the root context.
-		/// </summary>
-		/// <param name="input">
-		/// The expression to evaluate.
-		/// </param>
-		/// <returns>The parser instance.</returns>
-		public static Parser Parse(String input)
-		{
-			var p = new Parser(PrimaryContext, new QueryContext(input));
-            p._query.Parser.Parse();
-			return p;
-		}
-
-		/// <summary>
-		/// Creates the parse tree for the given expression within a specific context.
-		/// </summary>
-		/// <param name="context">
-		/// The context that the parser should use.
-		/// </param>
-		/// <param name="input">
-		/// The expression to evaluate.
-		/// </param>
-		/// <returns>The parser instance.</returns>
-		public static Parser Parse(ParseContext context, String input)
-		{
-			var p = new Parser(context, new QueryContext(input));
-            p._query.Parser.Parse();
-			return p;
-		}
+        public Parser(ParseContext context)
+        {
+            _primary = context;
+        }
 
 		#endregion
 
         #region Properties
 
         /// <summary>
-        /// Gets or sets the name of the last answer.
+        /// Gets or sets if YAMP should run in interactive mode.
+        /// The interactive mode will fire events.
         /// </summary>
-        public static String Answer
+        public Boolean InteractiveMode
         {
-            get { return answer; }
-            set
-            {
-                if (String.IsNullOrEmpty(value))
-                    return;
+            get { return _primary.InteractiveMode; }
+            set { _primary.InteractiveMode = value; }
+        }
 
-                answer = value;
-            }
+        /// <summary>
+        /// Gets or sets of scripting should be enabled (allowed / activated).
+        /// Scripting will activate loop constructs and conditionals. This will
+        /// also activate file system access in the non-portable version.
+        /// </summary>
+        public Boolean UseScripting
+        {
+            get { return _primary.UseScripting; }
+            set { _primary.UseScripting = value; }
         }
 
         /// <summary>
         /// Gets a list of the available keywords.
         /// </summary>
-        public static String[] Keywords
+        public String[] Keywords
         {
-            get { return Elements.Instance.Keywords; }
+            get { return _primary.Elements.Keywords; }
         }
 
         /// <summary>
@@ -121,83 +105,63 @@ namespace YAMP
             }
         }
 
-        /// <summary>
-		/// Gets the context of the current parser instance (expression, value, ...).
-		/// </summary>
-		public QueryContext Context
-		{
-			get { return _query; }
-		}
-
 		/// <summary>
 		/// Gets the primary context of the parser (not the root context).
 		/// </summary>
-		public static ParseContext PrimaryContext
+		public ParseContext Context
 		{
-			get
-			{
-				if (primary == null)
-					return Load();
-
-				return primary;
-			}
+			get { return _primary; }
 		}
-
-		/// <summary>
-		/// Gets or sets of scripting should be enabled (allowed / activated).
-        /// Scripting will activate loop constructs and conditionals. This will
-        /// also activate file system access in the non-portable version.
-		/// </summary>
-		public static Boolean UseScripting
-		{
-			get;
-			set;
-		}
-
-        /// <summary>
-        /// Gets or sets if YAMP should run in interactive mode.
-        /// The interactive mode will fire events.
-        /// </summary>
-        public static Boolean InteractiveMode
-        {
-            get;
-            set;
-        }
 
 		#endregion
 
-		#region Evaluation
+        #region Evaluation
 
-		/// <summary>
-		/// Execute the evaluation of this parser instance without any external symbols.
-		/// </summary>
-		/// <returns>The value from the evaluation.</returns>
-		public Value Execute()
-		{
-			return Execute(new Dictionary<String, Value>());
-		}
+        /// <summary>
+        /// Execute the parsing of the given input.
+        /// </summary>
+        /// <param name="input">The input to parse.</param>
+        /// <returns>The query context for further evaluation.</returns>
+        public QueryContext Parse(String input)
+        {
+            var query = new QueryContext(_primary, input);
+            query.Parser.Parse();
+            return query;
+        }
+
+        /// <summary>
+        /// Execute the evaluation of this parser instance without any external symbols.
+        /// </summary>
+        /// <param name="input">The input to evaluate.</param>
+        /// <returns>The value from the evaluation.</returns>
+        public Value Evaluate(String input)
+        {
+            return Evaluate(input, new Dictionary<String, Value>());
+        }
 
 		/// <summary>
 		/// Execute the evaluation of this parser instance with external symbols.
-		/// </summary>
+        /// </summary>
+        /// <param name="input">The input to evaluate.</param>
 		/// <param name="values">
 		/// The values in an Hashtable containing string (name), Value (value) pairs.
 		/// </param>
 		/// <returns>The value from the evaluation.</returns>
-		public Value Execute(Dictionary<String, Value> values)
-		{
-			_query.Interpret(values);
-			return _query.Output;
+        public Value Evaluate(String input, Dictionary<String, Value> values)
+        {
+            var query = new QueryContext(_primary, input);
+            return query.Interpret(values);
 		}
 
 		/// <summary>
 		/// Execute the evaluation of this parser instance with external symbols.
-		/// </summary>
+        /// </summary>
+        /// <param name="input">The input to evaluate.</param>
 		/// <param name="values">
 		/// The values in an anonymous object - containing name - value pairs.
 		/// </param>
 		/// <returns>The value from the evaluation.</returns>
-		public Value Execute(Object values)
+        public Value Evaluate(String input, Object values)
 		{
 			var symbols = new Dictionary<String, Value>();
 
@@ -218,20 +182,8 @@ namespace YAMP
 				}
 			}
 
-			return Execute(symbols);
+            return Evaluate(input, symbols);
 		}
-
-        static Value Convert(Object s)
-        {
-            if (s is Value)
-                return (Value)s;
-            else if (s is Double || s is Int32 || s is Single || s is Int64)
-                return new ScalarValue((Double)s);
-            else if (s is String || s is Char)
-                return new StringValue(s.ToString());
-
-            return null;
-        }
 
 		#endregion
 
@@ -246,29 +198,9 @@ namespace YAMP
 		/// <param name="constant">
 		/// The value of the constant.
 		/// </param>
-		/// <returns>The default context.</returns>
-		public static ParseContext AddCustomConstant(String name, Double constant)
-		{
-			return AddCustomConstant(PrimaryContext, name, constant);
-		}
-
-		/// <summary>
-		/// Adds a custom constant to the parser using a specific context.
-		/// </summary>
-		/// <param name="context">
-		/// The context where this constant should be made available.
-		/// </param>
-		/// <param name="name">
-		/// The name of the symbol corresponding to the constant.
-		/// </param>
-		/// <param name="constant">
-		/// The value of the constant.
-		/// </param>
-		/// <returns>The given context.</returns>
-		public static ParseContext AddCustomConstant(ParseContext context, String name, Double constant)
-		{
-			context.AddConstant(name, new ContainerConstant(name, new ScalarValue(constant)));
-			return context;
+		public void AddCustomConstant(String name, Double constant)
+        {
+            Context.AddConstant(name, new ContainerConstant(name, new ScalarValue(constant)));
 		}
 
 		/// <summary>
@@ -280,29 +212,9 @@ namespace YAMP
 		/// <param name="constant">
 		/// The value of the constant.
 		/// </param>
-		/// <returns>The default context.</returns>
-		public static ParseContext AddCustomConstant(String name, Value constant)
-		{
-			return AddCustomConstant(PrimaryContext, name, constant);
-		}
-
-		/// <summary>
-		/// Adds a custom constant to the parser using a specific context.
-		/// </summary>
-		/// <param name="context">
-		/// The context where this constant should be made available.
-		/// </param>
-		/// <param name="name">
-		/// The name of the symbol corresponding to the constant.
-		/// </param>
-		/// <param name="constant">
-		/// The value of the constant.
-		/// </param>
-		/// <returns>The given context.</returns>
-		public static ParseContext AddCustomConstant(ParseContext context, String name, Value constant)
-		{
-			context.AddConstant(name, new ContainerConstant(name, constant));
-			return context;
+		public void AddCustomConstant(String name, Value constant)
+        {
+            Context.AddConstant(name, new ContainerConstant(name, constant));
 		}
 
 		/// <summary>
@@ -311,52 +223,29 @@ namespace YAMP
 		/// <param name="name">
 		/// The name of the symbol corresponding to the constant that should be removed.
 		/// </param>
-		/// <returns>The default context.</returns>
-		public static ParseContext RemoveCustomConstant(String name)
+		public void RemoveCustomConstant(String name)
 		{
-			return RemoveCustomConstant(PrimaryContext, name);
-		}
-
-		/// <summary>
-		/// Removes a custom constant using a specific context.
-		/// </summary>
-		/// <param name="context">
-		/// The context where this constant should be removed.
-		/// </param>
-		/// <param name="name">
-		/// The name of the symbol corresponding to the constant that should be removed.
-		/// </param>
-		/// <returns>The given context.</returns>
-		public static ParseContext RemoveCustomConstant(ParseContext context, String name)
-		{
-			context.RemoveConstant(name);
-			return context;
+            Context.RemoveConstant(name);
 		}
 
         /// <summary>
         /// Renames an existing constant (custom or defined).
         /// </summary>
-        /// <param name="context">The context of the constant.</param>
         /// <param name="oldName">The old name of the constant.</param>
         /// <param name="newName">The new name for the constant.</param>
-        /// <returns>The given context.</returns>
-        public static ParseContext RenameConstant(ParseContext context, String oldName, String newName)
+        public void RenameConstant(String oldName, String newName)
         {
-            context.RenameConstant(oldName, newName);
-            return context;
+            Context.RenameConstant(oldName, newName);
         }
 
         /// <summary>
         /// Renames an existing function (custom or defined).
         /// </summary>
-        /// <param name="context">The context of the function.</param>
         /// <param name="oldName">The old name of the function.</param>
         /// <param name="newName">The new name for the function.</param>
-        /// <returns>The given context.</returns>
-        public static ParseContext RenameFunction(ParseContext context, String oldName, String newName)
+        public void RenameFunction(String oldName, String newName)
         {
-            context.RenameFunction(oldName, newName);
-            return context;
+            Context.RenameFunction(oldName, newName);
         }
 
 		/// <summary>
@@ -368,29 +257,9 @@ namespace YAMP
 		/// <param name="f">
 		/// The function that fulfills the signature Value f(Value v).
 		/// </param>
-		/// <returns>The default context.</returns>
-		public static ParseContext AddCustomFunction(String name, FunctionDelegate f)
-		{
-			return AddCustomFunction(PrimaryContext, name, f);
-		}
-
-		/// <summary>
-		/// Adds a custom function to be used by the parser using a specific context.
-		/// </summary>
-		/// <param name="context">
-		/// The context where this function should be made available.
-		/// </param>
-		/// <param name="name">
-		/// The name of the symbol corresponding to the function that should be added.
-		/// </param>
-		/// <param name="f">
-		/// The function that fulfills the signature Value f(Value v).
-		/// </param>
-		/// <returns>The given context.</returns>
-		public static ParseContext AddCustomFunction(ParseContext context, String name, FunctionDelegate f)
-		{
-			context.AddFunction(name, new ContainerFunction(name, f));
-			return context;
+		public void AddCustomFunction(String name, FunctionDelegate f)
+        {
+            Context.AddFunction(name, new ContainerFunction(name, f));
 		}
 
 		/// <summary>
@@ -399,26 +268,9 @@ namespace YAMP
 		/// <param name="name">
 		/// The name of the symbol corresponding to the function that should be removed.
 		/// </param>
-		/// <returns>The default context.</returns>
-		public static ParseContext RemoveCustomFunction(String name)
-		{
-			return RemoveCustomFunction(PrimaryContext, name);
-		}
-
-		/// <summary>
-		/// Removes a custom function using a specific context.
-		/// </summary>
-		/// <param name="context">
-		/// The context where this function should be removed.
-		/// </param>
-		/// <param name="name">
-		/// The name of the symbol corresponding to the function that should be removed.
-		/// </param>
-		/// <returns>The given context.</returns>
-		public static ParseContext RemoveCustomFunction(ParseContext context, String name)
-		{
-			context.RemoveFunction(name);
-			return context;
+		public void RemoveCustomFunction(String name)
+        {
+            Context.RemoveFunction(name);
 		}
 
 		/// <summary>
@@ -430,29 +282,9 @@ namespace YAMP
 		/// <param name="value">
 		/// The value of the variable.
 		/// </param>
-		/// <returns>The default context.</returns>
-		public static ParseContext AddVariable(String name, Value value)
-		{
-			return AddVariable(PrimaryContext, name, value);
-		}
-
-		/// <summary>
-		/// Adds a variable to be used by the parser using a specific context.
-		/// </summary>
-		/// <param name="context">
-		/// The context where the variable should be made available.
-		/// </param>
-		/// <param name="name">
-		/// The name of the symbol corresponding to the variable that should be added.
-		/// </param>
-		/// <param name="value">
-		/// The value of the variable.
-		/// </param>
-		/// <returns>The given context.</returns>
-		public static ParseContext AddVariable(ParseContext context, String name, Value value)
-		{
-			context.Variables.Add(name, value);
-			return context;
+		public void AddVariable(String name, Value value)
+        {
+            Context.Variables.Add(name, value);
 		}
 
 		/// <summary>
@@ -461,28 +293,9 @@ namespace YAMP
 		/// <param name="name">
 		/// The name of the symbol corresponding to the variable that should be removed.
 		/// </param>
-		/// <returns>The default context.</returns>
-		public static ParseContext RemoveVariable(String name)
-		{
-			return RemoveVariable(PrimaryContext, name);
-		}
-
-		/// <summary>
-		/// Removes a variable from the workspace using a specific context.
-		/// </summary>
-		/// <param name="context">
-		/// The context where the variable should be removed from.
-		/// </param>
-		/// <param name="name">
-		/// The name of the symbol corresponding to the variable that should be removed.
-		/// </param>
-		/// <returns>The given context.</returns>
-		public static ParseContext RemoveVariable(ParseContext context, String name)
-		{
-			if (context.Variables.ContainsKey(name))
-				context.Variables.Remove(name);
-
-			return context;
+		public void RemoveVariable(String name)
+        {
+            Context.Variables.Remove(name);
 		}
 
 		/// <summary>
@@ -492,24 +305,9 @@ namespace YAMP
 		/// The assembly to load as a plugin.
         /// </param>
         /// <returns>The ID for the plugin.</returns>
-		public static Int32 LoadPlugin(Assembly assembly)
-		{
-			return LoadPlugin(PrimaryContext, assembly);
-		}
-
-		/// <summary>
-		/// Loads an external library (assembly) that uses IFunction, Operator, ..., into a specific context.
-		/// </summary>
-		/// <param name="context">
-		/// The context where the new functions and constants should be available.
-		/// </param>
-		/// <param name="assembly">
-		/// The assembly to load as a plugin.
-		/// </param>
-		/// <returns>The ID for the plugin.</returns>
-		public static int LoadPlugin(ParseContext context, Assembly assembly)
-		{
-			return Elements.Instance.RegisterAssembly(context, assembly);
+		public Int32 LoadPlugin(Assembly assembly)
+        {
+            return _primary.Elements.RegisterAssembly(Context, assembly);
 		}
 
         /// <summary>
@@ -517,75 +315,33 @@ namespace YAMP
         /// </summary>
         /// <param name="pluginId">The ID for the assembly to unload.</param>
         /// <returns>The primary parse context.</returns>
-        public static ParseContext UnloadPlugin(Int32 pluginId)
+        public void UnloadPlugin(Int32 pluginId)
         {
-            Elements.Instance.RemoveAssembly(pluginId);
-            return PrimaryContext;
+            _primary.Elements.RemoveAssembly(pluginId);
         }
-
-		/// <summary>
-		/// Load the required functions, operators and expressions (CAN only be performed once).
-		/// </summary>
-		public static ParseContext Load()
-		{
-			Elements.Instance.Touch();
-
-			if (primary == null)
-				primary = new ParseContext(ParseContext.Default);
-
-			return primary;
-		}
 
 		#endregion
 
-		#region General
+        #region Helper
 
-        /// <summary>
-        /// Raises the notification if in interactive mode.
-        /// </summary>
-        /// <param name="sender">The sending context of the notification.</param>
-        /// <param name="e">The notification arguments.</param>
-        public static void RaiseNotification(ParseContext sender, NotificationEventArgs e)
+        static Value Convert(Object s)
         {
-            if (InteractiveMode && OnNotificationReceived != null)
-                OnNotificationReceived(sender, e);
+            if (s is Value)
+            {
+                return (Value)s;
+            }
+            else if (s is Double || s is Int32 || s is Single || s is Int64)
+            {
+                return new ScalarValue((Double)s);
+            }
+            else if (s is String || s is Char)
+            {
+                return new StringValue(s.ToString());
+            }
+
+            return null;
         }
 
-        /// <summary>
-        /// Raises the input prompt if in interactive mode.
-        /// </summary>
-        /// <param name="sender">The sending context that demands the user input.</param>
-        /// <param name="e">The input arguments.</param>
-        public static void RaiseInputPrompt(ParseContext sender, UserInputEventArgs e)
-        {
-            if (InteractiveMode && OnUserInputRequired != null)
-                OnUserInputRequired(sender, e);
-            else
-                e.Continue(string.Empty);
-        }
-
-        /// <summary>
-        /// Raises the input prompt if in interactive mode.
-        /// </summary>
-        /// <param name="sender">The sending context that demands the user input.</param>
-        /// <param name="e">The input arguments.</param>
-        public static void RaisePause(ParseContext sender, PauseEventArgs e)
-        {
-            if (InteractiveMode && OnPauseDemanded != null)
-                OnPauseDemanded(sender, e);
-            else
-                e.Continue();
-        }
-
-        /// <summary>
-        /// Returns a string representation of the query.
-        /// </summary>
-        /// <returns>A string variable.</returns>
-		public override String ToString()
-		{
-			return _query.ToString();
-		}
-
-		#endregion
-	}
+        #endregion
+    }
 }

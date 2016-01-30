@@ -57,14 +57,16 @@
         /// </summary>
         /// <param name="value">The string value.</param>
         /// <returns>The double value (or NaN if it could not been casted).</returns>
-        public static double CastStringToDouble(string value)
+        public static Double CastStringToDouble(String value)
         {
-            double x;
+            var x = 0.0;
 
-            if(double.TryParse(value, NumberStyles.Float, numberFormat, out x))
+            if (Double.TryParse(value, NumberStyles.Float, numberFormat, out x))
+            {
                 return x;
+            }
 
-            return double.NaN;
+            return Double.NaN;
         }
 
         /// <summary>
@@ -72,17 +74,21 @@
         /// </summary>
         /// <param name="value">The value to get the exponent from.</param>
         /// <returns>The exponent n (10^n) of the double value.</returns>
-        protected int GetExponent(double value)
+        protected Int32 GetExponent(Double value)
         {
-            double log;
+            var log = 0.0;
             value = Math.Abs(value);
-            
-            if (value < 1.0)
-                log = Math.Log10(1.0 / value);
-            else
-                log = Math.Log10(value);
 
-            return (int)Math.Floor(log);
+            if (value < 1.0)
+            {
+                log = Math.Log10(1.0 / value);
+            }
+            else
+            {
+                log = Math.Log10(value);
+            }
+
+            return (Int32)Math.Floor(log);
         }
 
         /// <summary>
@@ -91,28 +97,34 @@
         /// <param name="arg">The argument to inspect.</param>
         /// <param name="max">The maximum number of arguments.</param>
         /// <returns></returns>
-        protected static int[] BuildIndex(Value arg, int max)
+        protected static Int32[] BuildIndex(Value arg, Int32 max)
         {
             if (arg is ScalarValue)
+            {
                 return new int[] { ((ScalarValue)arg).IntValue };
+            }
 
-            var idx = new List<int>();
+            var idx = new List<Int32>();
 
             if (arg is RangeValue)
             {
                 var r = (RangeValue)arg;
-                var step = (int)r.Step;
-                var maxLength = r.All ? max : (int)r.End;
+                var step = (Int32)r.Step;
+                var maxLength = r.All ? max : (Int32)r.End;
 
-                for (var j = (int)r.Start; j <= maxLength; j += step)
+                for (var j = (Int32)r.Start; j <= maxLength; j += step)
+                {
                     idx.Add(j);
+                }
             }
             else if (arg is MatrixValue)
             {
                 var m = (MatrixValue)arg;
 
                 for (var j = 1; j <= m.Length; j++)
+                {
                     idx.Add(m[j].IntValue);
+                }
             }
 
             return idx.ToArray();
@@ -121,12 +133,14 @@
         /// <summary>
         /// Registers the element at a certain point.
         /// </summary>
-        public void RegisterElement()
+        public void RegisterElement(Elements elements)
         {
             var name = Header;
 
             if (!knownTypes.ContainsKey(name))
+            {
                 knownTypes.Add(name, this);
+            }
 
             RegisterOperators();
         }
@@ -152,15 +166,17 @@
             var fis = T.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             var clone = Activator.CreateInstance(T) as Value;
 
-            if (clone == null)
-                return this;
+            if (clone != null)
+            {
+                foreach (var fi in fis)
+                {
+                    fi.SetValue(clone, fi.GetValue(this));
+                }
 
-            // Loop through all the fields and copy the information from the source to the target
-            foreach (var fi in fis)
-                fi.SetValue(clone, fi.GetValue(this));
+                return clone;
+            }
 
-            // Return the cloned object.
-            return clone;
+            return this;
         }
 
         #endregion
@@ -171,19 +187,21 @@
         /// Converts the instance to bytes.
         /// </summary>
         /// <returns>The binary content.</returns>
-        public abstract byte[] Serialize();
+        public abstract Byte[] Serialize();
 
         /// <summary>
         /// Creates a new instance from bytes.
         /// </summary>
         /// <param name="content">The binary content.</param>
         /// <returns>The new instance.</returns>
-		public abstract Value Deserialize(byte[] content);
+		public abstract Value Deserialize(Byte[] content);
 
-		internal static Value Deserialize(string name, byte[] content)
+		internal static Value Deserialize(String name, Byte[] content)
 		{
             if (knownTypes.ContainsKey(name))
+            {
                 return knownTypes[name].Deserialize(content);
+            }
 
 			return Value.Empty;
 		}
@@ -196,9 +214,9 @@
         /// Returns a string representation of the value.
         /// </summary>
         /// <returns>The string.</returns>
-        public override string ToString()
+        public override String ToString()
         {
-            return ToString(ParseContext.Default);
+            return ToString(ParseContext.Root);
         }
 
         /// <summary>
@@ -206,9 +224,9 @@
         /// </summary>
         /// <param name="context">The calling context.</param>
         /// <returns>The string representation.</returns>
-        public virtual string ToString(ParseContext context)
+        public virtual String ToString(ParseContext context)
         {
-            return string.Empty;
+            return String.Empty;
         }
 
         #endregion
@@ -221,20 +239,26 @@
         /// <param name="context">The context with the rules.</param>
         /// <param name="value">The double precision value.</param>
         /// <returns>The string representation.</returns>
-        public static string Format(ParseContext context, double value)
+        public static String Format(ParseContext context, Double value)
         {
-            if (double.IsPositiveInfinity(value))
+            if (Double.IsPositiveInfinity(value))
+            {
                 return "inf";
-            else if (double.IsNegativeInfinity(value))
+            }
+            else if (Double.IsNegativeInfinity(value))
+            {
                 return "-inf";
-            else if (double.IsNaN(value))
+            }
+            else if (Double.IsNaN(value))
+            {
                 return "nan";
+            }
 
-            int sign = Math.Sign(value);
-            double v = value * sign;
-            double t = v;
-            int u = v >= 1 ? (int)Math.Log10(v) + 1 : 0;
-            int l = 0;
+            var sign = Math.Sign(value);
+            var v = value * sign;
+            var t = v;
+            var u = v >= 1 ? (Int32)Math.Log10(v) + 1 : 0;
+            var l = 0;
 
             while (Math.Floor(t) != t)
             {
@@ -256,14 +280,15 @@
             }
         }
 
-        static string ScientificFormat(ParseContext context, double value, int sign, int U, int L)
+        static String ScientificFormat(ParseContext context, Double value, Int32 sign, Int32 U, Int32 L)
         {
             var v = sign * value;
 
             if (U > 1)
+            {
                 return Compose(context, v * Math.Pow(10.0, 1 - U), context.Precision, U - 1);
-
-            if (U == 0 && L > 0)
+            }
+            else if (U == 0 && L > 0)
             {
                 var f = 0;
 
@@ -279,7 +304,7 @@
             return Compose(context, v, context.Precision, 0);
         }
 
-        static string EngineeringFormat(ParseContext context, double value, int sign, int U, int L)
+        static String EngineeringFormat(ParseContext context, Double value, Int32 sign, Int32 U, Int32 L)
         {
             var v = sign * value;
 
@@ -288,8 +313,7 @@
                 var pwr = 3 * ((U - 1) / 3);
                 return Compose(context, v * Math.Pow(10.0, -pwr), context.Precision, pwr);
             }
-
-            if (U == 0 && L > 0)
+            else if (U == 0 && L > 0)
             {
                 var f = 0;
 
@@ -314,23 +338,26 @@
             return Compose(context, v, context.Precision, 0);
         }
 
-        static string StandardFormat(ParseContext context, double v, int sign, int U, int L)
+        static String StandardFormat(ParseContext context, Double v, Int32 sign, Int32 U, Int32 L)
         {
             return Compose(context, v * sign, Math.Min(context.Precision, L), 0);
         }
 
-        static string Compose(ParseContext context, double value, int decimals, int exponent)
+        static string Compose(ParseContext context, Double value, Int32 decimals, Int32 exponent)
         {
             if (exponent == 0)
-                return string.Format(numberFormat, "{0:F" + decimals + "}", value);
+            {
+                return String.Format(numberFormat, "{0:F" + decimals + "}", value);
+            }
+            else if (context.CustomExponent)
+            {
+                return String.Format(numberFormat, "{0:F" + decimals + "}{1}", value, ToSuperScript(exponent));
+            }
 
-            if (context.CustomExponent)
-                return string.Format(numberFormat, "{0:F" + decimals + "}{1}", value, ToSuperScript(exponent));
-
-            return string.Format(numberFormat, "{0:F" + decimals + "}e{1}", value, exponent);
+            return String.Format(numberFormat, "{0:F" + decimals + "}e{1}", value, exponent);
         }
 
-        static string ToSuperScript(int exp)
+        static String ToSuperScript(Int32 exp)
         {
             var sb = new StringBuilder();
             sb.Append("·10");

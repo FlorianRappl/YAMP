@@ -1,11 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     [Description("In mathematics, a complex function is a function with the complex numbers (see the imaginary numbers and the complex plane) as both its domain and codomain. The complex plot assigns a color to each point of complex plane. the origin is white, 1 is red, −1 is cyan, and a point at the infinity is black.")]
     [Kind(PopularKinds.Plot)]
     sealed class CplotFunction : VisualizationFunction
     {
+        public CplotFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Visualizes the given complex function f between -1 and 1 for the real and the imaginary axes.")]
         [Example("cplot(sin)", "Draws the complex plot of the sine function sin(z) with z = x + iy.")]
         [Example("cplot(z => sin(z) * cos(z))", "Draws the complex plot of sin(z) * cos(z) with z = x + iy.")]

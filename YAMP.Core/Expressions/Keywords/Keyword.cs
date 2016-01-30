@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
 	/// <summary>
 	/// Abstract base class of scripting keywords.
@@ -36,9 +33,9 @@ namespace YAMP
         /// <summary>
         /// Registers the element at the factory.
         /// </summary>
-		public override void RegisterElement()
+        public override void RegisterElement(Elements elements)
 		{
-			Elements.Instance.AddKeyword(Token, this);
+			elements.AddKeyword(Token, this);
 		}
 
         #endregion

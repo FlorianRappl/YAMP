@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System.Collections.Generic;
+    using System.Text;
+
     /// <summary>
     /// Represents the syntax for a function keyword. The basic syntax is
     /// function NAME ( ARGS ) STATEMENT
@@ -84,7 +82,7 @@ namespace YAMP
                 return kw;
             }
 
-            kw.name = Elements.Instance.FindExpression<SymbolExpression>().Scan(engine) as SymbolExpression;
+            kw.name = engine.Elements.FindExpression<SymbolExpression>().Scan(engine) as SymbolExpression;
 
             if (kw.name == null)
             {
@@ -101,7 +99,7 @@ namespace YAMP
                 return kw;
             }
 
-            kw.arguments = Elements.Instance.FindExpression<BracketExpression>().Scan(engine) as BracketExpression;
+            kw.arguments = engine.Elements.FindExpression<BracketExpression>().Scan(engine) as BracketExpression;
 
             if (engine.Pointer == engine.Characters.Length)
             {
@@ -115,8 +113,10 @@ namespace YAMP
 
             if (kw.Body.Container.Expressions.Length == 1 && kw.Body.Container.Expressions[0] is GroupExpression)
             {
-                var scope = (GroupExpression)kw.Body.Container.Expressions[0];
-                scope.Scope.Context = new ParseContext(engine.Context.Parent);
+                var container = (GroupExpression)kw.Body.Container.Expressions[0];
+                var context = new ParseContext(engine.Context.Parent);
+                var input = container.Scope.Input;
+                container.Scope = new QueryContext(context, input);
             }
             else
             {

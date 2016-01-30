@@ -10,16 +10,22 @@
     {
         #region Fields
 
-        readonly IDictionary<String, Value> variables;
-        readonly IDictionary<String, IFunction> functions;
-        readonly IDictionary<String, IConstants> constants;
-        readonly IDictionary<String, IDictionary<String, Value>> defaultProperties;
-        readonly ParseContext parent;
-        readonly Boolean isReadOnly;
+        internal static readonly ParseContext Root = new ParseContext(new Dictionary<String, Value>());
 
-        Int32? precision = 5;
-        PlotValue lastPlot;
-        DisplayStyle displayStyle;
+        readonly IDictionary<String, Value> _variables;
+        readonly IDictionary<String, IFunction> _functions;
+        readonly IDictionary<String, IConstants> _constants;
+        readonly IDictionary<String, IDictionary<String, Value>> _defaultProperties;
+        readonly ParseContext _parent;
+        readonly Elements _elements;
+        readonly Boolean _isReadOnly;
+
+        Boolean _scripting;
+        Boolean _interactive;
+        Int32? _precision = 5;
+        PlotValue _lastPlot;
+        DisplayStyle _displayStyle;
+        String _answer;
 
         #endregion
 
@@ -45,27 +51,44 @@
         /// </summary>
         public event EventHandler<PlotEventArgs> OnLastPlotChanged;
 
+        /// <summary>
+        /// If a new notification has been sent, this event is fired (only in interactive mode).
+        /// </summary>
+        public event EventHandler<NotificationEventArgs> OnNotificationReceived;
+
+        /// <summary>
+        /// If the user is required to enter something this event is fired.
+        /// </summary>
+        public event EventHandler<UserInputEventArgs> OnUserInputRequired;
+
+        /// <summary>
+        /// If the user is required to press a key in order to continue this event is fired.
+        /// </summary>
+        public event EventHandler<PauseEventArgs> OnPauseDemanded;
+
         #endregion
 
         #region ctors
 
         ParseContext(IDictionary<String, Value> shadowVariables)
         {
-            isReadOnly = true;
-            variables = new ReadOnlyDictionary<String, Value>(shadowVariables);
-            functions = new Dictionary<String, IFunction>();
-            constants = new Dictionary<String, IConstants>();
-            defaultProperties = new Dictionary<String, IDictionary<String, Value>>();
-            parent = null;
-            precision = 6;
-            displayStyle = DisplayStyle.Default;
+            _answer = "$";
+            _isReadOnly = true;
+            _variables = new ReadOnlyDictionary<String, Value>(shadowVariables);
+            _functions = new Dictionary<String, IFunction>();
+            _constants = new Dictionary<String, IConstants>();
+            _defaultProperties = new Dictionary<String, IDictionary<String, Value>>();
+            _parent = null;
+            _precision = 6;
+            _displayStyle = DisplayStyle.Default;
+            _elements = new Elements(this);
         }
 
         /// <summary>
-        /// Creates a new (fresh) context with the default context as parent.
+        /// Creates a new top context.
         /// </summary>
-        public ParseContext() 
-            : this(Default)
+        public ParseContext()
+            : this(Root)
         {
         }
 
@@ -77,34 +100,14 @@
         /// </param>
         public ParseContext(ParseContext parentContext)
         {
-            isReadOnly = false;
-            variables = new Dictionary<String, Value>();
-            functions = new Dictionary<String, IFunction>();
-            constants = new Dictionary<String, IConstants>();
-            defaultProperties = new Dictionary<String, IDictionary<String, Value>>();
-            parent = parentContext;
-            precision = parentContext.Precision;
-            displayStyle = parentContext.displayStyle;
-        }
-
-        #endregion
-
-        #region Default
-
-        static ParseContext _default;
-
-        /// <summary>
-        /// Gets the default (root) parse context.
-        /// </summary>
-        internal static ParseContext Default
-        {
-            get
-            {
-                if (_default == null)
-                    _default = new ParseContext(new Dictionary<String, Value>());
-
-                return _default;
-            }
+            _isReadOnly = false;
+            _variables = new Dictionary<String, Value>();
+            _functions = new Dictionary<String, IFunction>();
+            _constants = new Dictionary<String, IConstants>();
+            _defaultProperties = new Dictionary<String, IDictionary<String, Value>>();
+            _parent = parentContext;
+            _precision = parentContext.Precision;
+            _displayStyle = parentContext._displayStyle;
         }
 
         #endregion
@@ -112,11 +115,55 @@
         #region Properties
 
         /// <summary>
+        /// Gets or sets the name of the last answer.
+        /// </summary>
+        public String Answer
+        {
+            get { return String.IsNullOrEmpty(_answer) ? Parent.Answer : _answer; }
+            set 
+            {
+                if (!IsReadOnly)
+                {
+                    _answer = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the elements.
+        /// </summary>
+        public Elements Elements
+        {
+            get { return _elements ?? _parent.Elements; }
+        }
+
+        /// <summary>
+        /// Gets or sets of scripting should be enabled (allowed / activated).
+        /// Scripting will activate loop constructs and conditionals. This will
+        /// also activate file system access in the non-portable version.
+        /// </summary>
+        public Boolean UseScripting
+        {
+            get { return _scripting; }
+            set { _scripting = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets if YAMP should run in interactive mode.
+        /// The interactive mode will fire events.
+        /// </summary>
+        public Boolean InteractiveMode
+        {
+            get { return _interactive; }
+            set { _interactive = value; }
+        }
+
+        /// <summary>
         /// Gets the context's parent context (NULL for the top context).
         /// </summary>
         public ParseContext Parent
         {
-            get { return parent; }
+            get { return _parent; }
         }
 
         /// <summary>
@@ -124,8 +171,8 @@
         /// </summary>
         public DisplayStyle DefaultDisplayStyle
         {
-            get { return displayStyle; }
-            set { displayStyle = value; }
+            get { return _displayStyle; }
+            set { _displayStyle = value; }
         }
 
         /// <summary>
@@ -133,7 +180,7 @@
         /// </summary>
         public IDictionary<String, IConstants> Constants
         {
-            get { return constants; }
+            get { return _constants; }
         }
 
         /// <summary>
@@ -143,15 +190,17 @@
         {
             get
             {
-				var consts = new Dictionary<String, IConstants>(constants);
-                var top = parent;
+				var consts = new Dictionary<String, IConstants>(_constants);
+                var top = _parent;
 
                 while (top != null)
                 {
                     foreach (var cst in top.Constants.Keys)
+                    {
                         consts.Add(cst, top.Constants[cst]);
+                    }
 
-                    top = top.parent;
+                    top = top._parent;
                 }
 
                 return consts;
@@ -163,7 +212,7 @@
         /// </summary>
         public IDictionary<String, IFunction> Functions
         {
-            get { return functions; }
+            get { return _functions; }
         }
 
         /// <summary>
@@ -173,15 +222,17 @@
         {
             get
             {
-                var funcs = new Dictionary<String, IFunction>(functions);
-                var top = parent;
+                var funcs = new Dictionary<String, IFunction>(_functions);
+                var top = _parent;
 
                 while (top != null)
                 {
                     foreach (var function in top.Functions.Keys)
+                    {
                         funcs.Add(function, top.Functions[function]);
+                    }
 
-                    top = top.parent;
+                    top = top._parent;
                 }
 
                 return funcs;
@@ -193,7 +244,7 @@
         /// </summary>
         public IDictionary<String, Value> Variables
         {
-            get { return variables; }
+            get { return _variables; }
         }
 
         /// <summary>
@@ -203,15 +254,15 @@
         {
             get
             {
-                var vars = new Dictionary<String, Value>(variables);
-                var top = parent;
+                var vars = new Dictionary<String, Value>(_variables);
+                var top = _parent;
 
                 while (top != null)
                 {
                     foreach (var variable in top.Variables.Keys)
                         vars.Add(variable, top.Variables[variable]);
 
-                    top = top.parent;
+                    top = top._parent;
                 }
 
                 return vars;
@@ -234,7 +285,7 @@
         /// </summary>
         public Boolean IsReadOnly
         {
-            get { return isReadOnly; }
+            get { return _isReadOnly; }
         }
 
         /// <summary>
@@ -242,8 +293,8 @@
         /// </summary>
         public Int32 Precision
         {
-            get { return precision.HasValue ? precision.Value : parent.Precision; }
-            set { precision = value; }
+            get { return _precision.HasValue ? _precision.Value : _parent.Precision; }
+            set { _precision = value; }
         }
 
         /// <summary>
@@ -253,19 +304,21 @@
         {
             get 
             {
-                if (lastPlot == null && parent != null)
-                    return parent.LastPlot;
+                if (_lastPlot == null && _parent != null)
+                {
+                    return _parent.LastPlot;
+                }
 
-                return lastPlot; 
+                return _lastPlot; 
             }
             internal set
             {
-                if (value == lastPlot)
-                    return;
-
-                lastPlot = value;
-                ApplyPlotTemplate(value);
-                RaiseLastPlotChanged(value);
+                if (value != _lastPlot)
+                {
+                    _lastPlot = value;
+                    ApplyPlotTemplate(value);
+                    RaiseLastPlotChanged(new PlotEventArgs(value));
+                }
             }
         }
 
@@ -287,10 +340,10 @@
         {
             var lname = name.ToLower();
 
-            if (constants.ContainsKey(lname))
-                constants[lname] = constant;
+            if (_constants.ContainsKey(lname))
+                _constants[lname] = constant;
             else
-                constants.Add(lname, constant);
+                _constants.Add(lname, constant);
 
             return this;
         }
@@ -309,10 +362,10 @@
         {
             var lname = name.ToLower();
 
-            if (functions.ContainsKey(lname))
-                functions[lname] = func;
+            if (_functions.ContainsKey(lname))
+                _functions[lname] = func;
             else
-                functions.Add(lname, func);
+                _functions.Add(lname, func);
 
             return this;
         }
@@ -332,8 +385,8 @@
         {
             var lname = name.ToLower();
 
-            if (constants.ContainsKey(lname))
-                constants.Remove(lname);
+            if (_constants.ContainsKey(lname))
+                _constants.Remove(lname);
 
             return this;
         }
@@ -349,8 +402,8 @@
         {
             var lname = name.ToLower();
             
-            if (functions.ContainsKey(lname))
-                functions.Remove(lname);
+            if (_functions.ContainsKey(lname))
+                _functions.Remove(lname);
 
             return this;
         }
@@ -373,11 +426,11 @@
         {
             var lname = oldName.ToLower();
 
-            if (constants.ContainsKey(lname))
+            if (_constants.ContainsKey(lname))
             {
-                var buffer = constants[lname];
-                constants.Remove(lname);
-                constants.Add(newName, buffer);
+                var buffer = _constants[lname];
+                _constants.Remove(lname);
+                _constants.Add(newName, buffer);
             }
 
             return this;
@@ -397,11 +450,11 @@
         {
             var lname = oldName.ToLower();
 
-            if (functions.ContainsKey(lname))
+            if (_functions.ContainsKey(lname))
             {
-                var buffer = functions[lname];
-                functions.Remove(lname);
-                functions.Add(newName, buffer);
+                var buffer = _functions[lname];
+                _functions.Remove(lname);
+                _functions.Add(newName, buffer);
             }
 
             return this;
@@ -422,11 +475,11 @@
         {
             var lname = name.ToLower();
 
-            if (constants.ContainsKey(lname))
-                return constants[lname];
+            if (_constants.ContainsKey(lname))
+                return _constants[lname];
 
-            if (parent != null)
-                return parent.FindConstants(name);
+            if (_parent != null)
+                return _parent.FindConstants(name);
 
             return null;
         }
@@ -442,11 +495,11 @@
         {
             var lname = name.ToLower();
 
-            if (functions.ContainsKey(lname))
-                return functions[lname];
+            if (_functions.ContainsKey(lname))
+                return _functions[lname];
 
-            if (parent != null)
-                return parent.FindFunction(name);
+            if (_parent != null)
+                return _parent.FindFunction(name);
 
             return null;
         }
@@ -460,10 +513,13 @@
         /// </summary>
         public ParseContext Clear()
         {
-            foreach (var pair in variables)
-                RaiseVariableRemoved(pair.Key, pair.Value);
+            foreach (var pair in _variables)
+            {
+                var e = new VariableEventArgs(pair.Key, pair.Value);
+                RaiseVariableRemoved(e);
+            }
 
-            variables.Clear();
+            _variables.Clear();
             return this;
         }
 
@@ -496,25 +552,27 @@
         /// <param name="value">The value of the variable.</param>
         static void AssignVariable(ParseContext context, String name, Value value)
         {
+            var e = new VariableEventArgs(name, value);
+
             if (value != null)
             {
-                if (context.variables.ContainsKey(name))
+                if (context._variables.ContainsKey(name))
                 {
-                    context.variables[name] = value;
-                    context.RaiseVariableChanged(name, value);
+                    context._variables[name] = value;
+                    context.RaiseVariableChanged(e);
                 }
                 else
                 {
-                    context.variables.Add(name, value);
-                    context.RaiseVariableCreated(name, value);
+                    context._variables.Add(name, value);
+                    context.RaiseVariableCreated(e);
                 }
             }
             else
             {
-                if (context.variables.ContainsKey(name))
+                if (context._variables.ContainsKey(name))
                 {
-                    context.variables.Remove(name);
-                    context.RaiseVariableRemoved(name, value);
+                    context._variables.Remove(name);
+                    context.RaiseVariableRemoved(e);
                 }
             }
         }
@@ -528,11 +586,15 @@
         /// <returns>The value of the variable or null.</returns>
         public Value GetVariable(String name)
         {
-            if (variables.ContainsKey(name))
-                return variables[name] as Value;
+            if (_variables.ContainsKey(name))
+            {
+                return _variables[name] as Value;
+            }
 
-            if (parent != null)
-                return parent.GetVariable(name);
+            if (_parent != null)
+            {
+                return _parent.GetVariable(name);
+            }
 
             return null;
         }
@@ -544,11 +606,15 @@
         /// <returns>The context or NULL if nothing was found.</returns>
         public ParseContext GetVariableContext(String name)
         {
-            if (variables.ContainsKey(name))
+            if (_variables.ContainsKey(name))
+            {
                 return this;
+            }
 
-            if (parent != null)
-                return parent.GetVariableContext(name);
+            if (_parent != null)
+            {
+                return _parent.GetVariableContext(name);
+            }
 
             return null;
         }
@@ -564,40 +630,9 @@
         /// <returns>The current context.</returns>
         public ParseContext ChangeLastPlotTo(PlotValue plot)
         {
-            lastPlot = plot;
-            RaiseLastPlotChanged(plot);
+            _lastPlot = plot;
+            RaiseLastPlotChanged(new PlotEventArgs(plot));
             return this;
-        }
-
-        /// <summary>
-        /// Runs a query within the current context.
-        /// </summary>
-        /// <param name="query">
-        /// The input to parse and execute.
-        /// </param>
-        /// <returns>The current context.</returns>
-        public QueryContext Run(String query)
-        {
-            var parser = Parser.Parse(this, query);
-            parser.Execute();
-            return parser.Context;
-        }
-
-        /// <summary>
-        /// Runs a query within the current context.
-        /// </summary>
-        /// <param name="query">
-        /// The input to parse and execute.
-        /// </param>
-        /// <param name="variables">
-        /// The volatile variables to consider.
-        /// </param>
-        /// <returns>The current context.</returns>
-        public QueryContext Run(String query, Dictionary<String, Object> variables)
-        {
-            var parser = Parser.Parse(this, query);
-            parser.Execute(variables);
-            return parser.Context;
         }
         
         #endregion
@@ -607,55 +642,92 @@
         /// <summary>
         /// This is raised when a variable has changed.
         /// </summary>
-        /// <param name="name">The name of the variable.</param>
-        /// <param name="value">The value of the variable.</param>
-        internal void RaiseVariableChanged(String name, Value value)
+        /// <param name="e">The variable arguments.</param>
+        internal void RaiseVariableChanged(VariableEventArgs e)
         {
             if (OnVariableChanged != null)
             {
-                var args = new VariableEventArgs(name, value);
-                OnVariableChanged(this, args);
+                OnVariableChanged(this, e);
             }
         }
 
         /// <summary>
         /// This is raised when a variable has been created.
         /// </summary>
-        /// <param name="name">The name of the variable.</param>
-        /// <param name="value">The value of the variable.</param>
-        internal void RaiseVariableCreated(String name, Value value)
+        /// <param name="e">The variable arguments.</param>
+        internal void RaiseVariableCreated(VariableEventArgs e)
         {
             if (OnVariableCreated != null)
             {
-                var args = new VariableEventArgs(name, value);
-                OnVariableCreated(this, args);
+                OnVariableCreated(this, e);
             }
         }
 
         /// <summary>
         /// This is raised when a variable has been removed.
         /// </summary>
-        /// <param name="name">The name of the variable.</param>
-        /// <param name="value">The value of the variable.</param>
-        internal void RaiseVariableRemoved(String name, Value value)
+        /// <param name="e">The variable arguments.</param>
+        internal void RaiseVariableRemoved(VariableEventArgs e)
         {
             if (OnVariableRemoved != null)
             {
-                var args = new VariableEventArgs(name, value);
-                OnVariableRemoved(this, args);
+                OnVariableRemoved(this, e);
             }
         }
 
         /// <summary>
         /// This is raised when the last plot has been changed.
         /// </summary>
-        /// <param name="plot"></param>
-        internal void RaiseLastPlotChanged(PlotValue plot)
+        /// <param name="e">The plot arguments.</param>
+        internal void RaiseLastPlotChanged(PlotEventArgs e)
         {
             if (OnLastPlotChanged != null)
             {
-                var args = new PlotEventArgs(plot, String.Empty);
-                OnLastPlotChanged(this, args);
+                OnLastPlotChanged(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Raises the notification if in interactive mode.
+        /// </summary>
+        /// <param name="e">The notification arguments.</param>
+        internal void RaiseNotification(NotificationEventArgs e)
+        {
+            if (InteractiveMode && OnNotificationReceived != null)
+            {
+                OnNotificationReceived(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Raises the input prompt if in interactive mode.
+        /// </summary>
+        /// <param name="e">The input arguments.</param>
+        internal void RaiseInputPrompt(UserInputEventArgs e)
+        {
+            if (InteractiveMode && OnUserInputRequired != null)
+            {
+                OnUserInputRequired(this, e);
+            }
+            else
+            {
+                e.Continue(String.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Raises the input prompt if in interactive mode.
+        /// </summary>
+        /// <param name="e">The input arguments.</param>
+        internal void RaisePause(PauseEventArgs e)
+        {
+            if (InteractiveMode && OnPauseDemanded != null)
+            {
+                OnPauseDemanded(this, e);
+            }
+            else
+            {
+                e.Continue();
             }
         }
 
@@ -672,10 +744,10 @@
         /// <returns>The current context.</returns>
         public ParseContext SetDefaultProperty(String binName, String propertyName, Value propertyValue)
         {
-            if (!defaultProperties.ContainsKey(binName))
-                defaultProperties.Add(binName, new Dictionary<String, Value>());
+            if (!_defaultProperties.ContainsKey(binName))
+                _defaultProperties.Add(binName, new Dictionary<String, Value>());
 
-            var bin = defaultProperties[binName];
+            var bin = _defaultProperties[binName];
 
             if (propertyValue != null)
             {
@@ -697,8 +769,8 @@
         /// <returns>The read only key value pairs.</returns>
         public ReadOnlyDictionary<String, Value> GetDefaultProperties(String binName)
         {
-            if(defaultProperties.ContainsKey(binName))
-                return new ReadOnlyDictionary<String, Value>(defaultProperties[binName]);
+            if(_defaultProperties.ContainsKey(binName))
+                return new ReadOnlyDictionary<String, Value>(_defaultProperties[binName]);
 
             return new ReadOnlyDictionary<String, Value>();
         }
@@ -710,9 +782,9 @@
         /// <returns>The current context.</returns>
         ParseContext ApplyPlotTemplate(PlotValue plot)
         {
-            if (defaultProperties.ContainsKey("plot"))
+            if (_defaultProperties.ContainsKey("plot"))
             {
-                var bin = defaultProperties["plot"];
+                var bin = _defaultProperties["plot"];
 
                 foreach (var pair in bin)
                 {
@@ -721,9 +793,9 @@
                 }
             }
 
-            if (defaultProperties.ContainsKey("series"))
+            if (_defaultProperties.ContainsKey("series"))
             {
-                var bin = defaultProperties["series"];
+                var bin = _defaultProperties["series"];
 
                 foreach (var pair in bin)
                 {

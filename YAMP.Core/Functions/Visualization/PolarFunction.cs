@@ -1,11 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
 	[Description("Visualizes a given set of points in form of a polar plot.")]
 	[Kind(PopularKinds.Plot)]
 	sealed class PolarFunction : VisualizationFunction
 	{
+        public PolarFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
 		[Description("Performs the polar plot of a matrix. The first column is interpreted as x-values if more than one column is given. All other columns will be interpreted as y-values.")]
 		[Example("polar(sin(0:0.1:2*pi))", "Plots the values of the sine function in a polar (circular) plot.")]
 		[Example("polar([0:0.1:2*pi, sin(0:0.1:2*pi)])", "Plots the values of sine in a polar (circular) plot.")]

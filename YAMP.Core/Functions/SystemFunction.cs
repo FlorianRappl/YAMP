@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     /// <summary>
     /// SystemFunction is a special kind of ArgumentFunction, which saves the
@@ -10,14 +8,6 @@ namespace YAMP
     public abstract class SystemFunction : ArgumentFunction
 	{
 		#region ctor
-
-        /// <summary>
-        /// Creates a new system function with the default context.
-        /// </summary>
-		public SystemFunction()
-        {
-            Context = ParseContext.Default;
-		}
 
         /// <summary>
         /// Creates a new system function with a specific context.
@@ -35,7 +25,11 @@ namespace YAMP
         /// <summary>
         /// Gets or sets the associated context.
         /// </summary>
-		public ParseContext Context { get; set; }
+		public ParseContext Context 
+        { 
+            get; 
+            private set; 
+        }
 
 		#endregion
 
@@ -49,9 +43,8 @@ namespace YAMP
         /// <returns>The evaluted value.</returns>
 		public override Value Perform(ParseContext context, Value argument)
         {
-			var function = GetType().GetConstructor(Value.EmptyTypes).Invoke(null) as SystemFunction;
-            function.Context = context;
-            return function.Perform(argument);
+			var function = GetType().GetConstructor(new [] { typeof(ParseContext) }).Invoke(new [] { context });
+            return ((SystemFunction)function).Perform(argument);
 		}
 
 		#endregion

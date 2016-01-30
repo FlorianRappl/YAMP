@@ -12,21 +12,21 @@
     {
         #region Fields
 
-        readonly QueryContext query;
-        readonly List<YAMPParseError> errors;
-        readonly List<Statement> statements;
+        readonly QueryContext _query;
+        readonly ParseContext _context;
+        readonly List<YAMPParseError> _errors;
+        readonly List<Statement> _statements;
 
-        Char[] characters;
-        ParseEngine parent;
-        Int32 currentLine;
-        Int32 currentColumn;
-        Boolean parsed;
-        Boolean parsing;
-        Boolean useKeywords;
-        Statement currentStatement;
-        Boolean terminated;
-        Marker markers;
-        Int32 ptr;
+        Char[] _characters;
+        ParseEngine _parent;
+        Int32 _currentLine;
+        Int32 _currentColumn;
+        Boolean _parsed;
+        Boolean _parsing;
+        Statement _currentStatement;
+        Boolean _terminated;
+        Marker _markers;
+        Int32 _ptr;
 
         #endregion
 
@@ -36,21 +36,30 @@
         /// Creates a new instance of the parse engine.
         /// </summary>
         /// <param name="input">The query context to consider.</param>
-        public ParseEngine(QueryContext input)
+        /// <param name="context">The parser context to use.</param>
+        public ParseEngine(QueryContext input, ParseContext context)
         {
-            query = input;
-            useKeywords = Parser.UseScripting;
-            characters = input.Input.ToCharArray();
-            errors = new List<YAMPParseError>();
-            statements = new List<Statement>();
-            markers = Marker.None;
-            currentLine = 1;
-            currentColumn = 1;
+            _context = context;
+            _query = input;
+            _characters = input.Input.ToCharArray();
+            _errors = new List<YAMPParseError>();
+            _statements = new List<Statement>();
+            _markers = Marker.None;
+            _currentLine = 1;
+            _currentColumn = 1;
         }
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets or sets the elements mapping.
+        /// </summary>
+        public Elements Elements
+        {
+            get { return _context.Elements; }
+        }
 
         /// <summary>
         /// Gets the names of all collected (user-defined) symbols.
@@ -61,24 +70,20 @@
             {
                 var symbols = new List<String>();
 
-                for (var i = 0; i < statements.Count; i++)
+                for (var i = 0; i < _statements.Count; i++)
                 {
-                    if (statements[i] != null && statements[i].Container != null)
+                    if (_statements[i] != null && _statements[i].Container != null)
                     {
-                        var listOfSymbols = statements[i].Container.GetSymbols();
+                        var listOfSymbols = _statements[i].Container.GetSymbols();
 
                         for (var j = 0; j < listOfSymbols.Length; j++)
                         {
-                            if (symbols.Contains(listOfSymbols[j].SymbolName))
-                                continue;
-
-                            if (Context.FindFunction(listOfSymbols[j].SymbolName) != null)
-                                continue;
-
-                            if (Context.FindConstants(listOfSymbols[j].SymbolName) != null)
-                                continue;
-
-                            symbols.Add(listOfSymbols[j].SymbolName);
+                            if (!symbols.Contains(listOfSymbols[j].SymbolName) && 
+                                Context.FindFunction(listOfSymbols[j].SymbolName) == null &&
+                                Context.FindConstants(listOfSymbols[j].SymbolName) == null)
+                            {
+                                symbols.Add(listOfSymbols[j].SymbolName);
+                            }
                         }
                     }
                 }
@@ -92,8 +97,8 @@
         /// </summary>
         public ParseEngine Parent
         {
-            get { return parent; }
-            internal set { parent = value; }
+            get { return _parent; }
+            internal set { _parent = value; }
         }
 
         /// <summary>
@@ -101,7 +106,7 @@
         /// </summary>
         public Int32 ErrorCount
         {
-            get { return errors.Count; }
+            get { return _errors.Count; }
         }
 
         /// <summary>
@@ -109,7 +114,7 @@
         /// </summary>
         internal Int32 Pointer
         {
-            get { return ptr; }
+            get { return _ptr; }
         }
 
         /// <summary>
@@ -117,7 +122,7 @@
         /// </summary>
         public QueryContext Query
         {
-            get { return query; }
+            get { return _query; }
         }
 
         /// <summary>
@@ -125,7 +130,7 @@
         /// </summary>
         public ParseContext Context
         {
-            get { return query.Context; }
+            get { return _query.Context; }
         }
 
         /// <summary>
@@ -133,7 +138,7 @@
         /// </summary>
         public Boolean CanRun
         {
-            get { return parsed && errors.Count == 0; }
+            get { return _parsed && _errors.Count == 0; }
         }
 
         /// <summary>
@@ -141,7 +146,7 @@
         /// </summary>
         public Boolean IsParsed
         {
-            get { return parsed; }
+            get { return _parsed; }
         }
 
         /// <summary>
@@ -149,7 +154,7 @@
         /// </summary>
         public Boolean IsTerminated
         {
-            get { return terminated; }
+            get { return _terminated; }
         }
 
         /// <summary>
@@ -157,7 +162,7 @@
         /// </summary>
         public Boolean IsParsing
         {
-            get { return parsing; }
+            get { return _parsing; }
         }
 
         /// <summary>
@@ -165,7 +170,7 @@
         /// </summary>
         public Int32 CurrentLine
         {
-            get { return currentLine; }
+            get { return _currentLine; }
         }
 
         /// <summary>
@@ -173,7 +178,7 @@
         /// </summary>
         public Int32 CurrentColumn
         {
-            get { return currentColumn; }
+            get { return _currentColumn; }
         }
 
         /// <summary>
@@ -181,7 +186,7 @@
         /// </summary>
         public Boolean HasErrors
         {
-            get { return errors.Count > 0; }
+            get { return _errors.Count > 0; }
         }
 
         /// <summary>
@@ -191,8 +196,10 @@
         {
             get
             {
-                foreach (var error in errors)
+                foreach (var error in _errors)
+                {
                     yield return error;
+                }
             }
         }
 
@@ -203,8 +210,10 @@
         {
             get
             {
-                foreach (var statement in statements)
+                foreach (var statement in _statements)
+                {
                     yield return statement;
+                }
             }
         }
 
@@ -213,7 +222,7 @@
         /// </summary>
         internal Statement LastStatement
         {
-            get { return statements.Count != 0 ? statements[statements.Count - 1] : null; }
+            get { return _statements.Count != 0 ? _statements[_statements.Count - 1] : null; }
         }
 
         /// <summary>
@@ -221,7 +230,7 @@
         /// </summary>
         internal Statement CurrentStatement
         {
-            get { return currentStatement; }
+            get { return _currentStatement; }
         }
 
         /// <summary>
@@ -229,7 +238,7 @@
         /// </summary>
         public Boolean UseKeywords
         {
-            get { return useKeywords; }
+            get { return _context.UseScripting; }
         }
 
         /// <summary>
@@ -237,7 +246,7 @@
         /// </summary>
         public Int32 Count
         {
-            get { return statements.Count; }
+            get { return _statements.Count; }
         }
 
         /// <summary>
@@ -245,7 +254,7 @@
         /// </summary>
         public Char[] Characters
         {
-            get { return characters; }
+            get { return _characters; }
         }
 
         #endregion
@@ -259,22 +268,26 @@
         /// <returns>The current parse engine.</returns>
         internal ParseEngine AddError(YAMPParseError error)
         {
-            if (errors.Count != 0)
+            if (_errors.Count != 0)
             {
-                var lerr = errors[errors.Count - 1];
+                var lerr = _errors[_errors.Count - 1];
 
                 if (lerr.Column == error.Column && lerr.Line == error.Line)
                 {
-                    if (ptr < characters.Length - 1)
+                    if (_ptr < _characters.Length - 1)
+                    {
                         Advance();
+                    }
                     else
-                        parsing = false;
+                    {
+                        _parsing = false;
+                    }
 
                     return this;
                 }
             }
 
-            errors.Add(error);
+            _errors.Add(error);
             return this;
         }
 
@@ -302,15 +315,14 @@
         /// <returns>The current (reseted) parse engine.</returns>
         public ParseEngine Reset(String input)
         {
-            useKeywords = Parser.UseScripting;
-            query.Input = input;
-            characters = input.ToCharArray();
-            errors.Clear();
-            statements.Clear();
-            markers = Marker.None;
-            parsed = false;
-            parsing = false;
-            terminated = false;
+            _query.Input = input;
+            _characters = input.ToCharArray();
+            _errors.Clear();
+            _statements.Clear();
+            _markers = Marker.None;
+            _parsed = false;
+            _parsing = false;
+            _terminated = false;
             return this;
         }
 
@@ -320,22 +332,26 @@
         /// <returns>The current parse engine.</returns>
         public ParseEngine Parse()
         {
-            if (parsed)
+            if (_parsed)
+            {
                 Reset(Query.Input);
+            }
 
-            parsing = true;
-            ptr = 0;
+            _parsing = true;
+            _ptr = 0;
 
-            while (parsing && ptr < characters.Length)
+            while (_parsing && _ptr < _characters.Length)
             {
                 var statement = ParseStatement();
 
                 if (!statement.IsEmpty)
-                    statements.Add(statement);
+                {
+                    _statements.Add(statement);
+                }
             }
 
-            parsing = false;
-            parsed = true;
+            _parsing = false;
+            _parsed = true;
             return this;
         }
 
@@ -347,37 +363,37 @@
         {
             var statement = new Statement();
 
-            while (parsing && ptr < characters.Length)
+            while (_parsing && _ptr < _characters.Length)
             {
-                if (IsWhiteSpace(characters[ptr]))
+                if (IsWhiteSpace(_characters[_ptr]))
                 {
-                    ptr++;
-                    currentColumn++;
+                    _ptr++;
+                    _currentColumn++;
                 }
-                else if (IsNewLine(characters[ptr]))
+                else if (IsNewLine(_characters[_ptr]))
                 {
-                    ptr++;
-                    currentColumn = 1;
-                    currentLine++;
+                    _ptr++;
+                    _currentColumn = 1;
+                    _currentLine++;
                 }
-                else if (characters[ptr] == ';')
+                else if (_characters[_ptr] == ';')
                 {
                     statement.IsMuted = true;
-                    currentColumn++;
-                    ptr++;
+                    _currentColumn++;
+                    _ptr++;
                     break;
                 }
-                else if (characters[ptr] == '}')
+                else if (_characters[_ptr] == '}')
                 {
-                    terminated = true;
-                    parsing = false;
-                    ptr++;
-                    currentColumn++;
+                    _terminated = true;
+                    _parsing = false;
+                    _ptr++;
+                    _currentColumn++;
                     break;
                 }
-                else if (ptr < characters.Length - 1 && IsComment(characters[ptr], characters[ptr + 1]))
+                else if (_ptr < _characters.Length - 1 && IsComment(_characters[_ptr], _characters[_ptr + 1]))
                 {
-                    if (IsLineComment(characters[ptr], characters[ptr + 1]))
+                    if (IsLineComment(_characters[_ptr], _characters[_ptr + 1]))
                         AdvanceToNextLine();
                     else
                         AdvanceTo("*/");
@@ -403,44 +419,46 @@
             var terminated = false;
             var statement = new Statement();
 
-            while (parsing && ptr < characters.Length)
+            while (_parsing && _ptr < _characters.Length)
             {
-                if (handleCharacter != null && handleCharacter(characters[ptr], statement))
-                    continue;
-
-                if (IsWhiteSpace(characters[ptr]))
+                if (handleCharacter == null || !handleCharacter(_characters[_ptr], statement))
                 {
-                    ptr++;
-                    currentColumn++;
-                }
-                else if (IsNewLine(characters[ptr]))
-                {
-                    ptr++;
-                    currentColumn = 1;
-                    currentLine++;
-                }
-                else if (characters[ptr] == termination)
-                {
-                    terminated = true;
-                    currentColumn++;
-                    ptr++;
-                    break;
-                }
-                else if (ptr < characters.Length - 1 && IsComment(characters[ptr], characters[ptr + 1]))
-                {
-                    if (IsLineComment(characters[ptr], characters[ptr + 1]))
-                        AdvanceToNextLine();
+                    if (IsWhiteSpace(_characters[_ptr]))
+                    {
+                        _ptr++;
+                        _currentColumn++;
+                    }
+                    else if (IsNewLine(_characters[_ptr]))
+                    {
+                        _ptr++;
+                        _currentColumn = 1;
+                        _currentLine++;
+                    }
+                    else if (_characters[_ptr] == termination)
+                    {
+                        terminated = true;
+                        _currentColumn++;
+                        _ptr++;
+                        break;
+                    }
+                    else if (_ptr < _characters.Length - 1 && IsComment(_characters[_ptr], _characters[_ptr + 1]))
+                    {
+                        if (IsLineComment(_characters[_ptr], _characters[_ptr + 1]))
+                            AdvanceToNextLine();
+                        else
+                            AdvanceTo("*/");
+                    }
                     else
-                        AdvanceTo("*/");
-                }
-                else
-                {
-                    ParseBlock(statement);
+                    {
+                        ParseBlock(statement);
+                    }
                 }
             }
 
             if (!terminated)
-                AddError(terminationMissing != null ? terminationMissing(this) : new YAMPTerminatorMissingError(currentLine, currentColumn, termination));
+            {
+                AddError(terminationMissing != null ? terminationMissing(this) : new YAMPTerminatorMissingError(_currentLine, _currentColumn, termination));
+            }
 
             return statement.Finalize(this);
         }
@@ -453,31 +471,38 @@
         /// <returns>The statement again (allows chaining).</returns>
         internal Statement ParseBlock(Statement statement, Operator defaultOperator = null)
         {
-            currentStatement = statement;
+            _currentStatement = statement;
 
             if (statement.IsOperator)
             {
-                var op = Elements.Instance.FindOperator(this) ?? defaultOperator;
+                var op = Elements.FindOperator(this) ?? defaultOperator;
 
                 if (op == null)
-                    AddError(new YAMPOperatorMissingError(currentLine, currentColumn));
+                {
+                    AddError(new YAMPOperatorMissingError(_currentLine, _currentColumn));
+                }
 
                 statement.Push(this, op);
             }
             else
             {
-                var op = Elements.Instance.FindLeftUnaryOperator(this);
+                var op = Elements.FindLeftUnaryOperator(this);
 
                 if (op == null)
                 {
-                    var exp = Elements.Instance.FindExpression(this);
+                    var exp = Elements.FindExpression(this);
 
                     if (exp == null)
-                        AddError(new YAMPExpressionExpectedError(currentLine, currentColumn));
+                    {
+                        AddError(new YAMPExpressionExpectedError(_currentLine, _currentColumn));
+                    }
 
                     statement.Push(this, exp);
                 }
-                else statement.Push(this, op);
+                else
+                {
+                    statement.Push(this, op);
+                }
             }
 
             return statement;
@@ -495,8 +520,10 @@
         /// <returns>The current instance.</returns>
         internal ParseEngine Replace(Int32 index, Char replacement)
         {
-            if(index >= 0 && index < characters.Length)
-                characters[index] = replacement;
+            if (index >= 0 && index < _characters.Length)
+            {
+                _characters[index] = replacement;
+            }
 
             return this;
         }
@@ -507,15 +534,17 @@
         /// <returns>The current instance.</returns>
         internal ParseEngine Advance()
         {
-            if (IsNewLine(characters[ptr]))
+            if (IsNewLine(_characters[_ptr]))
             {
-                currentLine++;
-                currentColumn = 1;
+                _currentLine++;
+                _currentColumn = 1;
             }
             else
-                currentColumn++;
+            {
+                _currentColumn++;
+            }
 
-            ptr++;
+            _ptr++;
             return this;
         }
 
@@ -526,7 +555,7 @@
         /// <returns>The current instance.</returns>
         internal ParseEngine Advance(Int32 shift)
         {
-            return SetPointer(ptr + shift);
+            return SetPointer(_ptr + shift);
         }
 
         /// <summary>
@@ -535,13 +564,15 @@
         /// <returns>The current instance.</returns>
         internal ParseEngine AdvanceToNextLine()
         {
-            while (ptr < characters.Length)
+            while (_ptr < _characters.Length)
             {
-                var ch = characters[ptr];
+                var ch = _characters[_ptr];
                 Advance();
 
                 if (IsNewLine(ch))
+                {
                     break;
+                }
             }
 
             return this;
@@ -574,15 +605,15 @@
         /// <returns>The current instance.</returns>
         internal ParseEngine AdvanceTo(Char[] target)
         {
-            while (ptr < characters.Length)
+            while (_ptr < _characters.Length)
             {
-                if (characters.Length - ptr >= target.Length)
+                if (_characters.Length - _ptr >= target.Length)
                 {
                     var found = true;
 
                     for (var i = 0; i < target.Length; i++)
                     {
-                        if (characters[i + ptr] != target[i])
+                        if (_characters[i + _ptr] != target[i])
                         {
                             found = false;
                             break;
@@ -609,28 +640,34 @@
         /// <returns>The current instance.</returns>
         internal ParseEngine Skip()
         {
-            while (ptr < characters.Length)
+            while (_ptr < _characters.Length)
             {
-                if (IsWhiteSpace(characters[ptr]))
+                if (IsWhiteSpace(_characters[_ptr]))
                 {
-                    ptr++;
-                    currentColumn++;
+                    _ptr++;
+                    _currentColumn++;
                 }
-                else if (IsNewLine(characters[ptr]))
+                else if (IsNewLine(_characters[_ptr]))
                 {
-                    ptr++;
-                    currentColumn = 1;
-                    currentLine++;
+                    _ptr++;
+                    _currentColumn = 1;
+                    _currentLine++;
                 }
-                else if (ptr < characters.Length - 1 && IsComment(characters[ptr], characters[ptr + 1]))
+                else if (_ptr < _characters.Length - 1 && IsComment(_characters[_ptr], _characters[_ptr + 1]))
                 {
-                    if (IsLineComment(characters[ptr], characters[ptr + 1]))
+                    if (IsLineComment(_characters[_ptr], _characters[_ptr + 1]))
+                    {
                         AdvanceToNextLine();
+                    }
                     else
+                    {
                         AdvanceTo("*/");
+                    }
                 }
                 else
+                {
                     break;
+                }
             }
 
             return this;
@@ -645,8 +682,8 @@
         /// <returns>The current instance.</returns>
         internal ParseEngine SetOffset(Int32 line, Int32 column)
         {
-            currentLine = line;
-            currentColumn = column;
+            _currentLine = line;
+            _currentColumn = column;
             return this;
         }
 
@@ -657,19 +694,21 @@
         /// <returns>The current instance.</returns>
         internal ParseEngine SetPointer(Int32 newPosition)
         {
-            var shift = newPosition > ptr ? 1 : -1;
+            var shift = newPosition > _ptr ? 1 : -1;
 
-            while (ptr != newPosition)
+            while (_ptr != newPosition)
             {
-                if (IsNewLine(characters[ptr]))
+                if (IsNewLine(_characters[_ptr]))
                 {
-                    currentLine += shift;
-                    currentColumn = 1;
+                    _currentLine += shift;
+                    _currentColumn = 1;
                 }
                 else
-                    currentColumn += shift;
+                {
+                    _currentColumn += shift;
+                }
 
-                ptr += shift;
+                _ptr += shift;
             }
 
             return this;
@@ -681,21 +720,23 @@
 
         internal ParseEngine InsertMarker(Marker marker)
         {
-            markers = markers | marker;
+            _markers = _markers | marker;
             return this;
         }
 
         internal ParseEngine RemoveMarker(Marker marker)
         {
             if (HasMarker(marker))
-                markers = markers ^ marker;
+            {
+                _markers = _markers ^ marker;
+            }
 
             return this;
         }
 
         internal Boolean HasMarker(Marker marker)
         {
-            return (markers & marker) == marker;
+            return (_markers & marker) == marker;
         }
 
         #endregion
@@ -822,8 +863,10 @@
         {
             var sb = new StringBuilder();
 
-            foreach (var statement in statements)
+            foreach (var statement in _statements)
+            {
                 sb.Append("::").AppendLine(statement.ToString());
+            }
 
             return sb.ToString();
         }

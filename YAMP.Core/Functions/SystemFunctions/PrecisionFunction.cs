@@ -1,11 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
 	[Description("Gets or sets the precision set for display purposes.")]
 	[Kind(PopularKinds.System)]
     sealed class PrecisionFunction : SystemFunction
     {
+        public PrecisionFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Gets the currently set precision in digits.")]
         [Example("precision()")]
         public ScalarValue Function()
@@ -19,7 +22,7 @@ namespace YAMP
         {
             var n = digits.GetIntegerOrThrowException("digits", Name);
             Context.Precision = n;
-            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Information, "Output precision changed to " + Context.Precision + " digits."));
+            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Information, "Output precision changed to " + Context.Precision + " digits."));
         }
     }
 }

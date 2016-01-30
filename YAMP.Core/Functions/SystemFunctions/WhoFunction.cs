@@ -1,14 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+
 	[Description("Lists the available variables.")]
 	[Kind(PopularKinds.System)]
     sealed class WhoFunction : SystemFunction
     {
+        public WhoFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Lists all variables from the current workspace.")]
         [Example("who()")]
         public StringValue Function()
@@ -17,7 +21,9 @@ namespace YAMP
             var variables = Context.AllVariables.Keys.OrderBy(m => m).AsEnumerable();
 
             foreach (var variable in variables)
+            {
                 sb.AppendLine(variable);
+            }
 
             return new StringValue(sb.ToString());
         }
@@ -32,7 +38,9 @@ namespace YAMP
             var variables = Context.AllVariables.Keys.Where(m => regex.IsMatch(m)).OrderBy(m => m).AsEnumerable();
 
             foreach (var variable in variables)
+            {
                 sb.AppendLine(variable);
+            }
 
             return new StringValue(sb.ToString());
         }
@@ -44,7 +52,7 @@ namespace YAMP
 		public StringValue Function(ArgumentsValue filter)
 		{
 			var values = filter.Values;
-			int index = 0;
+			var index = 0;
 			var sb = new StringBuilder();
 
 			foreach(var value in values)
@@ -57,7 +65,9 @@ namespace YAMP
                     sb.Append(Function(str));
                 }
                 else
+                {
                     throw new YAMPArgumentWrongTypeException(value.Header, "String", Name);
+                }
 			}
 
 			return new StringValue(sb.ToString());

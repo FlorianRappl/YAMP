@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// The empty expression - just a dummy!
     /// </summary>
@@ -18,12 +18,12 @@ namespace YAMP
 
         #region Methods
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(Dictionary<String, Value> symbols)
         {
             return null;
         }
 
-        public override void RegisterElement()
+        public override void RegisterElement(Elements elements)
         {
             //Nothing here.
         }
@@ -33,9 +33,9 @@ namespace YAMP
             return new EmptyExpression();
         }
 
-        public override string ToCode()
+        public override String ToCode()
         {
-            return string.Empty;
+            return String.Empty;
         }
 
         #endregion

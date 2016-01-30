@@ -781,7 +781,7 @@
         /// </summary>
         /// <param name="context">The query context to consider.</param>
         /// <returns>The length of the string representation</returns>
-        public int GetLengthOfString(ParseContext context)
+        public Int32 GetLengthOfString(ParseContext context)
         {
             return ToString(context).Length;
         }
@@ -794,20 +794,24 @@
         /// <param name="context">The parse context to use.</param>
         /// <param name="exponent">The global exponent that is in use.</param>
         /// <returns>The string representation for this global exponent.</returns>
-        public string ToString(ParseContext context, int exponent)
+        public String ToString(ParseContext context, Int32 exponent)
         {
             var f = Math.Pow(10, -exponent);
             var re = Format(context, _real * f);
 
-            if (Math.Abs(_imag) < epsilon)
-                return re;
+            if (Math.Abs(_imag) >= epsilon)
+            {
+                var im = Format(context, Math.Abs(_imag) * f) + "i";
 
-            var im = Format(context, Math.Abs(_imag) * f) + "i";
+                if (Math.Abs(_real) < epsilon)
+                {
+                    return (_imag < 0.0 ? "-" : String.Empty) + im;
+                }
 
-            if (Math.Abs(_real) < epsilon)
-                return (_imag < 0.0 ? "-" : string.Empty) + im;
+                return String.Format("{0} {2} {1}", re, im, _imag < 0.0 ? "-" : "+");
+            }
 
-            return string.Format("{0} {2} {1}", re, im, _imag < 0.0 ? "-" : "+");
+            return re;
         }
 
         /// <summary>
@@ -815,7 +819,7 @@
         /// </summary>
         /// <param name="context">The context to use.</param>
         /// <returns>The string representation.</returns>
-        public override string ToString(ParseContext context)
+        public override String ToString(ParseContext context)
         {
             return ToString(context, 0);
         }

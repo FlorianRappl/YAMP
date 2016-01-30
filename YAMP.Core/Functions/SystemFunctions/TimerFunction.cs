@@ -1,20 +1,27 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
 	[Description("Gives access to a stopwatch with milliseconds precision.")]
 	[Kind(PopularKinds.System)]
     sealed class TimerFunction : SystemFunction
 	{
-	    static int _startMilliSecs = 0;
-	    static int _elapsedMilliSecs = 0;
-	    static bool _isRunning = false;
+	    static Int32 _startMilliSecs = 0;
+	    static Int32 _elapsedMilliSecs = 0;
+	    static Boolean _isRunning = false;
 
+        public TimerFunction(ParseContext context)
+            : base(context)
+        {
+        }
+        
 		[Description("Outputs the current value of the stopwatch in milliseconds.")]
 		public ScalarValue Function()
 		{
-			if (_isRunning)
-				return new ScalarValue(_elapsedMilliSecs + Environment.TickCount - _startMilliSecs);
+            if (_isRunning)
+            {
+                return new ScalarValue(_elapsedMilliSecs + Environment.TickCount - _startMilliSecs);
+            }
 
 			return new ScalarValue(_elapsedMilliSecs);
 		}

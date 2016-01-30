@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Class for scanning and building symbol expressions
     /// </summary>
@@ -51,37 +51,45 @@ namespace YAMP
 		public override Value Interpret(Dictionary<string, Value> symbols)
 		{
             if (symbols.ContainsKey(symbolName))
+            {
                 return symbols[symbolName];
+            }
 
             var variable = Context.GetVariable(symbolName);
 
             if (variable != null)
+            {
                 return variable;
+            }
 
             var constant = Context.FindConstants(symbolName);
 
             if (constant != null)
+            {
                 return constant.Value;
+            }
 
             var function = Context.FindFunction(symbolName);
 
-            if (function != null)
-                return new FunctionValue(function);
-
-            function = Query.GetFromBuffer(symbolName);
-
-            if (function != null)
-                return new FunctionValue(function);
-
-            function = Context.LoadFunction(symbolName);
-
-            if (function != null)
+            if (function == null)
             {
-                Query.SetToBuffer(symbolName, function);
-                return new FunctionValue(function);
+                function = Query.GetFromBuffer(symbolName);
+
+                if (function == null)
+                {
+                    function = Context.LoadFunction(symbolName);
+
+                    if (function == null)
+                    {
+                        throw new YAMPSymbolMissingException(symbolName);
+                    }
+
+                    Query.SetToBuffer(symbolName, function);
+                    return new FunctionValue(function);
+                }
             }
-            
-            throw new YAMPSymbolMissingException(symbolName);
+
+            return new FunctionValue(function);
         }
 
         public override Expression Scan(ParseEngine engine)
@@ -94,16 +102,20 @@ namespace YAMP
                 index++;
 
                 while (index < chars.Length && ParseEngine.IsIdentifierPart(chars[index]))
+                {
                     index++;
+                }
 
                 var name = new String(chars, engine.Pointer, index - engine.Pointer);
 
                 if (engine.UseKeywords)
                 {
-                    var keyword = Elements.Instance.FindKeywordExpression(name, engine);
+                    var keyword = engine.Elements.FindKeywordExpression(name, engine);
 
                     if (keyword != null)
+                    {
                         return keyword;
+                    }
                 }
 
                 var exp = new SymbolExpression(engine, name);

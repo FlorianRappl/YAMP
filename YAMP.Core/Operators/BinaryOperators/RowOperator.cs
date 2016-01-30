@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     /// <summary>
     /// This class represents the matrix row seperator operator ;.
@@ -35,7 +33,7 @@ namespace YAMP
 			return MatrixValue.Create(left).AddRow(right);
 		}
 
-		public override void RegisterElement()
+        public override void RegisterElement(Elements elements)
 		{
             //Nothing to do here.
 		}

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
     /// <summary>
     /// Represents a container for expressions and corresponding operators.
     /// </summary>
@@ -182,7 +182,7 @@ namespace YAMP
         /// <summary>
         /// Registers the element in the beginning.
         /// </summary>
-        public override void RegisterElement()
+        public override void RegisterElement(Elements elements)
         {
             //Nothing here
         }
@@ -192,12 +192,16 @@ namespace YAMP
         /// </summary>
         /// <param name="symbols">External symbols to be used.</param>
         /// <returns>The evaluated value.</returns>
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(Dictionary<String, Value> symbols)
         {
             if (_operator != null)
+            {
                 return _operator.Evaluate(_expressions, symbols);
+            }
             else if (_expressions != null && _expressions.Length > 0)
+            {
                 return _expressions[0].Interpret(symbols);
+            }
 
             return null;
         }
@@ -225,9 +229,13 @@ namespace YAMP
                 foreach (var expression in _expressions)
                 {
                     if (expression is ContainerExpression)
+                    {
                         list.AddRange(((ContainerExpression)expression).GetSymbols());
+                    }
                     else if (expression is SymbolExpression)
+                    {
                         list.Add((SymbolExpression)expression);
+                    }
                 }
             }
 

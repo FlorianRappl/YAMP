@@ -1,11 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     [Description("Visualizes a given set of points with errors in form of a graph with error bars.")]
     [Kind(PopularKinds.Plot)]
     sealed class ErrorbarFunction : VisualizationFunction
     {
+        public ErrorbarFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Performs the plot of a matrix with errors. All columns are interpreted as y-values if more than one column is given. The error matrix gives the y-errors (and optionally the x-errors) for the plot.")]
         [Example("errorbar(2^1:16, 0.3 * ones(16, 1))", "Plots the powers of 2 with y = 2, 4, 8, ..., 65536 at x = 1, 2, ..., 16 (since no X values are given) with an error of 0.2.")]
         [Example("errorbar([0:10, 2^(0:2:20), 2^(1:2:21)], [100000 * ones(16, 1), 0.5 * ones(16, 1)])", "Plots the even and odd powers of 2 at x = 0, 1, ..., 10 with an y-error of 100000 and an x-error of 0.5.")]

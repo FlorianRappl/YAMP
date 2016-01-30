@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// Contains information about which variable changed its value into what.
     /// </summary>
@@ -13,11 +13,20 @@ namespace YAMP
         /// Creates a new instance.
         /// </summary>
         /// <param name="value">The PlotValue for the arguments.</param>
-        /// <param name="property">The name of the property.</param>
-        public PlotEventArgs(PlotValue value, string property)
+        public PlotEventArgs(PlotValue value)
         {
             Value = value;
-            Property = property;
+        }
+
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="value">The PlotValue for the arguments.</param>
+        /// <pparam name="propertyName">The name of the property.</pparam>
+        public PlotEventArgs(PlotValue value, String propertyName)
+        {
+            Value = value;
+            PropertyName = propertyName;
         }
 
         #endregion
@@ -25,14 +34,14 @@ namespace YAMP
         #region Properties
 
         /// <summary>
-        /// Gets the name of the variable that has been changed.
-        /// </summary>
-        public string Property { get; private set; }
-
-        /// <summary>
         /// Gets the new value of the variable.
         /// </summary>
         public PlotValue Value { get; private set; }
+
+        /// <summary>
+        /// Gets the property that has been changed.
+        /// </summary>
+        public String PropertyName { get; private set; }
 
         #endregion
     }

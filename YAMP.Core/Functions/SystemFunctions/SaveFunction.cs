@@ -1,14 +1,19 @@
-using System;
-using System.IO;
-using System.Text;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Text;
+
 	[Description("Saves variables from memory in the filesystem.")]
 	[Kind(PopularKinds.System)]
     sealed class SaveFunction : SystemFunction
 	{
+        public SaveFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Saves all variables that are currently available.")]
         [Example("save(\"myfile.mat\")", "Saves all variables in the file myfile.mat.", true)]
         public void Function(StringValue fileName)
@@ -22,7 +27,7 @@ namespace YAMP
 		[Arguments(1)]
         public void Function(StringValue fileName, ArgumentsValue args)
         {
-            var workspace = new Dictionary<string, Value>();
+            var workspace = new Dictionary<String, Value>();
 
             foreach (var arg in args.Values)
             {
@@ -31,7 +36,9 @@ namespace YAMP
                     var name = (arg as StringValue).Value;
 
                     if (Context.Variables.ContainsKey(name))
+                    {
                         workspace.Add(name, Context.Variables[name]);
+                    }
                 }
             }
 
@@ -41,11 +48,11 @@ namespace YAMP
 
         #region Helpers
 
-        public static void Save(string filename, IDictionary<string, Value> workspace)
+        public static void Save(String filename, IDictionary<String, Value> workspace)
         {
             using (var fs = File.Create(filename))
             {
-                foreach (string variable in workspace.Keys)
+                foreach (var variable in workspace.Keys)
                 {
                     var idx = Encoding.Unicode.GetBytes(variable);
                     var len = BitConverter.GetBytes(idx.Length);
@@ -66,7 +73,7 @@ namespace YAMP
 
         void Notify(int count)
         {
-            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Success, count + " objects saved."));
+            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Success, count + " objects saved."));
         }
 
         #endregion

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     /// <summary>
     /// The visualization function is a special kind of system function, which
@@ -8,6 +6,11 @@ namespace YAMP
     /// </summary>
     public abstract class VisualizationFunction : SystemFunction
     {
+        public VisualizationFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         /// <summary>
         /// Performs the function and takes the result (PlotValue) as LastPlot.
         /// </summary>
@@ -17,8 +20,10 @@ namespace YAMP
         {
             var value = base.Perform(argument);
 
-            if(value != null && value is PlotValue)
+            if (value != null && value is PlotValue)
+            {
                 Context.LastPlot = (PlotValue)value;
+            }
 
             return value;
         }

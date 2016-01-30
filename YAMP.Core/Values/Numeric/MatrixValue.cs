@@ -802,7 +802,7 @@ namespace YAMP
         /// <param name="context">The parse content.</param>
         /// <param name="exponent">The global exponent that is in use.</param>
         /// <returns>The string with the matrix.</returns>
-        public string ToString(ParseContext context, int exponent)
+        public string ToString(ParseContext context, Int32 exponent)
         {
             var sb = new StringBuilder();
 
@@ -813,11 +813,15 @@ namespace YAMP
                     sb.Append(this[j, i].ToString(context, exponent));
 
                     if (i < DimensionX)
+                    {
                         sb.Append("\t");
+                    }
                 }
 
                 if (j < DimensionY)
+                {
                     sb.AppendLine();
+                }
             }
 
             return sb.ToString();

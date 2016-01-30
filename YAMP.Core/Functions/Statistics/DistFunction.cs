@@ -1,11 +1,16 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     [Description("Computes an approximation of the distribution of data values.")]
     [Kind(PopularKinds.Statistic)]
-    sealed class DistFunction : ArgumentFunction
+    sealed class DistFunction : SystemFunction
     {
+        public DistFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Returns a function which approximates the distribution of the data values in Y. For that Y is binned into nbins equally spaced containers. The approximation uses nParameters parameters to describe the data.")]
         [Example("dist([randn(500, 1); randn(1000, 1) + 5], 40, 10)", "Returns an approximate of the distribution of the data (two gaussians centered at 0 and 5 and relative height 1:2) binned in 40 bins and with 10 parameters.")]
         public FunctionValue Function(MatrixValue Y, ScalarValue nbins, ScalarValue nParameters)
@@ -36,7 +41,7 @@ namespace YAMP
 
             var histogram = new HistogramFunction();
             var fx = histogram.Function(Y, x);
-            var linearfit = new LinfitFunction();
+            var linearfit = new LinfitFunction(Context);
 
             var dist = linearfit.Function(x, fx, new FunctionValue((context, argument) =>
             {

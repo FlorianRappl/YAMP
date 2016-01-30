@@ -10,8 +10,9 @@ namespace YAMP
 	{
 		#region Fields
 
-        readonly ParseEngine parser;
-        readonly Dictionary<String, IFunction> functionBuffer;
+        readonly ParseEngine _parser;
+        readonly Dictionary<String, IFunction> _functionBuffer;
+        readonly ParseContext _context;
 
         String _input;
         Boolean _stop;
@@ -25,11 +26,12 @@ namespace YAMP
 		/// Creates a new query context.
 		/// </summary>
 		/// <param name="input">The input to parse</param>
-		public QueryContext(String input)
+		public QueryContext(ParseContext context, String input)
+            : this(context)
 		{
 			Input = input;
-            parser = new ParseEngine(this);
-            functionBuffer = new Dictionary<String, IFunction>();
+            _parser = new ParseEngine(this, context);
+            _functionBuffer = new Dictionary<String, IFunction>();
 		}
 
 		/// <summary>
@@ -37,18 +39,18 @@ namespace YAMP
 		/// </summary>
 		/// <param name="query">The query context to copy</param>
 		internal QueryContext(QueryContext query)
-            : this(query.Input)
+            : this(query._context, query.Input)
 		{
 			Parent = query;
-            parser.Parent = query.Parser;
-			Context = query.Context;
+            _parser.Parent = query.Parser;
 		}
 
 		/// <summary>
 		/// Just a stupid dummy!
 		/// </summary>
-		private QueryContext()
-		{
+        private QueryContext(ParseContext context)
+        {
+            _context = context;
 		}
 
 		/// <summary>
@@ -58,9 +60,7 @@ namespace YAMP
 		/// <returns>A new (dummy) QueryContext</returns>
 		public static QueryContext Dummy(ParseContext context)
 		{
-			var query = new QueryContext();
-			query.Context = context;
-			return query;
+			return new QueryContext(context);
 		}
 
 		#endregion
@@ -83,8 +83,10 @@ namespace YAMP
 		{
 			get
 			{
-				if (Output == null)
-					return String.Empty;
+                if (Output == null)
+                {
+                    return String.Empty;
+                }
 
 				return Output.ToString(Context);
 			}
@@ -118,14 +120,17 @@ namespace YAMP
 		/// <summary>
 		/// Gets the context used for this query.
 		/// </summary>
-		public ParseContext Context { get; internal set; }
+		public ParseContext Context
+        {
+            get { return _context; }
+        }
 
 		/// <summary>
 		/// Gets the statements generated for this query.
 		/// </summary>
 		public IEnumerable<Statement> Statements
 		{
-			get { return parser.Statements; }
+			get { return _parser.Statements; }
 		}
 
         /// <summary>
@@ -141,7 +146,7 @@ namespace YAMP
         /// </summary>
         public ParseEngine Parser
         {
-            get { return parser; }
+            get { return _parser; }
         }
 
 		#endregion
@@ -150,42 +155,47 @@ namespace YAMP
 
         internal IFunction GetFromBuffer(String functionName)
         {
-            if (functionBuffer.ContainsKey(functionName))
-                return functionBuffer[functionName];
+            if (_functionBuffer.ContainsKey(functionName))
+            {
+                return _functionBuffer[functionName];
+            }
 
             return null;
         }
 
         internal void SetToBuffer(String functionName, IFunction function)
         {
-            if (functionBuffer.ContainsKey(functionName))
-                functionBuffer[functionName] = function;
-            else
-                functionBuffer.Add(functionName, function);
+            _functionBuffer[functionName] = function;
         }
 
         /// <summary>
         /// Begins the interpretation of the current parse tree.
         /// </summary>
         /// <param name="values">A dictionary with additional symbols to consider.</param>
-		internal void Interpret(Dictionary<String, Value> values)
+		internal Value Interpret(Dictionary<String, Value> values)
 		{
-            if (!parser.CanRun)
+            if (!_parser.CanRun)
             {
-                if (!parser.IsParsed)
-                    parser.Parse();
+                if (!_parser.IsParsed)
+                {
+                    _parser.Parse();
+                }
 
-                if (parser.HasErrors)
-                    throw new YAMPParseException(parser);
+                if (_parser.HasErrors)
+                {
+                    throw new YAMPParseException(_parser);
+                }
             }
 
             currentStatement = null;
             _stop = false;
 
-            foreach (var statement in parser.Statements)
+            foreach (var statement in _parser.Statements)
             {
                 if (_stop)
+                {
                     break;
+                }
 
                 currentStatement = statement;
                 Output = statement.Interpret(values);
@@ -196,11 +206,15 @@ namespace YAMP
                 if (!currentStatement.IsAssignment)
                 {
                     if (Output is ArgumentsValue)
+                    {
                         Output = ((ArgumentsValue)Output).First();
+                    }
 
-                    Context.AssignVariable(YAMP.Parser.answer, Output);
+                    Context.AssignVariable(_context.Answer, Output);
                 }
             }
+
+            return Output;
 		}
 
         /// <summary>

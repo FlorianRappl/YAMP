@@ -1,11 +1,16 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
 	[Description("Plots the histogram that shows the distribution of of given values.")]
 	[Kind(PopularKinds.Plot)]
 	sealed class HistFunction : VisualizationFunction
 	{
+        public HistFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
 		[Description("Bins the elements in vector Y into 10 equally spaced containers and plots the number of elements in each container as a row vector. If Y is an m-by-p matrix, hist treats the columns of Y as vectors and plots a 10-by-p matrix n. Each column of n contains the results for the corresponding column of Y. No elements of Y can be complex or of type integer.")]
 		[Example("hist(rand(100, 1))", "Places 100 uniformly generated random numbers into 10 bins with a spacing that should be approximately 0.1.")]
 		public BarPlotValue Function(MatrixValue Y)
@@ -18,27 +23,31 @@ namespace YAMP
 		public BarPlotValue Function(MatrixValue Y, MatrixValue x)
 		{
 			var bp = new BarPlotValue();
-			var X = new double[x.Length];
+			var X = new Double[x.Length];
 
 			for (var i = 0; i < x.Length; i++)
 				X[i] = x[i + 1].Re;
 
-			if (Y.IsVector)
+            if (Y.IsVector)
+            {
                 bp.AddPoints(YMath.Histogram(Y, X));
-			else
-			{
-				var M = new MatrixValue();
+            }
+            else
+            {
+                var M = new MatrixValue();
 
-				for (var i = 1; i <= Y.DimensionX; i++)
-				{
-					var N = YMath.Histogram(Y.GetColumnVector(i), X);
+                for (var i = 1; i <= Y.DimensionX; i++)
+                {
+                    var N = YMath.Histogram(Y.GetColumnVector(i), X);
 
-					for (var j = 1; j <= N.Length; j++)
-						M[j, i] = N[j];
-				}
+                    for (var j = 1; j <= N.Length; j++)
+                    {
+                        M[j, i] = N[j];
+                    }
+                }
 
-				bp.AddPoints(M);
-			}
+                bp.AddPoints(M);
+            }
 
 			return bp;
 		}
@@ -50,22 +59,26 @@ namespace YAMP
             var nn = nbins.GetIntegerOrThrowException("nbins", Name);
 			var bp = new BarPlotValue();
 
-			if (Y.IsVector)
+            if (Y.IsVector)
+            {
                 bp.AddPoints(YMath.Histogram(Y, nn));
-			else
-			{
-				var M = new MatrixValue();
+            }
+            else
+            {
+                var M = new MatrixValue();
 
-				for (var i = 1; i <= Y.DimensionX; i++)
-				{
+                for (var i = 1; i <= Y.DimensionX; i++)
+                {
                     var N = YMath.Histogram(Y.GetColumnVector(i), nn);
 
-					for (var j = 1; j <= N.Length; j++)
-						M[j, i] = N[j];
-				}
+                    for (var j = 1; j <= N.Length; j++)
+                    {
+                        M[j, i] = N[j];
+                    }
+                }
 
-				bp.AddPoints(M);
-			}
+                bp.AddPoints(M);
+            }
 
 			return bp;
 		}

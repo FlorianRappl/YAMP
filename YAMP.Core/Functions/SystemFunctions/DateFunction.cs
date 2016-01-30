@@ -1,11 +1,17 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
 	[Description("The date() function allows you to get dates with or without offset.")]
 	[Kind(PopularKinds.System)]
 	sealed class DateFunction : SystemFunction
 	{
+        public DateFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
+
 		[Description("Gets the current date, taken at the moment of the query request.")]
 		[Example("date()", "Prints the current date.")]
 		public StringValue Function()

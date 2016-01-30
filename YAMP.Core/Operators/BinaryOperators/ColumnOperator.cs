@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     /// <summary>
     /// The matrix column operator , - used to seperate various columns in the
@@ -36,7 +34,7 @@ namespace YAMP
 			return MatrixValue.Create(left).AddColumn(right);
 		}
 
-		public override void RegisterElement()
+		public override void RegisterElement(Elements elements)
 		{
             //Nothing to do here.
 		}

@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Collections;
-
 namespace YAMP
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// The abstract base class for any operator (unary, binary, ...).
     /// </summary>
@@ -121,9 +118,9 @@ namespace YAMP
         /// <summary>
         /// Registers the operator at its factory.
         /// </summary>
-		public virtual void RegisterElement()
+        public virtual void RegisterElement(Elements elements)
 		{
-			Elements.Instance.AddOperator(_op, this);
+			elements.AddOperator(_op, this);
         }
 
         #endregion

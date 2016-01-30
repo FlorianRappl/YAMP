@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     /// <summary>
     /// This is the class used for the operator that seperated various arguments
@@ -30,7 +28,7 @@ namespace YAMP
 			return ArgumentsValue.Create(left, right);
 		}
 
-		public override void RegisterElement()
+        public override void RegisterElement(Elements elements)
 		{
             //Nothing to do here.
 		}

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 { 
     /// <summary>
     /// This is the abstract base class for expressions that contain other
@@ -50,9 +47,9 @@ namespace YAMP
         /// <summary>
         /// Registers the element.
         /// </summary>
-        public override void RegisterElement()
+        public override void RegisterElement(Elements elements)
         {
-            Elements.Instance.AddExpression(this);
+            elements.AddExpression(this);
         }
 
         #endregion

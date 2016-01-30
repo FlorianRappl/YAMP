@@ -1,11 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
 	[Description("Visualizes a given function in form of a graph.")]
 	[Kind(PopularKinds.Plot)]
 	sealed class FplotFunction : VisualizationFunction
 	{
+        public FplotFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
 		[Description("Visualizes the given function f between -1 and 1 for the x-axis.")]
 		[Example("fplot(sin)", "Draws the real plot of the sine function sin(x) with x between -1 and 1.")]
 		[Example("fplot(x => sin(x) * cos(x))", "Draws the real plot of sin(x) * cos(x) with x between -1 and 1.")]

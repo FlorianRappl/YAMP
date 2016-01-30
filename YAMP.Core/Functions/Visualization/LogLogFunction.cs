@@ -1,11 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
 	[Description("Creates a log-log representation of plotting data.")]
 	[Kind(PopularKinds.Plot)]
 	sealed class LogLogFunction : VisualizationFunction
 	{
+        public LogLogFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
 		[Description("Performs the log-log plot of a matrix. The first column is interpreted as x-values if more than one column is given. All other columns will be interpreted as y-values.")]
 		[Example("loglog(2^1:16)", "Plots the powers of 2 with y = 2, 4, 8, ..., 65536 at x = 1, 2, ..., 16 (since no X values are given) in a log-log plot.")]
 		[Example("loglog([0:10, 2^(0:2:20)])", "Plots the even powers of 2 with y = 1, 4, 16, ..., 2^20 at x = 0, 1, ..., 10 in a log-log plot.")]

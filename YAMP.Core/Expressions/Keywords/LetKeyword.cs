@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// The let keyword to create local variables. Basic syntax:
     /// let NAME [OP STATEMENT];
@@ -46,10 +46,12 @@ namespace YAMP
 
         #region Methods
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(Dictionary<String, Value> symbols)
         {
             if (symbols.ContainsKey(Name))
+            {
                 symbols.Remove(Name);
+            }
 
             symbols.Add(Name, ScalarValue.Empty);
             return null;
@@ -63,7 +65,7 @@ namespace YAMP
             kw.Length = engine.Pointer - start;
             engine.Skip();
             start = engine.Pointer;
-            kw.name = Elements.Instance.FindExpression<SymbolExpression>().Scan(engine) as SymbolExpression;
+            kw.name = engine.Elements.FindExpression<SymbolExpression>().Scan(engine) as SymbolExpression;
 
             if (kw.name == null)
             {

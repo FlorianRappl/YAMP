@@ -1,11 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
 	[Description("Deletes variables from memory.")]
 	[Kind(PopularKinds.System)]
     sealed class ClearFunction : SystemFunction
     {
+        public ClearFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Clears all variables.")]
         [ExampleAttribute("clear()")]
         public void Function()
@@ -49,7 +52,7 @@ namespace YAMP
 
         void Notify(int count)
         {
-            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Information, count + " objects cleared."));
+            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Information, count + " objects cleared."));
         }
     }
 }

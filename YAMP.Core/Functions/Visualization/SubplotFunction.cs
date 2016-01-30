@@ -1,11 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     [Description("Subplot divides the current figure into rectangular panes that are numbered rowwise. Each pane contains an axes object. Subsequent plots are output to the current pane.")]
     [Kind(PopularKinds.Plot)]
     sealed class SubplotFunction : VisualizationFunction
     {
+        public SubplotFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Creates a uniform subplot grid with the specified number of rows and columns.")]
         [Example("a = subplot(4, 3)", "Creates a uniform 4x3 plot-grid and saves the grid in the variable a. See the other examples for usage information.")]
         [Example("a = subplot(4, 3); a(1, 1) = plot(1:100, rand(100, 4))", "Assigns a simple 2D plot with 4 series consisting of 100 random values to row 1, column 1 of the plot-grid.")]

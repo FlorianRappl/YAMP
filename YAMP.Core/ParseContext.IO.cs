@@ -23,8 +23,7 @@
         /// <param name="fromFileName">The path to the file.</param>
         public void Load(String fromFileName)
         {
-            var lf = new LoadFunction();
-            lf.Context = this;
+            var lf = new LoadFunction(this);
             lf.Function(new StringValue(fromFileName));
         }
 
@@ -34,7 +33,7 @@
         /// <param name="toFileName">The path to the file.</param>
         public void Save(String toFileName)
         {
-            SaveFunction.Save(toFileName, variables);
+            SaveFunction.Save(toFileName, _variables);
         }
 
         /// <summary>
@@ -44,7 +43,7 @@
         /// <returns>The function (if found) or NULL.</returns>
         public override IFunction LoadFunction(String symbolName)
         {
-            if (!Parser.UseScripting)
+            if (!UseScripting)
                 return null;
 
             var script = String.Empty;
@@ -56,11 +55,17 @@
             };
 
             if (!File.Exists(function.FileName))
+            {
                 return null;
+            }
 
             for (var i = buffer.Count - 1; i >= 0; i--)
-                if(!buffer[i].Directory.Equals(Environment.CurrentDirectory, StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (!buffer[i].Directory.Equals(Environment.CurrentDirectory, StringComparison.CurrentCultureIgnoreCase))
+                {
                     buffer.RemoveAt(i);
+                }
+            }
 
             var original = buffer
                 .Where(m => m.FileName.Equals(function.FileName, StringComparison.CurrentCultureIgnoreCase))
@@ -73,7 +78,9 @@
                 if (original != null)
                 {
                     if (function.LastUpdated.CompareTo(original.LastUpdated) <= 0)
+                    {
                         return original.Lookup();
+                    }
 
                     buffer.Remove(original);
                 }
@@ -83,21 +90,21 @@
             catch
             {
                 if (buffer != null)
+                {
                     return original.Lookup();
+                }
 
                 return null;
             }
 
             if (!String.IsNullOrEmpty(script))
             {
-                function.Context = new ParseContext(parent);
-                var p = Parser.Parse(function.Context, script);
+                function.Context = new ParseContext(_parent);
+                var query = new QueryContext(function.Context, script);
+                var p = query.Interpret(new Dictionary<String,Value>());
 
-                if (!p.Context.Parser.HasErrors)
+                if (!query.Parser.HasErrors)
                 {
-                    try { p.Execute(); }
-                    catch { return null; }
-
                     buffer.Add(function);
                     return function.Lookup();
                 }

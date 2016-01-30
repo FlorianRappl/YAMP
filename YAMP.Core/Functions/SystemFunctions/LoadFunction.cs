@@ -1,30 +1,34 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.Drawing;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+
 	[Description("Loads compatible files into YAMP.")]
 	[Kind(PopularKinds.System)]
     sealed class LoadFunction : SystemFunction
     {
-        #region Constants
+        const Double rfactor = 256 * 256;
+        const Double gfactor = 256;
+        const Double bfactor = 1;
 
-        const double rfactor = 256 * 256;
-        const double gfactor = 256;
-        const double bfactor = 1;
-
-        #endregion
+        public LoadFunction(ParseContext context)
+            : base(context)
+        {
+        }
 
         [Description("Loads all variables found in the file, if the file contains YAMP variables. Else it treats the file as an ASCII data table or an image file and stores the content as a matrix with the name \"data\" or \"image\".")]
         [Example("load(\"myfile.mat\")", "Opens the file myfile.mat and reads out all variables.", true)]
         public void Function(StringValue filename)
 		{
             if (!File.Exists(filename.Value))
+            {
                 throw new YAMPFileNotFoundException(filename.Value);
+            }
 
 			var error = false;
 			var v = Load(filename.Value, out error);
@@ -32,8 +36,10 @@ namespace YAMP
 
             if(!error)
 			{
-				foreach (var key in v.Keys)
-					Context.AssignVariable(key, v[key]);
+                foreach (var key in v.Keys)
+                {
+                    Context.AssignVariable(key, v[key]);
+                }
 
 				count = v.Count;
 			}
@@ -249,16 +255,16 @@ namespace YAMP
 
         #region Helpers
 
-        void Notify(int count)
+        void Notify(Int32 count)
         {
-            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Success, count + " objects loaded."));
+            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Success, count + " objects loaded."));
         }
 
-        static IDictionary<string, Value> Load(string filename, out bool error)
+        static IDictionary<String, Value> Load(String filename, out Boolean error)
 		{
-			var ht = new Dictionary<string, Value>();
-			var lenbuffer = new byte[4];
-			var ctnbuffer = new byte[0];
+			var ht = new Dictionary<String, Value>();
+			var lenbuffer = new Byte[4];
+			var ctnbuffer = new Byte[0];
 
 			error = false;
 
@@ -288,7 +294,7 @@ namespace YAMP
 						break;
 					}
 
-					ctnbuffer = new byte[length];
+					ctnbuffer = new Byte[length];
 					fs.Read(ctnbuffer, 0, ctnbuffer.Length);
 					var header = Encoding.ASCII.GetString(ctnbuffer);
 
@@ -301,44 +307,45 @@ namespace YAMP
 						break;
 					}
 
-					ctnbuffer = new byte[length];
+					ctnbuffer = new Byte[length];
 					fs.Read(ctnbuffer, 0, ctnbuffer.Length);
 					var value = Value.Deserialize(header, ctnbuffer);
 					ht.Add(name, value);
 				}
 			}
 
-			if (error)
-				ht.Add("FileParsingError", Value.Empty);
+            if (error)
+            {
+                ht.Add("FileParsingError", Value.Empty);
+            }
 
 			return ht;
 		}
 
-        MatrixValue ASCIILoad(string filename, out bool error)
+        MatrixValue ASCIILoad(String filename, out Boolean error)
         {
             error = false;
 
             using (var fs = File.Open(filename, FileMode.Open))
             {
-                var file_bytes = new byte[fs.Length];
+                var file_bytes = new Byte[fs.Length];
                 fs.Read(file_bytes, 0, file_bytes.Length);
-
                 var file_string = Encoding.ASCII.GetString(file_bytes);
-
-                var lines = file_string.Split('\n').Select(line => line.Split(new char[] { ' ', '\t', ',', '\r' }, StringSplitOptions.RemoveEmptyEntries)).ToList();
-
+                var lines = file_string.Split('\n').Select(line => line.Split(new [] { ' ', '\t', ',', '\r' }, StringSplitOptions.RemoveEmptyEntries)).ToList();
                 var numberOfLines = lines.Count;
+                var parseResult = 0.0;
+                var numberOfHeaderLines = 0;
+                var numberOfFooterLines = 0;
 
-                double parseResult;
-                int numberOfHeaderLines = 0;
-
-                while (numberOfHeaderLines < numberOfLines && !double.TryParse(lines[numberOfHeaderLines].FirstOrDefault(), out parseResult))
+                while (numberOfHeaderLines < numberOfLines && !Double.TryParse(lines[numberOfHeaderLines].FirstOrDefault(), out parseResult))
+                {
                     numberOfHeaderLines++;
+                }
 
-                int numberOfFooterLines = 0;
-
-                while (numberOfFooterLines < numberOfLines - numberOfHeaderLines && !double.TryParse(lines[numberOfLines - 1 - numberOfFooterLines].FirstOrDefault(), out parseResult))
+                while (numberOfFooterLines < numberOfLines - numberOfHeaderLines && !Double.TryParse(lines[numberOfLines - 1 - numberOfFooterLines].FirstOrDefault(), out parseResult))
+                {
                     numberOfFooterLines++;
+                }
 
                 if (numberOfLines <= numberOfHeaderLines + numberOfFooterLines)
                 {
@@ -347,20 +354,22 @@ namespace YAMP
                 }
 
                 var tokensPerLine = lines.Select(line => line.Length).SkipWhile((item, index) => index < numberOfHeaderLines).Reverse().SkipWhile((item, index) => index < numberOfFooterLines).Reverse().ToList();
-
                 var numberOfColumns = tokensPerLine.Max();
                 var numberOfRows = numberOfLines - numberOfHeaderLines - numberOfFooterLines;
-
                 var result = new MatrixValue(numberOfRows, numberOfColumns);
 
-                for (int i = 0; i < numberOfRows; i++)
+                for (var i = 0; i < numberOfRows; i++)
                 {
-                    for (int j = 0; j < tokensPerLine[i]; j++)
+                    for (var j = 0; j < tokensPerLine[i]; j++)
                     {
-                        if (double.TryParse(lines[numberOfHeaderLines + i][j], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out parseResult))
+                        if (Double.TryParse(lines[numberOfHeaderLines + i][j], NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out parseResult))
+                        {
                             result[i + 1, j + 1] = new ScalarValue(parseResult);
+                        }
                         else
-                            result[i + 1, j + 1] = new ScalarValue(double.NaN);
+                        {
+                            result[i + 1, j + 1] = new ScalarValue(Double.NaN);
+                        }
                     }
                 }
 
@@ -368,11 +377,10 @@ namespace YAMP
             }
         }
 
-        MatrixValue ImageLoad(string filename, out bool error, double coarsening = double.NaN)
+        MatrixValue ImageLoad(String filename, out Boolean error, Double coarsening = Double.NaN)
         {
             error = false;
-            
-            string imageType = string.Empty;
+            var imageType = String.Empty;
 
             using (var fs = File.Open(filename, FileMode.Open))
             {
@@ -380,44 +388,50 @@ namespace YAMP
                 fs.Read(file_bytes, 0, 8);
 
                 var png_magic_number = new byte[] { 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
+
                 if (!file_bytes.Take(8).Select((b, i) => b == png_magic_number[i]).Contains(false))
                     imageType = "png";
 
                 var tiff_magic_number_0 = new byte[] { 0x49, 0x49, 0x2a, 0x00 };
+
                 if (!file_bytes.Take(4).Select((b, i) => b == tiff_magic_number_0[i]).Contains(false))
                     imageType = "tiff";
 
                 var tiff_magic_number_1 = new byte[] { 0x4d, 0x4d, 0x2a, 0x00 };
+
                 if (!file_bytes.Take(4).Select((b, i) => b == tiff_magic_number_1[i]).Contains(false))
                     imageType = "tiff";
 
                 var bmp_magic_number = new byte[] { 0x42, 0x4D };
+
                 if (!file_bytes.Take(2).Select((b, i) => b == bmp_magic_number[i]).Contains(false))
                     imageType = "bmp";
 
                 var gif_magic_number_0 = new byte[] { 0x47, 0x49, 0x46, 0x38, 0x37, 0x61 };
+
                 if (!file_bytes.Take(6).Select((b, i) => b == gif_magic_number_0[i]).Contains(false))
                     imageType = "gif";
 
                 var gif_magic_number_1 = new byte[] { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61 };
+
                 if (!file_bytes.Take(6).Select((b, i) => b == gif_magic_number_1[i]).Contains(false))
                     imageType = "gif";
 
                 var jpg_magic_number = new byte[] { 0xff, 0xd8 };
+
                 if (!file_bytes.Take(2).Select((b, i) => b == jpg_magic_number[i]).Contains(false))
                     imageType = "jpg";
             }
 
-            if (imageType == string.Empty)
+            if (imageType == String.Empty)
             {
                 error = true;
-
                 return new MatrixValue();
             }
 
             using (var bmp = new Bitmap(filename))
             {
-                MatrixValue result;
+                var result = default(MatrixValue);
 
                 if (bmp == null)
                 {
@@ -426,18 +440,17 @@ namespace YAMP
                 }
                 else
                 {
-                    int height = bmp.Height;
-                    int width = bmp.Width;
+                    var height = bmp.Height;
+                    var width = bmp.Width;
 
-                    Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-                    System.Drawing.Imaging.BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, bmp.PixelFormat);
-                    IntPtr ptr = bmpData.Scan0;
-
-                    int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
-                    byte[] rgbValues = new byte[bytes];
+                    var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+                    var bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, bmp.PixelFormat);
+                    var ptr = bmpData.Scan0;
+                    var bytes = Math.Abs(bmpData.Stride) * bmp.Height;
+                    var rgbValues = new Byte[bytes];
                     System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
                     bmp.UnlockBits(bmpData);
-                    int bytesPerPixel;
+                    var bytesPerPixel = 0;
 
                     if (bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Canonical ||
                         bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppArgb ||
@@ -450,9 +463,10 @@ namespace YAMP
                         throw new YAMPPixelFormatNotSupportedException(filename);
 
 
-                    if (double.IsNaN(coarsening))
+                    if (Double.IsNaN(coarsening))
                     {
                         const double maxPixelPerDirection = 100;
+
                         if (width > maxPixelPerDirection || height > maxPixelPerDirection)
                         {
                             coarsening = Math.Max(width / maxPixelPerDirection, height / maxPixelPerDirection);

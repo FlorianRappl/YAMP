@@ -36,16 +36,18 @@ namespace YAMP
             var start = engine.Pointer;
 
             //Arguments need to be attached directly.
-            if (start == 0 || ParseEngine.IsWhiteSpace(engine.Characters[start - 1]) || ParseEngine.IsNewLine(engine.Characters[start - 1]))
-                return null;
+            if (start != 0 && !ParseEngine.IsWhiteSpace(engine.Characters[start - 1]) && !ParseEngine.IsNewLine(engine.Characters[start - 1]))
+            {
+                var ao = new ArgsOperator();
+                ao.Query = engine.Query;
+                ao.StartLine = engine.CurrentLine;
+                ao.StartColumn = engine.CurrentColumn;
+                ao._content = engine.Elements.FindExpression<BracketExpression>().Scan(engine);
+                ao.Length = engine.Pointer - start;
+                return ao;
+            }
 
-            var ao = new ArgsOperator();
-            ao.Query = engine.Query;
-            ao.StartLine = engine.CurrentLine;
-            ao.StartColumn = engine.CurrentColumn;
-            ao._content = Elements.Instance.FindExpression<BracketExpression>().Scan(engine);
-            ao.Length = engine.Pointer - start;
-            return ao;
+            return null;
         }
 
         #endregion

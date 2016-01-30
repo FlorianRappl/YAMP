@@ -1,19 +1,23 @@
-﻿using System;
-using System.Threading;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System.Threading;
+
     [Description("Prompts the user to input something.")]
     [Kind(PopularKinds.System)]
     sealed class PromptFunction : SystemFunction
     {
+        public PromptFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Waits until the user made some input with a default message.")]
         [Example("prompt()", "Shows the user a prompt with a default message. Returns the user input as String.")]
         public StringValue Function()
         {
             var handle = new ManualResetEvent(false);
             var e = new UserInputEventArgs(handle, "Your input is required");
-            Parser.RaiseInputPrompt(Context, e);
+            Context.RaiseInputPrompt(e);
             handle.WaitOne();
             return new StringValue(e.Input);
         }
@@ -24,7 +28,7 @@ namespace YAMP
         {
             var handle = new ManualResetEvent(false);
             var e = new UserInputEventArgs(handle, message.Value);
-            Parser.RaiseInputPrompt(Context, e);
+            Context.RaiseInputPrompt(e);
             handle.WaitOne();
             return new StringValue(e.Input);
         }

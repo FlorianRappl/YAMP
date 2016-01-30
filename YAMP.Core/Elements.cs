@@ -8,7 +8,7 @@ namespace YAMP
     /// <summary>
     /// Provides internal access to the elements and handles the element registration and variable assignment.
     /// </summary>
-    sealed class Elements
+    public sealed class Elements
 	{
 		#region Fields
 
@@ -22,14 +22,15 @@ namespace YAMP
 
 		#region ctor
 
-		Elements ()
-		{
+        public Elements(ParseContext context)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
             operators = new Dictionary<String, Operator>();
             unaryOperators = new Dictionary<String, Operator>();
 			expressions = new List<Expression>();
 			keywords = new Dictionary<String, Keyword>();
             plugins = new Dictionary<Int32, Plugin>();
-            var list = new List<Int32>();
+            RegisterAssembly(context, assembly);
 		}
 		
 		#endregion
@@ -47,12 +48,6 @@ namespace YAMP
         #endregion
 
         #region Register elements
-
-        void RegisterElements()
-		{
-			var assembly = Assembly.GetExecutingAssembly();
-			RegisterAssembly(ParseContext.Default, assembly);
-		}
 
 		/// <summary>
 		/// Registers the IFunction, IConstant and IRegisterToken token classes at the specified context.
@@ -74,8 +69,10 @@ namespace YAMP
 
 			foreach (var type in types)
 			{
-				if (type.IsAbstract)
-					continue;
+                if (type.IsAbstract)
+                {
+                    continue;
+                }
 
                 if (type.Name.EndsWith("Value", StringComparison.Ordinal))
                 {
@@ -83,7 +80,7 @@ namespace YAMP
 
                     if (ctor != null)
                     {
-                        ((IRegisterElement)ctor.Invoke(null)).RegisterElement();
+                        ((IRegisterElement)ctor.Invoke(null)).RegisterElement(this);
                         plugin.ValueTypes.Add(type.Name.RemoveValueConvention());
                     }
 
@@ -96,8 +93,10 @@ namespace YAMP
 				{
 					var ctor = type.GetConstructor(Value.EmptyTypes);
 
-					if (ctor != null)
-						((IRegisterElement)ctor.Invoke(null)).RegisterElement();
+                    if (ctor != null)
+                    {
+                        ((IRegisterElement)ctor.Invoke(null)).RegisterElement(this);
+                    }
 				}
 
                 if (interfaces.Any(iface => iface.Name.Equals(fu)))
@@ -152,9 +151,13 @@ namespace YAMP
 		public void AddOperator(String pattern, Operator op)
 		{
             if (!op.IsRightToLeft && op.Expressions == 1)
+            {
                 unaryOperators.Add(pattern, op);
+            }
             else
+            {
                 operators.Add(pattern, op);
+            }
 		}
 
         /// <summary>
@@ -329,35 +332,6 @@ namespace YAMP
 
             return null;
         }
-		
-		#endregion
-
-		#region Singleton
-
-		static Elements _instance;
-		
-		public static Elements Instance
-		{
-			get
-			{
-				if (_instance == null)
-				{
-					_instance = new Elements();
-					_instance.RegisterElements();
-				}
-				
-				return _instance;
-			}
-		}
-		
-		#endregion
-		
-		#region Misc
-		
-		public void Touch()
-		{
-			//Empty on intention
-		}
 		
 		#endregion
 	}

@@ -1,12 +1,16 @@
-﻿using System;
-using YAMP.Converter;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using YAMP.Converter;
+
     [Description("Sets the output formatting of numeric values to a certain pre-defined style.")]
     [Kind(PopularKinds.System)]
     sealed class FormatFunction : SystemFunction
     {
+        public FormatFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Returns the currently used output format.")]
         public StringValue Function()
         {
@@ -22,7 +26,7 @@ namespace YAMP
             var stec = new StringToEnumConverter(typeof(DisplayStyle));
             var value = stec.Convert(type);
             Context.DefaultDisplayStyle = (DisplayStyle)value;
-            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Information, "Display format changed to " + value + "."));
+            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Information, "Display format changed to " + value + "."));
         }
     }
 }

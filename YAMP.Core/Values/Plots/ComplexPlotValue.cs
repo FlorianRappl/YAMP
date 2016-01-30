@@ -37,7 +37,10 @@
             get
             {
                 if (f != null)
-                    return z => f.Perform(ParseContext.Default, z) as ScalarValue;
+                {
+                    var context = new ParseContext();
+                    return z => f.Perform(context, z) as ScalarValue;
+                }
 
                 return z => z;
             }

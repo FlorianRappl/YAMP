@@ -1,11 +1,16 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     [Description("The time() function allows you to get times with or without offset.")]
     [Kind(PopularKinds.System)]
     sealed class TimeFunction : SystemFunction
     {
+        public TimeFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Gets the current time, taken at the moment of the query request.")]
         [Example("time()", "Prints the current time.")]
         public StringValue Function()

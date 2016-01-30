@@ -1,13 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using YAMP.Converter;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Converter;
+
 	[Kind(PopularKinds.Plot)]
 	[Description("Sets properties of a plot.")]
 	sealed class SetFunction : SystemFunction
     {
+        public SetFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         #region Functions
 
         [Description("Sets the specified (as string) field's value to a new value.")]
@@ -15,9 +20,13 @@ namespace YAMP
 		public void Function(StringValue property, Value newValue)
 		{
             if (Context.LastPlot == null)
-                Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Failure, "No plot available... Nothing changed."));
+            {
+                Context.RaiseNotification(new NotificationEventArgs(NotificationType.Failure, "No plot available... Nothing changed."));
+            }
             else
-			    Function(Context.LastPlot, property, newValue);
+            {
+                Function(Context.LastPlot, property, newValue);
+            }
 		}
 
 		[Description("Sets the specified (as string) field's value to a new value.")]
@@ -27,7 +36,7 @@ namespace YAMP
 			var propertyName = property.Value;
 			AlterProperty(plot, propertyName, newValue);
             plot.RaisePlotChanged(propertyName);
-            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Success, "Property changed"));
+            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Success, "Property changed"));
 		}
 
 		[Description("Sets the specified (as string) field's value of the given series to a new value.")]
@@ -37,9 +46,13 @@ namespace YAMP
 		public void Function(ScalarValue series, StringValue property, Value newValue)
 		{
             if (Context.LastPlot == null)
-                Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Failure, "No plot available... Nothing changed."));
+            {
+                Context.RaiseNotification(new NotificationEventArgs(NotificationType.Failure, "No plot available... Nothing changed."));
+            }
             else
-			    Function(Context.LastPlot, series, property, newValue);
+            {
+                Function(Context.LastPlot, series, property, newValue);
+            }
 		}
 
 		[Description("Sets the specified (as string) field's values of the specified series to a new value.")]
@@ -48,17 +61,17 @@ namespace YAMP
 		[Example("set(myplot, 1, \"color\", \"red\")", "Sets the color of series #1 of the plot in the variable myplot to red.")]
 		public void Function(PlotValue plot, ScalarValue series, StringValue property, Value newValue)
 		{
-			if(plot.Count == 0)
+			if (plot.Count == 0)
 				throw new YAMPNoSeriesAvailableException("The given plot contains no series.");
 
             var n = series.GetIntegerOrThrowException("series", Name);
 
-			if(n < 1 || n > plot.Count)
+			if (n < 1 || n > plot.Count)
 				throw new YAMPArgumentRangeException("series", 1, plot.Count);
 
             AlterSeriesProperty(plot, n - 1, property.Value, newValue);
 			plot.UpdateProperties();
-            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Success, "Series " + n + " changed."));
+            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Success, "Series " + n + " changed."));
 		}
 
 		[Description("Sets the specified (as string) field's value of the given series to a new value.")]
@@ -68,9 +81,13 @@ namespace YAMP
 		public void Function(MatrixValue series, StringValue property, Value newValue)
 		{
             if (Context.LastPlot == null)
-                Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Failure, "No plot available... Nothing changed."));
+            {
+                Context.RaiseNotification(new NotificationEventArgs(NotificationType.Failure, "No plot available... Nothing changed."));
+            }
             else
-			    Function(Context.LastPlot, series, property, newValue);
+            {
+                Function(Context.LastPlot, series, property, newValue);
+            }
 		}
 
 		[Description("Sets the specified (as string) field's value to of the given series to a new value.")]
@@ -79,7 +96,7 @@ namespace YAMP
 		[Example("set(myplot, [1,3,7], \"color\", \"red\")", "Sets the color of series #1, #3, #7 of the plot in the variable myplot to red.")]
 		public void Function(PlotValue plot, MatrixValue series, StringValue property, Value newValue)
 		{
-			var s = new List<string>();
+			var s = new List<String>();
 
 			if (series is RangeValue)
 			{
@@ -105,7 +122,7 @@ namespace YAMP
 				}
 			}
 
-            Parser.RaiseNotification(Context, new NotificationEventArgs(NotificationType.Failure, "Series " + string.Join(", ", s.ToArray()) + " changed."));
+            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Failure, "Series " + String.Join(", ", s.ToArray()) + " changed."));
             plot.UpdateProperties();
 		}
 
@@ -119,43 +136,45 @@ namespace YAMP
         /// <param name="parent">The object that should contain the property.</param>
         /// <param name="name">The name of the property (property needs to have a converter specified).</param>
         /// <param name="value">The new value of the property.</param>
-        public static void AlterProperty(object parent, string name, Value value)
+        public static void AlterProperty(Object parent, String name, Value value)
 		{
 			var type = parent.GetType();
 			var props = type.GetProperties();
-			var available = new List<string>();
+			var available = new List<String>();
 
 			foreach (var prop in props)
 			{
 				var attrs = prop.GetCustomAttributes(typeof(ValueConverterAttribute), false);
-					
-				if(attrs.Length == 0)
-					continue;
 
-				available.Add(prop.Name);
+                if (attrs.Length != 0)
+                {
+                    available.Add(prop.Name);
 
-				if (prop.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
-				{
-					object content = null;
-					var possible = new List<string>();
+                    if (prop.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var content = default(Object);
+                        var possible = new List<String>();
 
-					foreach(ValueConverterAttribute attr in attrs)
-					{
-						possible.Add(attr.Type);
+                        foreach (ValueConverterAttribute attr in attrs)
+                        {
+                            possible.Add(attr.Type);
 
-						if(attr.CanConvertFrom(value))
-						{
-							content = attr.Convert(value);
-							break;
-						}
-					}
+                            if (attr.CanConvertFrom(value))
+                            {
+                                content = attr.Convert(value);
+                                break;
+                            }
+                        }
 
-                    if (content == null)
-                        throw new YAMPArgumentWrongTypeException(value.Header, possible.ToArray(), "set");
+                        if (content == null)
+                        {
+                            throw new YAMPArgumentWrongTypeException(value.Header, possible.ToArray(), "set");
+                        }
 
-					prop.SetValue(parent, content, null);
-					return;
-				}
+                        prop.SetValue(parent, content, null);
+                        return;
+                    }
+                }
 			}
 
             throw new YAMPPropertyMissingException(name, available.ToArray());
@@ -168,7 +187,7 @@ namespace YAMP
         /// <param name="parent">The object that should contain the property.</param>
         /// <param name="property">The name of the property (property needs to have a converter specified).</param>
         /// <param name="value">The new value of the property.</param>
-        public static void AlterSeriesProperty(object parent, int series, string property, Value value)
+        public static void AlterSeriesProperty(Object parent, Int32 series, String property, Value value)
         {
             var type = parent.GetType();
             var props = type.GetProperties();
@@ -180,7 +199,7 @@ namespace YAMP
                 if (idx.Length == 1)
                 {
                     var method = prop.GetGetMethod();
-                    var s = method.Invoke(parent, new object[] { series });
+                    var s = method.Invoke(parent, new Object[] { series });
                     AlterProperty(s, property, value);
                     break;
                 }

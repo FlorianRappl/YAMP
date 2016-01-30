@@ -1,5 +1,3 @@
-using System;
-
 namespace YAMP
 {
     /// <summary>
@@ -11,7 +9,7 @@ namespace YAMP
         /// <summary>
         /// Register an element somewhere automatically.
         /// </summary>
-		void RegisterElement();
+		void RegisterElement(Elements elements);
 	}
 }
 

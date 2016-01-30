@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// This class is only used as a dummy placeholder for operators
     /// that have not been found.
@@ -12,12 +13,12 @@ namespace YAMP
         {
         }
 
-        public override void RegisterElement()
+        public override void RegisterElement(Elements elements)
         {
             //Nothing to do here.
         }
 
-        public override Value Evaluate(Expression[] expressions, System.Collections.Generic.Dictionary<string, Value> symbols)
+        public override Value Evaluate(Expression[] expressions, Dictionary<String, Value> symbols)
         {
             return null;
         }

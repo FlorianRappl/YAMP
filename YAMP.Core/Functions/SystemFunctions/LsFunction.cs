@@ -1,13 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.IO;
+    using System.Text;
+
     [Kind(PopularKinds.System)]
 	[Description("Lists the contents of the current working directory.")]
     sealed class LsFunction : SystemFunction
 	{
+        public LsFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
 		[Description("Reads the file system table and lists the contents of the current working directory.")]
 		[Example("ls()", "Lists name, attributes and the time of the last modification of the current working directory's files and sub-directories.", true)]
 		public StringValue Function()
@@ -42,15 +47,17 @@ namespace YAMP
 			return new StringValue(sb.ToString());
 		}
 
-		string Limit(string p)
+		String Limit(String p)
 		{
-			if (p.Length > 29)
-				return p.Substring(0, 29) + "...";
+            if (p.Length > 29)
+            {
+                return p.Substring(0, 29) + "...";
+            }
 
 			return p;
 		}
 
-	    string PrintAttributes(FileAttributes fileAttributes)
+	    String PrintAttributes(FileAttributes fileAttributes)
 		{
 			var sb = new StringBuilder();
 			sb.Append(Check(fileAttributes, FileAttributes.Directory, 'd'));
@@ -64,10 +71,12 @@ namespace YAMP
 			return sb.ToString();
 		}
 
-		char Check(FileAttributes there, FileAttributes premise, char ok)
+		Char Check(FileAttributes there, FileAttributes premise, Char ok)
 		{
-			if((there & premise) == premise)
-				return ok;
+            if ((there & premise) == premise)
+            {
+                return ok;
+            }
 
 			return '-';
 		}

@@ -1,11 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     [Description("Casts a given string value to a real scalar.")]
     [Kind(PopularKinds.System)]
     sealed class CastFunction : SystemFunction
     {
+        public CastFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Uses a given string and casts it into a real scalar.")]
         [Example("cast(\"5\")", "Casts a string 5 to a number 5.")]
         [Example("cast(\"0.1\")", "Casts a string 0.1 to a number 0.1.")]

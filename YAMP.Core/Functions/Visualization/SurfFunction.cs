@@ -1,11 +1,16 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     [Description("The surf function displays both the connecting lines and the faces of the surface in color.")]
     [Kind(PopularKinds.Plot)]
     sealed class SurfFunction : VisualizationFunction
     {
+        public SurfFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Creates a three-dimensional shaded surface from the z components in matrix Z, using x = 1:n and y = 1:m, where [m, n] = size(Z). The height, Z, is a single-valued function defined over a geometrically rectangular grid. Z specifies the color data, as well as surface height, so color is proportional to surface height.")]
         public SurfacePlotValue Function(MatrixValue Z)
         {

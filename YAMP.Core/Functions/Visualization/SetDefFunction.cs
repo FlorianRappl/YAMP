@@ -1,12 +1,16 @@
-﻿using System;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System.Text;
+
     [Description("The setdef function can be used to define template values for created plots. Every plot that is created after a certain template property has been set will be assigned the value of the property.")]
     [Kind(PopularKinds.Plot)]
     sealed class SetDefFunction : VisualizationFunction
     {
+        public SetDefFunction(ParseContext context)
+            : base(context)
+        {
+        }
+
         [Description("Sets the template value of the property to a certain value. This function assumes that the category is plot, i.e. general plot settings like title or gridlines.")]
         [Example("setdef(\"title\", \"My default title\")", "Sets the title of each new plot to a default value of My default title.")]
         public void Function(StringValue property, Value value)

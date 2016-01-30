@@ -1,9 +1,9 @@
 namespace YAMP
 {
     using System;
-    using System.Text;
     using System.Collections.Generic;
     using System.IO;
+    using System.Text;
 
     /// <summary>
     /// The value type for containing an array of arbitrary Value instances.
@@ -254,11 +254,7 @@ namespace YAMP
         public override string ToString(ParseContext context)
         {
             var first = First();
-
-            if (first == null)
-                return string.Empty;
-
-            return first.ToString(context);
+            return first != null ? first.ToString(context) : String.Empty;
         }
 
         #endregion
