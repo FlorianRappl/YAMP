@@ -1,9 +1,7 @@
-﻿using System;
-using YAMP;
-using YAMP.Numerics;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using YAMP.Exceptions;
+
     [Description("In mathematics, the Zernike polynomials are a sequence of polynomials that are orthogonal on the unit disk. Named after Nobel Prize winner and optical physicist, and inventor of the phase contrast microscopy, Frits Zernike, they play an important role in beam optics.")]
     [Kind(PopularKinds.Function)]
     class ZernikeFunction : ArgumentFunction
@@ -27,8 +25,12 @@ namespace YAMP.Physics
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var i = 1; i <= Z.DimensionX; i++)
+            {
                 for (var j = 1; j <= Z.DimensionY; j++)
+                {
                     M[j, i] = Zernike(nn, nm, Z[j, i]);
+                }
+            }
 
             return M;
         }
@@ -45,11 +47,15 @@ namespace YAMP.Physics
 
             // n and m have the same parity
             if ((n - m) % 2 != 0)
+            {
                 return ScalarValue.Zero;
+            }
 
             // R00
             if (n == 0)
+            {
                 return ScalarValue.One;
+            }
 
             var absrho = rho.Abs();
 
@@ -59,11 +65,13 @@ namespace YAMP.Physics
             // R^{m}_m
             var r2 = rho.Pow(new ScalarValue(m));
 
-            if (n == m) 
+            if (n == m)
+            {
                 return r2;
+            }
 
             // R^{m+1}_{m+1}
-            int k = m;
+            var k = m;
             var r1 = r2 * rho;
 
             while (true)
@@ -80,7 +88,9 @@ namespace YAMP.Physics
                 var r0 = ((2 * k) * rho * r1 - (k + m) * r2) / (k - m);
 
                 if (k == n)
+                {
                     return r0;
+                }
 
                 //   *
                 //  /

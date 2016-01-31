@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+    using YAMP.Exceptions;
+
     [Description("In mathematics, the Hurwitz zeta function, named after Adolf Hurwitz, is one of the many zeta functions. It is formally defined for complex arguments s with Re(s) > 1 and q with Re(q) > 0. This series is absolutely convergent for the given values of s and q and can be extended to a meromorphic function defined for all s ≠ 1. The Riemann zeta function is ζ(s, 1).")]
     [Link("http://en.wikipedia.org/wiki/Hurwitz_zeta_function")]
     [Kind(PopularKinds.Function)]
@@ -22,8 +22,12 @@ namespace YAMP.Physics
             var M = new MatrixValue(Q.DimensionY, Q.DimensionX);
 
             for (var j = 1; j <= Q.DimensionY; j++)
+            {
                 for (var i = 1; i <= Q.DimensionX; i++)
+                {
                     M[j, i] = HurwitzZeta(s, Q[j, i]);
+                }
+            }
 
             return M;
         }
@@ -61,16 +65,18 @@ namespace YAMP.Physics
             if (q <= 0.0)
                 throw new YAMPArgumentRangeException("q", 0.0);
 
-            double max_bits = 54.0;
-            double ln_term0 = -s * Math.Log(q);
+            var max_bits = 54.0;
+            var ln_term0 = -s * Math.Log(q);
 
             if ((s > max_bits && q < 1.0) || (s > 0.5 * max_bits && q < 0.25))
+            {
                 return Math.Pow(q, -s);
+            }
             else if (s > 0.5 * max_bits && q < 1.0)
             {
-                double p1 = Math.Pow(q, -s);
-                double p2 = Math.Pow(q / (1.0 + q), s);
-                double p3 = Math.Pow(q / (2.0 + q), s);
+                var p1 = Math.Pow(q, -s);
+                var p2 = Math.Pow(q / (1.0 + q), s);
+                var p3 = Math.Pow(q / (2.0 + q), s);
                 return p1 * (1.0 + p2 + p3);
             }
 
@@ -80,21 +86,23 @@ namespace YAMP.Physics
             const int jmax = 12;
             const int kmax = 10;
 
-            double pmax = Math.Pow(kmax + q, -s);
-            double scp = s;
-            double pcp = pmax / (kmax + q);
-            double ans = pmax * ((kmax + q) / (s - 1.0) + 0.5);
+            var pmax = Math.Pow(kmax + q, -s);
+            var scp = s;
+            var pcp = pmax / (kmax + q);
+            var ans = pmax * ((kmax + q) / (s - 1.0) + 0.5);
 
             for (var k = 0; k < kmax; k++)
                 ans += Math.Pow(k + q, -s);
 
             for (var j = 0; j <= jmax; j++)
             {
-                double delta = COEFFICIENTS[j + 1] * scp * pcp;
+                Double delta = COEFFICIENTS[j + 1] * scp * pcp;
                 ans += delta;
 
-                if (Math.Abs(delta / ans) < 0.5 * double.Epsilon)
+                if (Math.Abs(delta / ans) < 0.5 * Double.Epsilon)
+                {
                     break;
+                }
 
                 scp *= (s + 2 * j + 1) * (s + 2 * j + 2);
                 pcp /= (kmax + q) * (kmax + q);
@@ -103,7 +111,7 @@ namespace YAMP.Physics
             return ans;
         }
 
-        public static ScalarValue HurwitzZeta(double s, ScalarValue q)
+        public static ScalarValue HurwitzZeta(Double s, ScalarValue q)
         {
             return HurwitzZeta(new ScalarValue(s), q);
         }
@@ -116,14 +124,16 @@ namespace YAMP.Physics
             if (q.Re <= 0.0)
                 throw new YAMPArgumentRangeException("q", 0.0);
 
-            double max_bits = 54.0;
+            var max_bits = 54.0;
             var ln_term0 = -s * q.Log();
             var qabs = q.Abs();
             var sabs = s.Abs();
             var ss = s;
 
             if ((sabs > max_bits && qabs < 1.0) || (sabs > 0.5 * max_bits && qabs < 0.25))
+            {
                 return q.Pow(-ss);
+            }
             else if (sabs > 0.5 * max_bits && qabs < 1.0)
             {
                 var p1 = q.Pow(-ss);
@@ -144,15 +154,19 @@ namespace YAMP.Physics
             var ans = pmax * ((kmax + q) / (s - 1.0) + 0.5);
 
             for (var k = 0; k < kmax; k++)
+            {
                 ans += (k + q).Pow(-ss);
+            }
 
             for (var j = 0; j <= jmax; j++)
             {
                 var delta = COEFFICIENTS[j + 1] * scp * pcp;
                 ans += delta;
 
-                if ((delta / ans).Abs() < 0.5 * double.Epsilon)
+                if ((delta / ans).Abs() < 0.5 * Double.Epsilon)
+                {
                     break;
+                }
 
                 scp *= (s + 2 * j + 1) * (s + 2 * j + 2);
                 pcp /= (kmax + q) * (kmax + q);

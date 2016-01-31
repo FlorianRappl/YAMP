@@ -1,9 +1,9 @@
-﻿using System;
-using YAMP;
-using YAMP.Numerics;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+    using YAMP.Exceptions;
+    using YAMP.Numerics;
+
     [Description("In mathematics, Struve functions H_alpha(x), are solutions y(x) of the non-homogenous Bessel's differential equation.")]
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Struve_function")]
@@ -17,9 +17,13 @@ namespace YAMP.Physics
             var a = alpha.GetIntegerOrThrowException("alpha", Name);
 
             if (a == 0)
+            {
                 return new ScalarValue(StruveL0(x.Re));
+            }
             else if (a == 1)
+            {
                 return new ScalarValue(StruveL1(x.Re));
+            }
 
             throw new YAMPArgumentRangeException("alpha", 0.0, 1.0);
         }

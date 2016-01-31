@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using YAMP;
-using System.Linq;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// Used to represent combined units -- temporary and defined.
     /// </summary>
@@ -489,7 +489,7 @@ namespace YAMP.Physics
 
         #region Converters
 
-        double ConvertToDouble(string s)
+        Double ConvertToDouble(String s)
         {
             var sign = 1.0;
 
@@ -502,8 +502,7 @@ namespace YAMP.Physics
                 s = s.Substring(1);
             }
 
-            var d = double.Parse(s, numberFormat);
-            return sign * d;
+            return sign * Double.Parse(s, numberFormat);
         }
 
         int ConvertToInteger(string s)
@@ -522,8 +521,7 @@ namespace YAMP.Physics
                 s = s.Substring(1);
             }
 
-            var d = int.Parse(s, numberFormat);
-            return sign * d;
+            return sign * Int32.Parse(s, numberFormat);
         }
 
         #endregion

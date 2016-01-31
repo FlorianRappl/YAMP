@@ -1,9 +1,9 @@
-﻿using System;
-using YAMP;
-using YAMP.Numerics;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+    using YAMP.Exceptions;
+    using YAMP.Numerics;
+
     [Description("Elliptic Integrals are said to be 'complete' when the amplitude φ = π/2 and therefore x = 1. The complete elliptic integral of the first kind K is evaluated by this function.")]
     [Kind(PopularKinds.Function)]
     class EllipticKFunction : StandardFunction
@@ -17,21 +17,25 @@ namespace YAMP.Physics
 
         #region Algorithms
 
-        public static double EllipticK(double k)
+        public static Double EllipticK(Double k)
         {
             if ((k < 0) || (k > 1.0))
                 throw new YAMPArgumentRangeException("k", 0.0, 1.0);
 
             if (k < 0.25)
+            {
                 return EllipticSeries(k);
+            }
             else if (k > 0.875)
             {
                 // for large k, use the asymptotic expansion near k~1, k'~0
-                double k1 = Math.Sqrt(1.0 - k * k);
+                var k1 = Math.Sqrt(1.0 - k * k);
 
                 // k'=0.484 at k=0.875
-                if (k1 == 0.0) 
-                    return double.PositiveInfinity;
+                if (k1 == 0.0)
+                {
+                    return Double.PositiveInfinity;
+                }
 
                 return EllipticAsymptotic(k1);
             }
@@ -39,59 +43,65 @@ namespace YAMP.Physics
             return EllipticAGM(k);
         }
 
-        static double EllipticSeries(double k)
+        static Double EllipticSeries(Double k)
         {
-            double z = 1.0;
-            double f = 1.0;
+            var z = 1.0;
+            var f = 1.0;
 
-            for (int n = 1; n < 250; n++)
+            for (var n = 1; n < 250; n++)
             {
-                double f_old = f;
+                var f_old = f;
                 z = z * (2 * n - 1) / (2 * n) * k;
                 f += z * z;
 
-                if (f == f_old) 
+                if (f == f_old)
+                {
                     return Helpers.HalfPI * f;
+                }
             }
 
             throw new YAMPNotConvergedException("EllipticK");
         }
 
-        static double EllipticAsymptotic(double k1)
+        static Double EllipticAsymptotic(Double k1)
         {
-            double p = 1.0;
-            double q = Math.Log(1.0 / k1) + 2.0 * Helpers.LogTwo;
-            double f = q;
+            var p = 1.0;
+            var q = Math.Log(1.0 / k1) + 2.0 * Helpers.LogTwo;
+            var f = q;
 
-            for (int m = 1; m < 250; m++)
+            for (var m = 1; m < 250; m++)
             {
-                double f_old = f;
+                var f_old = f;
                 p *= k1 / m * (m - 0.5);
                 q -= 1.0 / m / (2 * m - 1);
-                double df = p * p * q;
+                var df = p * p * q;
                 f += df;
 
                 if (f == f_old)
+                {
                     return f;
+                }
             }
 
             throw new YAMPNotConvergedException("EllipticK");
         }
 
-        static double EllipticAGM(double k)
+        static Double EllipticAGM(Double k)
         {
-            double tol = Math.Pow(2.0, -24);
-            double a = 1.0 - k;
-            double b = 1.0 + k;
+            var tol = Math.Pow(2.0, -24);
+            var a = 1.0 - k;
+            var b = 1.0 + k;
 
-            for (int n = 0; n < 250; n++)
+            for (var n = 0; n < 250; n++)
             {
-                double am = (a + b) / 2.0;
+                var am = (a + b) / 2.0;
 
                 if (Math.Abs(a - b) < tol)
+                {
                     return Helpers.HalfPI / am;
+                }
 
-                double gm = Math.Sqrt(a * b);
+                var gm = Math.Sqrt(a * b);
                 a = am;
                 b = gm;
             }

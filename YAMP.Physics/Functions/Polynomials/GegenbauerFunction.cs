@@ -1,9 +1,8 @@
-﻿using System;
-using YAMP;
-using YAMP.Numerics;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+    using YAMP.Exceptions;
+
     [Description("In mathematics, Gegenbauer polynomials or ultraspherical polynomials C(x) are orthogonal polynomials on the interval [−1,1] with respect to the weight function (1 − x^2)^(α–1/2). They generalize Legendre polynomials and Chebyshev polynomials, and are special cases of Jacobi polynomials. They are named after Leopold Gegenbauer.")]
     [Kind(PopularKinds.Function)]
     class GegenbauerFunction : ArgumentFunction
@@ -24,16 +23,20 @@ namespace YAMP.Physics
             var nn = n.GetIntegerOrThrowException("n", Name);
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
-            for(var i = 1; i <= Z.DimensionX; i++)
+            for (var i = 1; i <= Z.DimensionX; i++)
+            {
                 for (var j = 1; j <= Z.DimensionY; j++)
+                {
                     M[j, i] = Gegenbauer(nn, alpha.Re, Z[j, i]);
+                }
+            }
 
             return M;
         }
 
         #region Algorithm
 
-        public static ScalarValue Gegenbauer(int n, double alpha, ScalarValue x)
+        public static ScalarValue Gegenbauer(Int32 n, Double alpha, ScalarValue x)
         {
             if (n < 0)
                 throw new YAMPArgumentRangeException("n");
@@ -47,12 +50,16 @@ namespace YAMP.Physics
             var C0 = ScalarValue.One;
 
             if (n == 0)
+            {
                 return C0;
+            }
 
             var C1 = 2.0 * alpha * x;
 
             if (n == 1)
+            {
                 return C1;
+            }
 
             for (var k = 2; k <= n; k++)
             {

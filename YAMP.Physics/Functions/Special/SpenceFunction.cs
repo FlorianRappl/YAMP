@@ -1,9 +1,9 @@
-﻿using System;
-using YAMP;
-using YAMP.Numerics;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+    using YAMP.Exceptions;
+    using YAMP.Numerics;
+
     [Description("In mathematics, Spence's function, or dilogarithm, denoted as Li2(z), is a particular case of the polylogarithm. Lobachevsky's function and Clausen's function are closely related functions. Two related special functions are referred to as Spence's function, the dilogarithm itself, and its reflection with the variable negated.")]
     [Kind(PopularKinds.Function)]
     class SpenceFunction : StandardFunction
@@ -22,8 +22,8 @@ namespace YAMP.Physics
         /// <returns>The value Li<sub>2</sub>(z).</returns>
         public static ScalarValue DiLog(ScalarValue z)
         {
-            ScalarValue f;
-            double a0 = z.Abs();
+            var f = default(ScalarValue);
+            var a0 = z.Abs();
 
             if (a0 > 1.0)
             {
@@ -35,9 +35,13 @@ namespace YAMP.Physics
             {
                 // inside the unit disk...
                 if (a0 < 0.75)
+                {
                     f = DiLog0(z);
+                }
                 else if (z.Re < 0.0)
+                {
                     f = DiLog(z * z) / 2.0 - DiLog(-z);
+                }
                 else
                 {
                     var e = 1.0 - z;
@@ -45,8 +49,10 @@ namespace YAMP.Physics
                 }
             }
 
-            if ((z.Re > 1.0) && (Math.Sign(f.Im) != Math.Sign(z.Im))) 
+            if ((z.Re > 1.0) && (Math.Sign(f.Im) != Math.Sign(z.Im)))
+            {
                 f = f.Conjugate();
+            }
 
             return f;
         }
@@ -56,14 +62,16 @@ namespace YAMP.Physics
             var zz = z.Clone();
             var f = zz.Clone();
 
-            for (int k = 2; k < 250; k++)
+            for (var k = 2; k < 250; k++)
             {
                 var f_old = f.Clone();
                 zz *= z;
                 f += zz / (k * k);
 
                 if (f == f_old)
+                {
                     return f;
+                }
             }
 
             throw new YAMPNotConvergedException("spence");
@@ -71,15 +79,17 @@ namespace YAMP.Physics
 
         static ScalarValue DiLog1(ScalarValue e)
         {
-            ScalarValue f = new ScalarValue(Math.PI * Math.PI / 6.0);
+            var f = new ScalarValue(Math.PI * Math.PI / 6.0);
 
-            if (e == 0.0) 
+            if (e == 0.0)
+            {
                 return f;
+            }
 
             var L = e.Ln();
             var ek = ScalarValue.One;
 
-            for (int k = 1; k < 250; k++)
+            for (var k = 1; k < 250; k++)
             {
                 var f_old = f.Clone();
                 ek *= e;
@@ -87,7 +97,9 @@ namespace YAMP.Physics
                 f += df;
 
                 if (f == f_old)
+                {
                     return f;
+                }
             }
 
             throw new YAMPNotConvergedException("spence");
@@ -100,14 +112,16 @@ namespace YAMP.Physics
             var f = Math.PI * Math.PI / 6.0 + ln * (1.0 - (-ln).Ln()) - ln2 / 4.0;
             var p = ln.Clone();
 
-            for (int k = 1; k < 17; k++)
+            for (var k = 1; k < 17; k++)
             {
                 var f_old = f.Clone();
                 p *= ln2 / (2 * k + 1) / (2 * k);
                 f += (-Helpers.BernoulliNumbers[k] / (2 * k)) * p;
 
-                if (f == f_old) 
+                if (f == f_old)
+                {
                     return f;
+                }
             }
 
             throw new YAMPNotConvergedException("spence");

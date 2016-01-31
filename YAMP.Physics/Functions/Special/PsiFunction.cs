@@ -1,9 +1,9 @@
-﻿using System;
-using YAMP;
-using YAMP.Numerics;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+    using YAMP.Exceptions;
+    using YAMP.Numerics;
+
     [Description("In mathematics, the polygamma function of order m is a meromorphic function on C and defined as the (m+1)-th derivative of the logarithm of the gamma function.")]
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Polygamma")]
@@ -25,8 +25,12 @@ namespace YAMP.Physics
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var j = 1; j <= Z.DimensionY; j++)
+            {
                 for (var i = 1; i <= Z.DimensionX; i++)
+                {
                     M[j, i] = Psi(m, Z[j, i]);
+                }
+            }
 
             return M;
         }
@@ -107,7 +111,9 @@ namespace YAMP.Physics
         public static ScalarValue Psi0(ScalarValue z)
         {
             if (z.Re >= 0.0)
+            {
                 return Psi0rhp(z);
+            }
 
             /* reflection formula [Abramowitz+Stegun, 6.3.7] */
             var omz = new ScalarValue(1.0 - z.Re, -z.Im);
@@ -128,9 +134,13 @@ namespace YAMP.Physics
                 throw new YAMPArgumentRangeException("x", 0.0);
 
             if (n == 0)
+            {
                 return Gamma.Psi(x);
+            }
             else if (n == 1)
+            {
                 return Psi1(x);
+            }
 
             var hzeta = HzetaFunction.HurwitzZeta(n + 1.0, x);
             var ln_nf = Helpers.Factorial(n);
@@ -206,18 +216,20 @@ namespace YAMP.Physics
                 throw new YAMPArgumentRangeException("z", "All values except 0.0, -1.0, -2.0");
 
             if (z.Re > 0.0)
+            {
                 return PsiXgt0(1, z);
+            }
             else if (z.Re > -5.0)
             {
                 /* Abramowitz + Stegun 6.4.6 */
-                int M = -((int)(Math.Floor(z.Re)));
+                int M = -((Int32)(Math.Floor(z.Re)));
                 var fx = z + M;
                 var sum = ScalarValue.Zero;
 
                 if (fx == 0.0)
                     throw new YAMPNotConvergedException("psi");
 
-                for (int m = 0; m < M; ++m)
+                for (var m = 0; m < M; ++m)
                 {
                     var xm = z + m;
                     sum += 1.0 / (xm * xm);
@@ -235,7 +247,9 @@ namespace YAMP.Physics
         static double PsiXgt0(int n, double x)
         {
             if (n == 0)
+            {
                 return Gamma.Psi(x);
+            }
 
             /* Abramowitz + Stegun 6.4.10 */
             var hzeta = HzetaFunction.HurwitzZeta(n + 1.0, x);
@@ -243,7 +257,9 @@ namespace YAMP.Physics
             var result = hzeta * ln_nf;
 
             if (n % 2 == 0)
+            {
                 result = -result;
+            }
 
             return result;
         }
@@ -251,7 +267,9 @@ namespace YAMP.Physics
         static ScalarValue PsiXgt0(int n, ScalarValue z)
         {
             if (n == 0)
+            {
                 return Psi0(z);
+            }
 
             /* Abramowitz + Stegun 6.4.10 */
             var hzeta = HzetaFunction.HurwitzZeta(n + 1.0, z);

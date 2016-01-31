@@ -1,9 +1,8 @@
-﻿using System;
-using YAMP;
-using YAMP.Numerics;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+    using YAMP.Exceptions;
+
     [Description("In mathematics, the Lambert W function, also called the omega function or product logarithm, is a set of functions, namely the branches of the inverse relation of the function f(w) = w * eexp(w) where exp(w) is the exponential function and w is any complex number. In other words, the defining equation for W(z) is z = W(z) * exp(W(z)).")]
     [Kind(PopularKinds.Function)]
     class LambertFunction : StandardFunction
@@ -19,10 +18,10 @@ namespace YAMP.Physics
 
         static ScalarValue LambertW(ScalarValue x)
         {
-            double EI = 1.0 / Math.E;
+            var EI = 1.0 / Math.E;
 
             // use an initial approximation
-            ScalarValue W = ScalarValue.Zero;
+            var W = ScalarValue.Zero;
             var abs = x.Abs();
 
             if (abs < EI / 2.0)
@@ -30,21 +29,29 @@ namespace YAMP.Physics
                 W = SeriesSmall(x);
 
                 if ((x + EI).Abs() < 1e-6)
+                {
                     return W;
+                }
             }
             else if (abs < EI)
+            {
                 W = SeriesZero(x);
+            }
             else if (abs > Math.E)
+            {
                 W = SeriesLarge(x);
+            }
             else
+            {
                 W = new ScalarValue(0.5);
+            }
 
             return Halley(x, W);
         }
 
         static ScalarValue Halley(ScalarValue x, ScalarValue w0)
         {
-            for (int i = 0; i < 250; i++)
+            for (var i = 0; i < 250; i++)
             {
                 var e = w0.Exp();
                 var f = e * w0 - x;
@@ -52,7 +59,9 @@ namespace YAMP.Physics
                 var w1 = w0 - dw;
 
                 if (w1 == w0)
+                {
                     return w1;
+                }
 
                 w0 = w1;
             }

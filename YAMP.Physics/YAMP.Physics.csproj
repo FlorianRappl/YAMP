@@ -40,9 +40,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="YAMP, Version=1.4.0.22422, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\YAMP.1.4.0\lib\net35\YAMP.dll</HintPath>
+    <Reference Include="YAMP">
+      <HintPath>..\packages\YAMP.1.5.0.7513\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\YAMP.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
