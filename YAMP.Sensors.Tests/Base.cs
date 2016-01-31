@@ -8,7 +8,7 @@
         protected void Test(String query, Double result, Double prec = 0.0)
         {
             var parser = new Parser();
-            parser.LoadPlugin(typeof(AccFunction).Assembly);
+            parser.LoadPlugin(typeof(SensorsPlugin).Assembly);
             var value = parser.Evaluate(query);
             var real = ((ScalarValue)value).Re;
             Assert.AreEqual(result, real, prec);
