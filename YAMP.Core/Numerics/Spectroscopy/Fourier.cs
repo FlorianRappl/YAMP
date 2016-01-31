@@ -1,9 +1,9 @@
-﻿using System;
-using YAMP;
-using System.Collections.Generic;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// A more advanced FFT that is a lot more general.
     /// </summary>

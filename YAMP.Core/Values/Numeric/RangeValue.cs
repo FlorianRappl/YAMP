@@ -1,8 +1,8 @@
 namespace YAMP
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
+    using YAMP.Exceptions;
 
     /// <summary>
     /// A special kind of matrix which is a range (vector).
@@ -32,9 +32,10 @@ namespace YAMP
             DimensionX = 1;
             DimensionY = count;
 
-			if(count < 0)
+			if (count < 0)
 				throw new YAMPRangeInvalidException("negative number of entries has been detected"); 
-			else if(count >= int.MaxValue / 10)
+
+			if (count >= Int32.MaxValue / 10)
                 throw new YAMPRangeInvalidException("too many entries have been found");
 		}
 		

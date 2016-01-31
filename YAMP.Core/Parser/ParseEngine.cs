@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using YAMP.Errors;
 
     /// <summary>
     /// The parse engine of YAMP. This engine has been introduced with YAMP v1.2

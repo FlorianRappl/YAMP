@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System.Collections.Generic;
+    using System.Text;
+    using YAMP.Errors;
+
     /// <summary>
     /// The class for the if keyword. Basic syntax:
     /// if ( CONDITION ) STATEMENT
@@ -63,12 +63,16 @@ namespace YAMP
                 kw.Condition = engine.Advance().ParseStatement(')', e => new YAMPBracketNotClosedError(ln, col));
 
                 if (kw.Condition.Container == null || !kw.Condition.Container.HasContent)
+                {
                     engine.AddError(new YAMPIfArgumentsMissing(engine), kw);
+                }
 
                 kw.Body = engine.ParseStatement();
             }
             else
+            {
                 engine.AddError(new YAMPIfArgumentsMissing(engine), kw);
+            }
 
             kw.Length = engine.Pointer - start;
             return kw;
@@ -83,11 +87,15 @@ namespace YAMP
                 var boolean = (ScalarValue)condition;
 
                 if (boolean.IsTrue)
+                {
                     return Body.Interpret(symbols);
+                }
             }
 
             if (Else != null)
+            {
                 return Else.Body.Interpret(symbols);
+            }
 
             return null;
         }

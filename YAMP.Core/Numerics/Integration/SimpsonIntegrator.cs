@@ -1,8 +1,7 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using YAMP.Exceptions;
+
     /// <summary>
     /// Represents a specific algorithm for integration - Simpson's rule.
     /// </summary>
@@ -40,8 +39,10 @@ namespace YAMP.Numerics
 
             var sum = 0.0;
 
-            for (var i = 1; i < N - 1; i+=2)
+            for (var i = 1; i < N - 1; i += 2)
+            {
                 sum += (x[i + 2].Re - x[i].Re) * (y[i].Re + 4.0 * y[i + 1].Re + y[i + 2].Re);
+            }
 
             return new ScalarValue(sum / 6.0);
         }

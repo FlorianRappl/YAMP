@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using System;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// Provides some commonly used methods for numeric algorithms.
     /// </summary>
@@ -279,15 +280,19 @@ namespace YAMP.Numerics
         public static bool IsPrimeNumber(int n)
         {
             if (n < 8)
+            {
                 return ((n == 2) || (n == 3) || (n == 5) || (n == 7));
+            }
             else
             {
                 if (n % 2 == 0)
+                {
                     return (false);
+                }
 
-                int m = n - 1;
-                int d = m;
-                int s = 0;
+                var m = n - 1;
+                var d = m;
+                var s = 0;
 
                 while (d % 2 == 0)
                 {
@@ -296,7 +301,9 @@ namespace YAMP.Numerics
                 }
 
                 if (n < 1373653)
+                {
                     return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 3));
+                }
 
                 return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 7) && IsProbablyPrime(n, m, s, d, 61));
 
@@ -305,19 +312,26 @@ namespace YAMP.Numerics
 
         static bool IsProbablyPrime(int n, int m, int s, int d, int w)
         {
-            int x = PowMod(w, d, n);
+            var x = PowMod(w, d, n);
 
             if ((x == 1) || (x == m))
+            {
                 return true;
+            }
 
             for (int i = 0; i < s; i++)
             {
                 x = PowMod(x, 2, n);
-                if (x == 1)
-                    return false;
-                if (x == m)
 
+                if (x == 1)
+                {
+                    return false;
+                }
+
+                if (x == m)
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -340,14 +354,16 @@ namespace YAMP.Numerics
             if (m < 1)
                 throw new YAMPArgumentRangeException("m", 0);
 
-            long bb = Convert.ToInt64(b);
-            long mm = Convert.ToInt64(m);
-            long rr = 1;
+            var bb = Convert.ToInt64(b);
+            var mm = Convert.ToInt64(m);
+            var rr = 1L;
 
             while (e > 0)
             {
                 if ((e & 1) == 1)
+                {
                     rr = checked((rr * bb) % mm);
+                }
 
                 e = e >> 1;
                 bb = checked((bb * bb) % mm);
@@ -375,10 +391,14 @@ namespace YAMP.Numerics
             while (true)
             {
                 if (A == B)
+                {
                     return f * A;
+                }
 
                 if (A == 1 || B == 1)
+                {
                     return f;
+                }
 
                 if ((A % 2 == 0) && (B % 2 == 0))
                 {
@@ -387,13 +407,21 @@ namespace YAMP.Numerics
                     B = B / 2;
                 }
                 else if ((A % 2 == 0) && (B % 2 != 0))
+                {
                     A = A / 2;
+                }
                 else if ((A % 2 != 0) && (B % 2 == 0))
+                {
                     B = B / 2;
+                }
                 else if (A > B)
+                {
                     A = (A - B) / 2;
+                }
                 else
+                {
                     B = (B - A) / 2;
+                }
             }
         }  
 
@@ -403,7 +431,7 @@ namespace YAMP.Numerics
         /// <param name="a">The length of one side.</param>
         /// <param name="b">The length of another side.</param>
         /// <returns>The length of the hypotenuse, sqrt(x<sup>2</sup> + y<sup>2</sup>).</returns>
-        public static double Hypot(double a, double b)
+        public static Double Hypot(Double a, Double b)
         {
             var r = 0.0;
 
@@ -426,19 +454,23 @@ namespace YAMP.Numerics
         /// </summary>
         /// <param name="n">The argument to take the factorial.</param>
         /// <returns>A double with the result of n!.</returns>
-        public static double Factorial(int n)
+        public static Double Factorial(Int32 n)
         {
             if (n < 34)
             {
                 var res = 1.0;
 
                 while (n > 1)
+                {
                     res *= n--;
+                }
 
                 return res;
             }
             else if (n < 171)
+            {
                 return FACT_34_TO_170[n - 34];
+            }
 
             return Math.Exp(Gamma.LogGamma(n + 1.0));
         }
@@ -460,7 +492,7 @@ namespace YAMP.Numerics
         /// <param name="n">We have n elements.</param>
         /// <param name="k">We choose k elements.</param>
         /// <returns>The binomial coefficient.</returns>
-        public static double BinomialCoefficient(double n, double k)
+        public static Double BinomialCoefficient(Double n, Double k)
         {
             return Gamma.LinearGamma(n + 1.0) / (Gamma.LinearGamma(k + 1.0) * Gamma.LinearGamma(n - k + 1.0));
         }
@@ -471,17 +503,21 @@ namespace YAMP.Numerics
         /// <param name="z">The complex value z in C.</param>
         /// <param name="n">The power n in N.</param>
         /// <returns>The result of z^n.</returns>
-        public static ScalarValue Power(ScalarValue z, int n)
+        public static ScalarValue Power(ScalarValue z, Int32 n)
         {
             if (n == 0)
+            {
                 return new ScalarValue(1);
+            }
 
             if (n > 0)
             {
                 var result = z;
 
-                for (int i = 1; i < n; i++)
+                for (var i = 1; i < n; i++)
+                {
                     result *= z;
+                }
 
                 return result;
             }
@@ -489,7 +525,9 @@ namespace YAMP.Numerics
             var inv = 1 / z;
 
             if (n < -1)
+            {
                 return Power(inv, -n);
+            }
 
             return inv;
         }
@@ -503,12 +541,12 @@ namespace YAMP.Numerics
         public static ScalarValue[] ComputeRoots(int N, int sign)
         {
             var u = new ScalarValue[N + 1];
-            double t = sign * TwoPI / N;
+            var t = sign * TwoPI / N;
             u[0] = new ScalarValue(1.0);
 
-            for (int r = 1; r < N; r++)
+            for (var r = 1; r < N; r++)
             {
-                double rt = r * t;
+                var rt = r * t;
                 u[r] = new ScalarValue(Math.Cos(rt), Math.Sin(rt));
             }
 
@@ -523,15 +561,15 @@ namespace YAMP.Numerics
         /// <param name="coefficients">The coefficients to consider.</param>
         /// <param name="x">The real evaluation argument.</param>
         /// <returns>The value.</returns>
-        public static double ChebEval(int n, double[] coefficients, double x)
+        public static double ChebEval(int n, Double[] coefficients, double x)
         {
             // If |x|  < 0.6 use the standard Clenshaw method
             if (Math.Abs(x) < 0.6)
             {
-                double u0 = 0.0;
-                double u1 = 0.0;
-                double u2 = 0.0;
-                double xx = x + x;
+                var u0 = 0.0;
+                var u1 = 0.0;
+                var u2 = 0.0;
+                var xx = x + x;
 
                 for (int i = n; i >= 0; i--)
                 {

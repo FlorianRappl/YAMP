@@ -1,6 +1,7 @@
 namespace YAMP.Numerics
 {
     using YAMP;
+    using YAMP.Exceptions;
 
     /// <summary>
     /// Cholesky Decomposition.
@@ -119,35 +120,43 @@ namespace YAMP.Numerics
                 throw new YAMPDifferentDimensionsException(n, 1, B.DimensionY, 1);
 
             if (!isspd)
-                throw new YAMPMatrixFormatException(SpecialMatrixFormat.SymmetricPositiveDefinite);
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.SymmetricPositiveDefinite.ToString());
 
             // Copy right hand side.
             var X = B.GetComplexMatrix();
             int nx = B.DimensionX;
 
             // Solve L*Y = B;
-            for (int k = 0; k < n; k++)
+            for (var k = 0; k < n; k++)
             {
-                for (int i = k + 1; i < n; i++)
+                for (var i = k + 1; i < n; i++)
                 {
-                    for (int j = 0; j < nx; j++)
+                    for (var j = 0; j < nx; j++)
+                    {
                         X[i][j] -= X[k][j] * L[i][k];
+                    }
                 }
 
-                for (int j = 0; j < nx; j++)
+                for (var j = 0; j < nx; j++)
+                {
                     X[k][j] /= L[k][k];
+                }
             }
 
             // Solve L'*X = Y;
-            for (int k = n - 1; k >= 0; k--)
+            for (var k = n - 1; k >= 0; k--)
             {
-                for (int j = 0; j < nx; j++)
-                    X[k][j] /= L[k][k];
-
-                for (int i = 0; i < k; i++)
+                for (var j = 0; j < nx; j++)
                 {
-                    for (int j = 0; j < nx; j++)
+                    X[k][j] /= L[k][k];
+                }
+
+                for (var i = 0; i < k; i++)
+                {
+                    for (var j = 0; j < nx; j++)
+                    {
                         X[i][j] -= X[k][j] * L[k][i];
+                    }
                 }
             }
 

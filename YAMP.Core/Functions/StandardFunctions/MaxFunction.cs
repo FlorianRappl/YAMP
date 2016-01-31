@@ -1,27 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using YAMP.Exceptions;
+
 	[Description("Computes the maximum value of a given vector or maximum value of each column vector of a matrix.")]
 	[Kind(PopularKinds.Function)]
     sealed class MaxFunction : StandardFunction
 	{
 		public override Value Perform(Value argument)
 		{
-			if (argument is ScalarValue)
-				return argument;
-			else if (argument is MatrixValue)
-			{
-				var m = argument as MatrixValue;
+            if (argument is ScalarValue)
+            {
+                return argument;
+            }
+            else if (argument is MatrixValue)
+            {
+                var m = argument as MatrixValue;
 
-				if (m.DimensionX == 1)
-					return GetVectorMax(m.GetColumnVector(1));
-				else if (m.DimensionY == 1)
-					return GetVectorMax(m.GetRowVector(1));
-				
-				return Function(m);
-			}
+                if (m.DimensionX == 1)
+                {
+                    return GetVectorMax(m.GetColumnVector(1));
+                }
+                else if (m.DimensionY == 1)
+                {
+                    return GetVectorMax(m.GetRowVector(1));
+                }
+
+                return Function(m);
+            }
 
 			throw new YAMPOperationInvalidException("max", argument);
 		}
@@ -33,8 +39,10 @@ namespace YAMP
 		{
 			var M = new MatrixValue(1, m.DimensionX);
 
-			for (var i = 1; i <= m.DimensionX; i++)
-				M[1, i] = GetVectorMax(m.GetColumnVector(i));
+            for (var i = 1; i <= m.DimensionX; i++)
+            {
+                M[1, i] = GetVectorMax(m.GetColumnVector(i));
+            }
 
 			return M;
 		}
@@ -42,7 +50,7 @@ namespace YAMP
 		ScalarValue GetVectorMax(MatrixValue vec)
 		{
 			var buf = ScalarValue.Zero;
-			var max = double.MinValue;
+			var max = Double.MinValue;
 			var temp = 0.0;
 
 			for(var i = 1; i <= vec.Length; i++)

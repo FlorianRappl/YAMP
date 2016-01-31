@@ -1,6 +1,7 @@
 ﻿namespace YAMP
 {
     using System;
+    using YAMP.Exceptions;
 
     [Description("Computes an approximation of the distribution of data values.")]
     [Kind(PopularKinds.Statistic)]
@@ -27,8 +28,10 @@
             var variance = ScalarValue.Zero;
             var mean = Y.Sum() / Y.Length;
 
-            for (int i = 1; i <= Y.Length; i++)
+            for (var i = 1; i <= Y.Length; i++)
+            {
                 variance += (Y[i] - mean).Square();
+            }
 
             variance /= Y.Length;
 
@@ -36,8 +39,10 @@
 
             var x = new MatrixValue(nn, 1);
 
-            for(int i = 0; i < nn; i++)
-                x[i+1] = min + delta * i;
+            for (var i = 0; i < nn; i++)
+            {
+                x[i + 1] = min + delta * i;
+            }
 
             var histogram = new HistogramFunction();
             var fx = histogram.Function(Y, x);
@@ -49,8 +54,10 @@
                 var _exp_x_2 = (-_x * _x).Exp();
                 var result = new MatrixValue(1, nP - 1);
 
-                for (int i = 0; i < nP - 1; i++)
+                for (var i = 0; i < nP - 1; i++)
+                {
                     result[i + 1] = _exp_x_2 * _x.Pow(new ScalarValue(i));
+                }
 
                 return result;
             }, true));
@@ -61,11 +68,15 @@
                 var temp = dist.Perform(context, argument);
 
                 if (temp is ScalarValue)
+                {
                     return (temp as ScalarValue) / norm;
+                }
                 else if (temp is MatrixValue)
+                {
                     return (temp as MatrixValue) / norm;
-                else
-                    throw new YAMPOperationInvalidException();
+                }
+                
+                throw new YAMPOperationInvalidException();
             }, true);
 
             return normed_dist;

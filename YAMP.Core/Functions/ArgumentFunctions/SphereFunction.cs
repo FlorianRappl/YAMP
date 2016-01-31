@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using YAMP.Exceptions;
+
     [Description("The sphere function generates the x-, y-, and z-coordinates of a unit sphere for use with surf and mesh.")]
     [Kind(PopularKinds.Function)]
     sealed class SphereFunction : ArgumentFunction

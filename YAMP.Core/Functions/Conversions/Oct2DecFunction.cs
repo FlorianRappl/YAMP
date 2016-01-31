@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Exceptions;
+
     [Description("Converts a octal number to a decimal number.")]
     [Kind(PopularKinds.Conversion)]
     sealed class Oct2DecFunction : ArgumentFunction
@@ -12,21 +13,20 @@ namespace YAMP
         public ScalarValue Function(StringValue octstr)
         {
             var sum = 0;
-            var hex = new Stack<int>();
+            var hex = new Stack<Int32>();
             var weight = 1;
 
             for (var i = 1; i <= octstr.Length; i++)
             {
                 var chr = octstr[i];
 
-                if (ParseEngine.IsWhiteSpace(chr))
-                    continue;
-                else if (ParseEngine.IsNewLine(chr))
-                    continue;
-                else if (chr >= '0' && chr <= '7')
-                    hex.Push((int)(chr - '0'));
-                else
-                    throw new YAMPRuntimeException("oct2dec can only interpret octal strings.");
+                if (!ParseEngine.IsWhiteSpace(chr) && !ParseEngine.IsNewLine(chr))
+                {
+                    if (chr >= '0' && chr <= '7')
+                        hex.Push((Int32)(chr - '0'));
+                    else
+                        throw new YAMPRuntimeException("oct2dec can only interpret octal strings.");
+                }
             }
 
             while (hex.Count != 0)

@@ -1,9 +1,8 @@
-﻿using System;
-using YAMP.Numerics;
-
-
-namespace YAMP.Functions
+﻿namespace YAMP.Functions
 {
+    using YAMP.Exceptions;
+    using YAMP.Numerics;
+
     [Description("In mathematics, the Pochhammer symbol introduced by Leo August Pochhammer is the notation (x)n, where n is a non-negative integer. Depending on the context the Pochhammer symbol may represent either the rising factorial or the falling factorial.")]
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Pochhammer_symbol")]
@@ -41,9 +40,13 @@ namespace YAMP.Functions
 
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
-            for(var i = 1; i <= M.DimensionX; i++)
+            for (var i = 1; i <= M.DimensionX; i++)
+            {
                 for (var j = 1; j <= M.DimensionY; j++)
+                {
                     M[j, i] = Gamma.LinearGamma(Z[j, i] + N[j, i]) / Gamma.LinearGamma(Z[j, i]);
+                }
+            }
 
             return M;
         }

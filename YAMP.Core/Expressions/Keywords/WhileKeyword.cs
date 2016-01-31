@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System.Collections.Generic;
+    using System.Text;
+    using YAMP.Errors;
+
     /// <summary>
     /// The while keyword has its logic defined here. The basic syntax:
     /// while ( CONDITION ) STATEMENT
@@ -69,7 +69,9 @@ namespace YAMP
                 kw.Condition = engine.Advance().ParseStatement(')', e => new YAMPBracketNotClosedError(ln, col));
 
                 if (kw.Condition.Container == null || !kw.Condition.Container.HasContent)
+                {
                     engine.AddError(new YAMPWhileArgumentsMissing(engine), kw);
+                }
 
                 SetMarker(engine);
                 kw.Body = engine.ParseStatement();
@@ -83,11 +85,15 @@ namespace YAMP
                         engine.LastStatement.GetKeyword<DoKeyword>().While = kw;
                     }
                     else
+                    {
                         engine.AddError(new YAMPDoWhileNotEmptyError(engine), kw);
+                    }
                 }
             }
             else
+            {
                 engine.AddError(new YAMPWhileArgumentsMissing(engine), kw);
+            }
 
             kw.Length = engine.Pointer - start;
             return kw;

@@ -1,5 +1,7 @@
 ﻿namespace YAMP
 {
+    using YAMP.Exceptions;
+
     /// <summary>
     /// The matrix column operator , - used to seperate various columns in the
     /// entered matrix.

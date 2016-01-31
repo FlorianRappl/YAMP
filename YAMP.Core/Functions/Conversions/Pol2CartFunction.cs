@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using YAMP.Exceptions;
+
     [Description("Converts a vector given in polar coordinates to a cartesian coordinates.")]
     [Kind(PopularKinds.Conversion)]
     sealed class Pol2CartFunction : ArgumentFunction
@@ -25,7 +26,9 @@ namespace YAMP
             var isTransposed = M.DimensionY != 2;
 
             if (isTransposed)
+            {
                 M = M.Transpose();
+            }
 
             var m = new MatrixValue(2, M.DimensionX);
 

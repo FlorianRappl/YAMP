@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using System;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// This class contains everything about the error function.
     /// </summary>
@@ -211,35 +211,41 @@ namespace YAMP.Numerics
             var zz = -z * z;
             var f = zp;
 
-            for (int k = 1; k < 250; k++)
+            for (var k = 1; k < 250; k++)
             {
                 var f_old = f;
                 zp *= zz / k;
                 f += zp / (2 * k + 1);
 
                 if (f == f_old)
-                    return (f);
+                {
+                    return f;
+                }
             }
 
             throw new YAMPNotConvergedException("Erf");
         }
 
-		static double polevl(double x, double[] coef, int N)
+        static Double polevl(Double x, Double[] coef, Int32 N)
 		{
 			var ans = coef[0];
 
-			for (int i = 1; i <= N; i++)
-				ans = ans * x + coef[i];
+            for (var i = 1; i <= N; i++)
+            {
+                ans = ans * x + coef[i];
+            }
 
 			return ans;
 		}
 
-		static double p1evl(double x, double[] coef, int N)
+        static Double p1evl(Double x, Double[] coef, Int32 N)
 		{
 			var ans = x + coef[0];
 
-			for (int i = 1; i < N; i++)
-				ans = ans * x + coef[i];
+            for (var i = 1; i < N; i++)
+            {
+                ans = ans * x + coef[i];
+            }
 
 			return ans;
         }
@@ -253,10 +259,12 @@ namespace YAMP.Numerics
             var ZN = WeidemanL + ScalarValue.I * z;
             var ZD = WeidemanL - ScalarValue.I * z;
             var ZQ = ZN / ZD;
-            ScalarValue f = new ScalarValue(WeidemanCoefficients[40]);
+            var f = new ScalarValue(WeidemanCoefficients[40]);
 
-            for (int k = 39; k > 0; k--)
+            for (var k = 39; k > 0; k--)
+            {
                 f = f * ZQ + WeidemanCoefficients[k];
+            }
 
             var ZP = ZN * ZD;
             return 2.0 / ZP * f * ZQ + 1.0 / Helpers.SqrtPI / ZD;
@@ -270,7 +278,7 @@ namespace YAMP.Numerics
             var Df = a / b;		    // Df_1 = f_1 - f_0
             var f = 0.0 + Df;		// f_1 = f_0 + Df_1 = b_0 + Df_1
 
-            for (int k = 1; k < 250; k++)
+            for (var k = 1; k < 250; k++)
             {
                 var f_old = f;
                 a = -k / 2.0;
@@ -279,7 +287,9 @@ namespace YAMP.Numerics
                 f += Df;
 
                 if (f == f_old)
+                {
                     return ScalarValue.I / Helpers.SqrtPI * f;
+                }
             }
 
             throw new YAMPNotConvergedException("Erf");
@@ -294,7 +304,7 @@ namespace YAMP.Numerics
             var w = w0 + wp * dz;
 
             // higher orders
-            for (int k = 2; k < 250; k++)
+            for (var k = 2; k < 250; k++)
             {
                 // remmeber the current value
                 var w_old = w;
@@ -311,7 +321,9 @@ namespace YAMP.Numerics
 
                 // test whether we have converged
                 if (w == w_old)
+                {
                     return w;
+                }
             }
 
             throw new YAMPNotConvergedException("Erf");

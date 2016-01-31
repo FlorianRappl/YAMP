@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using YAMP.Errors;
+
     /// <summary>
     /// The for keyword with the corresponding loop construct. Basic syntax:
     /// for ( INIT ; CONDITION ; END ) STATEMENT
@@ -67,7 +68,7 @@ namespace YAMP
                 engine.AddError(new YAMPForArgumentsMissing(engine));
                 return kw;
             }
-            
+
             if (chars[index] == '(')
             {
                 var ln = engine.CurrentLine;
@@ -81,7 +82,9 @@ namespace YAMP
                 UnsetMarker(engine);
             }
             else
+            {
                 engine.AddError(new YAMPForArgumentsMissing(engine));
+            }
 
             kw.Length = engine.Pointer - start;
             return kw;
@@ -92,7 +95,7 @@ namespace YAMP
             __break = true;
         }
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(Dictionary<String, Value> symbols)
         {
             Initialization.Interpret(symbols);
             __break = false;
@@ -102,7 +105,9 @@ namespace YAMP
                 Body.Interpret(symbols);
 
                 if (__break)
+                {
                     break;
+                }
 
                 End.Interpret(symbols);
             }

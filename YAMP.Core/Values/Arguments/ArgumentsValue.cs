@@ -4,6 +4,7 @@ namespace YAMP
     using System.Collections.Generic;
     using System.IO;
     using System.Text;
+    using YAMP.Exceptions;
 
     /// <summary>
     /// The value type for containing an array of arbitrary Value instances.
@@ -270,7 +271,9 @@ namespace YAMP
         public Value Perform(ParseContext context, Value argument)
         {
             if (argument is ScalarValue)
+            {
                 return this[((ScalarValue)argument).IntValue];
+            }
 
             throw new YAMPArgumentWrongTypeException(argument.Header, "Scalar", "Arguments");
         }

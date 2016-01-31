@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
-
 namespace YAMP
 {
+    using System.Collections.Generic;
+    using YAMP.Errors;
+
     /// <summary>
     /// The absolute expression |...| which returns the absolute value
     /// of the evaluated value inside.

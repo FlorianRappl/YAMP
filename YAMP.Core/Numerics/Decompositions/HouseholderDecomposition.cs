@@ -1,5 +1,7 @@
 ﻿namespace YAMP.Numerics
 {
+    using YAMP.Exceptions;
+
     /// <summary>
     /// The Householder reflection is an implementation of a QR decomposition.
     /// This decomposition does not work for complex numbers.
@@ -181,39 +183,47 @@
                 throw new YAMPDifferentDimensionsException(m, 1, b.DimensionY, 1);
 
             if (!this.FullRank)
-                throw new YAMPMatrixFormatException(SpecialMatrixFormat.NonSingular);
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.NonSingular.ToString());
 
             // Copy right hand side
             var nx = b.DimensionX;
             var X = b.GetComplexMatrix();
 
             // Compute Y = transpose(Q)*B
-            for (int k = 0; k < n; k++)
+            for (var k = 0; k < n; k++)
             {
-                for (int j = 0; j < nx; j++)
+                for (var j = 0; j < nx; j++)
                 {
                     var s = ScalarValue.Zero;
 
-                    for (int i = k; i < m; i++)
+                    for (var i = k; i < m; i++)
+                    {
                         s += QR[i][k] * X[i][j];
+                    }
 
                     s = (-s) / QR[k][k];
 
-                    for (int i = k; i < m; i++)
+                    for (var i = k; i < m; i++)
+                    {
                         X[i][j] += s * QR[i][k];
+                    }
                 }
             }
 
             // Solve R * X = Y;
-            for (int k = n - 1; k >= 0; k--)
+            for (var k = n - 1; k >= 0; k--)
             {
-                for (int j = 0; j < nx; j++)
-                    X[k][j] /= Rdiag[k];
-
-                for (int i = 0; i < k; i++)
+                for (var j = 0; j < nx; j++)
                 {
-                    for (int j = 0; j < nx; j++)
+                    X[k][j] /= Rdiag[k];
+                }
+
+                for (var i = 0; i < k; i++)
+                {
+                    for (var j = 0; j < nx; j++)
+                    {
                         X[i][j] -= X[k][j] * QR[i][k];
+                    }
                 }
             }
 

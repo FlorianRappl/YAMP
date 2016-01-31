@@ -1,6 +1,7 @@
 ﻿namespace YAMP
 {
     using System;
+    using YAMP.Exceptions;
     using YAMP.Numerics;
 
 	[Description("Solves one dimensional ordinary differential equations in the form x'(t) = f(t, x(t)).")]

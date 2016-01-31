@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System.Collections.Generic;
+    using YAMP.Errors;
+
     /// <summary>
     /// The bracket expression (...).
     /// </summary>

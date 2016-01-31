@@ -1,10 +1,8 @@
-using System;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System.Collections.Generic;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// Operator for arguments () for symbols (usually functions!).
     /// </summary>

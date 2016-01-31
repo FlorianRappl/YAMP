@@ -1,9 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// This class represents the basis of the assignment operators
     /// as well as the simple assignment operator (=).
@@ -42,27 +42,33 @@ namespace YAMP
 
 		protected Value Assign(Expression left, Value value, Dictionary<string, Value> symbols)
 		{
-			if (left is SymbolExpression)
+            if (left is SymbolExpression)
+            {
                 return Assign((SymbolExpression)left, value, symbols);
-			else if(left is ContainerExpression)
-			{
+            }
+            else if (left is ContainerExpression)
+            {
                 var tree = (ContainerExpression)left;
 
-				if (tree.Operator == null)
-					return Assign(tree.Expressions[0], value, symbols);
-				else if(tree.Operator is ArgsOperator)
-				{
-					var ix = (ArgsOperator)tree.Operator;
-					return ix.Handle(tree.Expressions[0], value, symbols);
-				}
+                if (tree.Operator == null)
+                {
+                    return Assign(tree.Expressions[0], value, symbols);
+                }
+                else if (tree.Operator is ArgsOperator)
+                {
+                    var ix = (ArgsOperator)tree.Operator;
+                    return ix.Handle(tree.Expressions[0], value, symbols);
+                }
                 else if (tree.IsSymbolList)
                 {
                     var vars = tree.GetSymbols();
                     return HandleMultipleOutputs(value, vars, symbols);
                 }
                 else
+                {
                     throw new YAMPAssignmentException(Op);
-			}
+                }
+            }
 			
 			return value;
 		}

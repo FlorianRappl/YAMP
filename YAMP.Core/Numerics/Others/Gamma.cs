@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using System;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// This class contains the linear gamma function as well as complex ones
     /// and logarithmic ones.
@@ -153,8 +153,10 @@ namespace YAMP.Numerics
 
 		static ScalarValue LogGamma_Stirling(ScalarValue z)
 		{
-			if (z.Im < 0.0)
-				return LogGamma_Stirling(z.Conjugate()).Conjugate();
+            if (z.Im < 0.0)
+            {
+                return LogGamma_Stirling(z.Conjugate()).Conjugate();
+            }
 
 			var f = (z - 0.5) * z.Ln() - z + Math.Log(2.0 * Math.PI) / 2.0;
 			var reduce = f.Im / (2.0 * Math.PI);
@@ -164,13 +166,15 @@ namespace YAMP.Numerics
 			var zsqu = z * z;
 			var zp = z.Clone();
 
-            for (int i = 1; i < 10; i++)
+            for (var i = 1; i < 10; i++)
 			{
 				var f_old = f.Clone();
                 f += Helpers.BernoulliNumbers[i] / (2 * i) / (2 * i - 1) / zp;
 
-				if (f == f_old)
-					return (f);
+                if (f == f_old)
+                {
+                    return (f);
+                }
 
 				zp = zp * zsqu;
 			}
@@ -182,8 +186,10 @@ namespace YAMP.Numerics
 		{
             var sum = Helpers.LanczosD[0];
 
-            for (int i = 1; i < Helpers.LanczosD.Length; i++)
+            for (var i = 1; i < Helpers.LanczosD.Length; i++)
+            {
                 sum += Helpers.LanczosD[i] / (x + i);
+            }
 
 			sum = 2.0 / Math.Sqrt(Math.PI) * sum / x;
 			var xshift = x + 0.5;

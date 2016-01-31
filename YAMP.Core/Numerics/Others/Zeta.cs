@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using System;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// Provides access to the useful Riemann-Zeta function.
     /// </summary>
@@ -72,9 +72,13 @@ namespace YAMP.Numerics
         public static ScalarValue RiemannZeta(ScalarValue s)
         {
             if (s == 1.0)
-                return new ScalarValue(double.PositiveInfinity);
+            {
+                return new ScalarValue(Double.PositiveInfinity);
+            }
             else if (s.Re >= 0.0)
+            {
                 return RiemannZetaGt0(s);
+            }
 
             //See real zeta function for more information
             var zeta_one_minus_s = RiemannZeta1msLt0(s);
@@ -82,7 +86,9 @@ namespace YAMP.Numerics
             var sabs = s.Abs();
 
             if (sin_term == 0.0)
+            {
                 return ScalarValue.Zero;
+            }
             else if (sabs < 170)
             {
                 //See below
@@ -100,19 +106,25 @@ namespace YAMP.Numerics
         /// </summary>
         /// <param name="s">The real argument</param>
         /// <returns>The real value.</returns>
-        public static double RiemannZeta(double s)
+        public static Double RiemannZeta(Double s)
         {
             if (s == 1.0)
+            {
                 return double.PositiveInfinity;
+            }
             else if (s >= 0.0)
+            {
                 return RiemannZetaGt0(s);
+            }
 
             /* reflection formula, [Abramowitz+Stegun, 23.2.5] */
             var zeta_one_minus_s = RiemannZeta1msLt0(s);
             var sin_term = ((s % 2.0) == 0.0) ? 0.0 : Math.Sin(0.5 * Math.PI * (s % 4.0)) / Math.PI;
 
             if (sin_term == 0.0)
+            {
                 return 0.0;
+            }
             else if (s > -170)
             {
                 /* 
@@ -122,7 +134,7 @@ namespace YAMP.Numerics
                  * with that implementation.
                  * We keep an array of (2 Pi)^(10 n).
                  */
-                var n = (int)Math.Floor((-s) / 10.0);
+                var n = (Int32)Math.Floor((-s) / 10.0);
                 var fs = s + 10.0 * n;
                 var p = Math.Pow(2.0 * Math.PI, fs) / Helpers.TwoPIpow[n];
                 var g = Gamma.LinearGamma(1.0 - s);

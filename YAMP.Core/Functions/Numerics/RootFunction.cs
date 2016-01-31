@@ -1,6 +1,7 @@
 ﻿namespace YAMP
 {
     using System;
+    using YAMP.Exceptions;
     using YAMP.Numerics.Optimization;
 
 	[Description("A root-finding algorithm is a numerical method, or algorithm, for finding a value x such that f(x) = 0, for a given function f. Such an x is called a root of the function f.")]

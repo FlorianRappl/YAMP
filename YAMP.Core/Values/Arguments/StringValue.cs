@@ -1,8 +1,7 @@
 namespace YAMP
 {
     using System;
-    using System.IO;
-    using System.Text;
+    using YAMP.Exceptions;
 
     /// <summary>
     /// The class for representing a string value.
@@ -209,10 +208,12 @@ namespace YAMP
             if (argument is NumericValue)
             {
                 var idx = BuildIndex(argument, Length);
-                var str = new char[idx.Length];
+                var str = new Char[idx.Length];
 
                 for (var i = 0; i < idx.Length; i++)
+                {
                     str[i] = _value[idx[i]];
+                }
 
                 return new StringValue(str);
             }

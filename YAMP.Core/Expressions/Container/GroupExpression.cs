@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using YAMP.Errors;
 
     /// <summary>
     /// This class represents a group of statements.

@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using System;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// Basic class for a GMRES(k) (with restarts) solver.
     /// </summary>
@@ -68,9 +68,13 @@ namespace YAMP.Numerics
             MatrixValue x;
 
             if (X0 == null)
+            {
                 X0 = new MatrixValue(b.DimensionY, b.DimensionX);
+            }
             else if (X0.DimensionX != b.DimensionX || X0.DimensionY != b.DimensionY)
+            {
                 throw new YAMPDifferentDimensionsException(X0, b);
+            }
 
             H = new MatrixValue(k + 1, k);
             V = new MatrixValue(X0.DimensionY, k);
@@ -97,7 +101,9 @@ namespace YAMP.Numerics
                 V.SetColumnVector(1, r0 / gamma[1]);
 
                 if (beta < Tolerance)
+                {
                     break;
+                }
 
                 do
                 {
@@ -107,7 +113,7 @@ namespace YAMP.Numerics
                     var Avj = A * V.GetColumnVector(j);
                     var sum = new MatrixValue(Avj.DimensionY, Avj.DimensionX);
 
-                    for (int m = 1; m <= j; m++)
+                    for (var m = 1; m <= j; m++)
                     {
                         var w = V.GetColumnVector(m);
                         H[m, j] = w.ComplexDot(Avj);
@@ -141,17 +147,23 @@ namespace YAMP.Numerics
                 {
                     var sum = ScalarValue.Zero;
 
-                    for (int m = l + 1; m <= j; m++)
+                    for (var m = l + 1; m <= j; m++)
+                    {
                         sum += H[l, m] * y[m];
+                    }
 
                     y[l] = (gamma[l] - sum) / H[l, l];
                 }
 
-                for (int l = 1; l <= j; l++)
+                for (var l = 1; l <= j; l++)
+                {
                     x += y[l] * V.GetColumnVector(l);
+                }
 
                 if (converged)
+                {
                     break;
+                }
 
                 X0 = x;
             }
@@ -162,7 +174,7 @@ namespace YAMP.Numerics
 
         void Rotate(int j)
         {
-            for (int i = 1; i < j; i++)
+            for (var i = 1; i < j; i++)
             {
                 var v1 = H[i, j];
                 var v2 = H[i + 1, j];

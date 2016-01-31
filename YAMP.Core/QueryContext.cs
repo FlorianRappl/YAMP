@@ -2,6 +2,7 @@ namespace YAMP
 {
     using System;
     using System.Collections.Generic;
+    using YAMP.Exceptions;
 
     /// <summary>
     /// Represents the context that is used for the current input query.

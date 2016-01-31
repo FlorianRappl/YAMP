@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using YAMP.Errors;
 
     /// <summary>
     /// The let keyword to create local variables. Basic syntax:

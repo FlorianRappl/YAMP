@@ -1,8 +1,7 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using YAMP.Exceptions;
+
     /// <summary>
     /// Abstract base class for various interpolation algorithms.
     /// </summary>

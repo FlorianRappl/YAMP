@@ -1,5 +1,7 @@
 ﻿namespace YAMP.Numerics
 {
+    using YAMP.Exceptions;
+
     /// <summary>
     /// The Givens rotation is an implementation of a QR decomposition.
     /// This decomposition also works for complex numbers.
@@ -95,7 +97,7 @@
                 throw new YAMPDifferentDimensionsException(m, 1, b.DimensionY, 1);
 
             if (!this.FullRank)
-                throw new YAMPMatrixFormatException(SpecialMatrixFormat.NonSingular);
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.NonSingular.ToString());
 
             var cols = b.DimensionX;
 

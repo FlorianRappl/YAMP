@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using YAMP.Exceptions;
 
     /// <summary>
     /// A function value, i.e. a lambda expression or existing function

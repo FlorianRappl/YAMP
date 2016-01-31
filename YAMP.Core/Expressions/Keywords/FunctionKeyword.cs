@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Text;
+    using YAMP.Errors;
 
     /// <summary>
     /// Represents the syntax for a function keyword. The basic syntax is

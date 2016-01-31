@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Errors;
+
     /// <summary>
     /// The class represents a (usually) line of statement or another
     /// self-contained block of expressions and operators.
@@ -15,9 +15,9 @@ namespace YAMP
         List<YAMPParseError> errors;
         Stack<Expression> _expressions;
         Stack<Operator> _operators;
-        int maxLevel;
-        bool takeOperator;
-        bool finalized;
+        Int32 _maxLevel;
+        Boolean _takeOperator;
+        Boolean _finalized;
         ContainerExpression _container;
 
         #endregion
@@ -29,12 +29,12 @@ namespace YAMP
         /// </summary>
         public Statement()
         {
-            maxLevel = -100;
+            _maxLevel = -100;
             errors = new List<YAMPParseError>();
             _expressions = new Stack<Expression>();
             _operators = new Stack<Operator>();
-            takeOperator = false;
-            finalized = false;
+            _takeOperator = false;
+            _finalized = false;
         }
 
         #endregion
@@ -72,7 +72,7 @@ namespace YAMP
         /// </summary>
         public bool IsEmpty
         {
-            get { return _expressions.Count == 0 && _operators.Count == 0 && (!finalized || !_container.HasContent); }
+            get { return _expressions.Count == 0 && _operators.Count == 0 && (!_finalized || !_container.HasContent); }
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace YAMP
         /// </summary>
         internal bool IsOperator
         {
-            get { return takeOperator; }
+            get { return _takeOperator; }
         }
 
         /// <summary>
@@ -102,14 +102,13 @@ namespace YAMP
         /// <returns>A boolean to indicate the search result.</returns>
         internal bool IsKeyword<T>() where T : Keyword
         {
-            if (_container.Expressions == null)
-                return false;
-
-            if (_container.Expressions.Length != 1)
-                return false;
-
-            if (_container.Expressions[0] is T)
-                return true;
+            if (_container.Expressions != null)
+            {
+                if (_container.Expressions.Length == 1 && _container.Expressions[0] is T)
+                {
+                    return true;
+                }
+            }
 
             return false;
         }
@@ -121,14 +120,13 @@ namespace YAMP
         /// <returns>The keyword instance.</returns>
         internal T GetKeyword<T>() where T: Keyword
         {
-            if (_container.Expressions == null)
-                return null;
-
-            if (_container.Expressions.Length != 1)
-                return null;
-
-            if (_container.Expressions[0] is T)
-                return (T)_container.Expressions[0];
+            if (_container.Expressions != null)
+            {
+                if (_container.Expressions.Length == 1 && _container.Expressions[0] is T)
+                {
+                    return (T)_container.Expressions[0];
+                }
+            }
 
             return null;
         }
@@ -141,7 +139,7 @@ namespace YAMP
         /// <returns>The current instance.</returns>
         internal Statement Push(ParseEngine engine, Operator _operator)
         {
-            if (finalized)
+            if (_finalized)
                 return this;
 
             _operator = _operator ?? Operator.Void;
@@ -154,8 +152,8 @@ namespace YAMP
             {
                 if (_operator.Expressions == 2)
                 {
-                    if (_operator.Level >= (_operator.IsRightToLeft ? maxLevel : maxLevel + 1))
-                        maxLevel = _operator.Level;
+                    if (_operator.Level >= (_operator.IsRightToLeft ? _maxLevel : _maxLevel + 1))
+                        _maxLevel = _operator.Level;
                     else
                     {
                         while (true)
@@ -180,14 +178,14 @@ namespace YAMP
                             if (_operators.Count > 0 && _operators.Peek().Level >= _operator.Level)
                                 continue;
 
-                            maxLevel = _operator.Level;
+                            _maxLevel = _operator.Level;
                             break;
                         }
                     }
                 }
 
                 _operators.Push(_operator);
-                takeOperator = false;
+                _takeOperator = false;
             }
 
             return this;
@@ -210,14 +208,14 @@ namespace YAMP
         /// <returns>The current instance.</returns>
         internal Statement Push(ParseEngine engine, Expression _expression)
         {
-            if (finalized)
+            if (_finalized)
                 return this;
 
             if (_expressions.Count == 0)
                 IsFinished = _expression == null ? false : _expression.IsSingleStatement;
 
             _expressions.Push(_expression ?? Expression.Empty);
-            takeOperator = true;
+            _takeOperator = true;
             return this;
         }
 
@@ -229,7 +227,7 @@ namespace YAMP
         /// <returns>The current (finalized) instance.</returns>
         internal Statement Finalize(ParseEngine engine)
         {
-            if (finalized)
+            if (_finalized)
                 return this;
 
             if (errors.Count != 0)
@@ -270,7 +268,7 @@ namespace YAMP
             else
                 _container = new ContainerExpression();
 
-            finalized = true;
+            _finalized = true;
             return this;
         }
 
@@ -281,7 +279,7 @@ namespace YAMP
         /// <returns>The result of the evaluation.</returns>
         public Value Interpret(Dictionary<string, Value> symbols)
         {
-            if (finalized)
+            if (_finalized)
             {
                 var val = _container.Interpret(symbols);
                 return IsMuted ? null : val;

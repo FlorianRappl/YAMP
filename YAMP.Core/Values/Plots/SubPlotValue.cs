@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using YAMP.Converter;
+    using YAMP.Exceptions;
 
     /// <summary>
     /// A container class for various plots.
@@ -291,13 +292,13 @@
                 {
                     var av = (ArgumentsValue)indices;
 
-                    if(av.Length != 2)
+                    if (av.Length != 2)
                         throw new YAMPArgumentNumberException("SubPlot", av.Length, 2);
 
-                    int rowIndex = 0;
-                    int rowSpan = 0;
-                    int colIndex = 0;
-                    int colSpan = 0;
+                    var rowIndex = 0;
+                    var rowSpan = 0;
+                    var colIndex = 0;
+                    var colSpan = 0;
 
                     InspectIndex(av[1], out rowIndex, out rowSpan);
                     InspectIndex(av[2], out colIndex, out colSpan);

@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using YAMP.Exceptions;
+
     [Description("Converts a vector given in spherical coordinates to a cartesian coordinates.")]
     [Kind(PopularKinds.Conversion)]
     sealed class Sph2CartFunction : ArgumentFunction
@@ -27,7 +28,9 @@ namespace YAMP
             var isTransposed = M.DimensionY != 3;
 
             if (isTransposed)
+            {
                 M = M.Transpose();
+            }
 
             var m = new MatrixValue(3, M.DimensionX);
 

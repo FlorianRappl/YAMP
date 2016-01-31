@@ -1,6 +1,7 @@
 ﻿namespace YAMP
 {
     using System.Text;
+    using YAMP.Exceptions;
 
     [Description("The setdef function can be used to define template values for created plots. Every plot that is created after a certain template property has been set will be assigned the value of the property.")]
     [Kind(PopularKinds.Plot)]

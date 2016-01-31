@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP.Numerics;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using YAMP.Exceptions;
+    using YAMP.Numerics;
+
     [Description("In mathematics, the beta function, also called the Euler integral of the first kind, is a special function. The beta function was studied by Euler and Legendre and was given its name by Jacques Binet; its symbol Β is a Greek capital β rather than the similar Latin capital B.")]
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Beta_function")]
@@ -25,8 +25,12 @@ namespace YAMP
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var i = 1; i <= Z.DimensionX; i++)
+            {
                 for (var j = 1; j <= Z.DimensionY; j++)
+                {
                     M[j, i] = Function(Z[j, i], W[j, i]);
+                }
+            }
 
             return M;
         }
@@ -38,8 +42,12 @@ namespace YAMP
             var M = new MatrixValue(Z.DimensionY, Z.DimensionX);
 
             for (var i = 1; i <= Z.DimensionX; i++)
+            {
                 for (var j = 1; j <= Z.DimensionY; j++)
+                {
                     M[j, i] = Function(Z[j, i], w);
+                }
+            }
 
             return M;
         }

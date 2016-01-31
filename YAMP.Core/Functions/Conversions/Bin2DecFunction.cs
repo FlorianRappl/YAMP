@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Exceptions;
+
     [Description("Converts a binary number to a decimal number.")]
     [Kind(PopularKinds.Conversion)]
     sealed class Bin2DecFunction : ArgumentFunction
@@ -12,23 +13,22 @@ namespace YAMP
         public ScalarValue Function(StringValue binarystr)
         {
             var sum = 0;
-            var binary = new Stack<bool>();
+            var binary = new Stack<Boolean>();
             var weight = 1;
 
             for (var i = 1; i <= binarystr.Length; i++)
             {
                 var chr = binarystr[i];
 
-                if (ParseEngine.IsWhiteSpace(chr))
-                    continue;
-                else if (ParseEngine.IsNewLine(chr))
-                    continue;
-                else if (chr == '0')
-                    binary.Push(false);
-                else if (chr == '1')
-                    binary.Push(true);
-                else
-                    throw new YAMPRuntimeException("bin2dec can only interpret binary strings.");
+                if (!ParseEngine.IsWhiteSpace(chr) && !ParseEngine.IsNewLine(chr))
+                {
+                    if (chr == '0')
+                        binary.Push(false);
+                    else if (chr == '1')
+                        binary.Push(true);
+                    else
+                        throw new YAMPRuntimeException("bin2dec can only interpret binary strings.");
+                }
             }
 
             while (binary.Count != 0)
@@ -36,7 +36,9 @@ namespace YAMP
                 var el = binary.Pop();
 
                 if (el)
+                {
                     sum += weight;
+                }
 
                 weight *= 2;
             }

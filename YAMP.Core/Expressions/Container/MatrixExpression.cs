@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Errors;
+
     /// <summary>
     /// The matrix [ ... ] expression.
     /// </summary>
@@ -40,7 +41,7 @@ namespace YAMP
         /// </summary>
         /// <param name="symbols">External symbols to load.</param>
         /// <returns>The evaluated matrix value.</returns>
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(Dictionary<String, Value> symbols)
         {
             return base.Interpret(symbols) ?? new MatrixValue();
         }
@@ -62,7 +63,8 @@ namespace YAMP
                 engine.Advance();
                 var terminated = false;
                 var statement = new Statement();
-                bool ws = false, nl = false;
+                var ws = false;
+                var nl = false;
 
                 while (engine.Pointer < chars.Length && engine.IsParsing)
                 {

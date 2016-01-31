@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using System;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// This class contains the dawson integral.
     /// </summary>
@@ -21,76 +21,88 @@ namespace YAMP.Numerics
         /// </summary>
         /// <param name="x">The argument.</param>
         /// <returns>The value of F(x).</returns>
-        public static double DawsonIntegral(double x)
+        public static Double DawsonIntegral(Double x)
         {
             if (x < 0.0)
+            {
                 return -DawsonIntegral(-x);
+            }
             else if (x < 1.0)
+            {
                 return DawsonSeries(x);
+            }
             else if (x > 10.0)
+            {
                 return DawsonAsymptotic(x);
+            }
            
             return DawsonRybicki(x);
         }
 
         #region Sub-Algorithms
 
-        static double DawsonSeries(double x)
+        static Double DawsonSeries(Double x)
         {
-            double xx = -2.0 * x * x;
-            double df = x;
-            double f = df;
+            var xx = -2.0 * x * x;
+            var df = x;
+            var f = df;
 
             for (int k = 1; k < 250; k++)
             {
-                double f_old = f;
+                var f_old = f;
                 df = df * xx / (2 * k + 1);
                 f += df;
 
                 if (f == f_old)
+                {
                     return f;
+                }
             }
 
             throw new YAMPNotConvergedException("dawson");
         }
 
-        static double DawsonAsymptotic(double x)
+        static Double DawsonAsymptotic(Double x)
         {
-            double xx = 2.0 * x * x;
-            double df = 0.5 / x;
-            double f = df;
+            var xx = 2.0 * x * x;
+            var df = 0.5 / x;
+            var f = df;
 
             for (int k = 0; k < 250; k++)
             {
-                double f_old = f;
+                var f_old = f;
                 df = df * (2 * k + 1) / xx;
                 f += df;
 
                 if (f == f_old)
+                {
                     return f;
+                }
             }
 
             throw new YAMPNotConvergedException("dawson");
         }
 
-        static double DawsonRybicki(double x)
+        static Double DawsonRybicki(Double x)
         {
-            int n0 = 2 * ((int)Math.Round(x / Dawson_Rybicki_h / 2.0));
-            double x0 = n0 * Dawson_Rybicki_h;
-            double y = x - x0;
-            double f = 0.0;
-            double b = Math.Exp(2.0 * Dawson_Rybicki_h * y);
-            double bb = b * b;
+            var n0 = 2 * ((Int32)Math.Round(x / Dawson_Rybicki_h / 2.0));
+            var x0 = n0 * Dawson_Rybicki_h;
+            var y = x - x0;
+            var f = 0.0;
+            var b = Math.Exp(2.0 * Dawson_Rybicki_h * y);
+            var bb = b * b;
 
             for (int k = 0; k < Dawson_Rybicki_coefficients.Length; k++)
             {
-                double f_old = f;
-                int m = 2 * k + 1;
-                double df = Dawson_Rybicki_coefficients[k] * (b / (n0 + m) + 1.0 / b / (n0 - m));
+                var f_old = f;
+                var m = 2 * k + 1;
+                var df = Dawson_Rybicki_coefficients[k] * (b / (n0 + m) + 1.0 / b / (n0 - m));
                 f += df;
 
                 if (f == f_old)
+                {
                     return Math.Exp(-y * y) / Helpers.SqrtPI * f;
+                }
 
                 b = b * bb;
             }

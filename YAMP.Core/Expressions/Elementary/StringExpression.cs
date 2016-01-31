@@ -1,9 +1,10 @@
-using System;
-using System.Text;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using YAMP.Errors;
+
     /// <summary>
     /// Presents the class for string expressions "...".
     /// </summary>
@@ -47,7 +48,7 @@ namespace YAMP
 
         #region Methods
 
-		public override Value Interpret(Dictionary<string, Value> symbols)
+		public override Value Interpret(Dictionary<String, Value> symbols)
 		{
             return new StringValue(value);
 		}
@@ -71,12 +72,16 @@ namespace YAMP
                     exp.literal = true;
                 }
                 else
+                {
                     index++;
+                }
 
                 while (index < chars.Length)
                 {
                     if (!literal && !escape && chars[index] == '\\')
+                    {
                         escape = true;
+                    }
                     else if (!escape && chars[index] == '"')
                     {
                         terminated = true;
@@ -106,13 +111,17 @@ namespace YAMP
                         escape = false;
                     }
                     else
+                    {
                         sb.Append(chars[index]);
+                    }
 
                     index++;
                 }
 
                 if (!terminated)
+                {
                     engine.AddError(new YAMPStringNotTerminatedError(engine), exp);
+                }
 
                 exp.value = sb.ToString();
                 exp.Length = index - start;

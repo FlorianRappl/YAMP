@@ -1,9 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System.Collections.Generic;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// The abstract base class for every unary operator (!, ', ...)
     /// </summary>

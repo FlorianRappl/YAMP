@@ -3,7 +3,7 @@
     using System;
     using System.Linq;
     using System.Reflection;
-    using System.Text;
+    using YAMP.Exceptions;
 
     /// <summary>
     /// String to an arbitrary enumeration converter.

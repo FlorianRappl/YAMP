@@ -1,9 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System.Collections.Generic;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// This is the class for the range operator : - this one is also
     /// available as a stand-alone expression.
@@ -24,39 +23,53 @@ namespace YAMP
 			var start = 0.0;
 			var end = 0.0;
 			var all = false;
-			
-			if(left is ScalarValue)
-				start = (left as ScalarValue).Re;
-			else if (left is RangeValue)
-			{
-				var m = left as RangeValue;
-				start = m.Start;
-				step = m.End;
-				explicitStep = true;
-			}
-			else
-				throw new YAMPOperationInvalidException(":", left);
 
-			if(right is ScalarValue)
-				end = (right as ScalarValue).Re;
-			else if (right is RangeValue)
-			{
-				var m = right as RangeValue;
-				step = m.Start;
-				end = m.End;
-				all = m.All;
-				explicitStep = true;
-			}
-			else if(right is StringValue)
-				all = (right as StringValue).Value.Equals(END);
-			else
-				throw new YAMPOperationInvalidException(":", left);
+            if (left is ScalarValue)
+            {
+                start = (left as ScalarValue).Re;
+            }
+            else if (left is RangeValue)
+            {
+                var m = left as RangeValue;
+                start = m.Start;
+                step = m.End;
+                explicitStep = true;
+            }
+            else
+            {
+                throw new YAMPOperationInvalidException(":", left);
+            }
 
-			if(!all && !explicitStep && end < start)
-				step = -1.0;
+            if (right is ScalarValue)
+            {
+                end = (right as ScalarValue).Re;
+            }
+            else if (right is RangeValue)
+            {
+                var m = right as RangeValue;
+                step = m.Start;
+                end = m.End;
+                all = m.All;
+                explicitStep = true;
+            }
+            else if (right is StringValue)
+            {
+                all = (right as StringValue).Value.Equals(END);
+            }
+            else
+            {
+                throw new YAMPOperationInvalidException(":", left);
+            }
 
-			if(all)
-				return new RangeValue(start, step);
+            if (!all && !explicitStep && end < start)
+            {
+                step = -1.0;
+            }
+
+            if (all)
+            {
+                return new RangeValue(start, step);
+            }
 
 			return new RangeValue(start, end, step);
 		}
@@ -66,8 +79,10 @@ namespace YAMP
 			var l = left.Interpret(symbols);
 			var r = new StringValue(END) as Value;
 
-			if(!(right is SymbolExpression) || !((right as SymbolExpression).SymbolName.Equals(END)))
-				r = right.Interpret(symbols);
+            if (!(right is SymbolExpression) || !((right as SymbolExpression).SymbolName.Equals(END)))
+            {
+                r = right.Interpret(symbols);
+            }
 
 			return Perform(l, r);
 		}

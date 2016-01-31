@@ -1,7 +1,8 @@
-using System;
-
 namespace YAMP
 {
+    using System;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// The abstract base class for any dot operator (.*, ./, ...), which is essentially a special
     /// binary operator.
@@ -89,9 +90,13 @@ namespace YAMP
 
 			var m = new MatrixValue(left.DimensionY, left.DimensionX);
 
-			for (var i = 1; i <= left.DimensionX; i++)
-				for (var j = 1; j <= left.DimensionY; j++)
-					m[j, i] = Operation(left[j, i], right[j, i]);
+            for (var i = 1; i <= left.DimensionX; i++)
+            {
+                for (var j = 1; j <= left.DimensionY; j++)
+                {
+                    m[j, i] = Operation(left[j, i], right[j, i]);
+                }
+            }
 
 			return m;
 		}
@@ -106,9 +111,13 @@ namespace YAMP
 		{
 			var m = new MatrixValue(left.DimensionY, left.DimensionX);
 
-			for (var i = 1; i <= left.DimensionX; i++)
-				for (var j = 1; j <= left.DimensionY; j++)
-					m[j, i] = Operation(left[j, i], right);
+            for (var i = 1; i <= left.DimensionX; i++)
+            {
+                for (var j = 1; j <= left.DimensionY; j++)
+                {
+                    m[j, i] = Operation(left[j, i], right);
+                }
+            }
 
 			return m;
 		}

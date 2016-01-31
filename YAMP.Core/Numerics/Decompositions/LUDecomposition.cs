@@ -1,8 +1,8 @@
-using System;
-using YAMP;
-
 namespace YAMP.Numerics
 {
+    using System;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// LU Decomposition.
     /// For an m-by-n matrix A with m >= n, the LU decomposition is an m-by-n
@@ -213,12 +213,14 @@ namespace YAMP.Numerics
         public virtual ScalarValue Determinant()
         {
             if (m != n)
-                throw new YAMPMatrixFormatException(SpecialMatrixFormat.Square);
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.Square.ToString());
             
-            ScalarValue d = new ScalarValue(pivsign);
+            var d = new ScalarValue(pivsign);
 
-            for (int j = 0; j < n; j++)
+            for (var j = 0; j < n; j++)
+            {
                 d = d * LU[j][j];
+            }
 
             return d;
         }
@@ -234,32 +236,38 @@ namespace YAMP.Numerics
                 throw new YAMPDifferentDimensionsException(B.DimensionY, 1, m, 1);
 
             if (!this.IsNonSingular)
-                throw new YAMPMatrixFormatException(SpecialMatrixFormat.NonSingular);
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.NonSingular.ToString());
 
             // Copy right hand side with pivoting
             var nx = B.DimensionX;
             var X = B.GetSubMatrix(piv, 0, nx).GetComplexMatrix();
 
             // Solve L*Y = B(piv,:)
-            for (int k = 0; k < n; k++)
+            for (var k = 0; k < n; k++)
             {
-                for (int i = k + 1; i < n; i++)
+                for (var i = k + 1; i < n; i++)
                 {
-                    for (int j = 0; j < nx; j++)
+                    for (var j = 0; j < nx; j++)
+                    {
                         X[i][j] -= X[k][j] * LU[i][k];
+                    }
                 }
             }
 
             // Solve U*X = Y;
-            for (int k = n - 1; k >= 0; k--)
+            for (var k = n - 1; k >= 0; k--)
             {
-                for (int j = 0; j < nx; j++)
-                    X[k][j] = X[k][j] / LU[k][k];
-
-                for (int i = 0; i < k; i++)
+                for (var j = 0; j < nx; j++)
                 {
-                    for (int j = 0; j < nx; j++)
+                    X[k][j] = X[k][j] / LU[k][k];
+                }
+
+                for (var i = 0; i < k; i++)
+                {
+                    for (var j = 0; j < nx; j++)
+                    {
                         X[i][j] -= X[k][j] * LU[i][k];
+                    }
                 }
             }
 

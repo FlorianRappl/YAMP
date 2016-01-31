@@ -1,5 +1,7 @@
 ﻿namespace YAMP
 {
+    using YAMP.Exceptions;
+
     [Description("In statistics the Jackknife is a method to estimate the statistical error of observables measured on a set of data.")]
     [Kind(PopularKinds.Statistic)]
     [Link("http://en.wikipedia.org/wiki/Resampling_(statistics)")]

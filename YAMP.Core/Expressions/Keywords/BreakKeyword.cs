@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Errors;
+
     /// <summary>
     /// This is the class responsible for the break keyword. Basic syntax:
     /// break;
@@ -35,12 +36,14 @@ namespace YAMP
             engine.Advance(Token.Length);
 
             if (!IsBreakable(engine))
+            {
                 engine.AddError(new YAMPKeywordNotPossible(engine, Token), kw);
+            }
 
             return kw;
         }
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(Dictionary<String, Value> symbols)
         {
             var ctx = GetBreakableContext(Query);
             ctx.CurrentStatement.GetKeyword<BreakableKeyword>().Break();

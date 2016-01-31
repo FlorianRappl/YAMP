@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using YAMP.Errors;
+
     /// <summary>
     /// The else keyword - can (and should) only be instantiated by the if keyword.
     /// Basic syntax: else STATEMENT
@@ -58,26 +59,36 @@ namespace YAMP
             kw.Body = engine.Advance(Token.Length).ParseStatement();
 
             if (engine.LastStatement == null)
+            {
                 engine.AddError(new YAMPIfRequiredError(engine), kw);
+            }
             else if (engine.LastStatement.IsKeyword<IfKeyword>())
+            {
                 engine.LastStatement.GetKeyword<IfKeyword>().Else = kw;
-            else if(engine.LastStatement.IsKeyword<ElseKeyword>())
+            }
+            else if (engine.LastStatement.IsKeyword<ElseKeyword>())
             {
                 var otherwise = engine.LastStatement.GetKeyword<ElseKeyword>();
 
                 if (otherwise.IsElseIf)
+                {
                     otherwise.ElseIf.Else = kw;
+                }
                 else
+                {
                     engine.AddError(new YAMPSingleElseError(engine), kw);
+                }
             }
             else
+            {
                 engine.AddError(new YAMPIfRequiredError(engine), kw);
+            }
 
             kw.Length = engine.Pointer - start;
             return kw;
         }
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(Dictionary<String, Value> symbols)
         {
             return null;
         }

@@ -1,5 +1,7 @@
 ﻿namespace YAMP
 {
+    using YAMP.Exceptions;
+
 	[Description("Visualizes a given set of points in form of a graph.")]
 	[Kind(PopularKinds.Plot)]
 	sealed class PlotFunction : VisualizationFunction
@@ -43,10 +45,14 @@
 
 			for (var i = 0; i != l.Length; i++)
 			{
-				if (l.Values[i] is MatrixValue)
-					values[i] = (MatrixValue)l.Values[i];
-				else
-					throw new YAMPOperationInvalidException("plot", l.Values[i]);
+                if (l.Values[i] is MatrixValue)
+                {
+                    values[i] = (MatrixValue)l.Values[i];
+                }
+                else
+                {
+                    throw new YAMPOperationInvalidException("plot", l.Values[i]);
+                }
 			}
 
 			plot.AddPoints(m, n, values);

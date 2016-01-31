@@ -1,7 +1,7 @@
-using System;
-
 namespace YAMP
 {
+    using YAMP.Exceptions;
+
 	[Description("Represents the abs function.")]
 	[Kind(PopularKinds.Function)]
     sealed class AbsFunction : StandardFunction
@@ -14,13 +14,17 @@ namespace YAMP
         public static Value Abs(Value argument)
         {
             if (argument is ScalarValue)
+            {
                 return new ScalarValue(((ScalarValue)argument).Abs());
+            }
             else if (argument is MatrixValue)
             {
                 var m = argument as MatrixValue;
 
                 if (m.IsVector)
+                {
                     return m.Abs();
+                }
 
                 return m.Det();
             }

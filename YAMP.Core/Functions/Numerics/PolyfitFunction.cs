@@ -1,8 +1,9 @@
-﻿using System;
-using YAMP.Numerics;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using YAMP.Exceptions;
+    using YAMP.Numerics;
+
     [Description("Polynomial curve fitting by finding coefficients for constructing a polynom with degree n. Curve fitting is the process of constructing a curve, or mathematical function, that has the best fit to a series of data points, possibly subject to constraints. Curve fitting can involve either interpolation, where an exact fit to the data is required, or smoothing, in which a smooth function is constructed that approximately fits the data.")]
     [Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Curve_fitting")]

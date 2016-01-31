@@ -1,9 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// The abstract base class for any binary operator (+, -, *, ...).
     /// </summary>
@@ -49,20 +49,26 @@ namespace YAMP
 
         internal Value PerformOverFind(Value left, Value right, List<BinaryOperatorMapping> mapping)
         {
-            Func<Value, Value, Value> least = null;
+            var least = default(Func<Value, Value, Value>);
 
             for (var i = 0; i != mapping.Count; i++)
             {
                 var hit = mapping[i].IsMapping(left, right);
 
                 if (hit == MapHit.Direct)
+                {
                     return mapping[i].Map(left, right);
+                }
                 else if (hit == MapHit.Indirect)
+                {
                     least = mapping[i].Map;
+                }
             }
 
-            if(least != null)
+            if (least != null)
+            {
                 return least(left, right);
+            }
 
             throw new YAMPOperationInvalidException(Op, left, right);
         }

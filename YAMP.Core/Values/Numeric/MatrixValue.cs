@@ -1,10 +1,10 @@
 namespace YAMP
 {
     using System;
-    using System.Text;
-    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
+    using System.Text;
+    using YAMP.Exceptions;
     using YAMP.Numerics;
 
     /// <summary>
@@ -780,7 +780,9 @@ namespace YAMP
                 var length = el.GetLengthOfString(context);
 
                 if (length > max)
+                {
                     max = length;
+                }
             }
 
             return max;
@@ -1504,8 +1506,10 @@ namespace YAMP
                 {
                     var m = M[j, i];
 
-                    if(m != ScalarValue.Zero)
+                    if (m != ScalarValue.Zero)
+                    {
                         A[j, i] = m * s;
+                    }
                 }
             }
 
@@ -1537,8 +1541,12 @@ namespace YAMP
             var m = new MatrixValue(l.DimensionY, l.DimensionX);
 
             for (var j = 1; j <= l.DimensionY; j++)
+            {
                 for (var i = 1; i <= l.DimensionX; i++)
+                {
                     m[j, i] = l[j, i] / r;
+                }
+            }
 
             return m;
         }
@@ -1560,7 +1568,9 @@ namespace YAMP
             var C = new ScalarValue[n];
 
             for (var k = 0; k != n; k++)
+            {
                 C[k] = A[k] - B[k];
+            }
 
             return new MatrixValue(C, r.DimensionY, r.DimensionX);
 		}
@@ -1582,7 +1592,9 @@ namespace YAMP
             var C = new ScalarValue[n];
 
             for (var k = 0; k != n; k++)
+            {
                 C[k] = A[k] + B[k];
+            }
 
             return new MatrixValue(C, r.DimensionY, r.DimensionX);
 		}
@@ -1598,7 +1610,7 @@ namespace YAMP
 			if (ReferenceEquals(l, r))
 				return true;
 
-			if ((object)l == null || (object)r == null)
+			if (ReferenceEquals(l, null) || ReferenceEquals(r, null))
 				return false;
 
 			if (l.DimensionX != r.DimensionX)
@@ -1607,10 +1619,16 @@ namespace YAMP
 			if (l.DimensionY != r.DimensionY)
 				return false;
 
-			for (var i = 1; i <= l.DimensionX; i++)
-				for (var j = 1; j <= l.DimensionY; j++)
-					if (l[j, i] != r[j, i])
-						return false;
+            for (var i = 1; i <= l.DimensionX; i++)
+            {
+                for (var j = 1; j <= l.DimensionY; j++)
+                {
+                    if (l[j, i] != r[j, i])
+                    {
+                        return false;
+                    }
+                }
+            }
 
 			return true;
 		}
@@ -1822,7 +1840,7 @@ namespace YAMP
             var exp = (ScalarValue)exponent;
 
             if (l.DimensionX != l.DimensionY)
-                throw new YAMPMatrixFormatException(SpecialMatrixFormat.Square);
+                throw new YAMPMatrixFormatException(SpecialMatrixFormat.Square.ToString());
 
             if (exp.Im != 0.0 || Math.Floor(exp.Re) != exp.Re)
                 throw new YAMPOperationInvalidException("^", exponent);
@@ -1832,7 +1850,9 @@ namespace YAMP
             var count = (int)Math.Abs(exp.Re);
 
             for (var i = 0; i < count; i++)
+            {
                 eye = eye * multiplier;
+            }
 
             return eye;
         }
@@ -1850,8 +1870,12 @@ namespace YAMP
             var m = new MatrixValue(r.DimensionY, r.DimensionX);
 
             for (var i = 1; i <= r.DimensionX; i++)
+            {
                 for (var j = 1; j <= r.DimensionY; j++)
+                {
                     m[j, i] = l.Pow(r[j, i]);
+                }
+            }
 
             return m;
         }

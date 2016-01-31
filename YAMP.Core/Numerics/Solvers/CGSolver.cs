@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using System;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// Basic class for a Conjugant Gradient solver.
     /// </summary>
@@ -23,19 +23,23 @@ namespace YAMP.Numerics
         /// <returns>The solution vector x.</returns>
         public override MatrixValue Solve(MatrixValue b)
         {
-            MatrixValue x = X0;
+            var x = X0;
 
             if (x == null)
+            {
                 x = new MatrixValue(b.DimensionY, b.DimensionX);
+            }
             else if (x.DimensionX != b.DimensionX || x.DimensionY != b.DimensionY)
+            {
                 throw new YAMPDifferentDimensionsException(x.DimensionY, x.DimensionX, b.DimensionY, b.DimensionX);
+            }
 
             var r = b - A * x;
             var p = r.Clone();
             var l = Math.Max(A.Length, MaxIterations);
             var rsold = r.ComplexDot(r);
 
-            for(var i = 1; i < l; i++)
+            for (var i = 1; i < l; i++)
             {
                 var Ap = A * p;
                 var alpha = rsold / p.ComplexDot(Ap);
@@ -44,7 +48,9 @@ namespace YAMP.Numerics
                 var rsnew = r.ComplexDot(r);
 
                 if (rsnew.Abs() < Tolerance)
+                {
                     break;
+                }
 
                 p = r + rsnew / rsold * p;
                 rsold = rsnew;

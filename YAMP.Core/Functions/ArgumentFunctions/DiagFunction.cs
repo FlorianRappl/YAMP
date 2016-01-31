@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using YAMP.Exceptions;
+
 	[Kind(PopularKinds.Function)]
 	[Description("Creates a diagonal matrix that has the given numeric values on the diagonal.")]
     sealed class DiagFunction : ArgumentFunction
@@ -14,7 +14,9 @@ namespace YAMP
             var m = new MatrixValue(M.Length, M.Length);
 
             for (var i = 1; i <= M.Length; i++)
+            {
                 m[i, i] = M[i].Clone();
+            }
 
             return m;
         }
@@ -57,7 +59,9 @@ namespace YAMP
                     }
                 }
                 else
+                {
                     throw new YAMPArgumentInvalidException(Name, values[i].Header, i);
+                }
 			}
 
 			return m;

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using YAMP.Exceptions;
+
     /// <summary>
     /// Returns the given scalar(s) with a switched sign. This operator is a unary operator,
     /// but is used as a binary one with a pseudo expression on the left side.

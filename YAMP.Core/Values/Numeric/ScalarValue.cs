@@ -1,6 +1,7 @@
 ﻿namespace YAMP
 {
     using System;
+    using YAMP.Exceptions;
     using YAMP.Numerics;
 
     /// <summary>
@@ -219,10 +220,12 @@
         /// <param name="argumentName">The name of the variable that is requested.</param>
         /// <param name="functionName">The name of the function where this is requested.</param>
         /// <returns>The scalar value represented as an integer.</returns>
-        public int GetIntegerOrThrowException(string argumentName, string functionName)
+        public int GetIntegerOrThrowException(String argumentName, String functionName)
         {
             if (!IsInt)
+            {
                 throw new YAMPArgumentWrongTypeException("Scalar", "Integer", functionName, argumentName);
+            }
 
             return IntValue;
         }

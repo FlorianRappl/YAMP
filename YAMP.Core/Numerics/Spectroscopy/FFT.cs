@@ -1,8 +1,8 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using System;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// A simple FFT implemention that uses Cooley-Tukey FFT (i.e. 2^n elements required).
     /// </summary>
@@ -55,8 +55,10 @@ namespace YAMP.Numerics
         {
             var length = x.Length;
 
-            if (length == 1) 
+            if (length == 1)
+            {
                 return x.Clone();
+            }
 
             // Cooley-Tukey FFT
             if (length % 2 != 0) 
@@ -65,23 +67,27 @@ namespace YAMP.Numerics
             // even fft
             var even = new MatrixValue(length / 2, 1);
 
-            for (int k = 1; k <= even.Length; k++)
+            for (var k = 1; k <= even.Length; k++)
+            {
                 even[k] = x[2 * k];
+            }
             
             var q = fft(even);
 
             // odd fft;
-            var odd = even; 
+            var odd = even;
 
-            for (int k = 1; k <= odd.Length; k++)
+            for (var k = 1; k <= odd.Length; k++)
+            {
                 odd[k] = x[2 * k - 1];
+            }
 
             var r = fft(odd);
 
             // combine
             var y = new MatrixValue(length, 1);
 
-            for (int k = 1; k <= odd.Length; k++)
+            for (var k = 1; k <= odd.Length; k++)
             {
                 var value = -2 * (k - 1) * Math.PI / length;
                 var wk = new ScalarValue(Math.Cos(value), Math.Sin(value));
@@ -103,15 +109,19 @@ namespace YAMP.Numerics
             var y = new MatrixValue(length, 1);
 
             //conjugate
-            for (int i = 1; i <= length; i++)
+            for (var i = 1; i <= length; i++)
+            {
                 y[i] = x[i].Conjugate();
+            }
 
             // compute forward FFT
             y = fft(y);
 
             // take conjugate again and divide by N
-            for (int i = 1; i <= length; i++)
-                y[i] = y[i].Conjugate() / (double)length;
+            for (var i = 1; i <= length; i++)
+            {
+                y[i] = y[i].Conjugate() / (Double)length;
+            }
 
             return y;
         }
@@ -123,29 +133,37 @@ namespace YAMP.Numerics
             // Rows first:
             var x = new MatrixValue(output.DimensionY, 1);
 
-            for (int h = 1; h <= output.DimensionX; h++)
+            for (var h = 1; h <= output.DimensionX; h++)
             {
-                for (int i = 1; i <= output.DimensionY; i++)
+                for (var i = 1; i <= output.DimensionY; i++)
+                {
                     x[i] = output[i, h];
+                }
                 
                 x = fft(x);
 
-                for (int i = 1; i <= output.DimensionY; i++)
+                for (var i = 1; i <= output.DimensionY; i++)
+                {
                     output[i, h] = x[i];
+                }
             }
 
             //Columns last
             var y = new MatrixValue(output.DimensionX, 1);
 
-            for (int h = 0; h < output.DimensionY; h++)
+            for (var h = 0; h < output.DimensionY; h++)
             {
-                for (int i = 1; i <= output.DimensionX; i++)
+                for (var i = 1; i <= output.DimensionX; i++)
+                {
                     y[i] = output[h, i];
+                }
 
                 y = fft(y);
 
-                for (int i = 1; i <= output.DimensionX; i++)
+                for (var i = 1; i <= output.DimensionX; i++)
+                {
                     output[h, i] = y[i];
+                }
             }
 
             return output;
@@ -158,10 +176,12 @@ namespace YAMP.Numerics
             // Rows first:
             var x = new MatrixValue(output.DimensionY, 1);
 
-            for (int h = 1; h <= output.DimensionX; h++)
+            for (var h = 1; h <= output.DimensionX; h++)
             {
-                for (int i = 1; i <= output.DimensionY; i++)
+                for (var i = 1; i <= output.DimensionY; i++)
+                {
                     x[i] = output[i, h];
+                }
                 
                 x = ifft(x);
 

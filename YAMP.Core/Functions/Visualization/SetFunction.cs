@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using YAMP.Converter;
+    using YAMP.Exceptions;
 
 	[Kind(PopularKinds.Plot)]
 	[Description("Sets properties of a plot.")]

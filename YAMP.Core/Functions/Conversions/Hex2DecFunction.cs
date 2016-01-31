@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using YAMP.Exceptions;
+
     [Description("Converts a hexadecimal number to a decimal number.")]
     [Kind(PopularKinds.Conversion)]
     sealed class Hex2DecFunction : ArgumentFunction
@@ -12,25 +13,24 @@ namespace YAMP
         public ScalarValue Function(StringValue hexstr)
         {
             var sum = 0;
-            var hex = new Stack<int>();
+            var hex = new Stack<Int32>();
             var weight = 1;
 
             for (var i = 1; i <= hexstr.Length; i++)
             {
                 var chr = hexstr[i];
 
-                if (ParseEngine.IsWhiteSpace(chr))
-                    continue;
-                else if (ParseEngine.IsNewLine(chr))
-                    continue;
-                else if (chr >= '0' && chr <= '9')
-                    hex.Push((int)(chr - '0'));
-                else if (chr >= 'A' && chr <= 'F')
-                    hex.Push((int)(chr - 'A') + 10);
-                else if (chr >= 'a' && chr <= 'f')
-                    hex.Push((int)(chr - 'a') + 10);
-                else
-                    throw new YAMPRuntimeException("hex2dec can only interpret hexadecimal strings.");
+                if (!ParseEngine.IsWhiteSpace(chr) && !ParseEngine.IsNewLine(chr))
+                {
+                    if (chr >= '0' && chr <= '9')
+                        hex.Push((Int32)(chr - '0'));
+                    else if (chr >= 'A' && chr <= 'F')
+                        hex.Push((Int32)(chr - 'A') + 10);
+                    else if (chr >= 'a' && chr <= 'f')
+                        hex.Push((Int32)(chr - 'a') + 10);
+                    else
+                        throw new YAMPRuntimeException("hex2dec can only interpret hexadecimal strings.");
+                }
             }
 
             while (hex.Count != 0)

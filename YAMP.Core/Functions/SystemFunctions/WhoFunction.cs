@@ -3,6 +3,7 @@
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
+    using YAMP.Exceptions;
 
 	[Description("Lists the available variables.")]
 	[Kind(PopularKinds.System)]

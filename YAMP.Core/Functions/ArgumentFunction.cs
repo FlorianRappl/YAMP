@@ -1,10 +1,11 @@
-using System;
-using System.Linq;
-using System.Reflection;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// The abstract base class used for all argument functions. (provide all functions with the name function).
     /// </summary>

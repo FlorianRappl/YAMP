@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP.Exceptions
 {
+    using System;
+
     /// <summary>
     /// Basic YAMP exception. This lets everyone know that the exception
     /// did not occur because something was fishy in the (C#) code, but
@@ -21,7 +21,7 @@ namespace YAMP
         /// Creates a YAMP exception with a simple message.
         /// </summary>
         /// <param name="message">Which message do you want to display?</param>
-        public YAMPException(string message)
+        public YAMPException(String message)
             : base(message)
         {
         }
@@ -31,8 +31,8 @@ namespace YAMP
         /// </summary>
         /// <param name="message">The associated message.</param>
         /// <param name="args">Some parameters for your message.</param>
-        public YAMPException(string message, params object[] args) 
-            : base(string.Format(message, args))
+        public YAMPException(String message, params Object[] args)
+            : base(String.Format(message, args))
         {
         }
     }

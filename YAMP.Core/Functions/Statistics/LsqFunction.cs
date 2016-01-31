@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using YAMP.Exceptions;
+
 	[Description("The method of least squares is a standard approach to the approximate solution of overdetermined systems, i.e., sets of equations in which there are more equations than unknowns.")]
     [Kind(PopularKinds.Statistic)]
     [Link("http://en.wikipedia.org/wiki/Least_squares")]
@@ -42,11 +43,11 @@ namespace YAMP
 				x2 = x2 + X[i] * X[i];
 			}
 
-			var J = ((double)X.Length * x2) - (x1 * x1);
+			var J = ((Double)X.Length * x2) - (x1 * x1);
 
 			if (J.Re != 0.0)
 			{
-				slope = (((double)X.Length * xy) - (x1 * y1)) / J.Re;
+                slope = (((Double)X.Length * xy) - (x1 * y1)) / J.Re;
 				offset = ((y1 * x2) - (x1 * xy)) / J.Re;
 			}
 

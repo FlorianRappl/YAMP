@@ -1,5 +1,7 @@
 ﻿namespace YAMP
 {
+    using YAMP.Exceptions;
+
     /// <summary>
     /// This class represents the matrix row seperator operator ;.
     /// </summary>

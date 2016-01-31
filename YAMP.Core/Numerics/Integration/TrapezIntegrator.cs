@@ -1,8 +1,9 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Numerics
+﻿namespace YAMP.Numerics
 {
+    using System;
+    using YAMP;
+    using YAMP.Exceptions;
+
     /// <summary>
     /// Represents the Trapez integration algorithm - a very simple rule for numerical integration.
     /// </summary>
@@ -41,7 +42,9 @@ namespace YAMP.Numerics
             var sum = (x[2].Re - x[1].Re) * y[1] + (x[N].Re - x[N - 1].Re) * y[N];
 
             for (var i = 2; i < N; i++)
+            {
                 sum += (x[i + 1].Re - x[i - 1].Re) * y[i].Re;
+            }
 
             return 0.5 * sum;
         }
