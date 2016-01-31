@@ -150,14 +150,11 @@
     <Compile Include="Exceptions\YAMPDifferentDimensionsException.cs" />
     <Compile Include="Exceptions\YAMPDifferentLengthsException.cs" />
     <Compile Include="Exceptions\YAMPExpressionNoFunctionException.cs" />
-    <Compile Include="Exceptions\YAMPFileFormatNotSupportedException.cs" />
-    <Compile Include="Exceptions\YAMPFileNotFoundException.cs" />
     <Compile Include="Exceptions\YAMPFunctionMissingException.cs" />
     <Compile Include="Exceptions\YAMPIndexOutOfBoundException.cs" />
     <Compile Include="Exceptions\YAMPMatrixMultiplyException.cs" />
     <Compile Include="Exceptions\YAMPNonNumericException.cs" />
     <Compile Include="Exceptions\YAMPNumericOverflowException.cs" />
-    <Compile Include="Exceptions\YAMPPixelFormatNotSupportedException.cs" />
     <Compile Include="Exceptions\YAMPRangeInvalidException.cs" />
     <Compile Include="Exceptions\YAMPRuntimeException.cs" />
     <Compile Include="Exceptions\YAMPWrongLengthException.cs" />

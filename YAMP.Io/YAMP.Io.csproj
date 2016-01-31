@@ -38,11 +38,15 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="YAMP">
-      <HintPath>..\packages\YAMP.1.5.0.7513\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\YAMP.dll</HintPath>
+    <Reference Include="YAMP, Version=1.5.1.29926, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\YAMP.1.5.1.29926\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\YAMP.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\YAMPFileFormatNotSupportedException.cs" />
+    <Compile Include="Exceptions\YAMPFileNotFoundException.cs" />
+    <Compile Include="Exceptions\YAMPPixelFormatNotSupportedException.cs" />
     <Compile Include="Functions\CdFunction.cs" />
     <Compile Include="Functions\CpFunction.cs" />
     <Compile Include="Functions\LoadFunction.cs" />
@@ -57,10 +61,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <EmbeddedResource Include="icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="icon.png" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -160,7 +160,9 @@ namespace YAMP.Io
             }
 
             if (error)
+            {
                 throw new YAMPFileFormatNotSupportedException(filename.Value);
+            }
 
             Notify(count);
         }
@@ -255,7 +257,9 @@ namespace YAMP.Io
 			}
 
             if (error)
+            {
                 throw new YAMPFileFormatNotSupportedException(filename.Value);
+            }
 
             Notify(count);
         }
