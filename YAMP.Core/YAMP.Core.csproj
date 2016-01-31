@@ -43,6 +43,9 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\ParserExtensions.cs" />
+    <Compile Include="Extensions\QueryContextExtensions.cs" />
     <Compile Include="Providers\Interfaces\IElementMapping.cs" />
     <Compile Include="Providers\Interfaces\IFunctionLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
