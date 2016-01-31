@@ -14,8 +14,8 @@
 	{
 		#region Fields
 
-		List<HelpTopic> topics;
-		ParseContext context;
+		readonly List<HelpTopic> topics;
+		readonly ParseContext context;
 
 		#endregion
 
@@ -24,7 +24,7 @@
 		Documentation(ParseContext _context)
 		{
 			context = _context;
-			topics = new List<HelpTopic>();
+            topics = Overview(context);
 		}
 
 		#endregion
@@ -38,9 +38,7 @@
         /// <returns>The documention.</returns>
 		public static Documentation Create(ParseContext context)
 		{
-			var docu = new Documentation(context);
-			docu.topics = Overview(context);
-			return docu;
+			return new Documentation(context);
 		}
 
         /// <summary>

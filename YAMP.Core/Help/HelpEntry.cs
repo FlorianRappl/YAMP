@@ -10,12 +10,12 @@
         /// <summary>
         /// Gets or sets the name of the function.
         /// </summary>
-		public string Name { get; set; }
+		public String Name { get; set; }
 
         /// <summary>
         /// Gets or sets an instance of the corresponding function.
         /// </summary>
-		public object Instance { get; set; }
+		public Object Instance { get; set; }
 
         /// <summary>
         /// Gets or sets the associated help topic.

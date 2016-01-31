@@ -1,6 +1,5 @@
 ﻿namespace YAMP.Help
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>

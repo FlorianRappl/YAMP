@@ -22,27 +22,27 @@
         /// <summary>
         /// Gets or sets the usage.
         /// </summary>
-		public string Usage { get; set; }
+		public String Usage { get; set; }
 
         /// <summary>
         /// Gets or sets a description about the usage.
         /// </summary>
-        public string Description { get; set; }
+        public String Description { get; set; }
 
         /// <summary>
         /// Gets a list of names for the given arguments of this function usage.
         /// </summary>
-        public List<string> ArgumentNames { get; private set; }
+        public List<String> ArgumentNames { get; private set; }
 
         /// <summary>
         /// Gets a list of arguments for this function usage.
         /// </summary>
-		public List<string> Arguments { get; private set; }
+		public List<String> Arguments { get; private set; }
 
         /// <summary>
         /// Gets a list of available return values of this function usage.
         /// </summary>
-        public List<string> Returns { get; set; }
+        public List<String> Returns { get; set; }
 
         /// <summary>
         /// Gets a list of examples corresponding to this function usage.

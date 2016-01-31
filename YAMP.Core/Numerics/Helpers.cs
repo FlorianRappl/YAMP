@@ -10,7 +10,8 @@
     {
         #region Some numbers
 
-        static readonly double[] FACT_34_TO_170 = new[] {
+        static readonly Double[] FACT_34_TO_170 = new[] 
+        {
             2.95232799039604140847618609644e38,
             1.03331479663861449296666513375e40,
             3.71993326789901217467999448151e41,
@@ -153,7 +154,8 @@
         /// <summary>
         /// Provides access to (2*pi)^(10*n) with n = 0, ..., 17.
         /// </summary>
-        public static readonly double[] TwoPIpow = new double[] { 
+        public static readonly Double[] TwoPIpow = new[]
+        { 
             1.0,
             9.589560061550901348e+007,
             9.195966217409212684e+015,
@@ -177,7 +179,8 @@
         /// <summary>
         /// Provides access to the first 21 bernoulli numbers.
         /// </summary>
-        public static readonly double[] BernoulliNumbers = new double[] {
+        public static readonly Double[] BernoulliNumbers = new[] 
+        {
             1.0,
             1.0 / 6.0,
             -1.0 / 30.0, 
@@ -204,7 +207,8 @@
         /// <summary>
         /// Provides access do some Lanczos numbers.
         /// </summary>
-        public static readonly double[] LanczosD = new double[] {
+        public static readonly Double[] LanczosD = new[]
+        {
              2.48574089138753565546e-5,
              1.05142378581721974210,
             -3.45687097222016235469,
@@ -221,52 +225,52 @@
         /// <summary>
         /// Value of the LaczosR number.
         /// </summary>
-        public const double LanczosR = 10.900511;
+        public const Double LanczosR = 10.900511;
 
         /// <summary>
         /// Value of 4 * Pi
         /// </summary>
-        public const double FourPI = 4.0 * Math.PI;
+        public const Double FourPI = 4.0 * Math.PI;
 
         /// <summary>
         /// Value of 2 * Pi
         /// </summary>
-        public const double TwoPI = 2.0 * Math.PI;
+        public const Double TwoPI = 2.0 * Math.PI;
 
         /// <summary>
         /// Value of Pi / 2
         /// </summary>
-        public const double HalfPI = Math.PI / 2.0;
+        public const Double HalfPI = Math.PI / 2.0;
 
         /// <summary>
         /// Value of Sqrt(2)
         /// </summary>
-        public static readonly double SqrtTwo = Math.Sqrt(2.0);
+        public static readonly Double SqrtTwo = Math.Sqrt(2.0);
 
         /// <summary>
         /// Value of Sqrt(3)
         /// </summary>
-        public static readonly double SqrtThree = Math.Sqrt(3.0);
+        public static readonly Double SqrtThree = Math.Sqrt(3.0);
 
         /// <summary>
         /// Value of Sqrt(Pi)
         /// </summary>
-        public static readonly double SqrtPI = Math.Sqrt(Math.PI);
+        public static readonly Double SqrtPI = Math.Sqrt(Math.PI);
 
         /// <summary>
         /// Value of Sqrt(2 * Pi)
         /// </summary>
-        public static readonly double SqrtTwoPI = Math.Sqrt(2.0 * Math.PI);
+        public static readonly Double SqrtTwoPI = Math.Sqrt(2.0 * Math.PI);
 
         /// <summary>
         /// Value of ln(Pi)
         /// </summary>
-        public static readonly double LogPI = Math.Log(Math.PI);
+        public static readonly Double LogPI = Math.Log(Math.PI);
 
         /// <summary>
         /// Value of ln(2)
         /// </summary>
-        public static readonly double LogTwo = Math.Log(2.0);
+        public static readonly Double LogTwo = Math.Log(2.0);
 
         #endregion
 
@@ -277,19 +281,14 @@
         /// </summary>
         /// <param name="n">The integer to examine.</param>
         /// <returns>The result of the test.</returns>
-        public static bool IsPrimeNumber(int n)
+        public static Boolean IsPrimeNumber(Int32 n)
         {
             if (n < 8)
             {
                 return ((n == 2) || (n == 3) || (n == 5) || (n == 7));
             }
-            else
+            else if (n % 2 != 0)
             {
-                if (n % 2 == 0)
-                {
-                    return (false);
-                }
-
                 var m = n - 1;
                 var d = m;
                 var s = 0;
@@ -306,29 +305,25 @@
                 }
 
                 return (IsProbablyPrime(n, m, s, d, 2) && IsProbablyPrime(n, m, s, d, 7) && IsProbablyPrime(n, m, s, d, 61));
-
             }
+
+            return false;
         }
 
-        static bool IsProbablyPrime(int n, int m, int s, int d, int w)
+        static Boolean IsProbablyPrime(Int32 n, Int32 m, Int32 s, Int32 d, Int32 w)
         {
             var x = PowMod(w, d, n);
 
-            if ((x == 1) || (x == m))
+            if (x == 1 || x == m)
             {
                 return true;
             }
 
-            for (int i = 0; i < s; i++)
+            for (var i = 0; i < s; i++)
             {
                 x = PowMod(x, 2, n);
 
-                if (x == 1)
-                {
-                    return false;
-                }
-
-                if (x == m)
+                if (x != 1 && x == m)
                 {
                     return true;
                 }
@@ -343,7 +338,7 @@
         /// <param name="e">The exponent, which must be positive.</param>
         /// <param name="m">The modulus, which must be positive.</param>
         /// <returns>The value of b<sup>e</sup> mod m.</returns>
-        public static int PowMod(int b, int e, int m)
+        public static Int32 PowMod(Int32 b, Int32 e, Int32 m)
         {
             if (b < 0)
                 throw new YAMPArgumentRangeException("b", -1);
@@ -378,15 +373,19 @@
         /// <param name="A">The first number.</param>
         /// <param name="B">The second number.</param>
         /// <returns>The greatest common divisor.</returns>
-        public static int GCD(int A, int B)
+        public static Int32 GCD(Int32 A, Int32 B)
         {
             if (A == 0)
+            {
                 return Math.Max(B, 1);
+            }
 
             if (B == 0)
+            {
                 return Math.Max(A, 1);
+            }
 
-            int f = 1;
+            var f = 1;
 
             while (true)
             {
@@ -423,7 +422,7 @@
                     B = (B - A) / 2;
                 }
             }
-        }  
+        }
 
         /// <summary>
         /// Computes the length of a right triangle's hypotenuse.
@@ -521,15 +520,17 @@
 
                 return result;
             }
-
-            var inv = 1 / z;
-
-            if (n < -1)
+            else
             {
-                return Power(inv, -n);
-            }
+                var inv = 1 / z;
 
-            return inv;
+                if (n < -1)
+                {
+                    return Power(inv, -n);
+                }
+
+                return inv;
+            }
         }
 
         /// <summary>
@@ -538,7 +539,7 @@
         /// <param name="N">What number of roots.</param>
         /// <param name="sign">The sign to take.</param>
         /// <returns>The number roots, i.e. a N  + 1 size array.</returns>
-        public static ScalarValue[] ComputeRoots(int N, int sign)
+        public static ScalarValue[] ComputeRoots(Int32 N, Int32 sign)
         {
             var u = new ScalarValue[N + 1];
             var t = sign * TwoPI / N;
@@ -561,7 +562,7 @@
         /// <param name="coefficients">The coefficients to consider.</param>
         /// <param name="x">The real evaluation argument.</param>
         /// <returns>The value.</returns>
-        public static double ChebEval(int n, Double[] coefficients, double x)
+        public static Double ChebEval(Int32 n, Double[] coefficients, Double x)
         {
             // If |x|  < 0.6 use the standard Clenshaw method
             if (Math.Abs(x) < 0.6)
@@ -571,7 +572,7 @@
                 var u2 = 0.0;
                 var xx = x + x;
 
-                for (int i = n; i >= 0; i--)
+                for (var i = n; i >= 0; i--)
                 {
                     u2 = u1;
                     u1 = u0;
@@ -585,16 +586,16 @@
             // T > =  0.6 code
             if (x > 0.0)
             {
-                double u1 = 0.0;
-                double d1 = 0.0;
-                double d2 = 0.0;
-                double xx = (x - 0.5) - 0.5;
+                var u1 = 0.0;
+                var d1 = 0.0;
+                var d2 = 0.0;
+                var xx = (x - 0.5) - 0.5;
                 xx = xx + xx;
 
-                for (int i = n; i >= 0; i--)
+                for (var i = n; i >= 0; i--)
                 {
                     d2 = d1;
-                    double u2 = u1;
+                    var u2 = u1;
                     d1 = xx * u2 + coefficients[i] + d2;
                     u1 = d1 + u2;
                 }
@@ -604,16 +605,16 @@
             else
             {
                 // T < =  -0.6 code
-                double u1 = 0.0;
-                double d1 = 0.0;
-                double d2 = 0.0;
-                double xx = (x + 0.5) + 0.5;
+                var u1 = 0.0;
+                var d1 = 0.0;
+                var d2 = 0.0;
+                var xx = (x + 0.5) + 0.5;
                 xx = xx + xx;
 
-                for (int i = n; i >= 0; i--)
+                for (var i = n; i >= 0; i--)
                 {
                     d2 = d1;
-                    double u2 = u1;
+                    var u2 = u1;
                     d1 = xx * u2 + coefficients[i] - d2;
                     u1 = d1 - u2;
                 }
@@ -628,17 +629,16 @@
         /// <param name="cs">The coefficients to consider.</param>
         /// <param name="x">The real evaluation argument.</param>
         /// <returns>The value.</returns>
-        public static double ChebEval(ChebSeries cs, double x)
+        public static Double ChebEval(ChebSeries cs, Double x)
         {
-            int j;
-            double d = 0.0;
-            double dd = 0.0;
-            double y = (2.0 * x - cs.LowerPoint - cs.UpperPoint) / (cs.UpperPoint - cs.LowerPoint);
-            double y2 = 2.0 * y;
+            var d = 0.0;
+            var dd = 0.0;
+            var y = (2.0 * x - cs.LowerPoint - cs.UpperPoint) / (cs.UpperPoint - cs.LowerPoint);
+            var y2 = 2.0 * y;
 
-            for (j = cs.Order; j >= 1; j--)
+            for (var j = cs.Order; j >= 1; j--)
             {
-                double temp = d;
+                var temp = d;
                 d = y2 * d - dd + cs.Coefficients[j];
                 dd = temp;
             }
@@ -654,13 +654,12 @@
         /// <returns>The value.</returns>
         public static ScalarValue ChebEval(ChebSeries cs, ScalarValue z)
         {
-            int j;
             var d = ScalarValue.Zero;
             var dd = ScalarValue.Zero;
             var y = (2.0 * z - cs.LowerPoint - cs.UpperPoint) / (cs.UpperPoint - cs.LowerPoint);
             var y2 = 2.0 * y;
 
-            for (j = cs.Order; j >= 1; j--)
+            for (var j = cs.Order; j >= 1; j--)
             {
                 var temp = d;
                 d = y2 * d - dd + cs.Coefficients[j];
@@ -682,27 +681,27 @@
             /// <summary>
             /// The (real) coefficients of the Chebyshev polynomial.
             /// </summary>
-            public double[] Coefficients;
+            public Double[] Coefficients;
 
             /// <summary>
             /// The order of the polynomial.
             /// </summary>
-            public int Order;
+            public Int32 Order;
 
             /// <summary>
             /// The lowest point in the interval.
             /// </summary>
-            public double LowerPoint;
+            public Double LowerPoint;
 
             /// <summary>
             /// The highest point in the interval.
             /// </summary>
-            public double UpperPoint;
+            public Double UpperPoint;
 
             /// <summary>
             /// The order of the single precision.
             /// </summary>
-            public int SinglePrecisionOrder;
+            public Int32 SinglePrecisionOrder;
         };
 
         #endregion

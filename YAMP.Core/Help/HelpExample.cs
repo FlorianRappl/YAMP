@@ -10,16 +10,16 @@
         /// <summary>
         /// Gets or sets the specified example.
         /// </summary>
-		public string Example { get; set; }
+		public String Example { get; set; }
 
         /// <summary>
         /// Gets or sets the given description of the example.
         /// </summary>
-		public string Description { get; set; }
+		public String Description { get; set; }
 
         /// <summary>
         /// Gets or sets if the example accesses the file system.
         /// </summary>
-        public bool IsFile { get; set; }
+        public Boolean IsFile { get; set; }
 	}
 }

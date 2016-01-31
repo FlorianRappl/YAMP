@@ -13,7 +13,7 @@
         /// Creates a new instance.
         /// </summary>
         /// <param name="kind">The kind of topic.</param>
-		public HelpTopic(string kind)
+		public HelpTopic(String kind)
 		{
 			Kind = kind;
 		}
@@ -21,6 +21,6 @@
         /// <summary>
         /// Gets the kind represented by this topic.
         /// </summary>
-		public string Kind { get; private set; }
+		public String Kind { get; private set; }
 	}
 }
