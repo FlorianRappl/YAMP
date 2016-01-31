@@ -1,5 +1,7 @@
 ﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// SystemFunction is a special kind of ArgumentFunction, which saves the
     /// passed ParseContext in a variable, which can be accessed over the 
@@ -46,6 +48,11 @@
 			var function = GetType().GetConstructor(new [] { typeof(ParseContext) }).Invoke(new [] { context });
             return ((SystemFunction)function).Perform(argument);
 		}
+
+        protected void RaiseNotification(NotificationType notificationType, String message)
+        {
+            Context.RaiseNotification(new NotificationEventArgs(notificationType, message));
+        }
 
 		#endregion
     }

@@ -196,7 +196,7 @@
         /// <returns>The new instance.</returns>
 		public abstract Value Deserialize(Byte[] content);
 
-		internal static Value Deserialize(String name, Byte[] content)
+		public static Value Deserialize(String name, Byte[] content)
 		{
             if (knownTypes.ContainsKey(name))
             {

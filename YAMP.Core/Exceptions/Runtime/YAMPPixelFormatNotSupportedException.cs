@@ -1,10 +1,10 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    class YAMPPixelFormatNotSupportedException : YAMPRuntimeException
+    using System;
+
+    public class YAMPPixelFormatNotSupportedException : YAMPRuntimeException
     {
-        public YAMPPixelFormatNotSupportedException(string fileName)
+        public YAMPPixelFormatNotSupportedException(String fileName)
             : base("The pixel format of the file {0} is not supported.", fileName)
         {
         }

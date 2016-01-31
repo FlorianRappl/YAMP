@@ -1,10 +1,10 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    class YAMPFileFormatNotSupportedException : YAMPRuntimeException
+    using System;
+
+    public class YAMPFileFormatNotSupportedException : YAMPRuntimeException
     {
-        public YAMPFileFormatNotSupportedException(string fileName)
+        public YAMPFileFormatNotSupportedException(String fileName)
             : base("The format of the file {0} is not supported.", fileName)
         {
         }
