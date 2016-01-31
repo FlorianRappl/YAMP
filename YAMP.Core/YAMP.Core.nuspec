@@ -2,22 +2,16 @@
 <package>
   <metadata>
     <id>YAMP</id>
-    <version>1.5.0</version>
-    <authors>Florian Rappl</authors>
-    <owners>Florian Rappl</owners>
+    <version>$version$</version>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
     <licenseUrl>https://github.com/FlorianRappl/YAMP/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/FlorianRappl/YAMP</projectUrl>
     <iconUrl>https://raw.github.com/FlorianRappl/YAMP/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Yet Another Math Parser enables you to parse complex (numerical) expressions with a syntax that is quite close to MATLAB's syntax.</description>
+    <description>$description$</description>
     <releaseNotes>For all changes see: https://github.com/FlorianRappl/YAMP.</releaseNotes>
     <copyright>Copyright 2012 - 2016, Florian Rappl.</copyright>
     <tags>YAMP Math Parser Matlab Matrix Complex Numerics Physics Mathematics Sumerics</tags>
-    <dependencies>
-        <group targetFramework="portable-windows8+net4+windowsphone8+wpa">
-        </group>
-        <group targetFramework="net35">
-        </group>
-    </dependencies>
   </metadata>
 </package>
