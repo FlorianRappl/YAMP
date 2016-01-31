@@ -1,7 +1,4 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
     /// <summary>
     /// StatCoulomb (CGS unit) -- unit of charge

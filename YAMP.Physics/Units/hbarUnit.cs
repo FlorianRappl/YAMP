@@ -1,7 +1,4 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
     /// <summary>
     /// Reduced plank constant (natural unit) -- unit of energy

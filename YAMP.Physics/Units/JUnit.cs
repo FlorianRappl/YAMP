@@ -1,7 +1,4 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
     /// <summary>
     /// Joule (derived SI unit) -- unit of energy

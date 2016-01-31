@@ -1,7 +1,4 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
     /// <summary>
     /// Newton (derived SI unit) -- unit of force

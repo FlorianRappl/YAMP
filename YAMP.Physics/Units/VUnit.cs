@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
     /// <summary>
     /// Volts (derived SI unit) -- unit of voltage

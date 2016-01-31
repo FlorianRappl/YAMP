@@ -86,7 +86,7 @@
     <Compile Include="Units\AUnit.cs" />
     <Compile Include="Units\cdUnit.cs" />
     <Compile Include="Units\CombinedUnit.cs" />
-    <Compile Include="Units\ConversationUnit.cs" />
+    <Compile Include="Units\ConversionUnit.cs" />
     <Compile Include="Units\CUnit.cs" />
     <Compile Include="Units\dynUnit.cs" />
     <Compile Include="Units\ergUnit.cs" />

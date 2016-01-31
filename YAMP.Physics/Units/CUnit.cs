@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
     /// <summary>
     /// Coloumb (SI unit) -- unit for the charge

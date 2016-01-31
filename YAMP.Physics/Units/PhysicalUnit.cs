@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using YAMP;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+
     /// <summary>
     /// Represents an (in its essence elementary) physical unit.
     /// </summary>
@@ -12,13 +11,14 @@ namespace YAMP.Physics
     {
         #region Fields
 
-        Dictionary<PhysicalUnit, Func<double, double>> conversionTable;
-        Dictionary<PhysicalUnit, Func<double, double>> invConversionTable;
-        Dictionary<string, double> prefixes;
-        double weight;
+        readonly Dictionary<PhysicalUnit, Func<Double, Double>> _conversionTable;
+        readonly Dictionary<PhysicalUnit, Func<Double, Double>> _invConversionTable;
+        readonly Dictionary<String, Double> _prefixes;
+        Double _weight;
+        String _unit;
 
-        protected static Dictionary<string, PhysicalUnit> knownUnits = new Dictionary<string, PhysicalUnit>();
-        protected static Dictionary<string, CombinedUnit> combinedUnits = new Dictionary<string, CombinedUnit>();
+        protected static Dictionary<String, PhysicalUnit> KnownUnits = new Dictionary<String, PhysicalUnit>();
+        protected static Dictionary<String, CombinedUnit> CombinedUnits = new Dictionary<String, CombinedUnit>();
 
         #endregion
 
@@ -34,40 +34,41 @@ namespace YAMP.Physics
             {
                 if (type.IsSubclassOf(typeof(PhysicalUnit)) && !type.IsAbstract)
                 {
-                    if(type.IsSubclassOf(typeof(CombinedUnit)))
+                    if (type.IsSubclassOf(typeof(CombinedUnit)))
                     {
                         combinedTypes.Add(type);
-                        continue;
                     }
+                    else
+                    {
+                        var ctor = type.GetConstructor(Value.EmptyTypes);
 
-                    var ctor  = type.GetConstructor(Value.EmptyTypes);
-
-                    if(ctor == null)
-                        continue;
-
-                    var instance = ctor.Invoke(null) as PhysicalUnit;
-                    knownUnits.Add(instance.Unit, instance);
+                        if (ctor != null)
+                        {
+                            var instance = ctor.Invoke(null) as PhysicalUnit;
+                            KnownUnits.Add(instance.Unit, instance);
+                        }
+                    }
                 }
             }
 
             foreach (var type in combinedTypes)
             {
-                var ctor  = type.GetConstructor(Value.EmptyTypes);
+                var ctor = type.GetConstructor(Value.EmptyTypes);
 
-                if(ctor == null)
-                    continue;
-
-                var instance = ctor.Invoke(null) as CombinedUnit;
-                combinedUnits.Add(instance.Unit, instance);
+                if (ctor != null)
+                {
+                    var instance = ctor.Invoke(null) as CombinedUnit;
+                    CombinedUnits.Add(instance.Unit, instance);
+                }
             }
         }
 
         public PhysicalUnit()
         {
-            weight = 1.0;
-            invConversionTable = new Dictionary<PhysicalUnit, Func<double, double>>();
-            conversionTable = new Dictionary<PhysicalUnit, Func<double, double>>();
-            prefixes = new Dictionary<string, double>();
+            _weight = 1.0;
+            _invConversionTable = new Dictionary<PhysicalUnit, Func<double, double>>();
+            _conversionTable = new Dictionary<PhysicalUnit, Func<double, double>>();
+            _prefixes = new Dictionary<string, double>();
             Unit = this.GetType().Name.Replace("Unit", string.Empty);
             SetPrefixes();
         }
@@ -76,63 +77,70 @@ namespace YAMP.Physics
 
         #region Properties
 
-        public virtual double Weight
+        public Double Weight
         {
-            get
-            {
-                return weight;
-            }
+            get { return _weight; }
         }
 
-        public virtual string Unit { get; protected set; }
+        public virtual String Unit 
+        {
+            get { return _unit; }
+            protected set { _unit = value; }
+        }
 
         #endregion
 
         #region Methods
 
-        public static PhysicalUnit FindUnit(string unit)
+        public static PhysicalUnit FindUnit(String unit)
         {
-            foreach (var value in knownUnits.Values)
+            foreach (var value in KnownUnits.Values)
             {
                 if (value.CanBe(unit))
+                {
                     return value.TransformTo(unit);
+                }
             }
 
             return null;
         }
 
-        public static bool IsCombinedUnit(string unit)
+        public static Boolean IsCombinedUnit(String unit)
         {
-            foreach (var value in combinedUnits.Values)
+            foreach (var value in CombinedUnits.Values)
             {
                 if (value.CanBe(unit))
+                {
                     return true;
+                }
             }
 
             return false;
         }
 
-        public static CombinedUnit FindCombinedUnit(string unit)
+        public static CombinedUnit FindCombinedUnit(String unit)
         {
-            foreach (var value in combinedUnits.Values)
+            foreach (var value in CombinedUnits.Values)
             {
                 if (value.CanBe(unit))
+                {
                     return value.CreateFrom(unit);
+                }
             }
 
             return null;
         }
 
-        public virtual PhysicalUnit TransformTo(string unit)
+        public virtual PhysicalUnit TransformTo(String unit)
         {
             if (!unit.Equals(Unit))
             {
-                foreach (var prefix in prefixes)
+                foreach (var prefix in _prefixes)
                 {
                     if (prefix.Key + Unit == unit)
                     {
                         var pu = Create();
-                        pu.weight = prefix.Value;
+                        pu._weight = prefix.Value;
                         return pu;
                     }
                 }
@@ -141,14 +149,16 @@ namespace YAMP.Physics
             return Create();
         }
 
-        protected double GetWeight(string unit)
+        protected Double GetWeight(String unit)
         {
             if (!unit.Equals(Unit))
             {
-                foreach (var prefix in prefixes)
+                foreach (var prefix in _prefixes)
                 {
                     if (prefix.Key + Unit == unit)
+                    {
                         return prefix.Value;
+                    }
                 }
             }
 
@@ -157,76 +167,88 @@ namespace YAMP.Physics
 
         protected abstract PhysicalUnit Create();
 
-        public virtual bool CanBe(string unit)
+        public virtual Boolean CanBe(String unit)
         {
-            if (unit.Equals(Unit))
-                return true;
-
-            foreach (var prefix in prefixes.Keys)
+            if (!unit.Equals(Unit))
             {
-                if (prefix + Unit == unit)
-                    return true;
+                foreach (var prefix in _prefixes.Keys)
+                {
+                    if (prefix + Unit == unit)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         protected virtual void SetPrefixes()
         {
-            prefixes.Add("da", 10);
-            prefixes.Add("h", 100);
-            prefixes.Add("k", 1e3);
-            prefixes.Add("M", 1e6);
-            prefixes.Add("G", 1e9);
-            prefixes.Add("T", 1e12);
-            prefixes.Add("P", 1e15);
-            prefixes.Add("E", 1e18);
-            prefixes.Add("Z", 1e21);
-            prefixes.Add("Y", 1e24);
+            _prefixes.Add("da", 10);
+            _prefixes.Add("h", 100);
+            _prefixes.Add("k", 1e3);
+            _prefixes.Add("M", 1e6);
+            _prefixes.Add("G", 1e9);
+            _prefixes.Add("T", 1e12);
+            _prefixes.Add("P", 1e15);
+            _prefixes.Add("E", 1e18);
+            _prefixes.Add("Z", 1e21);
+            _prefixes.Add("Y", 1e24);
 
-            prefixes.Add("d", 1e-1);
-            prefixes.Add("c", 1e-2);
-            prefixes.Add("m", 1e-3);
-            prefixes.Add("µ", 1e-6);
-            prefixes.Add("n", 1e-9);
-            prefixes.Add("p", 1e-12);
-            prefixes.Add("f", 1e-15);
-            prefixes.Add("a", 1e-18);
-            prefixes.Add("z", 1e-21);
-            prefixes.Add("y", 1e-24);
+            _prefixes.Add("d", 1e-1);
+            _prefixes.Add("c", 1e-2);
+            _prefixes.Add("m", 1e-3);
+            _prefixes.Add("µ", 1e-6);
+            _prefixes.Add("n", 1e-9);
+            _prefixes.Add("p", 1e-12);
+            _prefixes.Add("f", 1e-15);
+            _prefixes.Add("a", 1e-18);
+            _prefixes.Add("z", 1e-21);
+            _prefixes.Add("y", 1e-24);
         }
 
-        public virtual bool HasConversation(string target)
+        public virtual Boolean HasConversation(String target)
         {
-            if (CanBe(target))
-                return true;
-
-            foreach (var entry in conversionTable)
+            if (!CanBe(target))
             {
-                if (entry.Key.CanBe(target))
-                    return true;
+                foreach (var entry in _conversionTable)
+                {
+                    if (entry.Key.CanBe(target))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
-            return false;
+            return true;
         }
 
-        public virtual Func<double, double> GetConversation(string unit)
+        public virtual Func<Double, Double> GetConversation(String unit)
         {
             if (unit == Unit)
+            {
                 return Identity;
+            }
 
-            return conversionTable[knownUnits[unit]];
+            return _conversionTable[KnownUnits[unit]];
         }
 
-        public virtual Func<double, double> GetInverseConversation(string unit)
+        public virtual Func<Double, Double> GetInverseConversation(String unit)
         {
             if (unit == Unit)
+            {
                 return Identity;
+            }
 
-            return invConversionTable[knownUnits[unit]];
+            return _invConversionTable[KnownUnits[unit]];
         }
 
-        double Identity(double x)
+        Double Identity(Double x)
         {
             return x;
         }
@@ -237,13 +259,15 @@ namespace YAMP.Physics
         /// <param name="target">The target unit, e.g. in m to yd, yd would be the target unit.</param>
         /// <param name="rate">The rate of the conversion.</param>
         /// <returns>The current unit.</returns>
-        public PhysicalUnit Add(string target, double rate)
+        public PhysicalUnit Add(String target, Double rate)
         {
-            if (!knownUnits.ContainsKey(target))
-                knownUnits.Add(target, new ConversationUnit(target, this));
+            if (!KnownUnits.ContainsKey(target))
+            {
+                KnownUnits.Add(target, new ConversionUnit(target, this));
+            }
 
-            conversionTable.Add(knownUnits[target], x => x * rate);
-            invConversionTable.Add(knownUnits[target], x => x / rate);
+            _conversionTable.Add(KnownUnits[target], x => x * rate);
+            _invConversionTable.Add(KnownUnits[target], x => x / rate);
             return this;
         }
 
@@ -254,13 +278,15 @@ namespace YAMP.Physics
         /// <param name="rate">The rate (a) of the conversion.</param>
         /// <param name="offset">The offset (b) of the conversion.</param>
         /// <returns>The current unit.</returns>
-        public PhysicalUnit Add(string target, double rate, double offset)
+        public PhysicalUnit Add(String target, Double rate, Double offset)
         {
-            if (!knownUnits.ContainsKey(target))
-                knownUnits.Add(target, new ConversationUnit(target, this));
+            if (!KnownUnits.ContainsKey(target))
+            {
+                KnownUnits.Add(target, new ConversionUnit(target, this));
+            }
 
-            conversionTable.Add(knownUnits[target], x => x * rate + offset);
-            invConversionTable.Add(knownUnits[target], x => (x - offset) / rate);
+            _conversionTable.Add(KnownUnits[target], x => x * rate + offset);
+            _invConversionTable.Add(KnownUnits[target], x => (x - offset) / rate);
             return this;
         }
 

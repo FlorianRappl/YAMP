@@ -1,22 +1,21 @@
-﻿using System;
-using YAMP;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+
     /// <summary>
     /// Used for conversations from one unit to another.
     /// </summary>
-    class ConversationUnit : PhysicalUnit
+    class ConversionUnit : PhysicalUnit
     {
         #region Fields
 
-        PhysicalUnit _from;
+        readonly PhysicalUnit _from;
 
         #endregion
 
         #region ctor
 
-        public ConversationUnit(string name, PhysicalUnit from)
+        public ConversionUnit(String name, PhysicalUnit from)
         {
             Unit = name;
             _from = from;
@@ -28,18 +27,20 @@ namespace YAMP.Physics
 
         protected override PhysicalUnit Create()
         {
-            return new ConversationUnit(Unit, _from);
+            return new ConversionUnit(Unit, _from);
         }
 
-        public override bool HasConversation(string target)
+        public override Boolean HasConversation(String target)
         {
             if (_from.CanBe(target))
+            {
                 return true;
+            }
 
             return _from.HasConversation(target);
         }
 
-        public override Func<double, double> GetConversation(string unit)
+        public override Func<Double, Double> GetConversation(String unit)
         {
             //Example: Conversation from yd -> ft
             //Get transformation from yd -> m
@@ -47,7 +48,9 @@ namespace YAMP.Physics
 
             //In case we want just yd to m
             if (_from.Unit == unit)
+            {
                 return backTransformation;
+            }
 
             //Get transformation from m -> ft
             var newTransformation = _from.GetConversation(unit);
@@ -55,7 +58,7 @@ namespace YAMP.Physics
             return x => newTransformation(backTransformation(x));
         }
 
-        public override Func<double, double> GetInverseConversation(string unit)
+        public override Func<Double, Double> GetInverseConversation(String unit)
         {
             //Example: Conversation from 1/yd -> 1/ft
             //Get transformation from 1/yd -> 1/m
@@ -63,7 +66,9 @@ namespace YAMP.Physics
 
             //In case we want just 1/yd to 1/m
             if (_from.Unit == unit)
+            {
                 return backTransformation;
+            }
 
             //Get transformation from 1/m -> 1/ft
             var newTransformation = _from.GetInverseConversation(unit);

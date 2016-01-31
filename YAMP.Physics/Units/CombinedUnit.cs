@@ -14,27 +14,29 @@
     {
         #region Fields
 
-        string lastAddedUnit;
-        double lastAddedFactor;
-        double factor;
-        string unit;
-        Dictionary<string, double> units = new Dictionary<string, double>();
-        static CultureInfo numberFormat = new CultureInfo("en-us");
+        static readonly CultureInfo NumberFormat = CultureInfo.InvariantCulture;
+
+        readonly Dictionary<String, Double> _units;
+
+        String _lastAddedUnit;
+        Double _lastAddedFactor;
+        Double _factor;
 
         #endregion
 
         #region ctor
 
-        public CombinedUnit(string unit)
+        public CombinedUnit(String unit)
         {
             Unit = unit;
+            _units = new Dictionary<String, Double>();
         }
 
-        protected CombinedUnit(string combination, double factor)
+        protected CombinedUnit(String combination, Double factor)
         {
-            this.factor = factor;
-            units = Parse(combination);
-            unit = GetType().Name.Replace("Unit", string.Empty);
+            _factor = factor;
+            _units = Parse(combination);
+            Unit = GetType().Name.Replace("Unit", String.Empty);
         }
 
         #endregion
@@ -44,44 +46,42 @@
         /// <summary>
         /// Gets the underlying factor.
         /// </summary>
-        public double Factor
+        public Double Factor
         {
-            get { return factor; }
+            get { return _factor; }
         }
 
         /// <summary>
         /// Gets or sets the presented unit.
         /// </summary>
-        public override string Unit
+        public override String Unit
         {
             get
             {
-                return unit;
+                return base.Unit;
             }
             protected set
             {
-                unit = value;
-                factor = 1.0;
-                units = Parse(value);
+                base.Unit = value;
+                _factor = 1.0;
+                _units.Clear();
+                Parse(value, _units);
             }
         }
 
         /// <summary>
         /// Gets the underlying elementary units.
         /// </summary>
-        public Dictionary<string, double> ElementaryUnits
+        public Dictionary<String, Double> ElementaryUnits
         {
-            get
-            {
-                return units;
-            }
+            get { return _units; }
         }
 
         #endregion
 
         #region Methods
 
-        public override string ToString()
+        public override String ToString()
         {
             return Unit;
         }
@@ -90,32 +90,42 @@
         /// Unpacks the given units, i.e. returns the representation of the unit in elementary units.
         /// </summary>
         /// <returns>The string represention in elementary units.</returns>
-        public string Unpack()
+        public String Unpack()
         {
             var inner = false;
             var s = new StringBuilder();
-            var positive = new List<string>();
-            var negative = new List<string>();
+            var positive = new List<String>();
+            var negative = new List<String>();
 
-            foreach (var m in units)
+            foreach (var m in _units)
             {
                 if (m.Value > 0)
+                {
                     positive.Add(m.Key);
+                }
                 else if (m.Value < 0)
+                {
                     negative.Add(m.Key);
+                }
             }
 
             foreach (var pos in positive)
             {
                 if (inner)
+                {
                     s.Append("*");
+                }
                 else
+                {
                     inner = true;
+                }
 
                 s.Append(pos);
 
-                if (units[pos] != 1.0)
-                    s.Append("^").Append(units[pos]);
+                if (_units[pos] != 1.0)
+                {
+                    s.Append("^").Append(_units[pos]);
+                }
             }
 
             if (negative.Count != 0)
@@ -123,28 +133,42 @@
                 inner = false;
 
                 if (s.Length == 0)
-                    s.Append("1");
-
-                if (negative.Count != 1)
-                    s.Append("/(");
-                else
-                    s.Append("/");
-
-                foreach (var neg in negative)
                 {
-                    if(inner)
-                        s.Append("*");
-                    else
-                        inner = true;
-
-                    s.Append(neg);
-
-                    if (units[neg] != -1.0)
-                        s.Append("^").Append(-units[neg]);
+                    s.Append("1");
                 }
 
                 if (negative.Count != 1)
+                {
+                    s.Append("/(");
+                }
+                else
+                {
+                    s.Append("/");
+                }
+
+                foreach (var neg in negative)
+                {
+                    if (inner)
+                    {
+                        s.Append("*");
+                    }
+                    else
+                    {
+                        inner = true;
+                    }
+
+                    s.Append(neg);
+
+                    if (_units[neg] != -1.0)
+                    {
+                        s.Append("^").Append(-_units[neg]);
+                    }
+                }
+
+                if (negative.Count != 1)
+                {
                     s.Append(")");
+                }
             }
 
             return s.ToString();
@@ -156,8 +180,8 @@
         /// <returns>The current instance.</returns>
         public CombinedUnit Simplify()
         {
-            var minChanges = double.MaxValue;
-            var minUnit = string.Empty;
+            var minChanges = Double.MaxValue;
+            var minUnit = String.Empty;
             var isReversed = false;
             var total = 0.0;
             var i = 0;
@@ -167,19 +191,21 @@
                 //Criteria for cancelling: avoid MORE changes than last round
                 total = minChanges;
 
-                if (!string.IsNullOrEmpty(minUnit))
+                if (!String.IsNullOrEmpty(minUnit))
                 {
-                    var U = combinedUnits[minUnit];
+                    var U = CombinedUnits[minUnit];
                     var sgn = isReversed ? -1.0 : 1.0;
 
-                    foreach (var unit in U.units)
-                        AddUnit(units, unit.Key, -sgn * unit.Value);
+                    foreach (var unit in U._units)
+                    {
+                        AddUnit(_units, unit.Key, -sgn * unit.Value);
+                    }
 
-                    factor /= U.factor;
-                    AddUnit(units, U.unit, sgn);
+                    _factor /= U._factor;
+                    AddUnit(_units, U.Unit, sgn);
                 }
 
-                foreach (var cu in combinedUnits)
+                foreach (var cu in CombinedUnits)
                 {
                     var reversed = false;
                     var changes = GetChanges(cu.Value, out reversed);
@@ -197,18 +223,18 @@
             return this;
         }
 
-        double GetChanges(CombinedUnit unit, out bool reversed)
+        Double GetChanges(CombinedUnit unit, out Boolean reversed)
         {
             var misses = 0.0;
             var posCatches = 0.0;
             var negCatches = 0.0;
             reversed = false;
 
-            foreach (var b in unit.units)
+            foreach (var b in unit._units)
             {
                 var found = false;
 
-                foreach (var a in units)
+                foreach (var a in _units)
                 {
                     if (a.Key == b.Key)
                     {
@@ -220,7 +246,9 @@
                 }
 
                 if (!found)
+                {
                     misses += Math.Abs(b.Value);
+                }
             }
 
             if (negCatches < posCatches)
@@ -237,18 +265,18 @@
         /// </summary>
         /// <param name="unit">The unit (combination) to convert to.</param>
         /// <returns>A list of converters to be performed on a certain value having the current unit.</returns>
-        public List<Func<double, double>> ConvertTo(string unit)
+        public List<Func<Double, Double>> ConvertTo(String unit)
         {
-            var list = new List<Func<double, double>>();
-            var sourceFactor = factor;
-            factor = 1.0;
-            var source = units;
+            var list = new List<Func<Double, Double>>();
+            var sourceFactor = _factor;
+            _factor = 1.0;
+            var source = _units;
             var target = Parse(unit);
-            var targetFactor = factor;
-            var bag = new Dictionary<string, double>();
+            var targetFactor = _factor;
+            var bag = new Dictionary<String, Double>();
 
             //Calculation of new factor given by unit -- more to come below
-            factor = sourceFactor / targetFactor;
+            _factor = sourceFactor / targetFactor;
 
             foreach (var srcUnit in source)
             {
@@ -260,28 +288,42 @@
                     var tu = FindMapping(srcUnit.Key, target, sign, list);
 
                     if (bag.ContainsKey(tu))
+                    {
                         bag[tu] += sign;
+                    }
                     else
+                    {
                         bag.Add(tu, sign);
+                    }
                 }
             }
 
             if (target.Count != 0)
-                throw new YAMPException("The conversation is not possible. The units are not converting properly.");
+            {
+                throw new YAMPException("The conversion is not possible. The units are not converting properly.");
+            }
 
-            units = bag;
-            this.unit = unit;
+            _units.Clear();
+
+            foreach (var element in bag)
+            {
+                _units.Add(element.Key, element.Value);
+            }
+
+            Unit = unit;
             return list;
         }
 
-        string FindMapping(string source, Dictionary<string, double> target, int sign, List<Func<double, double>> list)
+        String FindMapping(String source, Dictionary<String, Double> target, Int32 sign, List<Func<Double, Double>> list)
         {
             var srcUnit = FindUnit(source);
 
             if (srcUnit == null)
+            {
                 throw new YAMPException("The unit " + source + " could not be found.");
+            }
 
-            factor *= Math.Pow(srcUnit.Weight, sign);
+            _factor *= Math.Pow(srcUnit.Weight, sign);
 
             foreach(var unit in target.Keys)
             {
@@ -293,16 +335,18 @@
                     if (sign > 0)
                     {
                         list.Add(srcUnit.GetConversation(dstUnit.Unit));
-                        factor /= dstUnit.Weight;
+                        _factor /= dstUnit.Weight;
                     }
                     else
                     {
                         list.Add(srcUnit.GetInverseConversation(dstUnit.Unit));
-                        factor *= dstUnit.Weight;
+                        _factor *= dstUnit.Weight;
                     }
 
                     if (target[unit] == 0)
+                    {
                         target.Remove(unit);
+                    }
 
                     return unit;
                 }
@@ -316,11 +360,11 @@
             return new CombinedUnit(Unit);
         }
 
-        public CombinedUnit CreateFrom(string unit)
+        public CombinedUnit CreateFrom(String unit)
         {
             var name = Unpack();
-            var obj = new CombinedUnit(name, factor);
-            obj.factor *= GetWeight(unit);
+            var obj = new CombinedUnit(name, _factor);
+            obj._factor *= GetWeight(unit);
             return obj;
         }
 
@@ -328,46 +372,57 @@
 
         #region Parsing
 
-        void AddUnit(Dictionary<string, double> units, string unit, double exp)
+        void AddUnit(Dictionary<String, Double> units, String unit, Double exp)
         {
-            if (exp == 0.0)
-                return;
+            if (exp != 0.0)
+            {
+                _lastAddedUnit = unit;
+                _lastAddedFactor = exp;
 
-            lastAddedUnit = unit;
-            lastAddedFactor = exp;
+                if (units.ContainsKey(unit))
+                {
+                    units[unit] += exp;
+                }
+                else
+                {
+                    units.Add(unit, exp);
+                }
 
-            if (units.ContainsKey(unit))
-                units[unit] += exp;
-            else
-                units.Add(unit, exp);
-
-            if (units[unit] == 0)
-                units.Remove(unit);
+                if (units[unit] == 0)
+                {
+                    units.Remove(unit);
+                }
+            }
         }
 
-        Dictionary<string, double> Parse(string unit)
+        void Parse(String unit, Dictionary<String, Double> units)
         {
-            var reverseStack = new Stack<bool>();
+            var reverseStack = new Stack<Boolean>();
             var reverse = false;
-            var units = new Dictionary<string, double>();
             var k = 0;
             var op = Token.Multiply;
             var tk = new Token[unit.Length + 1];
 
             foreach (var ch in unit)
+            { 
                 tk[k++] = GetToken(ch);
+            }
 
             tk[k] = Token.End;
 
             var sum = Count(Token.OpenBracket, tk) - Count(Token.CloseBracket, tk);
 
             if (sum != 0)
+            {
                 throw new YAMPUnitBracketException(unit);
+            }
 
             for (var i = 0; i != unit.Length; i++)
             {
                 if (tk[i] == Token.Whitespace)
+                {
                     continue;
+                }
 
                 if (tk[i] == Token.CloseBracket)
                 {
@@ -402,7 +457,7 @@
                 {
                     case Token.Multiply:
                         if (current == Token.Number)
-                            factor *= Math.Pow(ConvertToDouble(result), r);
+                            _factor *= Math.Pow(ConvertToDouble(result), r);
                         else if (current == Token.Letter)
                             AddUnit(units, result, r);
                         else
@@ -411,7 +466,7 @@
 
                     case Token.Divide:
                         if (current == Token.Number)
-                            factor /= Math.Pow(ConvertToDouble(result), r);
+                            _factor /= Math.Pow(ConvertToDouble(result), r);
                         else if (current == Token.Letter)
                             AddUnit(units, result, -r);
                         else
@@ -423,19 +478,21 @@
                             throw new YAMPUnitParseException(i, unit.Substring(i));
 
                         var exp = ConvertToDouble(result);
-                        AddUnit(units, lastAddedUnit, lastAddedFactor * (exp - 1));
+                        AddUnit(units, _lastAddedUnit, _lastAddedFactor * (exp - 1));
                         break;
                 }
 
                 i += result.Length - 1;
             }
 
-            var combined = new List<string>();
+            var combined = new List<String>();
 
             foreach (var unitKey in units.Keys)
             {
                 if (IsCombinedUnit(unitKey))
+                {
                     combined.Add(unitKey);
+                }
             }
 
             foreach (var cu in combined)
@@ -447,32 +504,47 @@
                 foreach (var pair in newUnit.ElementaryUnits)
                 {
                     if (units.ContainsKey(pair.Key))
+                    {
                         units[pair.Key] += pair.Value * count;
+                    }
                     else
+                    {
                         units.Add(pair.Key, pair.Value * count);
+                    }
 
                     if (units[pair.Key] == 0)
+                    {
                         units.Remove(pair.Key);
+                    }
                 }
 
-                factor *= Math.Pow(newUnit.Factor, count);
+                _factor *= Math.Pow(newUnit.Factor, count);
             }
+        }
 
+        Dictionary<String, Double> Parse(String unit)
+        {
+            var units = new Dictionary<String, Double>();
+            Parse(unit, units);
             return units;
         }
 
-        int Count(Token token, Token[] tokens)
+        Int32 Count(Token token, Token[] tokens)
         {
             var sum = 0;
 
             foreach (var t in tokens)
+            {
                 if (t == token)
+                {
                     sum++;
+                }
+            }
 
             return sum;
         }
 
-        string EatWhile(Token token, Token[] tokens, string text, int start)
+        String EatWhile(Token token, Token[] tokens, String text, Int32 start)
         {
             var sb = new StringBuilder();
             var index = start;
@@ -480,7 +552,8 @@
             do
             {
                 sb.Append(text[index]);
-            } while (tokens[++index] == token);
+            } 
+            while (tokens[++index] == token);
 
             return sb.ToString();
         }
@@ -502,7 +575,7 @@
                 s = s.Substring(1);
             }
 
-            return sign * Double.Parse(s, numberFormat);
+            return sign * Double.Parse(s, NumberFormat);
         }
 
         int ConvertToInteger(string s)
@@ -521,7 +594,7 @@
                 s = s.Substring(1);
             }
 
-            return sign * Int32.Parse(s, numberFormat);
+            return sign * Int32.Parse(s, NumberFormat);
         }
 
         #endregion
@@ -585,7 +658,7 @@
             var cu = Parse(unit);
 
             foreach (var element in cu)
-                AddUnit(units, element.Key, element.Value);
+                AddUnit(_units, element.Key, element.Value);
 
             return this;
         }
@@ -598,7 +671,7 @@
         public CombinedUnit Multiply(CombinedUnit unit)
         {
             foreach (var element in unit.ElementaryUnits)
-                AddUnit(units, element.Key, element.Value);
+                AddUnit(_units, element.Key, element.Value);
 
             return this;
         }
@@ -613,7 +686,7 @@
             var cu = Parse(unit);
 
             foreach (var element in cu)
-                AddUnit(units, element.Key, -element.Value);
+                AddUnit(_units, element.Key, -element.Value);
 
             return this;
         }
@@ -626,7 +699,7 @@
         public CombinedUnit Divide(CombinedUnit unit)
         {
             foreach (var element in unit.ElementaryUnits)
-                AddUnit(units, element.Key, -element.Value);
+                AddUnit(_units, element.Key, -element.Value);
 
             return this;
         }
@@ -638,8 +711,8 @@
         /// <returns>The (current) modified unit.</returns>
         public CombinedUnit Raise(double pwr)
         {
-            foreach (var element in units.Keys.ToArray())
-                units[element] *= pwr;
+            foreach (var element in _units.Keys.ToArray())
+                _units[element] *= pwr;
 
             return this;
         }

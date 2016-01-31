@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
     /// <summary>
     /// Hertz (derived SI unit) -- unit of times per second
