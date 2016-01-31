@@ -311,7 +311,6 @@
         /// <summary>
         /// Resets the complete parse tree.
         /// </summary>
-        /// <param name="input">The (updated) content (query) to use.</param>
         /// <returns>The current (reseted) parse engine.</returns>
         public ParseEngine Reset()
         {

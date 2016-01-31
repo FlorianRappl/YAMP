@@ -176,6 +176,9 @@
 
         #region Register Operators
 
+        /// <summary>
+        /// Registers the operators.
+        /// </summary>
         protected override void RegisterOperators()
         {
             RegisterPlus(typeof(UnitValue), typeof(UnitValue), AddUU);
@@ -192,7 +195,7 @@
             RegisterPower(typeof(UnitValue), typeof(ScalarValue), PowUS);
         }
 
-        public static UnitValue AddUU(Value a, Value b)
+        static UnitValue AddUU(Value a, Value b)
         {
             var left = (UnitValue)a;
             var right = (UnitValue)b;
@@ -200,7 +203,7 @@
             return new UnitValue(left + target, left.Unit);
         }
 
-        public static UnitValue SubUU(Value a, Value b)
+        static UnitValue SubUU(Value a, Value b)
         {
             var left = (UnitValue)a;
             var right = (UnitValue)b;
@@ -208,7 +211,7 @@
             return new UnitValue(left - target, left.Unit);
         }
 
-        public static UnitValue MulUU(Value a, Value b)
+        static UnitValue MulUU(Value a, Value b)
         {
             var left = (UnitValue)a;
             var right = (UnitValue)b;
@@ -216,7 +219,7 @@
             return new UnitValue(unit.Factor * left * right, unit.Unpack());
         }
 
-        public static UnitValue DivUU(Value a, Value b)
+        static UnitValue DivUU(Value a, Value b)
         {
             var left = (UnitValue)a;
             var right = (UnitValue)b;
@@ -224,35 +227,35 @@
             return new UnitValue(unit.Factor * left / right, unit.Unpack());
         }
 
-        public static UnitValue MulSU(Value a, Value b)
+        static UnitValue MulSU(Value a, Value b)
         {
             var left = (ScalarValue)a;
             var right = (UnitValue)b;
             return new UnitValue(left * right, right.Unit);
         }
 
-        public static UnitValue DivSU(Value a, Value b)
+        static UnitValue DivSU(Value a, Value b)
         {
             var left = (ScalarValue)a;
             var right = (UnitValue)b;
             return new UnitValue(left / right, right.Unit);
         }
 
-        public static UnitValue MulUS(Value a, Value b)
+        static UnitValue MulUS(Value a, Value b)
         {
             var left = (UnitValue)a;
             var right = (ScalarValue)b;
             return new UnitValue(left * right, left.Unit);
         }
 
-        public static UnitValue DivUS(Value a, Value b)
+        static UnitValue DivUS(Value a, Value b)
         {
             var left = (UnitValue)a;
             var right = (ScalarValue)b;
             return new UnitValue(left / right, left.Unit);
         }
 
-        public static UnitValue PowUS(Value a, Value b)
+        static UnitValue PowUS(Value a, Value b)
         {
             var left = (UnitValue)a;
             var right = (ScalarValue)b;
