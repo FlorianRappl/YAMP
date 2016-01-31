@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using System.Text;
     using YAMP;
+    using YAMP.Io;
     using YAMP.Physics;
     using YAMP.Sensors;
 
@@ -14,8 +15,9 @@
             var query = String.Empty;
             var buffer = new StringBuilder();
             var parser = new Parser();
-            parser.LoadPlugin(typeof(UnitValue).Assembly);
-            parser.LoadPlugin(typeof(AccFunction).Assembly);
+            parser.LoadPlugin(typeof(PhysicsPlugin).Assembly);
+            parser.LoadPlugin(typeof(SensorsPlugin).Assembly);
+            parser.LoadPlugin(typeof(IoPlugin).Assembly);
             var exit = false;
 
             parser.InteractiveMode = true;

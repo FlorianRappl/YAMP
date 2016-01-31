@@ -85,6 +85,10 @@
       <Project>{0e8efcfc-ee84-4125-a801-cb436bd0c197}</Project>
       <Name>YAMP.Core.Comparison</Name>
     </ProjectReference>
+    <ProjectReference Include="..\YAMP.Io\YAMP.Io.csproj">
+      <Project>{10a2f7bf-fcb3-4218-9fbf-69a6e2c113ac}</Project>
+      <Name>YAMP.Io</Name>
+    </ProjectReference>
     <ProjectReference Include="..\YAMP.Physics\YAMP.Physics.csproj">
       <Project>{149afc43-83ef-4549-b582-92c69456e12f}</Project>
       <Name>YAMP.Physics</Name>
