@@ -11,14 +11,14 @@
     {
         #region Fields
 
+        protected static Dictionary<String, PhysicalUnit> KnownUnits = new Dictionary<String, PhysicalUnit>();
+        protected static Dictionary<String, CombinedUnit> CombinedUnits = new Dictionary<String, CombinedUnit>();
+
         readonly Dictionary<PhysicalUnit, Func<Double, Double>> _conversionTable;
         readonly Dictionary<PhysicalUnit, Func<Double, Double>> _invConversionTable;
         readonly Dictionary<String, Double> _prefixes;
         Double _weight;
         String _unit;
-
-        protected static Dictionary<String, PhysicalUnit> KnownUnits = new Dictionary<String, PhysicalUnit>();
-        protected static Dictionary<String, CombinedUnit> CombinedUnits = new Dictionary<String, CombinedUnit>();
 
         #endregion
 
@@ -66,10 +66,10 @@
         public PhysicalUnit()
         {
             _weight = 1.0;
-            _invConversionTable = new Dictionary<PhysicalUnit, Func<double, double>>();
-            _conversionTable = new Dictionary<PhysicalUnit, Func<double, double>>();
-            _prefixes = new Dictionary<string, double>();
-            Unit = this.GetType().Name.Replace("Unit", string.Empty);
+            _invConversionTable = new Dictionary<PhysicalUnit, Func<Double, Double>>();
+            _conversionTable = new Dictionary<PhysicalUnit, Func<Double, Double>>();
+            _prefixes = new Dictionary<String, Double>();
+            Unit = GetType().Name.Replace("Unit", String.Empty);
             SetPrefixes();
         }
 
@@ -210,7 +210,7 @@
             _prefixes.Add("y", 1e-24);
         }
 
-        public virtual Boolean HasConversation(String target)
+        public virtual Boolean HasConversion(String target)
         {
             if (!CanBe(target))
             {
@@ -228,7 +228,7 @@
             return true;
         }
 
-        public virtual Func<Double, Double> GetConversation(String unit)
+        public virtual Func<Double, Double> GetConversion(String unit)
         {
             if (unit == Unit)
             {
@@ -238,7 +238,7 @@
             return _conversionTable[KnownUnits[unit]];
         }
 
-        public virtual Func<Double, Double> GetInverseConversation(String unit)
+        public virtual Func<Double, Double> GetInverseConversion(String unit)
         {
             if (unit == Unit)
             {
@@ -254,7 +254,7 @@
         }
 
         /// <summary>
-        /// Adds a conversation determined by y = a * x.
+        /// Adds a conversion determined by y = a * x.
         /// </summary>
         /// <param name="target">The target unit, e.g. in m to yd, yd would be the target unit.</param>
         /// <param name="rate">The rate of the conversion.</param>
@@ -272,7 +272,7 @@
         }
 
         /// <summary>
-        /// Adds a conversation determined by y = a * x + b.
+        /// Adds a conversion determined by y = a * x + b.
         /// </summary>
         /// <param name="target">The target unit, e.g. in K to °C, °C would be the target unit.</param>
         /// <param name="rate">The rate (a) of the conversion.</param>

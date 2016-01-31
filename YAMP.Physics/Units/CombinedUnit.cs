@@ -327,19 +327,19 @@
 
             foreach(var unit in target.Keys)
             {
-                if (srcUnit.HasConversation(unit))
+                if (srcUnit.HasConversion(unit))
                 {
                     var dstUnit = FindUnit(unit);
                     target[unit] -= sign;
 
                     if (sign > 0)
                     {
-                        list.Add(srcUnit.GetConversation(dstUnit.Unit));
+                        list.Add(srcUnit.GetConversion(dstUnit.Unit));
                         _factor /= dstUnit.Weight;
                     }
                     else
                     {
-                        list.Add(srcUnit.GetInverseConversation(dstUnit.Unit));
+                        list.Add(srcUnit.GetInverseConversion(dstUnit.Unit));
                         _factor *= dstUnit.Weight;
                     }
 

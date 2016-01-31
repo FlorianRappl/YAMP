@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP.Physics
+﻿namespace YAMP.Physics
 {
+    using System;
+
     [Description("The unit converter is able to convert some simple and more advanced units. This function understands the basic SI units, the CGS system and is able to use prefixes like k for kilo or M for Mega. See the usage examples for more information.")]
     [Kind(PopularKinds.Conversion)]
     class ConvertFunction : ArgumentFunction
@@ -20,14 +20,16 @@ namespace YAMP.Physics
             return Convert(value, to.Value);
         }
 
-        public static UnitValue Convert(UnitValue fromValue, string targetUnit)
+        public static UnitValue Convert(UnitValue fromValue, String targetUnit)
         {
             var cu = new CombinedUnit(fromValue.Unit);
-            var conversations = cu.ConvertTo(targetUnit);
+            var conversions = cu.ConvertTo(targetUnit);
             var re = fromValue.Re;
 
-            foreach (var conversation in conversations)
+            foreach (var conversation in conversions)
+            {
                 re = conversation(re);
+            }
 
             return new UnitValue(cu.Factor * re, cu.Unit);
         }

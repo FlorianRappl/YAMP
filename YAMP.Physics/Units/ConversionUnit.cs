@@ -3,7 +3,7 @@
     using System;
 
     /// <summary>
-    /// Used for conversations from one unit to another.
+    /// Used for conversions from one unit to another.
     /// </summary>
     class ConversionUnit : PhysicalUnit
     {
@@ -30,21 +30,21 @@
             return new ConversionUnit(Unit, _from);
         }
 
-        public override Boolean HasConversation(String target)
+        public override Boolean HasConversion(String target)
         {
             if (_from.CanBe(target))
             {
                 return true;
             }
 
-            return _from.HasConversation(target);
+            return _from.HasConversion(target);
         }
 
-        public override Func<Double, Double> GetConversation(String unit)
+        public override Func<Double, Double> GetConversion(String unit)
         {
-            //Example: Conversation from yd -> ft
+            //Example: Conversion from yd -> ft
             //Get transformation from yd -> m
-            var backTransformation = _from.GetInverseConversation(Unit);
+            var backTransformation = _from.GetInverseConversion(Unit);
 
             //In case we want just yd to m
             if (_from.Unit == unit)
@@ -53,16 +53,16 @@
             }
 
             //Get transformation from m -> ft
-            var newTransformation = _from.GetConversation(unit);
+            var newTransformation = _from.GetConversion(unit);
             //Apply toFt(toM(yd))
             return x => newTransformation(backTransformation(x));
         }
 
-        public override Func<Double, Double> GetInverseConversation(String unit)
+        public override Func<Double, Double> GetInverseConversion(String unit)
         {
-            //Example: Conversation from 1/yd -> 1/ft
+            //Example: Conversion from 1/yd -> 1/ft
             //Get transformation from 1/yd -> 1/m
-            var backTransformation = _from.GetConversation(Unit);
+            var backTransformation = _from.GetConversion(Unit);
 
             //In case we want just 1/yd to 1/m
             if (_from.Unit == unit)
@@ -71,7 +71,7 @@
             }
 
             //Get transformation from 1/m -> 1/ft
-            var newTransformation = _from.GetInverseConversation(unit);
+            var newTransformation = _from.GetInverseConversion(unit);
             //Apply toInverseFt(toInverseM(yd))
             return x => newTransformation(backTransformation(x));
         }
