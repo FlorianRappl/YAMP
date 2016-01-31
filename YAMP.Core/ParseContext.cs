@@ -2,11 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
 
     /// <summary>
     /// Class that describes the current parse context (available functions, constants, variables, ...).
     /// </summary>
-    public sealed partial class ParseContext : BaseParseContext
+    public sealed class ParseContext
     {
         #region Fields
 
@@ -82,6 +83,7 @@
             _precision = 6;
             _displayStyle = DisplayStyle.Default;
             _elements = new Elements(this);
+            _elements.RegisterAssembly(this, Assembly.GetExecutingAssembly());
         }
 
         /// <summary>
@@ -260,7 +262,9 @@
                 while (top != null)
                 {
                     foreach (var variable in top.Variables.Keys)
+                    {
                         vars.Add(variable, top.Variables[variable]);
+                    }
 
                     top = top._parent;
                 }
@@ -339,12 +343,7 @@
         public ParseContext AddConstant(String name, IConstants constant)
         {
             var lname = name.ToLower();
-
-            if (_constants.ContainsKey(lname))
-                _constants[lname] = constant;
-            else
-                _constants.Add(lname, constant);
-
+            _constants[lname] = constant;
             return this;
         }
 
@@ -361,12 +360,7 @@
         public ParseContext AddFunction(String name, IFunction func)
         {
             var lname = name.ToLower();
-
-            if (_functions.ContainsKey(lname))
-                _functions[lname] = func;
-            else
-                _functions.Add(lname, func);
-
+            _functions[lname] = func;
             return this;
         }
 
@@ -386,7 +380,9 @@
             var lname = name.ToLower();
 
             if (_constants.ContainsKey(lname))
+            {
                 _constants.Remove(lname);
+            }
 
             return this;
         }
@@ -401,9 +397,11 @@
         public ParseContext RemoveFunction(String name)
         {
             var lname = name.ToLower();
-            
+
             if (_functions.ContainsKey(lname))
+            {
                 _functions.Remove(lname);
+            }
 
             return this;
         }
@@ -476,10 +474,14 @@
             var lname = name.ToLower();
 
             if (_constants.ContainsKey(lname))
+            {
                 return _constants[lname];
+            }
 
             if (_parent != null)
+            {
                 return _parent.FindConstants(name);
+            }
 
             return null;
         }
@@ -496,10 +498,36 @@
             var lname = name.ToLower();
 
             if (_functions.ContainsKey(lname))
+            {
                 return _functions[lname];
+            }
 
             if (_parent != null)
+            {
                 return _parent.FindFunction(name);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Tries to load a function from a given file.
+        /// </summary>
+        /// <param name="symbolName">
+        /// The name of the function (equals the name of the file).
+        /// </param>
+        /// <returns>The function (if found) or NULL.</returns>
+        public IFunction LoadFunction(String symbolName)
+        {
+            foreach (var loader in Elements.Loaders)
+            {
+                var function = loader.Load(symbolName);
+
+                if (function != null)
+                {
+                    return function;
+                }
+            }
 
             return null;
         }

@@ -1643,10 +1643,6 @@
       </SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\BaseParseContext.cs">
-      <SubType>
-      </SubType>
-    </Compile>
     <Compile Include="Providers\ConventionExtensions.cs">
       <SubType>
       </SubType>

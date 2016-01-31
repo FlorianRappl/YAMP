@@ -306,7 +306,7 @@ namespace YAMP
 		/// The assembly to load as a plugin.
         /// </param>
         /// <returns>The ID for the plugin.</returns>
-		public Int32 LoadPlugin(Assembly assembly)
+		public Guid LoadPlugin(Assembly assembly)
         {
             return _primary.Elements.RegisterAssembly(Context, assembly);
 		}
@@ -316,7 +316,7 @@ namespace YAMP
         /// </summary>
         /// <param name="pluginId">The ID for the assembly to unload.</param>
         /// <returns>The primary parse context.</returns>
-        public void UnloadPlugin(Int32 pluginId)
+        public void UnloadPlugin(Guid pluginId)
         {
             _primary.Elements.RemoveAssembly(pluginId);
         }
