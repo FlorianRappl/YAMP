@@ -1,4 +1,4 @@
-﻿namespace YAMP
+﻿namespace YAMP.Io
 {
     using System;
     using System.IO;
@@ -18,7 +18,7 @@
 		public void Function(StringValue source, StringValue target)
 		{
 			File.Copy(source.Value, target.Value);
-            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Success, String.Format("Copied {0} to {1}.", source.Value, target.Value)));
+            RaiseNotification(NotificationType.Success, String.Format("Copied {0} to {1}.", source.Value, target.Value));
 		}
 	}
 }

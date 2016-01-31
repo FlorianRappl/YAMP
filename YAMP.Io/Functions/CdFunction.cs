@@ -1,4 +1,4 @@
-﻿namespace YAMP
+﻿namespace YAMP.Io
 {
     using System;
     using System.IO;
@@ -27,7 +27,7 @@
 
             if (!Directory.Exists(path.Value))
             {
-                Context.RaiseNotification(new NotificationEventArgs(NotificationType.Failure, "The directory " + p + " could not be found."));
+                RaiseNotification(NotificationType.Failure, "The directory " + p + " could not be found.");
             }
             else
             {

@@ -1,4 +1,4 @@
-namespace YAMP
+namespace YAMP.Io
 {
     using System;
     using System.Collections.Generic;
@@ -200,7 +200,9 @@ namespace YAMP
                     var name = "image";
 
                     if (args.Length > 0 && args.Values[0] is StringValue)
+                    {
                         name = (args.Values[0] as StringValue).Value;
+                    }
                     else
                     {
                         var suffix = -1;
@@ -228,7 +230,9 @@ namespace YAMP
                     var name = "data";
 
                     if (args.Length > 0 && args.Values[0] is StringValue)
+                    {
                         name = (args.Values[0] as StringValue).Value;
+                    }
                     else
                     {
                         var suffix = -1;
@@ -257,7 +261,7 @@ namespace YAMP
 
         void Notify(Int32 count)
         {
-            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Success, count + " objects loaded."));
+            RaiseNotification(NotificationType.Success, count + " objects loaded.");
         }
 
         static IDictionary<String, Value> Load(String filename, out Boolean error)
@@ -281,7 +285,7 @@ namespace YAMP
 						break;
 					}
 
-					ctnbuffer = new byte[length];
+					ctnbuffer = new Byte[length];
 					fs.Read(ctnbuffer, 0, ctnbuffer.Length);
 					var name = Encoding.Unicode.GetString(ctnbuffer);
 
@@ -384,40 +388,40 @@ namespace YAMP
 
             using (var fs = File.Open(filename, FileMode.Open))
             {
-                var file_bytes = new byte[fs.Length];
+                var file_bytes = new Byte[fs.Length];
                 fs.Read(file_bytes, 0, 8);
 
-                var png_magic_number = new byte[] { 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
+                var png_magic_number = new Byte[] { 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
 
                 if (!file_bytes.Take(8).Select((b, i) => b == png_magic_number[i]).Contains(false))
                     imageType = "png";
 
-                var tiff_magic_number_0 = new byte[] { 0x49, 0x49, 0x2a, 0x00 };
+                var tiff_magic_number_0 = new Byte[] { 0x49, 0x49, 0x2a, 0x00 };
 
                 if (!file_bytes.Take(4).Select((b, i) => b == tiff_magic_number_0[i]).Contains(false))
                     imageType = "tiff";
 
-                var tiff_magic_number_1 = new byte[] { 0x4d, 0x4d, 0x2a, 0x00 };
+                var tiff_magic_number_1 = new Byte[] { 0x4d, 0x4d, 0x2a, 0x00 };
 
                 if (!file_bytes.Take(4).Select((b, i) => b == tiff_magic_number_1[i]).Contains(false))
                     imageType = "tiff";
 
-                var bmp_magic_number = new byte[] { 0x42, 0x4D };
+                var bmp_magic_number = new Byte[] { 0x42, 0x4D };
 
                 if (!file_bytes.Take(2).Select((b, i) => b == bmp_magic_number[i]).Contains(false))
                     imageType = "bmp";
 
-                var gif_magic_number_0 = new byte[] { 0x47, 0x49, 0x46, 0x38, 0x37, 0x61 };
+                var gif_magic_number_0 = new Byte[] { 0x47, 0x49, 0x46, 0x38, 0x37, 0x61 };
 
                 if (!file_bytes.Take(6).Select((b, i) => b == gif_magic_number_0[i]).Contains(false))
                     imageType = "gif";
 
-                var gif_magic_number_1 = new byte[] { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61 };
+                var gif_magic_number_1 = new Byte[] { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61 };
 
                 if (!file_bytes.Take(6).Select((b, i) => b == gif_magic_number_1[i]).Contains(false))
                     imageType = "gif";
 
-                var jpg_magic_number = new byte[] { 0xff, 0xd8 };
+                var jpg_magic_number = new Byte[] { 0xff, 0xd8 };
 
                 if (!file_bytes.Take(2).Select((b, i) => b == jpg_magic_number[i]).Contains(false))
                     imageType = "jpg";
@@ -456,16 +460,21 @@ namespace YAMP
                         bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppArgb ||
                         bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppPArgb ||
                         bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppRgb)
+                    {
                         bytesPerPixel = 4;
+                    }
                     else if (bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format24bppRgb)
+                    {
                         bytesPerPixel = 3;
+                    }
                     else
+                    {
                         throw new YAMPPixelFormatNotSupportedException(filename);
-
+                    }
 
                     if (Double.IsNaN(coarsening))
                     {
-                        const double maxPixelPerDirection = 100;
+                        const Double maxPixelPerDirection = 100.0;
 
                         if (width > maxPixelPerDirection || height > maxPixelPerDirection)
                         {
@@ -476,33 +485,38 @@ namespace YAMP
                             coarsening = 1.0;
                         }
                     }
+
                     if (coarsening < 1.0)
                     {
                         throw new YAMPArgumentInvalidException("Load", "ImageCoarsening");
                     }
 
-                    double cI = 1.0 / coarsening;
-                    int finalWidth = (int)(width * cI);
-                    int finalHeight = (int)(height * cI);
+                    var cI = 1.0 / coarsening;
+                    var finalWidth = (Int32)(width * cI);
+                    var finalHeight = (Int32)(height * cI);
 
-                    byte[,] count = new byte[finalHeight, finalWidth];
-                    double[,] rvalues = new double[finalHeight, finalWidth];
-                    double[,] gvalues = new double[finalHeight, finalWidth];
-                    double[,] bvalues = new double[finalHeight, finalWidth];
+                    var count = new Byte[finalHeight, finalWidth];
+                    var rvalues = new Double[finalHeight, finalWidth];
+                    var gvalues = new Double[finalHeight, finalWidth];
+                    var bvalues = new Double[finalHeight, finalWidth];
 
-                    for (int i = 0; i < width; i++)
+                    for (var i = 0; i < width; i++)
                     {
-                        int idx = (int)(i * cI);
+                        var idx = (Int32)(i * cI);
 
                         if (idx >= finalWidth)
-                            idx = finalWidth - 1;
-
-                        for (int j = 0; j < height; j++)
                         {
-                            int jdx = (int)(j * cI);
+                            idx = finalWidth - 1;
+                        }
+
+                        for (var j = 0; j < height; j++)
+                        {
+                            var jdx = (Int32)(j * cI);
 
                             if (jdx >= finalHeight)
+                            {
                                 jdx = finalHeight - 1;
+                            }
 
                             rvalues[jdx, idx] += rgbValues[(j * width + i) * bytesPerPixel + 2];
                             gvalues[jdx, idx] += rgbValues[(j * width + i) * bytesPerPixel + 1];
@@ -511,24 +525,24 @@ namespace YAMP
                         }
                     }
 
-                    for (int i = 0; i < finalHeight; i++)
+                    for (var i = 0; i < finalHeight; i++)
                     {
-                        for (int j = 0; j < finalWidth; j++)
+                        for (var j = 0; j < finalWidth; j++)
                         {
-                            double cinv = 1.0 / count[i, j];
+                            var cinv = 1.0 / count[i, j];
                             rvalues[i, j] *= cinv;
                             gvalues[i, j] *= cinv;
                             bvalues[i, j] *= cinv;
                         }
                     }
 
-                    for (int i = 0; i < finalHeight; i++)
+                    for (var i = 0; i < finalHeight; i++)
                     {
-                        for (int j = 0; j < finalWidth; j++)
+                        for (var j = 0; j < finalWidth; j++)
                         {
-                            rvalues[i, j] = (int)rvalues[i, j];
-                            gvalues[i, j] = (int)gvalues[i, j];
-                            bvalues[i, j] = (int)bvalues[i, j];
+                            rvalues[i, j] = (Int32)rvalues[i, j];
+                            gvalues[i, j] = (Int32)gvalues[i, j];
+                            bvalues[i, j] = (Int32)bvalues[i, j];
 
                             rvalues[i, j] *= rfactor;
                             gvalues[i, j] *= gfactor;

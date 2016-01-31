@@ -1,4 +1,4 @@
-namespace YAMP
+namespace YAMP.Io
 {
     using System;
     using System.Collections.Generic;
@@ -71,9 +71,9 @@ namespace YAMP
             }
         }
 
-        void Notify(int count)
+        void Notify(Int32 count)
         {
-            Context.RaiseNotification(new NotificationEventArgs(NotificationType.Success, count + " objects saved."));
+            RaiseNotification(NotificationType.Success, count + " objects saved.");
         }
 
         #endregion

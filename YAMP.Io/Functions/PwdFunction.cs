@@ -1,4 +1,4 @@
-﻿namespace YAMP
+﻿namespace YAMP.Io
 {
     using System;
 
