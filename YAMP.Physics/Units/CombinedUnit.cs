@@ -28,15 +28,15 @@
 
         public CombinedUnit(String unit)
         {
-            Unit = unit;
             _units = new Dictionary<String, Double>();
+            Unit = unit;
         }
 
         protected CombinedUnit(String combination, Double factor)
         {
             _factor = factor;
             _units = Parse(combination);
-            Unit = GetType().Name.Replace("Unit", String.Empty);
+            base.Unit = GetType().Name.Replace("Unit", String.Empty);
         }
 
         #endregion
@@ -310,7 +310,7 @@
                 _units.Add(element.Key, element.Value);
             }
 
-            Unit = unit;
+            base.Unit = unit;
             return list;
         }
 
@@ -325,7 +325,7 @@
 
             _factor *= Math.Pow(srcUnit.Weight, sign);
 
-            foreach(var unit in target.Keys)
+            foreach (var unit in target.Keys)
             {
                 if (srcUnit.HasConversion(unit))
                 {
@@ -653,12 +653,14 @@
         /// </summary>
         /// <param name="unit">The unit to multiply the current unit with.</param>
         /// <returns>The (current) modified unit.</returns>
-        public CombinedUnit Multiply(string unit)
+        public CombinedUnit Multiply(String unit)
         {
             var cu = Parse(unit);
 
             foreach (var element in cu)
+            {
                 AddUnit(_units, element.Key, element.Value);
+            }
 
             return this;
         }
@@ -671,7 +673,9 @@
         public CombinedUnit Multiply(CombinedUnit unit)
         {
             foreach (var element in unit.ElementaryUnits)
+            {
                 AddUnit(_units, element.Key, element.Value);
+            }
 
             return this;
         }
@@ -681,12 +685,14 @@
         /// </summary>
         /// <param name="unit">The combined unit to divide the current unit.</param>
         /// <returns>The (current) modified unit.</returns>
-        public CombinedUnit Divide(string unit)
+        public CombinedUnit Divide(String unit)
         {
             var cu = Parse(unit);
 
             foreach (var element in cu)
+            {
                 AddUnit(_units, element.Key, -element.Value);
+            }
 
             return this;
         }
@@ -699,7 +705,9 @@
         public CombinedUnit Divide(CombinedUnit unit)
         {
             foreach (var element in unit.ElementaryUnits)
+            {
                 AddUnit(_units, element.Key, -element.Value);
+            }
 
             return this;
         }
@@ -709,10 +717,12 @@
         /// </summary>
         /// <param name="pwr">The power to raise the unit with.</param>
         /// <returns>The (current) modified unit.</returns>
-        public CombinedUnit Raise(double pwr)
+        public CombinedUnit Raise(Double pwr)
         {
             foreach (var element in _units.Keys.ToArray())
+            {
                 _units[element] *= pwr;
+            }
 
             return this;
         }

@@ -69,7 +69,7 @@
             _invConversionTable = new Dictionary<PhysicalUnit, Func<Double, Double>>();
             _conversionTable = new Dictionary<PhysicalUnit, Func<Double, Double>>();
             _prefixes = new Dictionary<String, Double>();
-            Unit = GetType().Name.Replace("Unit", String.Empty);
+            _unit = GetType().Name.Replace("Unit", String.Empty);
             SetPrefixes();
         }
 
