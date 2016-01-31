@@ -98,9 +98,9 @@ namespace YAMP
         /// <summary>
         /// Registers this element at some target.
         /// </summary>
-        public virtual void RegisterElement(Elements elements)
+        public virtual void RegisterElement(IElementMapping elementMapping)
 		{
-			elements.AddExpression(this);
+            elementMapping.AddExpression(this);
 		}
 
         #endregion

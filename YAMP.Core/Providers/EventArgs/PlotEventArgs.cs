@@ -22,7 +22,7 @@
         /// Creates a new instance.
         /// </summary>
         /// <param name="value">The PlotValue for the arguments.</param>
-        /// <pparam name="propertyName">The name of the property.</pparam>
+        /// <param name="propertyName">The name of the property.</param>
         public PlotEventArgs(PlotValue value, String propertyName)
         {
             Value = value;

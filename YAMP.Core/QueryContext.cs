@@ -26,6 +26,7 @@ namespace YAMP
 		/// <summary>
 		/// Creates a new query context.
 		/// </summary>
+        /// <param name="context">The context to reference.</param>
 		/// <param name="input">The input to parse</param>
 		public QueryContext(ParseContext context, String input)
             : this(context)

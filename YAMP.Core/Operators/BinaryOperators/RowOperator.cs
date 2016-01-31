@@ -26,16 +26,16 @@
 
         public override Value Perform(Value left, Value right)
 		{
-			if (!(left is NumericValue))
+			if (left is NumericValue == false)
 				throw new YAMPOperationInvalidException(";", left);
 
-			if (!(right is NumericValue))
+			if (right is NumericValue == false)
 				throw new YAMPOperationInvalidException(";", right);
 
 			return MatrixValue.Create(left).AddRow(right);
 		}
 
-        public override void RegisterElement(Elements elements)
+        public override void RegisterElement(IElementMapping elementMapping)
 		{
             //Nothing to do here.
 		}

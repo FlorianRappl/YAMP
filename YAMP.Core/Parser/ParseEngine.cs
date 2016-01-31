@@ -57,9 +57,41 @@
         /// <summary>
         /// Gets or sets the elements mapping.
         /// </summary>
-        public Elements Elements
+        internal Elements Elements
         {
             get { return _context.Elements; }
+        }
+
+        /// <summary>
+        /// Gets the number of errors found during parsing the input.
+        /// </summary>
+        public Int32 ErrorCount
+        {
+            get { return _errors.Count; }
+        }
+
+        /// <summary>
+        /// Gets the current character pointer position.
+        /// </summary>
+        internal Int32 Pointer
+        {
+            get { return _ptr; }
+        }
+
+        /// <summary>
+        /// Gets the last added statement.
+        /// </summary>
+        internal Statement LastStatement
+        {
+            get { return _statements.Count != 0 ? _statements[_statements.Count - 1] : null; }
+        }
+
+        /// <summary>
+        /// Gets the statement that is currently created.
+        /// </summary>
+        internal Statement CurrentStatement
+        {
+            get { return _currentStatement; }
         }
 
         /// <summary>
@@ -100,22 +132,6 @@
         {
             get { return _parent; }
             internal set { _parent = value; }
-        }
-
-        /// <summary>
-        /// Gets the number of errors found during parsing the input.
-        /// </summary>
-        public Int32 ErrorCount
-        {
-            get { return _errors.Count; }
-        }
-
-        /// <summary>
-        /// Gets the current character pointer position.
-        /// </summary>
-        internal Int32 Pointer
-        {
-            get { return _ptr; }
         }
 
         /// <summary>
@@ -216,22 +232,6 @@
                     yield return statement;
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets the last added statement.
-        /// </summary>
-        internal Statement LastStatement
-        {
-            get { return _statements.Count != 0 ? _statements[_statements.Count - 1] : null; }
-        }
-
-        /// <summary>
-        /// Gets the statement that is currently created.
-        /// </summary>
-        internal Statement CurrentStatement
-        {
-            get { return _currentStatement; }
         }
 
         /// <summary>

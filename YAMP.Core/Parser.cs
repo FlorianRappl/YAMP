@@ -23,8 +23,8 @@ namespace YAMP
         /// </summary>
         public event EventHandler<NotificationEventArgs> NotificationReceived
         {
-            add { _primary.OnNotificationReceived += value; }
-            remove { _primary.OnNotificationReceived -= value; }
+            add { _primary.NotificationReceived += value; }
+            remove { _primary.NotificationReceived -= value; }
         }
 
         /// <summary>
@@ -32,8 +32,8 @@ namespace YAMP
         /// </summary>
         public event EventHandler<UserInputEventArgs> UserInputRequired
         {
-            add { _primary.OnUserInputRequired += value; }
-            remove { _primary.OnUserInputRequired -= value; }
+            add { _primary.UserInputRequired += value; }
+            remove { _primary.UserInputRequired -= value; }
         }
 
         /// <summary>
@@ -41,19 +41,26 @@ namespace YAMP
         /// </summary>
         public event EventHandler<PauseEventArgs> PauseDemanded
         {
-            add { _primary.OnPauseDemanded += value; }
-            remove { _primary.OnPauseDemanded -= value; }
+            add { _primary.PauseDemanded += value; }
+            remove { _primary.PauseDemanded -= value; }
         } 
 
         #endregion
 
         #region ctor
 
+        /// <summary>
+        /// Creates a new parser.
+        /// </summary>
         public Parser()
             : this(new ParseContext())
         {
         }
 
+        /// <summary>
+        /// Creates a new parser from the given context.
+        /// </summary>
+        /// <param name="context">The context to use.</param>
         public Parser(ParseContext context)
         {
             _primary = context;

@@ -35,37 +35,37 @@
         /// <summary>
         /// If an existing variable changed, this event is executed.
         /// </summary>
-        public event EventHandler<VariableEventArgs> OnVariableChanged;
+        public event EventHandler<VariableEventArgs> VariableChanged;
 
         /// <summary>
         /// If a new variable is added, this event is executed.
         /// </summary>
-        public event EventHandler<VariableEventArgs> OnVariableCreated;
+        public event EventHandler<VariableEventArgs> VariableCreated;
 
         /// <summary>
         /// If an existing variable is removed, this event is executed.
         /// </summary>
-        public event EventHandler<VariableEventArgs> OnVariableRemoved;
+        public event EventHandler<VariableEventArgs> VariableRemoved;
 
         /// <summary>
         /// If the last plot variable is changed, this event is executed.
         /// </summary>
-        public event EventHandler<PlotEventArgs> OnLastPlotChanged;
+        public event EventHandler<PlotEventArgs> LastPlotChanged;
 
         /// <summary>
         /// If a new notification has been sent, this event is fired (only in interactive mode).
         /// </summary>
-        public event EventHandler<NotificationEventArgs> OnNotificationReceived;
+        public event EventHandler<NotificationEventArgs> NotificationReceived;
 
         /// <summary>
         /// If the user is required to enter something this event is fired.
         /// </summary>
-        public event EventHandler<UserInputEventArgs> OnUserInputRequired;
+        public event EventHandler<UserInputEventArgs> UserInputRequired;
 
         /// <summary>
         /// If the user is required to press a key in order to continue this event is fired.
         /// </summary>
-        public event EventHandler<PauseEventArgs> OnPauseDemanded;
+        public event EventHandler<PauseEventArgs> PauseDemanded;
 
         #endregion
 
@@ -129,14 +129,6 @@
                     _answer = value;
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets the elements.
-        /// </summary>
-        public Elements Elements
-        {
-            get { return _elements ?? _parent.Elements; }
         }
 
         /// <summary>
@@ -324,6 +316,14 @@
                     RaiseLastPlotChanged(new PlotEventArgs(value));
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the elements.
+        /// </summary>
+        internal Elements Elements
+        {
+            get { return _elements ?? _parent.Elements; }
         }
 
         #endregion
@@ -673,9 +673,9 @@
         /// <param name="e">The variable arguments.</param>
         internal void RaiseVariableChanged(VariableEventArgs e)
         {
-            if (OnVariableChanged != null)
+            if (VariableChanged != null)
             {
-                OnVariableChanged(this, e);
+                VariableChanged(this, e);
             }
         }
 
@@ -685,9 +685,9 @@
         /// <param name="e">The variable arguments.</param>
         internal void RaiseVariableCreated(VariableEventArgs e)
         {
-            if (OnVariableCreated != null)
+            if (VariableCreated != null)
             {
-                OnVariableCreated(this, e);
+                VariableCreated(this, e);
             }
         }
 
@@ -697,9 +697,9 @@
         /// <param name="e">The variable arguments.</param>
         internal void RaiseVariableRemoved(VariableEventArgs e)
         {
-            if (OnVariableRemoved != null)
+            if (VariableRemoved != null)
             {
-                OnVariableRemoved(this, e);
+                VariableRemoved(this, e);
             }
         }
 
@@ -709,9 +709,9 @@
         /// <param name="e">The plot arguments.</param>
         internal void RaiseLastPlotChanged(PlotEventArgs e)
         {
-            if (OnLastPlotChanged != null)
+            if (LastPlotChanged != null)
             {
-                OnLastPlotChanged(this, e);
+                LastPlotChanged(this, e);
             }
         }
 
@@ -721,9 +721,9 @@
         /// <param name="e">The notification arguments.</param>
         internal void RaiseNotification(NotificationEventArgs e)
         {
-            if (InteractiveMode && OnNotificationReceived != null)
+            if (InteractiveMode && NotificationReceived != null)
             {
-                OnNotificationReceived(this, e);
+                NotificationReceived(this, e);
             }
         }
 
@@ -733,9 +733,9 @@
         /// <param name="e">The input arguments.</param>
         internal void RaiseInputPrompt(UserInputEventArgs e)
         {
-            if (InteractiveMode && OnUserInputRequired != null)
+            if (InteractiveMode && UserInputRequired != null)
             {
-                OnUserInputRequired(this, e);
+                UserInputRequired(this, e);
             }
             else
             {
@@ -749,9 +749,9 @@
         /// <param name="e">The input arguments.</param>
         internal void RaisePause(PauseEventArgs e)
         {
-            if (InteractiveMode && OnPauseDemanded != null)
+            if (InteractiveMode && PauseDemanded != null)
             {
-                OnPauseDemanded(this, e);
+                PauseDemanded(this, e);
             }
             else
             {

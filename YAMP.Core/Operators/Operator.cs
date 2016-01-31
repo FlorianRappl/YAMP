@@ -118,9 +118,9 @@ namespace YAMP
         /// <summary>
         /// Registers the operator at its factory.
         /// </summary>
-        public virtual void RegisterElement(Elements elements)
+        public virtual void RegisterElement(IElementMapping elementMapping)
 		{
-			elements.AddOperator(_op, this);
+			elementMapping.AddOperator(_op, this);
         }
 
         #endregion

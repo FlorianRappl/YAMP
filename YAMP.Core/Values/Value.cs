@@ -133,7 +133,7 @@
         /// <summary>
         /// Registers the element at a certain point.
         /// </summary>
-        public void RegisterElement(Elements elements)
+        public void RegisterElement(IElementMapping elementMapping)
         {
             var name = Header;
 
@@ -196,6 +196,12 @@
         /// <returns>The new instance.</returns>
 		public abstract Value Deserialize(Byte[] content);
 
+        /// <summary>
+        /// Creates a new named instance from the content.
+        /// </summary>
+        /// <param name="name">The name of the instance.</param>
+        /// <param name="content">The raw content.</param>
+        /// <returns>The created value.</returns>
 		public static Value Deserialize(String name, Byte[] content)
 		{
             if (knownTypes.ContainsKey(name))

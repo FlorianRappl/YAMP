@@ -28,7 +28,7 @@
 			return ArgumentsValue.Create(left, right);
 		}
 
-        public override void RegisterElement(Elements elements)
+        public override void RegisterElement(IElementMapping elementMapping)
 		{
             //Nothing to do here.
 		}

@@ -33,9 +33,9 @@
         /// <summary>
         /// Registers the element at the factory.
         /// </summary>
-        public override void RegisterElement(Elements elements)
+        public override void RegisterElement(IElementMapping elementMapping)
 		{
-			elements.AddKeyword(Token, this);
+			elementMapping.AddKeyword(Token, this);
 		}
 
         #endregion

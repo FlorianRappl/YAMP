@@ -34,7 +34,7 @@
         /// Creates a new Plugin information holder.
         /// </summary>
         /// <param name="context">The assigned context.</param>
-        /// <param name="name">The name of the plugin (fullname).</param>
+        /// <param name="assembly">The assembly to register.</param>
         public Plugin(ParseContext context, Assembly assembly)
         {
             _assembly = assembly;

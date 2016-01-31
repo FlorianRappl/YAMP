@@ -23,7 +23,7 @@
             return null;
         }
 
-        public override void RegisterElement(Elements elements)
+        public override void RegisterElement(IElementMapping elementMapping)
         {
             //Nothing here.
         }

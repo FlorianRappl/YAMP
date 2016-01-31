@@ -9,7 +9,7 @@ namespace YAMP
         /// <summary>
         /// Register an element somewhere automatically.
         /// </summary>
-		void RegisterElement(Elements elements);
+		void RegisterElement(IElementMapping elementMapping);
 	}
 }
 

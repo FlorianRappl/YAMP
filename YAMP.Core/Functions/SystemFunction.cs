@@ -49,6 +49,11 @@
             return ((SystemFunction)function).Perform(argument);
 		}
 
+        /// <summary>
+        /// Raises a notification event.
+        /// </summary>
+        /// <param name="notificationType">The type of notification.</param>
+        /// <param name="message">The message to use.</param>
         protected void RaiseNotification(NotificationType notificationType, String message)
         {
             Context.RaiseNotification(new NotificationEventArgs(notificationType, message));

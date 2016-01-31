@@ -47,9 +47,9 @@
         /// <summary>
         /// Registers the element.
         /// </summary>
-        public override void RegisterElement(Elements elements)
+        public override void RegisterElement(IElementMapping elementMapping)
         {
-            elements.AddExpression(this);
+            elementMapping.AddExpression(this);
         }
 
         #endregion

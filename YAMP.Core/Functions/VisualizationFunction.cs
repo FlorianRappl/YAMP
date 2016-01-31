@@ -6,6 +6,10 @@
     /// </summary>
     public abstract class VisualizationFunction : SystemFunction
     {
+        /// <summary>
+        /// Creates a new visualization with the given context.
+        /// </summary>
+        /// <param name="context">The given context.</param>
         public VisualizationFunction(ParseContext context)
             : base(context)
         {
