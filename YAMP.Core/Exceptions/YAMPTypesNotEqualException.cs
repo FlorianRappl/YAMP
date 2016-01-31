@@ -7,7 +7,7 @@ namespace YAMP.Exceptions
     /// </summary>
 	public class YAMPTypesNotEqualException : YAMPRuntimeException
 	{
-        public YAMPTypesNotEqualException(String leftType, String rightType)
+        internal YAMPTypesNotEqualException(String leftType, String rightType)
             : base("The types {0} and {1} must be equal, however, they are not.", leftType, rightType)
 		{
 		}

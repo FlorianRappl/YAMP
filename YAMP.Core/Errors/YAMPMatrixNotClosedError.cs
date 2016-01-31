@@ -7,12 +7,12 @@
     /// </summary>
     public class YAMPMatrixNotClosedError : YAMPParseError
     {
-        public YAMPMatrixNotClosedError(Int32 line, Int32 column) :
+        internal YAMPMatrixNotClosedError(Int32 line, Int32 column) :
             base(line, column, "The matrix (square bracket) starting at line {0}, column {1} has not been properly closed.", line, column)
         {
         }
 
-        public YAMPMatrixNotClosedError(ParseEngine pe) :
+        internal YAMPMatrixNotClosedError(ParseEngine pe) :
             this(pe.CurrentLine, pe.CurrentColumn)
         {
         }

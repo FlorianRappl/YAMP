@@ -7,12 +7,12 @@
     /// </summary>
     public class YAMPSingleElseError : YAMPParseError
     {
-        public YAMPSingleElseError(Int32 line, Int32 column)
+        internal YAMPSingleElseError(Int32 line, Int32 column)
             : base(line, column, "Cannot use two consecutive else blocks. Did you miss an if before?")
         {
         }
 
-        public YAMPSingleElseError(ParseEngine pe)
+        internal YAMPSingleElseError(ParseEngine pe)
             : this(pe.CurrentLine, pe.CurrentColumn)
         {
         }

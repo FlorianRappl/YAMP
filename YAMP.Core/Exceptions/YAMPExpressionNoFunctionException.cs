@@ -7,7 +7,7 @@
     /// </summary>
     public class YAMPExpressionNoFunctionException : YAMPRuntimeException
     {
-        public YAMPExpressionNoFunctionException()
+        internal YAMPExpressionNoFunctionException()
             : base("The given expression cannot be used as a function.")
         {
         }

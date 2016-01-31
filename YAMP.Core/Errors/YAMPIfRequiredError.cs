@@ -7,12 +7,12 @@
     /// </summary>
 	public class YAMPIfRequiredError : YAMPParseError
 	{
-		public YAMPIfRequiredError(Int32 line, Int32 column) 
+        internal YAMPIfRequiredError(Int32 line, Int32 column) 
             : base(line, column, "An else block requires an if statement.")
 		{
 		}
 
-        public YAMPIfRequiredError(ParseEngine pe)
+        internal YAMPIfRequiredError(ParseEngine pe)
             : this(pe.CurrentLine, pe.CurrentColumn)
         {
         }

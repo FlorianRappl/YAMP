@@ -7,7 +7,7 @@
     /// </summary>
     public class YAMPFunctionMissingException : YAMPRuntimeException
     {
-        public YAMPFunctionMissingException(String name)
+        internal YAMPFunctionMissingException(String name)
             : base("The function {0} could not be found.", name)
         {
         }

@@ -7,7 +7,7 @@
     /// </summary>
     public class YAMPMatrixFormatException : YAMPRuntimeException
     {
-        public YAMPMatrixFormatException(String format)
+        internal YAMPMatrixFormatException(String format)
             : base("The provided matrix has to be {0}.", format)
         {
         }

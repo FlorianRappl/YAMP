@@ -7,7 +7,7 @@ namespace YAMP.Exceptions
     /// </summary>
 	public class YAMPSymbolMissingException : YAMPRuntimeException
 	{
-        public YAMPSymbolMissingException(String symbol)
+        internal YAMPSymbolMissingException(String symbol)
 			: base("The symbol {0} could not be found.", symbol)
 		{
 		}

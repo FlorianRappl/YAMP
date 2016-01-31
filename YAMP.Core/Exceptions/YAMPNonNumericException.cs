@@ -7,7 +7,7 @@
     /// </summary>
     public class YAMPNonNumericException : YAMPRuntimeException
     {
-        public YAMPNonNumericException()
+        internal YAMPNonNumericException()
             : base("A matrix can only contain numeric values.")
         {
         }

@@ -7,7 +7,7 @@
     /// </summary>
     public class YAMPWrongLengthException : YAMPRuntimeException
     {
-        public YAMPWrongLengthException(Int32 provided, Int32 required)
+        internal YAMPWrongLengthException(Int32 provided, Int32 required)
             : base("The provided vector must have at least {0} element(s). You provided {1} element(s).", required, provided)
         {
         }

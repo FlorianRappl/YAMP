@@ -7,12 +7,12 @@
     /// </summary>
 	public class YAMPEscapeSequenceNotFoundError : YAMPParseError
 	{
-        public YAMPEscapeSequenceNotFoundError(Int32 line, Int32 column, Char sequence) 
+        internal YAMPEscapeSequenceNotFoundError(Int32 line, Int32 column, Char sequence) 
             : base(line, column, "The escape sequence \\{0} is not recognized.", sequence)
 		{
 		}
 
-        public YAMPEscapeSequenceNotFoundError(ParseEngine pe, Char sequence)
+        internal YAMPEscapeSequenceNotFoundError(ParseEngine pe, Char sequence)
             : this(pe.CurrentLine, pe.CurrentColumn, sequence)
         {
         }

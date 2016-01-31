@@ -7,7 +7,7 @@
     /// </summary>
     public class YAMPPixelFormatNotSupportedException : YAMPRuntimeException
     {
-        public YAMPPixelFormatNotSupportedException(String fileName)
+        internal YAMPPixelFormatNotSupportedException(String fileName)
             : base("The pixel format of the file {0} is not supported.", fileName)
         {
         }

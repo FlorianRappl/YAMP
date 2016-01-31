@@ -7,12 +7,12 @@ namespace YAMP.Exceptions
     /// </summary>
 	public class YAMPAssignmentException : YAMPRuntimeException
 	{
-        public YAMPAssignmentException(String operation)
+        internal YAMPAssignmentException(String operation)
             : base("The left side of an assignment must be symbol.", operation)
 		{
 		}
 
-        public YAMPAssignmentException(String operation, String error)
+        internal YAMPAssignmentException(String operation, String error)
             : base("Error in an assignment: {1}.", operation, error)
         {
         }

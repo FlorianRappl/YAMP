@@ -7,12 +7,12 @@
     /// </summary>
     public class YAMPFunctionBodyMissing : YAMPParseError
     {
-        public YAMPFunctionBodyMissing(Int32 line, Int32 column)
+        internal YAMPFunctionBodyMissing(Int32 line, Int32 column)
             : base(line, column, "A function requires a body encapsulated in curly brackets.")
         {
         }
 
-        public YAMPFunctionBodyMissing(ParseEngine pe)
+        internal YAMPFunctionBodyMissing(ParseEngine pe)
             : this(pe.CurrentLine, pe.CurrentColumn)
         {
         }

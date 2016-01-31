@@ -7,7 +7,7 @@
     /// </summary>
     public class YAMPNoSeriesAvailableException : YAMPRuntimeException
     {
-        public YAMPNoSeriesAvailableException(String message)
+        internal YAMPNoSeriesAvailableException(String message)
             : base(message)
         {
         }
