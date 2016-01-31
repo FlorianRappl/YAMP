@@ -1,47 +1,33 @@
 Yet Another Math Parser
-============================================================
+=======================
 
-YAMP may be really helpful or really useless depending on your needs, dependencies
-and software stack. YAMP is completely built in C# and provides an easy, yet powerful
-approach to parse expressions in a syntax, that is comfortable and quite close to
-industry standards.
+YAMP may be really helpful or really useless depending on your needs, dependencies and software stack. YAMP is completely built in C# and provides an easy, yet powerful approach to parse expressions in a syntax, that is comfortable and quite close to industry standards.
 
-The parser is currently very stable. The drawback of the current release is the speed
-of the parser, which is faster than most other implementations, but slower than some.
-The good side is that everything is parsed in a standard way, so that you can easily
-perform (parse and interpret) thousands of queries within a second.
+The parser is currently very stable. The drawback of the current release is the speed of the parser, which is faster than most other implementations, but slower than some. The good side is that everything is parsed in a standard way, so that you can easily perform (parse and interpret) thousands of queries within a second.
 
-Features of YAMP is (complex) (matrix) numerics (scalars, vectors, matrices) with
-symbolic terms (constants, variables, functions) that can be customized. Even though
-the current release does not support adding your own operators (they can be added in
-the code within a few lines), it is easily possible. This allows operator
-overloading as well.
+Features of YAMP is (complex) (matrix) numerics (scalars, vectors, matrices) with symbolic terms (constants, variables, functions) that can be customized. Even though the current release does not support adding your own operators (they can be added in the code within a few lines), it is easily possible. This allows operator overloading as well.
 
 Current status
--------------------------------------------------------
+--------------
 
-The current version number is **1.4.1**. A NuGet package (current version 1.4.1) is
-available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code -
-since the package aims to be cross platform (created with Mono), no particular unit testing
-framework has been chosen.
+The current version number is **1.5.0**. A NuGet package (current version 1.5.0) is available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code - since the package aims to be cross platform (created with Mono), the NUnit unit testing framework has been chosen.
 
-The console project (provided in the solution) gives you instant access to benchmarks, 
-tests and your own trials. Parse equations as you want to. In the current release
-exceptions from the parser are catched in the console application. Currently the following
-builds are available:
-
-- Debug: Contains the expression tests.
-- Console: Contains a command line tool.
-- Benchmark: Performs benchmarks for YAMP and three other C# only parsers.
-- Release: Version to produce the NuGet library and other productive output.
+The console project (provided in the solution) gives you instant access to benchmarks and provides you with a small REPL. Parse equations as you want to. In the current release exceptions from the parser are caught in the console application.
 
 Change log
--------------------------------------------------------
+----------
+
+**1.5.0:**
+- Changed static `Parser` to instance model
+- Improved plugin handling
+- Pure portable approach (IO via plugin)
+- Some fixes
+- Switched to NUnit (3) for unit tests
 
 **1.4.0:**
-- Last version of YAMPv1
 - Some fixes (e.g., brackets)
 - Improved complex power
+- More flexible `ParseContext`
 
 **1.3.0:**
 - Added linear fitting function
@@ -60,7 +46,7 @@ Change log
 More changes can be found in the [version history](history.markdown).
 
 Where this parser is useful
--------------------------------------------------------
+---------------------------
 
 - C# only projects
 - Lightweight projects with a sophisticated, yet small and fast parser
@@ -68,16 +54,16 @@ Where this parser is useful
 - Easily plug-and extensible architecture for (numerical) mathematics
 
 Participating in the project
--------------------------------------------------------
+----------------------------
 
 If you know some feature that YAMP is currently missing, and you are willing to implement
 the feature, then your contribution is more than welcome! Also if you have a really cool
 idea - do not be shy, I'd like to hear it.
 
 Some legal stuff
-------------------
+----------------
 
-Copyright (c) 2012-2016, Florian Rappl and collaborators.
+Copyright (c) 2012 - 2016, Florian Rappl and collaborators.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
