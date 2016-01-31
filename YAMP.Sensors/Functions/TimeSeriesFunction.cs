@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Reflection;
     using System.Threading;
+    using YAMP.Exceptions;
 
     [Description("Provides the possibility to perform iterative sensor measurements. This function should be used in experiments, to get several measurements done with a specified (constant) time interval.")]
     [Kind(PopularKinds.System)]

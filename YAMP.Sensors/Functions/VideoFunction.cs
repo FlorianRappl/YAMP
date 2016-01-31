@@ -6,6 +6,7 @@
     using Windows.Media.Capture;
     using Windows.Media.MediaProperties;
     using Windows.Storage.Streams;
+    using YAMP.Exceptions;
 
     [Description("Provides access to the default video input, which is usually the installed webcam.")]
     [Kind("Sensor")]
@@ -138,7 +139,7 @@
 
 		#region Measuring
 
-		async static Task<Value> Video(double coarsening = 10.0, bool fused = false)
+		async static Task<Value> Video(Double coarsening = 10.0, Boolean fused = false)
         {
             if (mc == null)
                 return new ArgumentsValue();
@@ -152,36 +153,37 @@
             await mc.CapturePhotoToStreamAsync(imageProperties, IMRAS);
 
             var BMPD = await BitmapDecoder.CreateAsync(IMRAS);
-
             var PD = await BMPD.GetPixelDataAsync();
-
 			var rgbValues = PD.DetachPixelData();
-
-			var width = (int)BMPD.PixelWidth;
-			var height = (int)BMPD.PixelHeight;
+            var width = (Int32)BMPD.PixelWidth;
+            var height = (Int32)BMPD.PixelHeight;
 
             var cI = 1.0 / coarsening;
-			var finalWidth = (int)(width * cI);
-			var finalHeight = (int)(height * cI);
+			var finalWidth = (Int32)(width * cI);
+            var finalHeight = (Int32)(height * cI);
 
-            var count = new byte[finalHeight, finalWidth];
-            var rvalues = new double[finalHeight, finalWidth];
-            var gvalues = new double[finalHeight, finalWidth];
-            var bvalues = new double[finalHeight, finalWidth];
+            var count = new Byte[finalHeight, finalWidth];
+            var rvalues = new Double[finalHeight, finalWidth];
+            var gvalues = new Double[finalHeight, finalWidth];
+            var bvalues = new Double[finalHeight, finalWidth];
 
-            for (int i = 0; i < width; i++)
+            for (var i = 0; i < width; i++)
             {
-                int idx = (int)(i * cI);
+                var idx = (Int32)(i * cI);
 
                 if (idx >= finalWidth)
+                {
                     idx = finalWidth - 1;
+                }
 
                 for (int j = 0; j < height; j++)
                 {
-                    int jdx = (int)(j * cI);
+                    var jdx = (Int32)(j * cI);
 
                     if (jdx >= finalHeight)
+                    {
                         jdx = finalHeight - 1;
+                    }
 
                     rvalues[jdx, idx] += rgbValues[(j * width + i) * 4 + 2];
                     gvalues[jdx, idx] += rgbValues[(j * width + i) * 4 + 1];
@@ -190,11 +192,11 @@
                 }
             }
 
-            for (int i = 0; i < finalHeight; i++)
+            for (var i = 0; i < finalHeight; i++)
             {
-                for (int j = 0; j < finalWidth; j++)
+                for (var j = 0; j < finalWidth; j++)
                 {
-                    double cinv = 1.0 / count[i, j];
+                    var cinv = 1.0 / count[i, j];
                     rvalues[i, j] *= cinv;
                     gvalues[i, j] *= cinv;
                     bvalues[i, j] *= cinv;
@@ -203,13 +205,13 @@
 
             if (fused)
             {
-                for (int i = 0; i < finalHeight; i++)
+                for (var i = 0; i < finalHeight; i++)
                 {
-                    for (int j = 0; j < finalWidth; j++)
+                    for (var j = 0; j < finalWidth; j++)
                     {
-                        rvalues[i, j] = (int)rvalues[i, j];
-                        gvalues[i, j] = (int)gvalues[i, j];
-                        bvalues[i, j] = (int)bvalues[i, j];
+                        rvalues[i, j] = (Int32)rvalues[i, j];
+                        gvalues[i, j] = (Int32)gvalues[i, j];
+                        bvalues[i, j] = (Int32)bvalues[i, j];
 
                         rvalues[i, j] *= rfactor;
                         gvalues[i, j] *= gfactor;
