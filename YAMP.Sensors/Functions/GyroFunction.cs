@@ -5,7 +5,7 @@
 
     [Description("Provides access to the gyrometer sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
-    public class GyroFunction : SensorFunction
+    sealed class GyroFunction : SensorFunction
     {
         static readonly Gyrometer sensor = GetSensor();
 

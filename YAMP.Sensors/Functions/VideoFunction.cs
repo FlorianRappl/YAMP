@@ -9,7 +9,7 @@
 
     [Description("Provides access to the default video input, which is usually the installed webcam.")]
     [Kind("Sensor")]
-    public class VideoFunction : ArgumentFunction
+    sealed class VideoFunction : ArgumentFunction
 	{
 		#region Constants
 

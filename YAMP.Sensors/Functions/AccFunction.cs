@@ -3,12 +3,9 @@
     using System;
     using Windows.Devices.Sensors;
 
-    /// <summary>
-    /// The acc function.
-    /// </summary>
     [Description("Provides access to the acceleration sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
-    public class AccFunction : SensorFunction
+    sealed class AccFunction : SensorFunction
     {
         static readonly Accelerometer sensor = GetSensor();
 

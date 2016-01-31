@@ -5,7 +5,7 @@
 
     [Description("Provides access to the geolocation sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
-    public class GpsFunction : SensorFunction
+    sealed class GpsFunction : SensorFunction
     {
         static Geolocator sensor = GetSensor();
         static Geocoordinate geoCoordinate;

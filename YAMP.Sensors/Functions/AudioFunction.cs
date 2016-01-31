@@ -8,7 +8,7 @@
 
     [Description("Provides access to the default audio input, which is usually the installed microphone.")]
     [Kind("Sensor")]
-    public class AudioFunction : ArgumentFunction
+    sealed class AudioFunction : ArgumentFunction
 	{
 		#region Fields
 

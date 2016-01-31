@@ -5,7 +5,7 @@
 
     [Description("Provides access to the compass sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
-    public class CompFunction : SensorFunction
+    sealed class CompFunction : SensorFunction
     {
         static readonly Compass sensor = GetSensor();
 

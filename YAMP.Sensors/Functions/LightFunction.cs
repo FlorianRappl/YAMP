@@ -5,7 +5,7 @@
 
     [Description("Provides access to the ambient light sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
-    public class LightFunction : SensorFunction
+    sealed class LightFunction : SensorFunction
     {
         static readonly LightSensor sensor = GetSensor();
 

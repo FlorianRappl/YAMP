@@ -5,7 +5,7 @@
 
     [Description("Provides access to the inclinometer sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
-    public class IncFunction : SensorFunction
+    sealed class IncFunction : SensorFunction
     {
         static readonly Inclinometer sensor = GetSensor();
 

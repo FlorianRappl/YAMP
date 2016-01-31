@@ -7,16 +7,16 @@
 
     [Description("Provides the possibility to perform iterative sensor measurements. This function should be used in experiments, to get several measurements done with a specified (constant) time interval.")]
     [Kind(PopularKinds.System)]
-    public class TimeSeriesFunction : ArgumentFunction
+    sealed class TimeSeriesFunction : ArgumentFunction
     {
-        static IDictionary<string, SensorFunction> kids;
+        static IDictionary<String, SensorFunction> kids;
 
         /// <summary>
         /// Static constructor to fill the static dictionary, which contains instances of all available sensor functions.
         /// </summary>
         static TimeSeriesFunction()
         {
-            kids = new Dictionary<string, SensorFunction>();
+            kids = new Dictionary<String, SensorFunction>();
             var types = Assembly.GetExecutingAssembly().GetTypes();
             var sensorBase = typeof(SensorFunction);
 
@@ -30,12 +30,14 @@
             }
         }
 
-        public static SensorFunction GetSensorFunction(string name)
+        public static SensorFunction GetSensorFunction(String name)
         {
             var fn = name.ToLower();
 
             if (kids.ContainsKey(fn))
+            {
                 return kids[fn];
+            }
 
             return null;
         }
@@ -69,25 +71,30 @@
 		[Arguments(3, 0)]
         public MatrixValue Function(FunctionValue f, ScalarValue n, ScalarValue dt, ArgumentsValue args)
         {
-            int numberOfMeasurements = (int)n.Value;
-            int timeBetweenMeasurements = (int)Math.Floor(dt.Value * 1000);
+            var numberOfMeasurements = (Int32)n.Value;
+            var timeBetweenMeasurements = (Int32)Math.Floor(dt.Value * 1000);
             var results = new MatrixValue(numberOfMeasurements, 2);
             var time = 0.0;
 
-            for (int i = 1; i <= numberOfMeasurements; i++)
+            for (var i = 1; i <= numberOfMeasurements; i++)
             {
                 Thread.Sleep(timeBetweenMeasurements);
+
                 var result = f.Perform(context, args);
                 results[i, 1] = new ScalarValue(time);
 
                 if (result is ScalarValue)
+                {
                     results[i, 2] = result as ScalarValue;
+                }
                 else if (result is MatrixValue)
                 {
                     var m = result as MatrixValue;
 
                     for (var j = 1; j <= m.Length; j++)
+                    {
                         results[i, 1 + j] = m[j];
+                    }
                 }
 
                 time += dt.Value;

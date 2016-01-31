@@ -5,7 +5,7 @@
 
     [Description("Provides access to the orientation sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
-    public class OrientFunction : SensorFunction
+    sealed class OrientFunction : SensorFunction
     {
         static readonly OrientationSensor sensor = GetSensor();
 
