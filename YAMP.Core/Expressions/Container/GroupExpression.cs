@@ -57,7 +57,7 @@
         public override Value Interpret(Dictionary<String, Value> symbols)
         {
             var localSymbols = new Dictionary<String, Value>(symbols);
-            Scope.Interpret(localSymbols);
+            Scope.Run(localSymbols);
             return Scope.Output;
         }
 
@@ -73,11 +73,9 @@
                 var column = engine.CurrentColumn;
                 engine.Advance();
                 index++;
-                var scope = new QueryContext(engine.Query);
-                var eng = scope.Parser;
-                eng.Reset(scope.Input.Substring(index))
-                    .SetOffset(line, column + 1)
-                    .Parse();
+                var query = engine.Query;
+                var scope = new QueryContext(query, query.Input.Substring(index));
+                var eng = scope.Parser.SetOffset(line, column + 1).Parse();
 
                 if (!eng.IsTerminated)
                 {

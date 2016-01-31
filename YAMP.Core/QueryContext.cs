@@ -14,10 +14,10 @@ namespace YAMP
         readonly ParseEngine _parser;
         readonly Dictionary<String, IFunction> _functionBuffer;
         readonly ParseContext _context;
+        readonly String _input;
 
-        String _input;
         Boolean _stop;
-        Statement currentStatement;
+        Statement _current;
 
 		#endregion
 
@@ -31,7 +31,7 @@ namespace YAMP
 		public QueryContext(ParseContext context, String input)
             : this(context)
 		{
-			Input = input;
+			_input = input;
             _parser = new ParseEngine(this, context);
             _functionBuffer = new Dictionary<String, IFunction>();
 		}
@@ -40,8 +40,9 @@ namespace YAMP
 		/// Creates a new (underlying) QueryContext
 		/// </summary>
 		/// <param name="query">The query context to copy</param>
-		internal QueryContext(QueryContext query)
-            : this(query._context, query.Input)
+        /// <param name="input">The new input to use.</param>
+		internal QueryContext(QueryContext query, String input)
+            : this(query._context, input)
 		{
 			Parent = query;
             _parser.Parent = query.Parser;
@@ -53,16 +54,6 @@ namespace YAMP
         private QueryContext(ParseContext context)
         {
             _context = context;
-		}
-
-		/// <summary>
-		/// Creates a dummy context that just holds the given ParseContext.
-		/// </summary>
-		/// <param name="context">The ParseContext to contain</param>
-		/// <returns>A new (dummy) QueryContext</returns>
-		public static QueryContext Dummy(ParseContext context)
-		{
-			return new QueryContext(context);
 		}
 
 		#endregion
@@ -83,15 +74,7 @@ namespace YAMP
 		/// </summary>
 		public String Result
 		{
-			get
-			{
-                if (Output == null)
-                {
-                    return String.Empty;
-                }
-
-				return Output.ToString(Context);
-			}
+			get { return Output != null ? Output.ToString(Context) : String.Empty; }
 		}
 
 		/// <summary>
@@ -100,10 +83,6 @@ namespace YAMP
 		public String Input
 		{
 			get { return _input; }
-			set
-			{
-				_input = value ?? String.Empty;
-			}
 		}
 
 		/// <summary>
@@ -117,7 +96,11 @@ namespace YAMP
 		/// <summary>
 		/// Gets the result of the query.
 		/// </summary>
-		public Value Output { get; internal set; }
+		public Value Output 
+        { 
+            get; 
+            internal set; 
+        }
 
 		/// <summary>
 		/// Gets the context used for this query.
@@ -140,7 +123,7 @@ namespace YAMP
         /// </summary>
         public Statement CurrentStatement
         {
-            get { return currentStatement; }
+            get { return _current; }
         }
 
         /// <summary>
@@ -174,7 +157,7 @@ namespace YAMP
         /// Begins the interpretation of the current parse tree.
         /// </summary>
         /// <param name="values">A dictionary with additional symbols to consider.</param>
-		internal void Interpret(Dictionary<String, Value> values)
+		public void Run(Dictionary<String, Value> values)
 		{
             if (!_parser.CanRun)
             {
@@ -189,7 +172,7 @@ namespace YAMP
                 }
             }
 
-            currentStatement = null;
+            _current = null;
             _stop = false;
 
             foreach (var statement in _parser.Statements)
@@ -199,13 +182,13 @@ namespace YAMP
                     break;
                 }
 
-                currentStatement = statement;
+                _current = statement;
                 Output = statement.Interpret(values);
             }
 
-            if (currentStatement != null && Output != null)
+            if (_current != null && Output != null)
             {
-                if (!currentStatement.IsAssignment)
+                if (!_current.IsAssignment)
                 {
                     if (Output is ArgumentsValue)
                     {

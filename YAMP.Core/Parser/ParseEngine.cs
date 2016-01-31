@@ -17,8 +17,8 @@
         readonly ParseContext _context;
         readonly List<YAMPParseError> _errors;
         readonly List<Statement> _statements;
+        readonly Char[] _characters;
 
-        Char[] _characters;
         ParseEngine _parent;
         Int32 _currentLine;
         Int32 _currentColumn;
@@ -36,13 +36,13 @@
         /// <summary>
         /// Creates a new instance of the parse engine.
         /// </summary>
-        /// <param name="input">The query context to consider.</param>
+        /// <param name="query">The query context to consider.</param>
         /// <param name="context">The parser context to use.</param>
-        public ParseEngine(QueryContext input, ParseContext context)
+        public ParseEngine(QueryContext query, ParseContext context)
         {
             _context = context;
-            _query = input;
-            _characters = input.Input.ToCharArray();
+            _query = query;
+            _characters = query.Input.ToCharArray();
             _errors = new List<YAMPParseError>();
             _statements = new List<Statement>();
             _markers = Marker.None;
@@ -309,15 +309,12 @@
         #region Methods
 
         /// <summary>
-        /// Resets the complete parse tree and uses the given input for
-        /// the next parse run.
+        /// Resets the complete parse tree.
         /// </summary>
         /// <param name="input">The (updated) content (query) to use.</param>
         /// <returns>The current (reseted) parse engine.</returns>
-        public ParseEngine Reset(String input)
+        public ParseEngine Reset()
         {
-            _query.Input = input;
-            _characters = input.ToCharArray();
             _errors.Clear();
             _statements.Clear();
             _markers = Marker.None;
@@ -335,7 +332,7 @@
         {
             if (_parsed)
             {
-                Reset(Query.Input);
+                Reset();
             }
 
             _parsing = true;
