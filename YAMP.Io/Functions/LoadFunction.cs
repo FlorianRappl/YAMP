@@ -7,6 +7,7 @@ namespace YAMP.Io
     using System.IO;
     using System.Linq;
     using System.Text;
+    using YAMP.Exceptions;
 
 	[Description("Loads compatible files into YAMP.")]
 	[Kind(PopularKinds.System)]
@@ -85,7 +86,9 @@ namespace YAMP.Io
 			}
 
             if (error)
+            {
                 throw new YAMPFileFormatNotSupportedException(filename.Value);
+            }
 
             Notify(count);
 		}

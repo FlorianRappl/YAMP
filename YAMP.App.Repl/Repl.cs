@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using System.Text;
     using YAMP;
+    using YAMP.Exceptions;
     using YAMP.Io;
     using YAMP.Physics;
     using YAMP.Sensors;
@@ -84,14 +85,14 @@
             }
         }
 
-        static void OnPauseDemanded(object sender, PauseEventArgs e)
+        static void OnPauseDemanded(Object sender, PauseEventArgs e)
         {
             Console.WriteLine("Press any key to continue . . . ");
             Console.ReadKey(true);
             e.Continue();
         }
 
-        static void OnUserPrompt(object sender, UserInputEventArgs e)
+        static void OnUserPrompt(Object sender, UserInputEventArgs e)
         {
             Console.WriteLine();
             Console.Write(e.Message);
@@ -99,7 +100,7 @@
             e.Continue(Console.ReadLine());
         }
 
-        static void OnNotified(object sender, NotificationEventArgs e)
+        static void OnNotified(Object sender, NotificationEventArgs e)
         {
             Console.WriteLine(e.Message);
             Trace.WriteLine(e.Message);
