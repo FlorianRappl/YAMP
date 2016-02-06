@@ -46,6 +46,7 @@
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\ParserExtensions.cs" />
     <Compile Include="Extensions\QueryContextExtensions.cs" />
+    <Compile Include="Functions\Helpers\ObjectFunction.cs" />
     <Compile Include="Providers\Interfaces\IElementMapping.cs" />
     <Compile Include="Providers\Interfaces\IFunctionLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -192,6 +193,7 @@
     <Compile Include="Providers\Extensions.cs" />
     <Compile Include="Providers\Plugin.cs" />
     <Compile Include="Providers\YMath.cs" />
+    <Compile Include="Values\Arguments\ObjectValue.cs" />
     <Compile Include="Values\Plots\HeatmapPlotValue.cs" />
     <Compile Include="Values\Plots\SurfacePlotValue.cs" />
     <Compile Include="Values\Plots\XYPlotValue.cs" />
