@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
 	/// <summary>
 	/// The abstract base class for StandardFunctions and ArgumentFunctions
 	/// </summary>
@@ -9,7 +9,7 @@ namespace YAMP
     {
         #region Fields
 
-        string name;
+        readonly String _name;
 
         #endregion
 
@@ -20,16 +20,16 @@ namespace YAMP
         /// </summary>
         public BaseFunction()
         {
-            name = GetType().Name.RemoveFunctionConvention().ToLower();
+            _name = GetType().Name.RemoveFunctionConvention().ToLower();
         }
 
         /// <summary>
         /// Creates a function class.
         /// </summary>
         /// <param name="name">The name for the function.</param>
-        public BaseFunction(string name)
+        public BaseFunction(String name)
         {
-            this.name = name;
+            _name = name;
         }
 
         #endregion
@@ -39,12 +39,9 @@ namespace YAMP
         /// <summary>
         /// Gets the name of the function.
         /// </summary>
-        public string Name
+        public String Name
         {
-            get
-            {
-                return name;
-            }
+            get { return _name; }
         }
 
         #endregion

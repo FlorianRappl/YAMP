@@ -13,8 +13,8 @@ namespace YAMP
 	{
 		#region Fields
 
-		Value[] arguments;
-		readonly KeyValuePair<FunctionParameters, MethodInfo>[] functions;
+        readonly KeyValuePair<FunctionParameters, MethodInfo>[] _functions;
+		Value[] _arguments;
 
 		#endregion
 
@@ -25,7 +25,7 @@ namespace YAMP
         /// </summary>
 		public ArgumentFunction ()
 		{
-		    functions = (from method in GetType().GetMethods()
+		    _functions = (from method in GetType().GetMethods()
 		                 where method.Name.IsArgumentFunction()
 		                 select new KeyValuePair<FunctionParameters, MethodInfo>(new FunctionParameters(method.GetParameters(), method), method))
 		        .OrderBy(kv => kv.Key, this).ToArray();
@@ -42,7 +42,7 @@ namespace YAMP
 		{
 			get
 			{
-				return arguments.Length;
+				return _arguments.Length;
 			}
 		}
 
@@ -68,7 +68,7 @@ namespace YAMP
         /// <returns>A boolean indicating the status.</returns>
 		public bool CanExecute(int args)
 		{
-			foreach (var kv in functions)
+			foreach (var kv in _functions)
 			{
 				var key = kv.Key;
 
@@ -89,9 +89,9 @@ namespace YAMP
 		public override Value Perform (Value argument)
 		{
 			if(argument is ArgumentsValue)
-				arguments = (argument as ArgumentsValue).Values;
+				_arguments = (argument as ArgumentsValue).Values;
 			else
-				arguments = new Value[] { argument };
+				_arguments = new Value[] { argument };
 			
 			return Execute();
 		}
@@ -102,12 +102,12 @@ namespace YAMP
 
         Value Execute()
 		{
-            var args = arguments.Length;
+            var args = _arguments.Length;
             var difference = int.MaxValue;
             var expected = 0;
             YAMPRuntimeException exception = null;
 
-			foreach(var kv in functions)
+			foreach(var kv in _functions)
 			{
 			    var key = kv.Key;
 
@@ -131,7 +131,7 @@ namespace YAMP
                 {
                     try
                     {
-                        return f.Invoke(this, arguments) as Value;
+                        return f.Invoke(this, _arguments) as Value;
                     }
                     catch (Exception ex)
                     {
@@ -154,7 +154,7 @@ namespace YAMP
 			var attrs = yp.OptionalArguments;
 			var values = new List<Value>();
 
-			for (var i = 0; i < arguments.Length; i++)
+			for (var i = 0; i < _arguments.Length; i++)
 			{
 				var opt = false;
 
@@ -164,7 +164,7 @@ namespace YAMP
 
 					if (attr.Index == i)
 					{
-						var rest = arguments.Length - i;
+						var rest = _arguments.Length - i;
 
 						if (rest >= attr.MinimumArguments)
 						{
@@ -174,7 +174,7 @@ namespace YAMP
 							for (var k = 0; k < pt; k++)
 							{
 								for (var l = 0; l < attr.StepArguments; l++)
-									av.Insert(arguments[i++]);
+									av.Insert(_arguments[i++]);
 							}
 
 							values.Add(av);
@@ -187,17 +187,17 @@ namespace YAMP
 				{
 					var idx = values.Count;
 
-					if (!yp.ParameterTypes[idx].IsInstanceOfType(arguments[idx]))
-                        return new YAMPArgumentInvalidException(Name, arguments[idx].Header, yp.ParameterTypes[idx].Name.RemoveValueConvention(), idx);
+					if (!yp.ParameterTypes[idx].IsInstanceOfType(_arguments[idx]))
+                        return new YAMPArgumentInvalidException(Name, _arguments[idx].Header, yp.ParameterTypes[idx].Name.RemoveValueConvention(), idx);
 
-					values.Add(arguments[i]);
+					values.Add(_arguments[i]);
 				}
 			}
 
 			while (values.Count < yp.ParameterTypes.Length)
 				values.Add(new ArgumentsValue());
 
-			arguments = values.ToArray();
+			_arguments = values.ToArray();
 			return null;
 		}
 
