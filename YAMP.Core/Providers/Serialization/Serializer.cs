@@ -1,17 +1,17 @@
-﻿using System;
-using System.IO;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.IO;
+    using System.Text;
+
     /// <summary>
     /// Helper class for the serialization process.
     /// </summary>
-    class Serializer : IDisposable
+    sealed class Serializer : IDisposable
     {
         #region Fields
 
-        MemoryStream stream;
+        readonly MemoryStream _stream;
 
         #endregion
 
@@ -19,7 +19,7 @@ namespace YAMP
 
         private Serializer()
         {
-            stream = new MemoryStream();
+            _stream = new MemoryStream();
         }
 
         /// <summary>
@@ -38,12 +38,9 @@ namespace YAMP
         /// <summary>
         /// The binary value of the serialization.
         /// </summary>
-        public byte[] Value
+        public Byte[] Value
         {
-            get
-            {
-                return stream.ToArray();
-            }
+            get { return _stream.ToArray(); }
         }
 
         #endregion
@@ -53,100 +50,113 @@ namespace YAMP
         /// <summary>
         /// Serializes a string value.
         /// </summary>
-        /// <param name="value">The value to serialize</param>
+        /// <param name="value">The value to serialize.</param>
         /// <returns>The current instance.</returns>
-        public Serializer Serialize(string value)
+        public Serializer Serialize(String value)
         {
             var bytes = Encoding.Unicode.GetBytes(value);
             var length = BitConverter.GetBytes(bytes.Length);
-            stream.Write(length, 0, length.Length);
-            stream.Write(bytes, 0, bytes.Length);
+            _stream.Write(length, 0, length.Length);
+            _stream.Write(bytes, 0, bytes.Length);
             return this;
         }
 
         /// <summary>
         /// Serializes a bool value.
         /// </summary>
-        /// <param name="value">The value to serialize</param>
+        /// <param name="value">The value to serialize.</param>
         /// <returns>The current instance.</returns>
-        public Serializer Serialize(bool value)
+        public Serializer Serialize(Boolean value)
         {
             var bytes = BitConverter.GetBytes(value);
-            stream.Write(bytes, 0, bytes.Length);
+            _stream.Write(bytes, 0, bytes.Length);
             return this;
         }
 
         /// <summary>
         /// Serializes an integer value.
         /// </summary>
-        /// <param name="value">The value to serialize</param>
+        /// <param name="value">The value to serialize.</param>
         /// <returns>The current instance.</returns>
-        public Serializer Serialize(int value)
+        public Serializer Serialize(Int32 value)
         {
             var bytes = BitConverter.GetBytes(value);
-            stream.Write(bytes, 0, bytes.Length);
+            _stream.Write(bytes, 0, bytes.Length);
             return this;
         }
 
         /// <summary>
         /// Serializes a double value.
         /// </summary>
-        /// <param name="value">The value to serialize</param>
+        /// <param name="value">The value to serialize.</param>
         /// <returns>The current instance.</returns>
-        public Serializer Serialize(double value)
+        public Serializer Serialize(Double value)
         {
             var bytes = BitConverter.GetBytes(value);
-            stream.Write(bytes, 0, bytes.Length);
+            _stream.Write(bytes, 0, bytes.Length);
             return this;
         }
 
         /// <summary>
         /// Serializes a float value.
         /// </summary>
-        /// <param name="value">The value to serialize</param>
+        /// <param name="value">The value to serialize.</param>
         /// <returns>The current instance.</returns>
-        public Serializer Serialize(float value)
+        public Serializer Serialize(Single value)
         {
             var bytes = BitConverter.GetBytes(value);
-            stream.Write(bytes, 0, bytes.Length);
+            _stream.Write(bytes, 0, bytes.Length);
             return this;
         }
 
         /// <summary>
         /// Serializes a long value.
         /// </summary>
-        /// <param name="value">The value to serialize</param>
+        /// <param name="value">The value to serialize.</param>
         /// <returns>The current instance.</returns>
-        public Serializer Serialize(long value)
+        public Serializer Serialize(Int64 value)
         {
             var bytes = BitConverter.GetBytes(value);
-            stream.Write(bytes, 0, bytes.Length);
+            _stream.Write(bytes, 0, bytes.Length);
             return this;
+        }
+
+        /// <summary>
+        /// Serializes an arbitrary value.
+        /// </summary>
+        /// <param name="value">The value to serialize.</param>
+        /// <returns>The current instance.</returns>
+        public Serializer Serialize(Value value)
+        {
+            var name = value.Header;
+            var content = value.Serialize();
+            Serialize(name);
+            return Serialize(content);
         }
 
         /// <summary>
         /// Serializes a scalar (2 doubles) value.
         /// </summary>
-        /// <param name="value">The value to serialize</param>
+        /// <param name="value">The value to serialize.</param>
         /// <returns>The current instance.</returns>
         public Serializer Serialize(ScalarValue value)
         {
             var real = BitConverter.GetBytes(value.Re);
-            stream.Write(real, 0, real.Length);
+            _stream.Write(real, 0, real.Length);
             var imag = BitConverter.GetBytes(value.Im);
-            stream.Write(imag, 0, imag.Length);
+            _stream.Write(imag, 0, imag.Length);
             return this;
         }
 
         /// <summary>
         /// Serializes a raw byte array value.
         /// </summary>
-        /// <param name="content">The value to serialize</param>
+        /// <param name="content">The value to serialize.</param>
         /// <returns>The current instance.</returns>
-        public Serializer Serialize(byte[] content)
+        public Serializer Serialize(Byte[] content)
         {
             Serialize(content.Length);
-            stream.Write(content, 0, content.Length);
+            _stream.Write(content, 0, content.Length);
             return this;
         }
 
@@ -159,7 +169,7 @@ namespace YAMP
         /// </summary>
         public void Dispose()
         {
-            stream.Dispose();
+            _stream.Dispose();
         }
 
         #endregion
