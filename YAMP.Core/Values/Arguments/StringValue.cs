@@ -10,7 +10,7 @@ namespace YAMP
 	{
 		#region Fields
 
-		string _value;
+		readonly String _value;
 
         #endregion
 
@@ -20,7 +20,7 @@ namespace YAMP
         /// Creates a new instance.
         /// </summary>
         public StringValue()
-            : this(string.Empty)
+            : this(String.Empty)
         {
         }
 
@@ -28,7 +28,7 @@ namespace YAMP
         /// Creates a new instance and sets the value.
         /// </summary>
         /// <param name="value">The string where this value is based on.</param>
-        public StringValue(string value)
+        public StringValue(String value)
         {
             _value = value;
         }
@@ -37,8 +37,8 @@ namespace YAMP
         /// Creates a new instance.
         /// </summary>
         /// <param name="str">The given character array.</param>
-        public StringValue(char[] str)
-            : this(new string(str))
+        public StringValue(Char[] str)
+            : this(new String(str))
         {
         }
 
@@ -49,7 +49,7 @@ namespace YAMP
         /// <summary>
         /// Gets the string value.
         /// </summary>
-		public string Value
+		public String Value
 		{
 			get { return _value; }
 		}
@@ -57,7 +57,7 @@ namespace YAMP
         /// <summary>
         /// Gets the length of string value.
         /// </summary>
-		public int Length
+		public Int32 Length
 		{
 			get { return _value.Length; }
 		}
@@ -65,12 +65,9 @@ namespace YAMP
         /// <summary>
         /// Gets the number of lines in the string value.
         /// </summary>
-		public int Lines
+        public Int32 Lines
 		{
-			get
-			{
-				return _value.Split('\n').Length;
-			}
+			get { return _value.Split('\n').Length; }
 		}
 
 		#endregion
@@ -114,7 +111,7 @@ namespace YAMP
         /// Converts the given value into binary data.
         /// </summary>
         /// <returns>The bytes array containing the data.</returns>
-        public override byte[] Serialize()
+        public override Byte[] Serialize()
 		{
             using (var ms = Serializer.Create())
             {
@@ -128,11 +125,11 @@ namespace YAMP
         /// </summary>
         /// <param name="content">The data which contains the content.</param>
         /// <returns>The new instance.</returns>
-		public override Value Deserialize(byte[] content)
+		public override Value Deserialize(Byte[] content)
 		{
-            var value = string.Empty;
+            var value = String.Empty;
 
-            using(var ds = Deserializer.Create(content))
+            using (var ds = Deserializer.Create(content))
             {
                 value = ds.GetString();
             }
@@ -153,8 +150,10 @@ namespace YAMP
         {
             var sum = 0.0;
 
-            foreach(var c in value.Value)
-                sum += (double)c;
+            foreach (var c in value.Value)
+            {
+                sum += (Double)c;
+            }
 
             return new ScalarValue(sum, value.Length);
         }
@@ -168,12 +167,14 @@ namespace YAMP
         /// </summary>
         /// <param name="index">The 1-based character (1 == first character) index.</param>
         /// <returns>The character at the position.</returns>
-        public char this[int index]
+        public Char this[Int32 index]
         {
             get
             {
                 if (index < 1 || index > _value.Length)
+                {
                     throw new ArgumentOutOfRangeException("Access in string out of bounds.");
+                }
 
                 return _value[index - 1];
             }
@@ -188,7 +189,7 @@ namespace YAMP
         /// </summary>
         /// <param name="context">The context of the invocation.</param>
         /// <returns>The value of the string.</returns>
-        public override string ToString (ParseContext context)
+        public override String ToString (ParseContext context)
 		{
 			return _value;
 		}
