@@ -398,10 +398,8 @@ namespace YAMP
         /// Serializes the current instance.
         /// </summary>
         /// <returns>The binary content of the current instance.</returns>
-        public override byte[] Serialize()
+        public override Byte[] Serialize()
         {
-            byte[] content;
-
             using (var ms = new MemoryStream())
             {
                 var dy = BitConverter.GetBytes(dimY);
@@ -421,10 +419,8 @@ namespace YAMP
                     ms.Write(buffer, 0, buffer.Length);
                 }
 
-                content = ms.ToArray();
+                return ms.ToArray();
             }
-
-            return content;
         }
 
         /// <summary>
@@ -432,7 +428,7 @@ namespace YAMP
         /// </summary>
         /// <param name="content">The binary content.</param>
         /// <returns>The new instance.</returns>
-        public override Value Deserialize(byte[] content)
+        public override Value Deserialize(Byte[] content)
         {
             var dimY = BitConverter.ToInt32(content, 0);
             var dimX = BitConverter.ToInt32(content, 4);
@@ -771,7 +767,7 @@ namespace YAMP
         /// </summary>
         /// <param name="context">The parse context which holds the state information.</param>
         /// <returns>The length of the string in characters.</returns>
-        public int ComputeLargestStringContent(ParseContext context)
+        public Int32 ComputeLargestStringContent(ParseContext context)
         {
             var max = 1;
 
@@ -793,7 +789,7 @@ namespace YAMP
         /// </summary>
         /// <param name="context">The parse content.</param>
         /// <returns>The string with the matrix.</returns>
-        public override string ToString(ParseContext context)
+        public override String ToString(ParseContext context)
         {
             return ToString(context, 0);
         }
@@ -804,7 +800,7 @@ namespace YAMP
         /// <param name="context">The parse content.</param>
         /// <param name="exponent">The global exponent that is in use.</param>
         /// <returns>The string with the matrix.</returns>
-        public string ToString(ParseContext context, Int32 exponent)
+        public String ToString(ParseContext context, Int32 exponent)
         {
             var sb = new StringBuilder();
 
@@ -1478,7 +1474,9 @@ namespace YAMP
 		public static MatrixValue operator *(MatrixValue x, MatrixValue y)
 		{
             if (x.DimensionX != y.DimensionY)
+            {
                 throw new YAMPMatrixMultiplyException(x.DimensionX, y.DimensionY);
+            }
             
             var A = x.ToArray();
             var B = y.ToArray();
@@ -1497,18 +1495,18 @@ namespace YAMP
         {
             var A = new MatrixValue(M.DimensionY, M.DimensionX);
 
-            if (s == ScalarValue.Zero)
-                return A;
-
-            for (var i = 1; i <= M.DimensionX; i++)
+            if (s != ScalarValue.Zero)
             {
-                for (var j = 1; j <= M.DimensionY; j++)
+                for (var i = 1; i <= M.DimensionX; i++)
                 {
-                    var m = M[j, i];
-
-                    if (m != ScalarValue.Zero)
+                    for (var j = 1; j <= M.DimensionY; j++)
                     {
-                        A[j, i] = m * s;
+                        var m = M[j, i];
+
+                        if (m != ScalarValue.Zero)
+                        {
+                            A[j, i] = m * s;
+                        }
                     }
                 }
             }
@@ -1535,20 +1533,22 @@ namespace YAMP
         /// <returns>l / r</returns>
         public static MatrixValue operator /(MatrixValue l, ScalarValue r)
         {
-            if (r == ScalarValue.One)
-                return l.Clone();
-
-            var m = new MatrixValue(l.DimensionY, l.DimensionX);
-
-            for (var j = 1; j <= l.DimensionY; j++)
+            if (r != ScalarValue.One)
             {
-                for (var i = 1; i <= l.DimensionX; i++)
+                var m = new MatrixValue(l.DimensionY, l.DimensionX);
+
+                for (var j = 1; j <= l.DimensionY; j++)
                 {
-                    m[j, i] = l[j, i] / r;
+                    for (var i = 1; i <= l.DimensionX; i++)
+                    {
+                        m[j, i] = l[j, i] / r;
+                    }
                 }
+
+                return m;
             }
 
-            return m;
+            return l.Clone();
         }
 
         /// <summary>
@@ -1560,7 +1560,9 @@ namespace YAMP
 		public static MatrixValue operator -(MatrixValue l, MatrixValue r)
 		{
             if (r.DimensionX != l.DimensionX || r.DimensionY != l.DimensionY)
+            {
                 throw new YAMPDifferentDimensionsException(l, r);
+            }
 
             var A = l.ToArray();
             var B = r.ToArray();
@@ -1584,7 +1586,9 @@ namespace YAMP
 		public static MatrixValue operator +(MatrixValue l, MatrixValue r)
         {
             if (r.DimensionX != l.DimensionX || r.DimensionY != l.DimensionY)
+            {
                 throw new YAMPDifferentDimensionsException(l, r);
+            }
 
             var A = l.ToArray();
             var B = r.ToArray();
@@ -1605,19 +1609,22 @@ namespace YAMP
         /// <param name="l">Matrix l</param>
         /// <param name="r">Matrix r</param>
         /// <returns>l == r</returns>
-		public static bool operator ==(MatrixValue l, MatrixValue r)
+		public static Boolean operator ==(MatrixValue l, MatrixValue r)
 		{
-			if (ReferenceEquals(l, r))
-				return true;
+            if (ReferenceEquals(l, r))
+            {
+                return true;
+            }
 
-			if (ReferenceEquals(l, null) || ReferenceEquals(r, null))
-				return false;
+            if (ReferenceEquals(l, null) || ReferenceEquals(r, null))
+            {
+                return false;
+            }
 
-			if (l.DimensionX != r.DimensionX)
-				return false;
-
-			if (l.DimensionY != r.DimensionY)
-				return false;
+            if (l.DimensionX != r.DimensionX || l.DimensionY != r.DimensionY)
+            {
+                return false;
+            }
 
             for (var i = 1; i <= l.DimensionX; i++)
             {
@@ -1639,7 +1646,7 @@ namespace YAMP
         /// <param name="l">Matrix l</param>
         /// <param name="r">Matrix r</param>
         /// <returns>l != r</returns>
-		public static bool operator !=(MatrixValue l, MatrixValue r)
+        public static Boolean operator !=(MatrixValue l, MatrixValue r)
 		{
 			return !(l == r);
 		}
@@ -1654,8 +1661,12 @@ namespace YAMP
             var n = new MatrixValue(m.DimensionY, m.DimensionX);
 
             for (var j = 1; j <= m.DimensionY; j++)
+            {
                 for (var i = 1; i <= m.DimensionX; i++)
+                {
                     n[j, i] = -m[j, i];
+                }
+            }
 
             return n;
         }
@@ -1718,8 +1729,12 @@ namespace YAMP
             var M = new MatrixValue(m.DimensionY, m.DimensionX);
 
             for (var j = 1; j <= m.DimensionY; j++)
+            {
                 for (var i = 1; i <= m.DimensionX; i++)
+                {
                     M[j, i] = m[j, i] + s;
+                }
+            }
 
             return M;
         }
@@ -1761,8 +1776,12 @@ namespace YAMP
             var m = new MatrixValue(r.DimensionY, r.DimensionX);
 
             for (var j = 1; j <= r.DimensionY; j++)
+            {
                 for (var i = 1; i <= r.DimensionX; i++)
+                {
                     m[j, i] = r[j, i] - s;
+                }
+            }
 
             return m;
         }
@@ -1780,8 +1799,12 @@ namespace YAMP
             var m = new MatrixValue(r.DimensionY, r.DimensionX);
 
             for (var j = 1; j <= r.DimensionY; j++)
+            {
                 for (var i = 1; i <= r.DimensionX; i++)
+                {
                     m[j, i] = s - r[j, i];
+                }
+            }
 
             return m;
         }
@@ -1798,8 +1821,10 @@ namespace YAMP
             var B = (MatrixValue)right;
             var C = A * B;
 
-            if(1 == C.DimensionX && C.DimensionY == 1)
+            if (1 == C.DimensionX && C.DimensionY == 1)
+            {
                 return C[1, 1];
+            }
 
             return C;
         }
@@ -1840,18 +1865,22 @@ namespace YAMP
             var exp = (ScalarValue)exponent;
 
             if (l.DimensionX != l.DimensionY)
+            {
                 throw new YAMPMatrixFormatException(SpecialMatrixFormat.Square.ToString());
+            }
 
             if (exp.Im != 0.0 || Math.Floor(exp.Re) != exp.Re)
+            {
                 throw new YAMPOperationInvalidException("^", exponent);
+            }
 
             var eye = MatrixValue.One(l.DimensionX);
             var multiplier = exp.Re < 0 ? l.Inverse() : l;
-            var count = (int)Math.Abs(exp.Re);
+            var count = (Int32)Math.Abs(exp.Re);
 
             for (var i = 0; i < count; i++)
             {
-                eye = eye * multiplier;
+                eye *= multiplier;
             }
 
             return eye;
@@ -1953,17 +1982,19 @@ namespace YAMP
         {
             // There cannot be a full row if we have less indices than columns
             if (indices.Count < dimX)
+            {
                 return;
+            }
 
             // Save currently found rows
-            var rows = new List<int>();
+            var rows = new List<Int32>();
 
             // Go over the all the indices
             for (var i = 0; i < indices.Count; i++)
             {
                 var row = indices[i].Row;
-                var cols = new List<int>();
-                var taken = new List<int>();
+                var cols = new List<Int32>();
+                var taken = new List<Int32>();
                 cols.Add(indices[i].Column);
                 taken.Add(i);
 
@@ -1977,7 +2008,9 @@ namespace YAMP
 
                         // Apparently we've found a complete row - stop.
                         if (cols.Count == Columns)
+                        {
                             break;
+                        }
                     }
                 }
 
@@ -1989,7 +2022,9 @@ namespace YAMP
 
                     // Remove the indices to improve search performance
                     for (var k = taken.Count - 1; k >= 0; k--)
+                    {
                         indices.RemoveAt(taken[k]);
+                    }
 
                     // Add the found row to the list of found rows
                     rows.Add(row);
@@ -2010,9 +2045,13 @@ namespace YAMP
                 for (var j = i - 1; j >= 0; j--)
                 {
                     if (rows[j] == rows[j + 1] - 1)
+                    {
                         count++;
+                    }
                     else
+                    {
                         break;
+                    }
                 }
 
                 // Modify the loop iterator (for count == 1 no change is required)
@@ -2025,7 +2064,9 @@ namespace YAMP
                 for (var j = 0; j < indices.Count; j++)
                 {
                     if (indices[j].Row >= minIndex)
+                    {
                         indices[j] = new MatrixIndex(indices[j].Row - count, indices[j].Column);
+                    }
                 }
             }
         }
@@ -2034,17 +2075,19 @@ namespace YAMP
         {
             // There cannot be a full column if we have less indices than rows
             if (indices.Count < dimY)
+            {
                 return;
+            }
 
             // Save currently found columns
-            var columns = new List<int>();
+            var columns = new List<Int32>();
 
             // Go over the all the indices
             for (var i = 0; i < indices.Count; i++)
             {
                 var col = indices[i].Column;
-                var rows = new List<int>();
-                var taken = new List<int>();
+                var rows = new List<Int32>();
+                var taken = new List<Int32>();
                 rows.Add(indices[i].Row);
                 taken.Add(i);
 
@@ -2058,7 +2101,9 @@ namespace YAMP
 
                         // Apparently we've found a complete column - stop.
                         if (rows.Count == Rows)
+                        {
                             break;
+                        }
                     }
                 }
 
@@ -2069,7 +2114,9 @@ namespace YAMP
 
                     // Remove the indices to improve search performance
                     for (var k = taken.Count - 1; k >= 0; k--)
+                    {
                         indices.RemoveAt(taken[k]);
+                    }
 
                     // Add the found column to the list of found columns
                     columns.Add(col);
@@ -2090,9 +2137,13 @@ namespace YAMP
                 for (var j = i - 1; j >= 0; j--)
                 {
                     if (columns[j] == columns[j + 1] - 1)
+                    {
                         count++;
+                    }
                     else
+                    {
                         break;
+                    }
                 }
 
                 // Modify the loop iterator (for count == 1 no change is required)
@@ -2105,7 +2156,9 @@ namespace YAMP
                 for (var j = 0; j < indices.Count; j++)
                 {
                     if (indices[j].Column >= minIndex)
+                    {
                         indices[j] = new MatrixIndex(indices[j].Row, indices[j].Column - count);
+                    }
                 }
             }
         }
@@ -2123,8 +2176,10 @@ namespace YAMP
         /// <returns>The current instance.</returns>
         public Value Perform(ParseContext context, Value argument, Value values)
         {
-            if (!(values is NumericValue))
+            if (values is NumericValue == false)
+            {
                 throw new YAMPOperationInvalidException("Matrix", values);
+            }
 
             var indices = new List<MatrixIndex>();
 
@@ -2134,16 +2189,20 @@ namespace YAMP
                 var ags = (ArgumentsValue)argument;
 
                 if (ags.Length == 1)
+                {
                     return Perform(context, ags[1], values);
+                }
                 else if (ags.Length > 2)
+                {
                     throw new YAMPArgumentNumberException("Matrix", ags.Length, 2);
+                }
 
                 var rows = BuildIndex(ags[1], DimensionY);
                 var columns = BuildIndex(ags[2], DimensionX);
 
-                for (int i = 0; i < columns.Length; i++)
+                for (var i = 0; i < columns.Length; i++)
                 {
-                    for (int j = 0; j < rows.Length; j++)
+                    for (var j = 0; j < rows.Length; j++)
                     {
                         indices.Add(new MatrixIndex
                         {
@@ -2163,7 +2222,9 @@ namespace YAMP
 
                     // But only logical subscripting of the dimensions match!
                     if (mm.DimensionX == DimensionX && mm.DimensionY == DimensionY)
+                    {
                         LogicalSubscripting(mm, indices);
+                    }
                 }
 
                 // So... if it has not been logical subscripting, then build
@@ -2173,12 +2234,16 @@ namespace YAMP
                     var idx = BuildIndex(argument, Length);
 
                     for (int i = 0; i < idx.Length; i++)
+                    {
                         indices.Add(GetIndex(idx[i]));
+                    }
                 }
             }
             // no numeric value provided ?
             else
+            {
                 throw new YAMPOperationInvalidException("Matrix", argument);
+            }
 
             // The right hand side is a matrix (look for dimensions)
             if (values is MatrixValue)
@@ -2199,7 +2264,9 @@ namespace YAMP
                     if (indices.Count > 0)
                     {
                         for (var i = 0; i < indices.Count; i++)
+                        {
                             this[indices[i].Row, indices[i].Column] = ScalarValue.Zero;
+                        }
                     }
                 }
                 // In the general case the right hand side matrix has to be of the same 
@@ -2207,19 +2274,25 @@ namespace YAMP
                 else
                 {
                     if (m.Length != indices.Count)
+                    {
                         throw new YAMPDifferentLengthsException(m.Length, indices.Count);
+                    }
 
                     foreach (var mi in indices)
+                    {
                         this[mi.Row, mi.Column] = m[index++];
+                    }
                 }
             }
             // the right hand side is a scalar (apply to each value)
-            else if(values is ScalarValue)
+            else if (values is ScalarValue)
             {
                 var value = (ScalarValue)values;
 
                 foreach (var mi in indices)
+                {
                     this[mi.Row, mi.Column] = value.Clone();
+                }
             }
 
             return this;
@@ -2238,21 +2311,31 @@ namespace YAMP
                 var ags = (ArgumentsValue)argument;
 
                 if (ags.Length == 1)
+                {
                     return Perform(context, ags[1]);
+                }
                 else if (ags.Length > 2)
+                {
                     throw new YAMPArgumentNumberException("Matrix", ags.Length, 2);
+                }
 
                 var rows = BuildIndex(ags[1], DimensionY);
                 var columns = BuildIndex(ags[2], DimensionX);
 
                 if (rows.Length == 1 && columns.Length == 1)
+                {
                     return this[rows[0], columns[0]].Clone();
+                }
 
                 var m = new MatrixValue(rows.Length, columns.Length);
 
-                for (int i = 1; i <= m.DimensionX; i++)
-                    for (int j = 1; j <= m.DimensionY; j++)
+                for (var i = 1; i <= m.DimensionX; i++)
+                {
+                    for (var j = 1; j <= m.DimensionY; j++)
+                    {
                         m[j, i] = this[rows[j - 1], columns[i - 1]].Clone();
+                    }
+                }
 
                 return m;
             }
@@ -2262,19 +2345,25 @@ namespace YAMP
                 {
                     var mm = (MatrixValue)argument;
 
-                    if(mm.DimensionX == DimensionX && mm.DimensionY == DimensionY)
+                    if (mm.DimensionX == DimensionX && mm.DimensionY == DimensionY)
+                    {
                         return LogicalSubscripting(mm);
+                    }
                 }
 
                 var idx = BuildIndex(argument, Length);
 
                 if (idx.Length == 1)
+                {
                     return this[idx[0]].Clone();
+                }
 
                 var m = new MatrixValue(1, idx.Length);
 
-                for (int i = 1; i <= m.DimensionX; i++)
+                for (var i = 1; i <= m.DimensionX; i++)
+                {
                     m[i] = this[idx[i - 1]].Clone();
+                }
 
                 return m;
             }
