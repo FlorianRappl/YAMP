@@ -47,6 +47,7 @@
     <Compile Include="Extensions\ParserExtensions.cs" />
     <Compile Include="Extensions\QueryContextExtensions.cs" />
     <Compile Include="Functions\Helpers\ObjectFunction.cs" />
+    <Compile Include="Operators\BinaryOperators\MemberOperator.cs" />
     <Compile Include="Providers\Interfaces\IElementMapping.cs" />
     <Compile Include="Providers\Interfaces\IFunctionLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
