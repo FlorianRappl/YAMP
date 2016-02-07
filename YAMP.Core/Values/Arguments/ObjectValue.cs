@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Text;
     using YAMP.Exceptions;
 
     /// <summary>
@@ -10,6 +11,8 @@
     public sealed class ObjectValue : Value, IFunction, ISetFunction
     {
         #region Fields
+
+        static readonly String Intendation = "  ";
 
         readonly Dictionary<String, Value> _values;
 
@@ -178,6 +181,39 @@
             var name = key.Value;
             _values[name] = value;
             return value;
+        }
+
+        /// <summary>
+        /// Returns the string content of this instance.
+        /// </summary>
+        /// <param name="context">The context of the invocation.</param>
+        /// <returns>The value of the object.</returns>
+        public override String ToString(ParseContext context)
+        {
+            var sb = new StringBuilder().AppendLine("{");
+
+            foreach (var element in _values)
+            {
+                var name = element.Key;
+                var value = Intend(element.Value.ToString(context));
+                sb.Append(Intendation);
+                sb.Append(name);
+                sb.Append(" = ");
+                sb.Append(value);
+                sb.AppendLine(",");
+            }
+
+            return sb.Append('}').ToString();
+        }
+
+        #endregion
+
+        #region Helpers
+
+        static String Intend(String value)
+        {
+            var lines = value.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            return String.Join(Environment.NewLine + Intendation, lines);
         }
 
         #endregion
