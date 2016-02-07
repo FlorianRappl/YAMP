@@ -14,10 +14,10 @@ namespace YAMP
 	{
 		#region Fields
 
-		IDictionary<MatrixIndex, ScalarValue> _values;
+		readonly IDictionary<MatrixIndex, ScalarValue> _values;
 		
-		int dimX;
-		int dimY;
+		Int32 _dimX;
+		Int32 _dimY;
 
 		#endregion
 
@@ -26,14 +26,20 @@ namespace YAMP
         /// <summary>
         /// Gets if the matrix has any non-zero elements.
         /// </summary>
-        public virtual bool HasElements
+        public virtual Boolean HasElements
         {
             get 
             {
-                for (var j = 1; j <= dimY; j++)
-                    for (var i = 1; i <= dimX; i++)
+                for (var j = 1; j <= _dimY; j++)
+                {
+                    for (var i = 1; i <= _dimX; i++)
+                    {
                         if (this[i, j] != ScalarValue.Zero)
+                        {
                             return true;
+                        }
+                    }
+                }
 
                 return false;
             }
@@ -42,14 +48,20 @@ namespace YAMP
         /// <summary>
         /// Gets if the matrix has only non-zero elements.
         /// </summary>
-        public virtual bool HasNoZeros
+        public virtual Boolean HasNoZeros
         {
             get
             {
-                for (var j = 1; j <= dimY; j++)
-                    for (var i = 1; i <= dimX; i++)
+                for (var j = 1; j <= _dimY; j++)
+                {
+                    for (var i = 1; i <= _dimX; i++)
+                    {
                         if (this[i, j] == ScalarValue.Zero)
+                        {
                             return false;
+                        }
+                    }
+                }
 
                 return true;
             }
@@ -60,7 +72,7 @@ namespace YAMP
         /// Def. of dense: # of values \neq 0 greater 1.5 * \sqrt length.
         /// Example: Rows = 10, Columns = 10, i.e. more than 15 elements = dense.
         /// </summary>
-        public bool IsDense
+        public Boolean IsDense
         {
             get
             {
@@ -72,7 +84,7 @@ namespace YAMP
         /// <summary>
         /// Gets a boolean if the matrix is only 1x1.
         /// </summary>
-        public bool IsScalar
+        public Boolean IsScalar
         {
             get { return DimensionX == 1 && DimensionY == 1; }
         }
@@ -80,7 +92,7 @@ namespace YAMP
         /// <summary>
         /// Gets a boolean if the matrix is only a row (rows = 1) or column (columns = 1) vector.
         /// </summary>
-        public bool IsVector
+        public Boolean IsVector
         {
             get { return (DimensionX == 1 && DimensionY > 1) || (DimensionY == 1 && DimensionX > 1); }
         }
@@ -88,43 +100,43 @@ namespace YAMP
         /// <summary>
         /// Gets the number of columns.
         /// </summary>
-		public int DimensionX
+        public Int32 DimensionX
 		{
-			get { return dimX;  }
-			protected set { dimX = value; }
+			get { return _dimX;  }
+			protected set { _dimX = value; }
 		}
 		
         /// <summary>
         /// Gets the number of rows.
         /// </summary>
-		public int DimensionY
+        public Int32 DimensionY
 		{
-			get { return dimY; }
-			protected set { dimY = value; }
+			get { return _dimY; }
+			protected set { _dimY = value; }
 		}
 
 		/// <summary>
 		/// Gets the number of columns (alias for DimensionX).
 		/// </summary>
-		public int Columns
+        public Int32 Columns
 		{
-			get { return dimX; }
-			protected set { dimX = value; }
+			get { return _dimX; }
+			protected set { _dimX = value; }
 		}
 
 		/// <summary>
 		/// Gets the number of rows (alias for DimensionY).
 		/// </summary>
-		public int Rows
+        public Int32 Rows
 		{
-			get { return dimY; }
-			protected set { dimY = value; }
+			get { return _dimY; }
+			protected set { _dimY = value; }
 		}
 		
         /// <summary>
         /// Gets the length of the matrix, i.e. rows * columns.
         /// </summary>
-		public int Length
+		public Int32 Length
 		{
 			get { return DimensionX * DimensionY; }
 		}
@@ -132,42 +144,45 @@ namespace YAMP
         /// <summary>
         /// Gets a value if the matrix is symmetric, i.e. M_ij = M_ji
         /// </summary>
-		public bool IsSymmetric
+		public Boolean IsSymmetric
 		{
 			get
 			{
-				if(dimX != dimY)
-					return false;
+				if (_dimX == _dimY)
+                {
+                    for (var i = 1; i <= _dimX; i++)
+                    {
+                        for (var j = 1; j < i; j++)
+                        {
+                            if (this[i, j].Re != this[j, i].Re || this[i, j].Im != -this[j, i].Im)
+                            {
+                                return false;
+                            }
+                        }
+                    }
 
-				for (var i = 1; i <= dimX; i++)
-				{
-					for (var j = 1; j < i; j++)
-					{
-						if (this[i, j].Re != this[j, i].Re)
-							return false;
+                    return true;
+                }
 
-						if (this[i, j].Im != -this[j, i].Im)
-							return false;
-					}
-				}
-
-				return true;
+				return false;
 			}
 		}
 
         /// <summary>
         /// Gets a boolean if the matrix has any complex (im != 0.0) entries.
         /// </summary>
-		public bool IsComplex
+		public Boolean IsComplex
 		{
 			get
 			{
-				for (var i = 1; i <= dimY; i++)
+				for (var i = 1; i <= _dimY; i++)
 				{
-					for (var j = 1; j <= dimX; j++)
+					for (var j = 1; j <= _dimX; j++)
 					{
-						if (this[i, j].IsComplex)
-							return true;
+                        if (this[i, j].IsComplex)
+                        {
+                            return true;
+                        }
 					}
 				}
 
@@ -178,14 +193,16 @@ namespace YAMP
         /// <summary>
         /// Gets the maximum exponent used by values within the matrix.
         /// </summary>
-        public int Exponent
+        public Int32 Exponent
         {
             get
             {
                 var exp = 0;
 
                 foreach (var value in _values.Values)
+                {
                     exp = Math.Max(value.Exponent, exp);
+                }
 
                 return exp;
             }
@@ -208,11 +225,25 @@ namespace YAMP
         /// </summary>
         /// <param name="rows">The number of rows.</param>
         /// <param name="cols">The number of columns.</param>
-		public MatrixValue(int rows, int cols) : this()
+        public MatrixValue(Int32 rows, Int32 cols)
+            : this()
 		{
-			dimX = cols;
-			dimY = rows;
+			_dimX = cols;
+			_dimY = rows;
 		}
+
+        /// <summary>
+        /// Constructs a new matrix with the provided values and dimension.
+        /// </summary>
+        /// <param name="values">The values to assign.</param>
+        /// <param name="rows">The number of rows in the new matrix.</param>
+        /// <param name="cols">The number of columns in the matrix.</param>
+        public MatrixValue(Dictionary<MatrixIndex, ScalarValue> values, Int32 rows, Int32 cols)
+        {
+            _values = values;
+            _dimX = cols;
+            _dimY = rows;
+        }
 
         /// <summary>
         /// Constructs a new matrix based on the jagged double array.
@@ -220,16 +251,17 @@ namespace YAMP
         /// <param name="values">The values to use.</param>
         /// <param name="rows">The number of rows in the new matrix.</param>
         /// <param name="cols">The number of columns in the matrix.</param>
-		public MatrixValue(double[][] values, int rows, int cols) : this(rows, cols)
+		public MatrixValue(Double[][] values, Int32 rows, Int32 cols) : 
+            this(rows, cols)
 		{
 			for (var j = 0; j < values.Length; j++)
 			{
 				for (var i = 0; i < values[j].Length; i++)
 				{
-					if (values[j][i] == 0.0)
-						continue;
-
-					this[j + 1, i + 1] = new ScalarValue(values[j][i]);
+                    if (values[j][i] != 0.0)
+                    {
+                        this[j + 1, i + 1] = new ScalarValue(values[j][i]);
+                    }
 				}
 			}
 		}
@@ -240,17 +272,17 @@ namespace YAMP
         /// <param name="values">The values to use.</param>
         /// <param name="rows">The number of rows in the new matrix.</param>
         /// <param name="cols">The number of columns in the matrix.</param>
-        public MatrixValue(ScalarValue[][] values, int rows, int cols)
+        public MatrixValue(ScalarValue[][] values, Int32 rows, Int32 cols)
             : this(rows, cols)
         {
             for (var j = 0; j < values.Length; j++)
             {
                 for (var i = 0; i < values[j].Length; i++)
                 {
-                    if (values[j][i] == 0.0)
-                        continue;
-
-                    this[j + 1, i + 1] = values[j][i];
+                    if (values[j][i] != 0.0)
+                    {
+                        this[j + 1, i + 1] = values[j][i];
+                    }
                 }
             }
         }
@@ -259,16 +291,17 @@ namespace YAMP
         /// Constructs a new matrix based on the given two dimensional array.
         /// </summary>
         /// <param name="values">The values which set the dimensions and starting values of the matrix.</param>
-		public MatrixValue(double[,] values) : this(values.GetLength(0), values.GetLength(1))
+		public MatrixValue(Double[,] values) : 
+            this(values.GetLength(0), values.GetLength(1))
 		{
-			for (var j = 0; j < dimY; j++)
+			for (var j = 0; j < _dimY; j++)
 			{
-				for (var i = 0; i < dimX; i++)
+				for (var i = 0; i < _dimX; i++)
 				{
-					if (values[j, i] == 0.0)
-						continue;
-
-					this[j + 1, i + 1] = new ScalarValue(values[j, i]);
+                    if (values[j, i] != 0.0)
+                    {
+                        this[j + 1, i + 1] = new ScalarValue(values[j, i]);
+                    }
 				}
 			}
 		}
@@ -277,10 +310,13 @@ namespace YAMP
         /// Constructs a new (column) vector based on the given double array.
         /// </summary>
         /// <param name="vector"></param>
-		public MatrixValue(double[] vector) : this(vector.Length, 1)
+		public MatrixValue(Double[] vector) : 
+            this(vector.Length, 1)
 		{
-			for (var j = 0; j < vector.Length; j++)
+            for (var j = 0; j < vector.Length; j++)
+            {
                 this[j + 1] = new ScalarValue(vector[j]);
+            }
 		}
 
         /// <summary>
@@ -289,11 +325,16 @@ namespace YAMP
         /// <param name="rows"></param>
         /// <param name="cols"></param>
         /// <param name="filling"></param>
-        public MatrixValue(int rows, int cols, ScalarValue filling) : this(rows, cols)
+        public MatrixValue(Int32 rows, Int32 cols, ScalarValue filling) : 
+            this(rows, cols)
         {
-            for (var i = 1; i <= dimX; i++)
-                for (var j = 1; j <= dimY; j++)
+            for (var i = 1; i <= _dimX; i++)
+            {
+                for (var j = 1; j <= _dimY; j++)
+                {
                     this[j, i] = filling.Clone();
+                }
+            }
         }
 
         /// <summary>
@@ -302,18 +343,21 @@ namespace YAMP
         /// <param name="array">The 1-dim. array with values (will be referenced).</param>
         /// <param name="rows">The number of rows.</param>
         /// <param name="cols">The number of columns.</param>
-        public MatrixValue(ScalarValue[] array, int rows, int cols) : this(rows, cols)
+        public MatrixValue(ScalarValue[] array, Int32 rows, Int32 cols) : 
+            this(rows, cols)
         {
             var k = 0;
 
-            for (var j = 1; j <= dimY; j++)
+            for (var j = 1; j <= _dimY; j++)
             {
-                for (var i = 1; i <= dimX; i++)
+                for (var i = 1; i <= _dimX; i++)
                 {
                     var value = array[k++];
 
                     if (value != ScalarValue.Zero)
+                    {
                         _values.Add(new MatrixIndex(j, i), value);
+                    }
                 }
             }
         }
@@ -402,9 +446,9 @@ namespace YAMP
         {
             using (var ms = new MemoryStream())
             {
-                var dy = BitConverter.GetBytes(dimY);
+                var dy = BitConverter.GetBytes(_dimY);
                 ms.Write(dy, 0, dy.Length);
-                var dx = BitConverter.GetBytes(dimX);
+                var dx = BitConverter.GetBytes(_dimX);
                 ms.Write(dx, 0, dx.Length);
                 var count = BitConverter.GetBytes(_values.Count);
                 ms.Write(count, 0, count.Length);
@@ -473,8 +517,8 @@ namespace YAMP
         {
             var r = new ContinuousUniformDistribution();
 
-            for (var j = 1; j <= dimY; j++)
-                for (var i = 1; i <= dimX; i++)
+            for (var j = 1; j <= _dimY; j++)
+                for (var i = 1; i <= _dimX; i++)
                     this[j, i] = new ScalarValue(r.NextDouble());
         }
 
@@ -567,10 +611,10 @@ namespace YAMP
         /// <returns>The created matrix.</returns>
         public MatrixValue ForEach(Func<ScalarValue, ScalarValue> f)
         {
-            var M = new MatrixValue(dimY, dimX);
+            var M = new MatrixValue(_dimY, _dimX);
 
-            for (var j = 1; j <= dimY; j++)
-                for (var i = 1; i <= dimX; i++)
+            for (var j = 1; j <= _dimY; j++)
+                for (var i = 1; i <= _dimX; i++)
                     M[j, i] = f(this[j, i]);
 
             return M;
@@ -627,8 +671,8 @@ namespace YAMP
 			foreach (var entry in _values)
 				m._values.Add(entry.Key, entry.Value.Clone());
 
-			m.dimX = dimX;
-			m.dimY = dimY;
+			m._dimX = _dimX;
+			m._dimY = _dimY;
 			return m;
 		}
 
@@ -689,31 +733,31 @@ namespace YAMP
             else if (count == 0)
                 return;
 
-            if (index + count > dimX + 1)
-                count = dimX - index + 1;
+            if (index + count > _dimX + 1)
+                count = _dimX - index + 1;
 
             var dim = index + count;
 
             for (var i = index; i < dim; i++)
             {
-                for (var j = 1; j <= dimY; j++)
+                for (var j = 1; j <= _dimY; j++)
                     this[j, i] = ScalarValue.Zero;
             }
 
             index = dim;
 
-            for (var i = index; i <= dimX; i++)
+            for (var i = index; i <= _dimX; i++)
             {
                 var k = i - count;
 
-                for (var j = 1; j <= dimY; j++)
+                for (var j = 1; j <= _dimY; j++)
                 {
                     this[j, k] = this[j, i];
                     this[j, i] = ScalarValue.Zero;
                 }
             }
 
-            dimX -= count;
+            _dimX -= count;
         }
 
         /// <summary>
@@ -731,31 +775,31 @@ namespace YAMP
             else if (count == 0)
                 return;
 
-            if (index + count > dimY + 1)
-                count = dimY - index + 1;
+            if (index + count > _dimY + 1)
+                count = _dimY - index + 1;
 
             var dim = index + count;
 
             for (var j = index; j < dim; j++)
             {
-                for (var i = 1; i <= dimX; i++)
+                for (var i = 1; i <= _dimX; i++)
                     this[j, i] = ScalarValue.Zero;
             }
 
             index = dim;
 
-            for (var j = index; j <= dimY; j++)
+            for (var j = index; j <= _dimY; j++)
             {
                 var k = j - count;
 
-                for (var i = 1; i <= dimX; i++)
+                for (var i = 1; i <= _dimX; i++)
                 {
                     this[k, i] = this[j, i];
                     this[j, i] = ScalarValue.Zero;
                 }
             }
 
-            dimY -= count;
+            _dimY -= count;
         }
 
         #endregion
@@ -837,9 +881,13 @@ namespace YAMP
             var array = new ScalarValue[Length];
             var k = 0;
 
-            for (var j = 1; j <= dimY; j++)
-                for (var i = 1; i <= dimX; i++)
+            for (var j = 1; j <= _dimY; j++)
+            {
+                for (var i = 1; i <= _dimX; i++)
+                {
                     array[k++] = this[j, i];
+                }
+            }
 
             return array;
         }
@@ -875,8 +923,10 @@ namespace YAMP
 		{
 			var m = Transpose();
 
-			foreach (var pair in m._values)
-				pair.Value.Im = -pair.Value.Im;
+            foreach (var pair in m._values)
+            {
+                pair.Value.Im = -pair.Value.Im;
+            }
 
 			return m;
 		}
@@ -887,10 +937,9 @@ namespace YAMP
         /// <returns>The transposed matrix.</returns>
 		public MatrixValue Transpose()
 		{
-			var m = Clone();
 			var nv = new Dictionary<MatrixIndex, ScalarValue>();
 
-			foreach (var pair in m._values)
+			foreach (var pair in _values)
 			{
 				nv.Add(new MatrixIndex
 				{
@@ -899,10 +948,7 @@ namespace YAMP
 				}, pair.Value);
 			}
 
-			m._values = nv;
-			m.dimX = dimY;
-			m.dimY = dimX;
-			return m;
+            return new MatrixValue(nv, _dimY, _dimX);
 		}
 
         /// <summary>
@@ -933,38 +979,42 @@ namespace YAMP
 			{
 				var n = DimensionX;
 
-				if (n == 1)
-					return this[1, 1];
-				else if (n == 2)
-					return this[1, 1] * this[2, 2] - this[1, 2] * this[2, 1];
-				else if (n == 3)
-				{
-					return this[1, 1] * (this[2, 2] * this[3, 3] - this[2, 3] * this[3, 2]) +
-							this[1, 2] * (this[2, 3] * this[3, 1] - this[2, 1] * this[3, 3]) +
-							this[1, 3] * (this[2, 1] * this[3, 2] - this[2, 2] * this[3, 1]);
-				}
-				else if (n == 4)
-				{
+                if (n == 1)
+                {
+                    return this[1, 1];
+                }
+                else if (n == 2)
+                {
+                    return this[1, 1] * this[2, 2] - this[1, 2] * this[2, 1];
+                }
+                else if (n == 3)
+                {
+                    return this[1, 1] * (this[2, 2] * this[3, 3] - this[2, 3] * this[3, 2]) +
+                            this[1, 2] * (this[2, 3] * this[3, 1] - this[2, 1] * this[3, 3]) +
+                            this[1, 3] * (this[2, 1] * this[3, 2] - this[2, 2] * this[3, 1]);
+                }
+                else if (n == 4)
+                {
                     //I guess that's right
-					return this[1, 1] * (this[2, 2] * 
-                                (this[3, 3] * this[4, 4] - this[3, 4] * this[4, 3]) + this[2, 3] * 
-                                    (this[3, 4] * this[4, 2] - this[3, 2] * this[4, 4]) + this[2, 4] * 
+                    return this[1, 1] * (this[2, 2] *
+                                (this[3, 3] * this[4, 4] - this[3, 4] * this[4, 3]) + this[2, 3] *
+                                    (this[3, 4] * this[4, 2] - this[3, 2] * this[4, 4]) + this[2, 4] *
                                         (this[3, 2] * this[4, 3] - this[3, 3] * this[4, 2])) -
-							this[1, 2] * (this[2, 1] * 
-                                (this[3, 3] * this[4, 4] - this[3, 4] * this[4, 3]) + this[2, 3] * 
-                                    (this[3, 4] * this[4, 1] - this[3, 1] * this[4, 4]) + this[2, 4] * 
+                            this[1, 2] * (this[2, 1] *
+                                (this[3, 3] * this[4, 4] - this[3, 4] * this[4, 3]) + this[2, 3] *
+                                    (this[3, 4] * this[4, 1] - this[3, 1] * this[4, 4]) + this[2, 4] *
                                         (this[3, 1] * this[4, 3] - this[3, 3] * this[4, 1])) +
-							this[1, 3] * (this[2, 1] * 
-                                (this[3, 2] * this[4, 4] - this[3, 4] * this[4, 2]) + this[2, 2] * 
-                                    (this[3, 4] * this[4, 1] - this[3, 1] * this[4, 4]) + this[2, 4] * 
+                            this[1, 3] * (this[2, 1] *
+                                (this[3, 2] * this[4, 4] - this[3, 4] * this[4, 2]) + this[2, 2] *
+                                    (this[3, 4] * this[4, 1] - this[3, 1] * this[4, 4]) + this[2, 4] *
                                         (this[3, 1] * this[4, 2] - this[3, 2] * this[4, 1])) -
-							this[1, 4] * (this[2, 1] * 
-                                (this[3, 2] * this[4, 3] - this[3, 3] * this[4, 2]) + this[2, 2] * 
-                                    (this[3, 3] * this[4, 1] - this[3, 1] * this[4, 3]) + this[2, 3] * 
+                            this[1, 4] * (this[2, 1] *
+                                (this[3, 2] * this[4, 3] - this[3, 3] * this[4, 2]) + this[2, 2] *
+                                    (this[3, 3] * this[4, 1] - this[3, 1] * this[4, 3]) + this[2, 3] *
                                         (this[3, 1] * this[4, 2] - this[3, 2] * this[4, 1]));
-				}
+                }
 
-				var lu = new YAMP.Numerics.LUDecomposition(this);
+				var lu = new LUDecomposition(this);
 				return lu.Determinant();
 			}
 
@@ -1059,7 +1109,7 @@ namespace YAMP
         /// <returns>The computed integer value.</returns>
         public override int GetHashCode()
 		{
-			return dimX + dimY;
+			return _dimX + _dimY;
 		}
 
         /// <summary>
@@ -1351,10 +1401,10 @@ namespace YAMP
 		{
 			get
 			{
-				if (i > dimX || i < 1)
-					throw new YAMPIndexOutOfBoundException(i, 1, dimX);
-                else if (j > dimY || j < 1)
-                    throw new YAMPIndexOutOfBoundException(j, 1, dimY);
+				if (i > _dimX || i < 1)
+					throw new YAMPIndexOutOfBoundException(i, 1, _dimX);
+                else if (j > _dimY || j < 1)
+                    throw new YAMPIndexOutOfBoundException(j, 1, _dimY);
 
 				var index = new MatrixIndex();
 				index.Column = i;
@@ -1372,11 +1422,11 @@ namespace YAMP
                 else if (j < 1)
                     throw new YAMPIndexOutOfBoundException(j, 1);
 
-				if (i > dimX)
-					dimX = i;
+				if (i > _dimX)
+					_dimX = i;
 
-				if (j > dimY)
-					dimY = j;
+				if (j > _dimY)
+					_dimY = j;
 
 				var index = new MatrixIndex();
 				index.Column = i;
@@ -1438,7 +1488,7 @@ namespace YAMP
         /// <returns>The mapping of i-th entry to (j, k)-th element (j = row, k = column).</returns>
         protected MatrixIndex GetIndex(int i)
         {
-            var dimY = Math.Max(1, this.dimY);
+            var dimY = Math.Max(1, this._dimY);
             var row = (i - 1) % dimY + 1;
             var col = (i - 1) / dimY + 1;
                             
@@ -1981,7 +2031,7 @@ namespace YAMP
         void DeleteFullRows(List<MatrixIndex> indices)
         {
             // There cannot be a full row if we have less indices than columns
-            if (indices.Count < dimX)
+            if (indices.Count < _dimX)
             {
                 return;
             }
@@ -2074,7 +2124,7 @@ namespace YAMP
         void DeleteFullColumns(List<MatrixIndex> indices)
         {
             // There cannot be a full column if we have less indices than rows
-            if (indices.Count < dimY)
+            if (indices.Count < _dimY)
             {
                 return;
             }
