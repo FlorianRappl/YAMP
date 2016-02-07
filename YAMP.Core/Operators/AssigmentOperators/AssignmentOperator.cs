@@ -61,6 +61,11 @@ namespace YAMP
                     var ix = (ArgsOperator)tree.Operator;
                     return ix.Handle(tree.Expressions[0], value, symbols);
                 }
+                else if (tree.Operator is MemberOperator)
+                {
+                    var mo = (MemberOperator)tree.Operator;
+                    return mo.Handle(tree.Expressions[0], tree.Expressions[1], value, symbols);
+                }
                 else if (tree.IsSymbolList)
                 {
                     var vars = tree.GetSymbols();
@@ -79,7 +84,7 @@ namespace YAMP
 
         #region Helpers
 
-        Value HandleMultipleOutputs(Value value, SymbolExpression[] vars, Dictionary<string, Value> symbols)
+        Value HandleMultipleOutputs(Value value, SymbolExpression[] vars, Dictionary<String, Value> symbols)
         {
             if (value is ArgumentsValue)
             {
@@ -87,23 +92,31 @@ namespace YAMP
                 var l = Math.Min(vars.Length, av.Length);
 
                 for (var i = 0; i != l; i++)
+                {
                     Assign(vars[i], av.Values[i], symbols);
+                }
 
                 return av;
             }
 
             foreach (var sym in vars)
+            {
                 Assign(sym, value, symbols);
+            }
 
             return value;
         }
 
-        Value Assign(SymbolExpression left, Value value, Dictionary<string, Value> symbols)
+        Value Assign(SymbolExpression left, Value value, Dictionary<String, Value> symbols)
 		{
             if (symbols.ContainsKey(left.SymbolName))
+            {
                 symbols[left.SymbolName] = value.Copy();
+            }
             else
+            {
                 Context.AssignVariable(left.SymbolName, value.Copy());
+            }
 
 			return value;
         }
