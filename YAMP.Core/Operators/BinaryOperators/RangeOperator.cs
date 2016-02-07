@@ -1,5 +1,6 @@
 namespace YAMP
 {
+    using System;
     using System.Collections.Generic;
     using YAMP.Exceptions;
 
@@ -9,9 +10,10 @@ namespace YAMP
     /// </summary>
 	class RangeOperator : BinaryOperator
 	{
-		const string END = "end";
+		const String End = "end";
 
-		public RangeOperator () : base(":", 3)
+		public RangeOperator () :
+            base(":", 3)
 		{
 			IsRightToLeft = true;
 		}
@@ -54,7 +56,7 @@ namespace YAMP
             }
             else if (right is StringValue)
             {
-                all = (right as StringValue).Value.Equals(END);
+                all = (right as StringValue).Value.Equals(End);
             }
             else
             {
@@ -74,12 +76,13 @@ namespace YAMP
 			return new RangeValue(start, end, step);
 		}
 
-		public override Value Handle(Expression left, Expression right, Dictionary<string, Value> symbols)
+		public override Value Handle(Expression left, Expression right, Dictionary<String, Value> symbols)
 		{
 			var l = left.Interpret(symbols);
-			var r = new StringValue(END) as Value;
+			var r = new StringValue(End) as Value;
+            var symbol = right as SymbolExpression;
 
-            if (!(right is SymbolExpression) || !((right as SymbolExpression).SymbolName.Equals(END)))
+            if (symbol == null || !symbol.SymbolName.Equals(End))
             {
                 r = right.Interpret(symbols);
             }

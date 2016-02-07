@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// The standard right divide / operator.
     /// </summary>
@@ -17,7 +17,7 @@ namespace YAMP
             get { return mapping; }
         }
 
-        static public void Register(Type a, Type b, Func<Value, Value, Value> f)
+        public static void Register(Type a, Type b, Func<Value, Value, Value> f)
         {
             mapping.Add(new BinaryOperatorMapping(a, b, f));
         }
@@ -26,7 +26,8 @@ namespace YAMP
 
         #region ctor
 
-        public RightDivideOperator () : base("/", 20)
+        public RightDivideOperator () : 
+            base("/", 20)
 		{
 		}
 

@@ -10,12 +10,13 @@
     {
         #region ctor
 
-        public ColumnOperator() : base(",", 1)
+        public ColumnOperator() : 
+            base(",", 1)
 		{
 		}
 
-        public ColumnOperator(ParseEngine engine)
-            : this()
+        public ColumnOperator(ParseEngine engine) :
+            this()
         {
             StartColumn = engine.CurrentColumn;
             StartLine = engine.CurrentLine;
@@ -27,11 +28,15 @@
 
         public override Value Perform(Value left, Value right)
 		{
-			if (left is NumericValue == false)
-				throw new YAMPOperationInvalidException(",", left);
+            if (left is NumericValue == false)
+            {
+                throw new YAMPOperationInvalidException(",", left);
+            }
 
-			if (right is NumericValue == false)
-				throw new YAMPOperationInvalidException(",", right);
+            if (right is NumericValue == false)
+            {
+                throw new YAMPOperationInvalidException(",", right);
+            }
 
 			return MatrixValue.Create(left).AddColumn(right);
 		}

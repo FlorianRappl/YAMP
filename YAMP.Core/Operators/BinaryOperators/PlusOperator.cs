@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// The class for the standard + operator.
     /// </summary>
@@ -26,7 +26,8 @@ namespace YAMP
             mapping.Add(new BinaryOperatorMapping(a, b, f));
         }
 
-		public PlusOperator () : base("+", 5)
+		public PlusOperator () : 
+            base("+", 5)
 		{
         }
 

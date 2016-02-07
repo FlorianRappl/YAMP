@@ -26,11 +26,15 @@
 
         public override Value Perform(Value left, Value right)
 		{
-			if (left is NumericValue == false)
-				throw new YAMPOperationInvalidException(";", left);
+            if (left is NumericValue == false)
+            {
+                throw new YAMPOperationInvalidException(";", left);
+            }
 
-			if (right is NumericValue == false)
-				throw new YAMPOperationInvalidException(";", right);
+            if (right is NumericValue == false)
+            {
+                throw new YAMPOperationInvalidException(";", right);
+            }
 
 			return MatrixValue.Create(left).AddRow(right);
 		}

@@ -1,5 +1,3 @@
-using System;
-
 namespace YAMP
 {
     /// <summary>
@@ -9,7 +7,8 @@ namespace YAMP
     {
         #region ctor
 
-        public LeftDivideOperator () : base(@"\", 20)
+        public LeftDivideOperator () : 
+            base(@"\", 20)
 		{
 		}
 

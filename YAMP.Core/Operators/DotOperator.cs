@@ -1,6 +1,5 @@
 namespace YAMP
 {
-    using System;
     using YAMP.Exceptions;
 
     /// <summary>
@@ -11,7 +10,7 @@ namespace YAMP
     {
         #region Fields
 
-        BinaryOperator _top;
+        readonly BinaryOperator _top;
 
         #endregion
 
@@ -21,7 +20,8 @@ namespace YAMP
         /// Creates a new dot operator (e.g. .*, ./, ...).
         /// </summary>
         /// <param name="top">The binary operator on which this is based.</param>
-        public DotOperator(BinaryOperator top) : base("." + top.Op, top.Level)
+        public DotOperator(BinaryOperator top) :
+            base("." + top.Op, top.Level)
 		{
 			_top = top;
 		}
@@ -46,10 +46,15 @@ namespace YAMP
         /// <returns>The result of the operation.</returns>
 		public override Value Perform(Value left, Value right)
 		{
-			if (!(left is NumericValue))
-				throw new YAMPOperationInvalidException(Op, left);
-			else if (!(right is NumericValue))
-				throw new YAMPOperationInvalidException(Op, right);
+            if (left is NumericValue == false)
+            {
+                throw new YAMPOperationInvalidException(Op, left);
+            }
+
+            if (right is NumericValue == false)
+            {
+                throw new YAMPOperationInvalidException(Op, right);
+            }
 
 			if (left is MatrixValue && right is MatrixValue)
 			{
@@ -132,9 +137,13 @@ namespace YAMP
 		{
 			var m = new MatrixValue(right.DimensionY, right.DimensionX);
 
-			for (var i = 1; i <= right.DimensionX; i++)
-				for (var j = 1; j <= right.DimensionY; j++)
-					m[j, i] = Operation(left, right[j, i]);
+            for (var i = 1; i <= right.DimensionX; i++)
+            {
+                for (var j = 1; j <= right.DimensionY; j++)
+                {
+                    m[j, i] = Operation(left, right[j, i]);
+                }
+            }
 
 			return m;
         }

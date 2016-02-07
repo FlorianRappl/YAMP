@@ -8,12 +8,13 @@
     {
         #region ctor
 
-        public CommaOperator() : base(",", 1)
+        public CommaOperator() : 
+            base(",", 1)
 		{
 		}
 
-        public CommaOperator(ParseEngine engine)
-            : this()
+        public CommaOperator(ParseEngine engine) : 
+            this()
         {
             StartLine = engine.CurrentLine;
             StartColumn = engine.CurrentColumn;
