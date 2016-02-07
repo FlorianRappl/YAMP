@@ -1,13 +1,12 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     /// <summary>
     /// This is the class for the standard /= operator.
     /// </summary>
     class RightDivideAssignmentOperator : AssignmentPrefixOperator
     {
-        public RightDivideAssignmentOperator() : base(new RightDivideOperator())
+        public RightDivideAssignmentOperator() : 
+            base(new RightDivideOperator())
         {
         }
 

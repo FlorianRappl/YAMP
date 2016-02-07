@@ -12,11 +12,13 @@ namespace YAMP
     {
         #region ctor
 
-        public AssignmentOperator () : this(string.Empty)
+        public AssignmentOperator () : 
+            this(String.Empty)
 		{
 		}
 
-		public AssignmentOperator(string prefix) : base(prefix + "=", -1)
+		public AssignmentOperator(String prefix) : 
+            base(prefix + "=", -1)
 		{
 		}
 
@@ -29,7 +31,7 @@ namespace YAMP
 			return new AssignmentOperator();
 		}
 
-		public override Value Handle(Expression left, Expression right, Dictionary<string, Value> symbols)
+		public override Value Handle(Expression left, Expression right, Dictionary<String, Value> symbols)
 		{
 			var bottom = right.Interpret(symbols);
 			return Assign(left, bottom, symbols);
@@ -40,7 +42,7 @@ namespace YAMP
 			return right;
 		}
 
-		protected Value Assign(Expression left, Value value, Dictionary<string, Value> symbols)
+		protected Value Assign(Expression left, Value value, Dictionary<String, Value> symbols)
 		{
             if (left is SymbolExpression)
             {

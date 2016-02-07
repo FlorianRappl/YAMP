@@ -1,13 +1,12 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
     /// <summary>
     /// This class represents the ^= operator.
     /// </summary>
     class PowerAssignmentOperator : AssignmentPrefixOperator
     {
-        public PowerAssignmentOperator() : base(new PowerOperator())
+        public PowerAssignmentOperator() : 
+            base(new PowerOperator())
         {
         }
 

@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections;
-
-namespace YAMP
+﻿namespace YAMP
 {
     /// <summary>
     /// This class represents the += operator.
     /// </summary>
     class PlusAssignmentOperator : AssignmentPrefixOperator
     {
-        public PlusAssignmentOperator() : base(new PlusOperator())
+        public PlusAssignmentOperator() : 
+            base(new PlusOperator())
         {
         }
 
         public static PlusAssignmentOperator CreateWithContext(QueryContext context)
         {
-            var a = new PlusAssignmentOperator();
-            a.Query = context;
-            return a;
+            return new PlusAssignmentOperator
+            {
+                Query = context
+            };
         }
 
         public override Operator Create()
