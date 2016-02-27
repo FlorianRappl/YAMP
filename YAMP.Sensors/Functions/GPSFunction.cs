@@ -1,12 +1,21 @@
 ﻿namespace YAMP.Sensors
 {
     using System;
+    using System.Collections.Generic;
     using Windows.Devices.Geolocation;
 
     [Description("Provides access to the geolocation sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     sealed class GpsFunction : SensorFunction
     {
+        static readonly Dictionary<String, Func<ScalarValue>> NamedProperties = new Dictionary<String, Func<ScalarValue>>(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "longitude", () => new ScalarValue(Longitude) },
+            { "latitude", () => new ScalarValue(Latitude) },
+            { "altitude", () => new ScalarValue(Altitude) },
+            { "speed", () => new ScalarValue(Speed) },
+        };
+
         static Geolocator sensor = GetSensor();
         static Geocoordinate geoCoordinate;
 
@@ -81,25 +90,14 @@
         [ExampleAttribute("gps(\"Speed\")", "Returns the current speed as scalar.")]
         public ScalarValue Function(StringValue option)
         {
-			var opt = option.Value.ToLower();
+            var callback = default(Func<ScalarValue>);
 
-            switch (opt)
+            if (NamedProperties.TryGetValue(option.Value, out callback))
             {
-                case "longitude":
-                    return new ScalarValue(Longitude);
-
-                case "latitude":
-                    return new ScalarValue(Latitude);
-
-                case "altitude":
-                    return new ScalarValue(Altitude);
-
-                case "speed":
-                    return new ScalarValue(Speed);
-
-                default:
-                    return new ScalarValue();
+                return callback();
             }
+
+            return new ScalarValue();
         }
 
         //LAT, LNG, ALT

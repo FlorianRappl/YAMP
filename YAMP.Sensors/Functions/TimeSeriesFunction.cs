@@ -10,14 +10,11 @@
     [Kind(PopularKinds.System)]
     sealed class TimeSeriesFunction : ArgumentFunction
     {
-        static IDictionary<String, SensorFunction> kids;
-
-        /// <summary>
-        /// Static constructor to fill the static dictionary, which contains instances of all available sensor functions.
-        /// </summary>
-        static TimeSeriesFunction()
+        static readonly IDictionary<String, SensorFunction> AvailableSensors = GetAvailableSensors();
+        
+        static IDictionary<String, SensorFunction> GetAvailableSensors()
         {
-            kids = new Dictionary<String, SensorFunction>();
+            var sensors = new Dictionary<String, SensorFunction>(StringComparer.InvariantCultureIgnoreCase);
             var types = Assembly.GetExecutingAssembly().GetTypes();
             var sensorBase = typeof(SensorFunction);
 
@@ -25,22 +22,23 @@
             {
                 if (type.IsSubclassOf(sensorBase) && !type.IsAbstract)
                 {
-                    var instance = type.GetConstructor(Type.EmptyTypes).Invoke(null) as SensorFunction;
-                    kids.Add(instance.Name, instance);
+                    var instance = Activator.CreateInstance(type) as SensorFunction;
+
+                    if (instance != null)
+                    {
+                        sensors.Add(instance.Name, instance);
+                    }
                 }
             }
+
+            return sensors;
         }
 
         public static SensorFunction GetSensorFunction(String name)
         {
-            var fn = name.ToLower();
-
-            if (kids.ContainsKey(fn))
-            {
-                return kids[fn];
-            }
-
-            return null;
+            var sensor = default(SensorFunction);
+            AvailableSensors.TryGetValue(name, out sensor);
+            return sensor;
         }
 
         public override Value Perform(ParseContext context, Value argument)
@@ -60,7 +58,9 @@
 			var function = GetSensorFunction(f.Value);
 
             if (function == null)
-				throw new YAMPRuntimeException("The given function {0} could not be found.", f.Value);
+            {
+                throw new YAMPRuntimeException("The given function {0} could not be found.", f.Value);
+            }
 
             return Function(new FunctionValue(function), n, dt, args);
 		}

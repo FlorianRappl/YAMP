@@ -23,14 +23,18 @@
 
         protected override void InstallReadingChangedHandler()
         {
-            if(sensor != null)
+            if (sensor != null)
+            {
                 sensor.ReadingChanged += OnReadingChanged;
+            }
         }
 
         protected override void UninstallReadingChangedHandler()
         {
             if (sensor != null)
+            {
                 sensor.ReadingChanged -= OnReadingChanged;
+            }
         }
 
         void OnReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)

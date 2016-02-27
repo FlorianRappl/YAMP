@@ -1,12 +1,19 @@
 ﻿namespace YAMP.Sensors
 {
     using System;
+    using System.Collections.Generic;
     using Windows.Devices.Sensors;
 
     [Description("Provides access to the compass sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     sealed class CompFunction : SensorFunction
     {
+        static readonly Dictionary<String, Func<ScalarValue>> NamedProperties = new Dictionary<String, Func<ScalarValue>>(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "magneticnorth", () => new ScalarValue(HeadingMagneticNorth) },
+            { "truenorth", () => new ScalarValue(HeadingTrueNorth) },
+        };
+
         static readonly Compass sensor = GetSensor();
 
         private static Compass GetSensor()
@@ -62,19 +69,14 @@
         [ExampleAttribute("comp(\"TrueNorth\")", "Returns heading information relative to true north as scalar.")]
         public ScalarValue Function(StringValue option)
 		{
-			var opt = option.Value.ToLower();
+            var callback = default(Func<ScalarValue>);
 
-            switch (opt)
+            if (NamedProperties.TryGetValue(option.Value, out callback))
             {
-                case "magneticnorth":
-                    return new ScalarValue(HeadingMagneticNorth);
-
-                case "truenorth":
-                    return new ScalarValue(HeadingTrueNorth);
-
-                default:
-                    return new ScalarValue();
+                return callback();
             }
+
+            return new ScalarValue();
         }
 
         public static Double HeadingMagneticNorth

@@ -1,12 +1,20 @@
 ﻿namespace YAMP.Sensors
 {
     using System;
+    using System.Collections.Generic;
     using Windows.Devices.Sensors;
 
     [Description("Provides access to the inclinometer sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     sealed class IncFunction : SensorFunction
     {
+        static readonly Dictionary<String, Func<ScalarValue>> NamedProperties = new Dictionary<String, Func<ScalarValue>>(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "pitch", () => new ScalarValue(Pitch) },
+            { "roll", () => new ScalarValue(Roll) },
+            { "yaw", () => new ScalarValue(Yaw) },
+        };
+
         static readonly Inclinometer sensor = GetSensor();
 
         private static Inclinometer GetSensor()
@@ -61,20 +69,14 @@
         [ExampleAttribute("inc(\"Pitch\")", "Returns the pitch angle as a scalar.")]
         public ScalarValue Function(StringValue option)
         {
-            switch (option.ToString())
+            var callback = default(Func<ScalarValue>);
+
+            if (NamedProperties.TryGetValue(option.Value, out callback))
             {
-                case "Pitch":
-                    return new ScalarValue(Pitch);
-
-                case "Roll":
-                    return new ScalarValue(Roll);
-
-                case "Yaw":
-                    return new ScalarValue(Yaw);
-
-                default:
-                    return new ScalarValue();
+                return callback();
             }
+
+            return new ScalarValue();
         }
 
         public static Double[] Inclination

@@ -1,11 +1,14 @@
 ﻿namespace YAMP.Sensors
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Windows.Graphics.Imaging;
     using Windows.Media.Capture;
+    using Windows.Media.Devices;
     using Windows.Media.MediaProperties;
     using Windows.Storage.Streams;
+    using YAMP.Converter;
     using YAMP.Exceptions;
 
     [Description("Provides access to the default video input, which is usually the installed webcam.")]
@@ -20,28 +23,42 @@
 
 		#endregion
 
-		#region Video Device
+        #region Fields
 
-		static MediaCapture mc;
-
-		#endregion
-
-		#region ctor
-
-		static VideoFunction()
+        static readonly Dictionary<VideoProperty, VideoDeviceReader> NamedProperties = new Dictionary<VideoProperty, VideoDeviceReader>()
         {
-            Init();
-        }
+            { VideoProperty.Brightness, new VideoDeviceReader(controller => 
+                {
+                    var value = default(Double);
+                    controller.Brightness.TryGetValue(out value);
+                    return new ScalarValue(value);
+                }, (controller, value) => _mediaCapture.VideoDeviceController.Brightness.TrySetValue(value.Value))},
+            { VideoProperty.Contrast, new VideoDeviceReader(controller => 
+                {
+                    var value = default(Double);
+                    controller.Contrast.TryGetValue(out value);
+                    return new ScalarValue(value);
+                }, (controller, value) => _mediaCapture.VideoDeviceController.Contrast.TrySetValue(value.Value))},
+        };
 
-        [STAThreadAttribute]
-        async static void Init()
+        #endregion
+
+        #region Video Device
+
+        static readonly MediaCapture _mediaCapture = InitDevice();
+
+        static MediaCapture InitDevice()
         {
             try
             {
-                mc = new MediaCapture();
-                await mc.InitializeAsync();
+                var mediaCapture = new MediaCapture();
+                var status = mediaCapture.InitializeAsync().Status;
+                return mediaCapture;
             }
-            catch { }
+            catch 
+            {
+                return null;
+            }
         }
 
 		#endregion
@@ -89,50 +106,32 @@
 		[Example("video(\"brightness\")", "Returns the value for brightness.")]
 		public static ScalarValue Function(StringValue p)
 		{
-			var conv = new YAMP.Converter.StringToEnumConverter(typeof(VideoProperty));
-			var property = (VideoProperty)conv.Convert(p);
+			var conv = new StringToEnumConverter(typeof(VideoProperty));
+            var property = (VideoProperty)conv.Convert(p);
+            var deviceReader = default(VideoDeviceReader);
 
-            if (mc == null || mc.VideoDeviceController == null)
-                return new ScalarValue();
+            if (_mediaCapture != null && _mediaCapture.VideoDeviceController != null && NamedProperties.TryGetValue(property, out deviceReader))
+            {
+                return deviceReader.Value;
+            }
 
-			switch (property)
-			{
-				case VideoProperty.Brightness:
-					double brightness;
-					mc.VideoDeviceController.Brightness.TryGetValue(out brightness);
-					return new ScalarValue(brightness);
-
-				case VideoProperty.Contrast:
-					double contrast;
-					mc.VideoDeviceController.Contrast.TryGetValue(out contrast);
-					return new ScalarValue(contrast);
-			}
-
-			return null;
+            return new ScalarValue();
 		}
 
 		[Description("Gets and tries to set named properties of the video input. Possible properties are \"brightness\" and \"contrast\".")]
 		[Example("video(\"brightness\", 1)", "Tries to set the value for brightness to 1 and returns it.")]
-		public static ScalarValue Function(StringValue p, ScalarValue Value)
-		{
-			var conv = new YAMP.Converter.StringToEnumConverter(typeof(VideoProperty));
-			var property = (VideoProperty)conv.Convert(p);
+		public static ScalarValue Function(StringValue p, ScalarValue value)
+        {
+            var conv = new StringToEnumConverter(typeof(VideoProperty));
+            var property = (VideoProperty)conv.Convert(p);
+            var deviceReader = default(VideoDeviceReader);
 
-			switch (property)
-			{
-				case VideoProperty.Brightness:
-					mc.VideoDeviceController.Brightness.TrySetValue(Value.Value);
-					double brightness;
-					mc.VideoDeviceController.Brightness.TryGetValue(out brightness);
-					return new ScalarValue(brightness);
-				case VideoProperty.Contrast:
-					mc.VideoDeviceController.Contrast.TrySetValue(Value.Value);
-					double contrast;
-					mc.VideoDeviceController.Contrast.TryGetValue(out contrast);
-					return new ScalarValue(contrast);
-			}
+            if (_mediaCapture != null && _mediaCapture.VideoDeviceController != null && NamedProperties.TryGetValue(property, out deviceReader))
+            {
+                return deviceReader.Value = value;
+            }
 
-			return null;
+            return new ScalarValue();
 		}
 
 		#endregion
@@ -141,90 +140,94 @@
 
 		async static Task<Value> Video(Double coarsening = 10.0, Boolean fused = false)
         {
-            if (mc == null)
-                return new ArgumentsValue();
-
-            if (coarsening < 1.0)
-                throw new YAMPRuntimeException("Video: coarsening must be larger than or equal to 1.0.");
-
-            var imageProperties = ImageEncodingProperties.CreatePng();
-            var IMRAS = new InMemoryRandomAccessStream();
-
-            await mc.CapturePhotoToStreamAsync(imageProperties, IMRAS);
-
-            var BMPD = await BitmapDecoder.CreateAsync(IMRAS);
-            var PD = await BMPD.GetPixelDataAsync();
-			var rgbValues = PD.DetachPixelData();
-            var width = (Int32)BMPD.PixelWidth;
-            var height = (Int32)BMPD.PixelHeight;
-
-            var cI = 1.0 / coarsening;
-			var finalWidth = (Int32)(width * cI);
-            var finalHeight = (Int32)(height * cI);
-
-            var count = new Byte[finalHeight, finalWidth];
-            var rvalues = new Double[finalHeight, finalWidth];
-            var gvalues = new Double[finalHeight, finalWidth];
-            var bvalues = new Double[finalHeight, finalWidth];
-
-            for (var i = 0; i < width; i++)
+            if (_mediaCapture != null)
             {
-                var idx = (Int32)(i * cI);
-
-                if (idx >= finalWidth)
+                if (coarsening < 1.0)
                 {
-                    idx = finalWidth - 1;
+                    throw new YAMPRuntimeException("Video: coarsening must be larger than or equal to 1.0.");
                 }
 
-                for (int j = 0; j < height; j++)
-                {
-                    var jdx = (Int32)(j * cI);
+                var imageProperties = ImageEncodingProperties.CreatePng();
+                var IMRAS = new InMemoryRandomAccessStream();
 
-                    if (jdx >= finalHeight)
+                await _mediaCapture.CapturePhotoToStreamAsync(imageProperties, IMRAS);
+
+                var BMPD = await BitmapDecoder.CreateAsync(IMRAS);
+                var PD = await BMPD.GetPixelDataAsync();
+                var rgbValues = PD.DetachPixelData();
+                var width = (Int32)BMPD.PixelWidth;
+                var height = (Int32)BMPD.PixelHeight;
+
+                var cI = 1.0 / coarsening;
+                var finalWidth = (Int32)(width * cI);
+                var finalHeight = (Int32)(height * cI);
+
+                var count = new Byte[finalHeight, finalWidth];
+                var rvalues = new Double[finalHeight, finalWidth];
+                var gvalues = new Double[finalHeight, finalWidth];
+                var bvalues = new Double[finalHeight, finalWidth];
+
+                for (var i = 0; i < width; i++)
+                {
+                    var idx = (Int32)(i * cI);
+
+                    if (idx >= finalWidth)
                     {
-                        jdx = finalHeight - 1;
+                        idx = finalWidth - 1;
                     }
 
-                    rvalues[jdx, idx] += rgbValues[(j * width + i) * 4 + 2];
-                    gvalues[jdx, idx] += rgbValues[(j * width + i) * 4 + 1];
-                    bvalues[jdx, idx] += rgbValues[(j * width + i) * 4 + 0];
-                    count[jdx, idx]++;
-                }
-            }
+                    for (int j = 0; j < height; j++)
+                    {
+                        var jdx = (Int32)(j * cI);
 
-            for (var i = 0; i < finalHeight; i++)
-            {
-                for (var j = 0; j < finalWidth; j++)
-                {
-                    var cinv = 1.0 / count[i, j];
-                    rvalues[i, j] *= cinv;
-                    gvalues[i, j] *= cinv;
-                    bvalues[i, j] *= cinv;
-                }
-            }
+                        if (jdx >= finalHeight)
+                        {
+                            jdx = finalHeight - 1;
+                        }
 
-            if (fused)
-            {
+                        rvalues[jdx, idx] += rgbValues[(j * width + i) * 4 + 2];
+                        gvalues[jdx, idx] += rgbValues[(j * width + i) * 4 + 1];
+                        bvalues[jdx, idx] += rgbValues[(j * width + i) * 4 + 0];
+                        count[jdx, idx]++;
+                    }
+                }
+
                 for (var i = 0; i < finalHeight; i++)
                 {
                     for (var j = 0; j < finalWidth; j++)
                     {
-                        rvalues[i, j] = (Int32)rvalues[i, j];
-                        gvalues[i, j] = (Int32)gvalues[i, j];
-                        bvalues[i, j] = (Int32)bvalues[i, j];
-
-                        rvalues[i, j] *= rfactor;
-                        gvalues[i, j] *= gfactor;
-                        bvalues[i, j] *= bfactor;
-
-                        rvalues[i, j] += gvalues[i, j] + bvalues[i, j];
+                        var cinv = 1.0 / count[i, j];
+                        rvalues[i, j] *= cinv;
+                        gvalues[i, j] *= cinv;
+                        bvalues[i, j] *= cinv;
                     }
                 }
 
-                return new MatrixValue(rvalues);
+                if (fused)
+                {
+                    for (var i = 0; i < finalHeight; i++)
+                    {
+                        for (var j = 0; j < finalWidth; j++)
+                        {
+                            rvalues[i, j] = (Int32)rvalues[i, j];
+                            gvalues[i, j] = (Int32)gvalues[i, j];
+                            bvalues[i, j] = (Int32)bvalues[i, j];
+
+                            rvalues[i, j] *= rfactor;
+                            gvalues[i, j] *= gfactor;
+                            bvalues[i, j] *= bfactor;
+
+                            rvalues[i, j] += gvalues[i, j] + bvalues[i, j];
+                        }
+                    }
+
+                    return new MatrixValue(rvalues);
+                }
+
+                return new ArgumentsValue(new MatrixValue(rvalues), new MatrixValue(gvalues), new MatrixValue(bvalues));
             }
-            
-			return new ArgumentsValue(new MatrixValue(rvalues), new MatrixValue(gvalues), new MatrixValue(bvalues));
+
+            return new ArgumentsValue();
         }
 
 		#endregion
@@ -235,6 +238,24 @@
 		{
 			Brightness,
 			Contrast
+        }
+
+        sealed class VideoDeviceReader
+        {
+            readonly Func<VideoDeviceController, ScalarValue> _get;
+            readonly Action<VideoDeviceController, ScalarValue> _set;
+
+            public VideoDeviceReader(Func<VideoDeviceController, ScalarValue> get, Action<VideoDeviceController, ScalarValue> set)
+            {
+                _get = get;
+                _set = set;
+            }
+
+            public ScalarValue Value
+            {
+                get { return _get(_mediaCapture.VideoDeviceController); }
+                set { _set(_mediaCapture.VideoDeviceController, value); }
+            }
         }
 
         #endregion
