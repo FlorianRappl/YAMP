@@ -2,54 +2,21 @@
 {
     using System;
     using System.Collections.Generic;
-    using Windows.Devices.Sensors;
+    using YAMP.Sensors.Devices;
 
     [Description("Provides access to the inclinometer sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     sealed class IncFunction : SensorFunction
     {
-        static readonly Dictionary<String, Func<ScalarValue>> NamedProperties = new Dictionary<String, Func<ScalarValue>>(StringComparer.InvariantCultureIgnoreCase)
+        static readonly Dictionary<String, Func<Inclinometer, ScalarValue>> NamedProperties = new Dictionary<String, Func<Inclinometer, ScalarValue>>(StringComparer.InvariantCultureIgnoreCase)
         {
-            { "pitch", () => new ScalarValue(Pitch) },
-            { "roll", () => new ScalarValue(Roll) },
-            { "yaw", () => new ScalarValue(Yaw) },
+            { "pitch", inclinometer => new ScalarValue(inclinometer.CurrentGradient.Pitch) },
+            { "roll", inclinometer => new ScalarValue(inclinometer.CurrentGradient.Roll) },
+            { "yaw", inclinometer => new ScalarValue(inclinometer.CurrentGradient.Yaw) },
         };
 
-        static readonly Inclinometer sensor = GetSensor();
-
-        private static Inclinometer GetSensor()
-        {
-            try
-            {
-                return Inclinometer.GetDefault();
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        protected override void InstallReadingChangedHandler()
-        {
-            if (sensor != null)
-            {
-                sensor.ReadingChanged += OnReadingChanged;
-            }
-        }
-
-        protected override void UninstallReadingChangedHandler()
-        {
-            if (sensor != null)
-            {
-                sensor.ReadingChanged -= OnReadingChanged;
-            }
-        }
-
-        void OnReadingChanged(Inclinometer sender, InclinometerReadingChangedEventArgs args)
-        {
-            RaiseReadingChanged(args.Reading);
-        }
-
+        readonly Inclinometer _sensor = new Inclinometer();
+        
         /// <summary>
         /// retrieves inclination around (X,Y,Z)-direction in degrees
         /// </summary>
@@ -58,7 +25,9 @@
         [ExampleAttribute("inc()", "Returns the inclination as a 3x1 matrix.")]
         public MatrixValue Function()
         {
-            return new MatrixValue(Inclination);
+            var value = _sensor.CurrentGradient;
+            var vector = new[] { value.Pitch, value.Roll, value.Yaw };
+            return new MatrixValue(vector);
         }
 
         /// <summary>
@@ -69,74 +38,14 @@
         [ExampleAttribute("inc(\"Pitch\")", "Returns the pitch angle as a scalar.")]
         public ScalarValue Function(StringValue option)
         {
-            var callback = default(Func<ScalarValue>);
+            var callback = default(Func<Inclinometer, ScalarValue>);
 
             if (NamedProperties.TryGetValue(option.Value, out callback))
             {
-                return callback();
+                return callback(_sensor);
             }
 
             return new ScalarValue();
-        }
-
-        public static Double[] Inclination
-        {
-            get
-            {
-                var values = new Double[3];
-
-                if (sensor != null)
-                {
-                    var inc = sensor.GetCurrentReading();
-                    values[0] = inc.PitchDegrees;
-                    values[1] = inc.RollDegrees;
-                    values[2] = inc.YawDegrees;
-                }
-
-                return values;
-            }
-        }
-
-        public static Double Pitch
-        {
-            get
-            {
-                if (sensor != null)
-                {
-                    var inc = sensor.GetCurrentReading();
-                    return inc.PitchDegrees;
-                }
-
-                return 0.0;
-            }
-        }
-
-        public static Double Roll
-        {
-            get 
-            {
-                if (sensor != null)
-                {
-                    var inc = sensor.GetCurrentReading();
-                    return inc.RollDegrees;
-                }
-
-                return 0.0;
-            }
-        }
-
-        public static Double Yaw
-        {
-            get 
-            {
-                if (sensor != null)
-                {
-                    var inc = sensor.GetCurrentReading();
-                    return inc.YawDegrees;
-                }
-
-                return 0.0;
-            }
         }
     }
 }

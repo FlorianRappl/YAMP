@@ -2,71 +2,21 @@
 {
     using System;
     using System.Collections.Generic;
-    using Windows.Devices.Geolocation;
+    using YAMP.Sensors.Devices;
 
     [Description("Provides access to the geolocation sensor of an Intel UltraBook™.")]
 	[Kind("Sensor")]
     sealed class GpsFunction : SensorFunction
     {
-        static readonly Dictionary<String, Func<ScalarValue>> NamedProperties = new Dictionary<String, Func<ScalarValue>>(StringComparer.InvariantCultureIgnoreCase)
+        static readonly Dictionary<String, Func<Gps, ScalarValue>> NamedProperties = new Dictionary<String, Func<Gps, ScalarValue>>(StringComparer.InvariantCultureIgnoreCase)
         {
-            { "longitude", () => new ScalarValue(Longitude) },
-            { "latitude", () => new ScalarValue(Latitude) },
-            { "altitude", () => new ScalarValue(Altitude) },
-            { "speed", () => new ScalarValue(Speed) },
+            { "longitude", gps => new ScalarValue(gps.CurrentLocation.Longitude) },
+            { "latitude", gps => new ScalarValue(gps.CurrentLocation.Latitude) },
+            { "altitude", gps => new ScalarValue(gps.CurrentLocation.Altitude) },
+            { "speed", gps => new ScalarValue(gps.CurrentLocation.Speed) },
         };
 
-        static Geolocator sensor = GetSensor();
-        static Geocoordinate geoCoordinate;
-
-        private static Geolocator GetSensor()
-        {
-            try
-            {
-                var sensor = new Geolocator();
-                InitialPosition(sensor);
-                return sensor;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        protected override void InstallReadingChangedHandler()
-        {
-            if (sensor != null)
-            {
-                sensor.PositionChanged += OnPositionChanged;
-            }
-        }
-
-        protected override void UninstallReadingChangedHandler()
-        {
-            if (sensor != null)
-            {
-                sensor.PositionChanged -= OnPositionChanged;
-            }
-        }
-
-        void OnPositionChanged(Geolocator sender, PositionChangedEventArgs args)
-        {
-            geoCoordinate = args.Position.Coordinate;
-            RaiseReadingChanged(args.Position);
-        }
-
-        async static void InitialPosition(Geolocator sensor)
-        {
-            if (sensor != null)
-            {
-                try
-                {
-                    var geopos = await sensor.GetGeopositionAsync();
-                    geoCoordinate = geopos.Coordinate;
-                }
-                catch { }
-            }
-        }
+        readonly Gps _sensor = new Gps();
 
         /// <summary>
         /// retrieves the global position as (longitude, latitude, height) in units of (degrees, degrees, meters)
@@ -76,7 +26,9 @@
         [ExampleAttribute("gps()", "Returns a the global position as 3x1 matrix.")]
         public MatrixValue Function()
         {
-            return new MatrixValue(Position);
+            var position = _sensor.CurrentLocation;
+            var vector = new[] { position.Longitude, position.Latitude, position.Altitude };
+            return new MatrixValue(vector);
         }
 
         /// <summary>
@@ -90,99 +42,14 @@
         [ExampleAttribute("gps(\"Speed\")", "Returns the current speed as scalar.")]
         public ScalarValue Function(StringValue option)
         {
-            var callback = default(Func<ScalarValue>);
+            var callback = default(Func<Gps, ScalarValue>);
 
             if (NamedProperties.TryGetValue(option.Value, out callback))
             {
-                return callback();
+                return callback(_sensor);
             }
 
             return new ScalarValue();
-        }
-
-        //LAT, LNG, ALT
-        public static Double[] Position
-        {
-            get
-            {
-                var position = new Double[3];
-
-                if (geoCoordinate != null)
-                {
-                    position[0] = Latitude;
-                    position[1] = Longitude;
-                    position[2] = Altitude;
-                }
-
-                return position;
-            }
-        }
-
-        public static Double Longitude
-        {
-            get
-            {
-                if (geoCoordinate != null)
-                {
-                    var point = geoCoordinate.Point;
-
-                    if (point != null)
-                    {
-                        return point.Position.Longitude;
-                    }
-                }
-
-                return 0.0;
-            }
-        }
-
-        public static double Latitude
-        {
-            get
-            {
-                if (geoCoordinate != null)
-                {
-                    var point = geoCoordinate.Point;
-
-                    if (point != null)
-                    {
-                        return point.Position.Latitude;
-                    }
-                }
-
-                return 0.0;
-            }
-        }
-
-        public static double Altitude
-        {
-            get 
-            {
-                if (geoCoordinate != null)
-                {
-                    var point = geoCoordinate.Point;
-
-                    if (point != null)
-                    {
-                        return point.Position.Altitude;
-                    }
-                }
-
-                return 0.0;
-            }
-        }
-
-        public static double Speed
-        {
-            get
-            {
-                if (geoCoordinate != null && geoCoordinate.Speed.HasValue)
-                {
-                    return geoCoordinate.Speed.Value;
-                }
-
-                return 0.0;
-            }
         }
     }
 }
