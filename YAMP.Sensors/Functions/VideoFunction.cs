@@ -28,7 +28,7 @@
         [Returns(typeof(MatrixValue), "The matrix of blue values.", 2)]
         public ArgumentsValue Function()
         {
-            var result = _sensor.Video().Result;
+            var result = _sensor.Capture().Result;
             var red = new MatrixValue(result.Red);
             var green  = new MatrixValue(result.Green);
             var blue = new MatrixValue(result.Blue);
@@ -42,7 +42,7 @@
         [Returns(typeof(MatrixValue), "The matrix of blue values.", 2)]
         public ArgumentsValue Function(ScalarValue Coarsening)
         {
-            var result = _sensor.Video(Coarsening.Value).Result;
+            var result = _sensor.Capture(Coarsening.Value).Result;
             var red = new MatrixValue(result.Red);
             var green = new MatrixValue(result.Green);
             var blue = new MatrixValue(result.Blue);
@@ -53,7 +53,7 @@
         [Example("video(4, 1)", "Returns one matrices with the rgb values of the image, averaged in both directions over 4 adjacent pixels. The default value for the coarsening is 10.0. The RGB values are stored in one number as r * 256 * 256 + g * 256 + b.")]
         public MatrixValue Function(ScalarValue Coarsening, ScalarValue Fused)
         {
-            var result = _sensor.Video(Coarsening.Value, true).Result;
+            var result = _sensor.Capture(Coarsening.Value, true).Result;
             return new MatrixValue(result.Red);
 		}
 

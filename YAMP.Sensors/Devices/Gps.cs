@@ -4,6 +4,9 @@
     using Windows.Devices.Geolocation;
     using Sensor = Windows.Devices.Geolocation.Geolocator;
 
+    /// <summary>
+    /// The GPS device.
+    /// </summary>
     public class Gps : BaseDevice
     {
         static readonly Sensor sensor = GetSensor();
@@ -35,6 +38,9 @@
 
         private event EventHandler<GpsEventArgs> changed;
 
+        /// <summary>
+        /// Listens to the changed event.
+        /// </summary>
         public event EventHandler<GpsEventArgs> Changed
         {
             add
@@ -49,11 +55,17 @@
             }
         }
 
+        /// <summary>
+        /// Installs the reading handler.
+        /// </summary>
         protected override void InstallReadingChangedHandler()
         {
             sensor.PositionChanged += OnReadingChanged;
         }
 
+        /// <summary>
+        /// Uninstalls the reading handler.
+        /// </summary>
         protected override void UninstallReadingChangedHandler()
         {
             sensor.PositionChanged -= OnReadingChanged;
@@ -77,6 +89,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the current location.
+        /// </summary>
         public Position CurrentLocation
         {
             get

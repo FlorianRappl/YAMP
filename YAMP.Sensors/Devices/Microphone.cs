@@ -7,6 +7,9 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// The microphone devide using NAudio.
+    /// </summary>
     public class Microphone : BaseDevice
     {
         readonly WasapiCapture _wasapiCapture;
@@ -14,6 +17,9 @@
         Int32 _measured;
         Boolean _measuring;
 
+        /// <summary>
+        /// Creates a new microphone.
+        /// </summary>
         public Microphone()
         {
             _measurements = new List<Byte[]>();
@@ -29,16 +35,25 @@
             _measuring = false;
         }
 
+        /// <summary>
+        /// Gets the sample rate.
+        /// </summary>
         public Int32 SampleRate
         {
             get { return _wasapiCapture != null ? _wasapiCapture.WaveFormat.SampleRate : 0; }
         }
 
+        /// <summary>
+        /// Gets the number of channels.
+        /// </summary>
         public Int32 Channels
         {
             get { return _wasapiCapture != null ? _wasapiCapture.WaveFormat.Channels : 0; }
         }
 
+        /// <summary>
+        /// Gets the bits per sample.
+        /// </summary>
         public Int32 BitsPerSample
         {
             get { return _wasapiCapture != null ? _wasapiCapture.WaveFormat.BitsPerSample : 0; }
@@ -57,6 +72,9 @@
             }
         }
 
+        /// <summary>
+        /// Records the audio for the specified number of buffer fills.
+        /// </summary>
         public async Task<Double[]> Record(Int32 bufferFills)
         {
             if (_wasapiCapture != null)
@@ -92,10 +110,16 @@
             return new Double[0];
         }
 
+        /// <summary>
+        /// Installs the reading handler.
+        /// </summary>
         protected override void InstallReadingChangedHandler()
         {
         }
 
+        /// <summary>
+        /// Uninstalls the reading handler.
+        /// </summary>
         protected override void UninstallReadingChangedHandler()
         {
         }

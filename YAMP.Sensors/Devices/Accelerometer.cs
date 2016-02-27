@@ -4,6 +4,9 @@
     using Windows.Devices.Sensors;
     using Sensor = Windows.Devices.Sensors.Accelerometer;
 
+    /// <summary>
+    /// The accelerometer device.
+    /// </summary>
     public class Accelerometer : BaseDevice
     {
         static readonly Sensor sensor = GetSensor();
@@ -22,6 +25,9 @@
 
         private event EventHandler<AccelerometerEventArgs> changed;
 
+        /// <summary>
+        /// Listens to the changed event.
+        /// </summary>
         public event EventHandler<AccelerometerEventArgs> Changed
         {
             add 
@@ -36,11 +42,17 @@
             }
         }
 
+        /// <summary>
+        /// Installs the reading handler.
+        /// </summary>
         protected override void InstallReadingChangedHandler()
         {
             sensor.ReadingChanged += OnReadingChanged;
         }
 
+        /// <summary>
+        /// Uninstalls the reading handler.
+        /// </summary>
         protected override void UninstallReadingChangedHandler()
         {
             sensor.ReadingChanged -= OnReadingChanged;

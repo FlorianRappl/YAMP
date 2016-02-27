@@ -8,6 +8,9 @@
     using Windows.Storage.Streams;
     using YAMP.Exceptions;
 
+    /// <summary>
+    /// The camera device using the MediaCapture.
+    /// </summary>
     public class Camera : BaseDevice, IDisposable
     {
         const Double rfactor = 256 * 256;
@@ -30,6 +33,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the brightness.
+        /// </summary>
         public Double Brightness
         {
             get 
@@ -44,6 +50,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the contrast.
+        /// </summary>
         public Double Contrast
         {
             get 
@@ -58,7 +67,10 @@
             }
         }
 
-        public async Task<FrameData> Video(Double coarsening = 10.0, Boolean fused = false)
+        /// <summary>
+        /// Captures the next frame.
+        /// </summary>
+        public async Task<FrameData> Capture(Double coarsening = 10.0, Boolean fused = false)
         {
             if (_mediaCapture != null)
             {
@@ -162,15 +174,24 @@
             return new FrameData();
         }
 
+        /// <summary>
+        /// Disposes the object.
+        /// </summary>
         public void Dispose()
         {
             _mediaCapture.Dispose();
         }
 
+        /// <summary>
+        /// Installs the reading handler.
+        /// </summary>
         protected override void InstallReadingChangedHandler()
         {
         }
 
+        /// <summary>
+        /// Uninstalls the reading handler.
+        /// </summary>
         protected override void UninstallReadingChangedHandler()
         {
         }

@@ -4,6 +4,9 @@
     using Windows.Devices.Sensors;
     using Sensor = Windows.Devices.Sensors.Inclinometer;
 
+    /// <summary>
+    /// The inclinometer sensor.
+    /// </summary>
     public class Inclinometer : BaseDevice
     {
         static readonly Sensor sensor = GetSensor();
@@ -22,6 +25,9 @@
 
         private event EventHandler<InclinometerEventArgs> changed;
 
+        /// <summary>
+        /// Listens to the changed event.
+        /// </summary>
         public event EventHandler<InclinometerEventArgs> Changed
         {
             add
@@ -36,11 +42,17 @@
             }
         }
 
+        /// <summary>
+        /// Installs the reading handler.
+        /// </summary>
         protected override void InstallReadingChangedHandler()
         {
             sensor.ReadingChanged += OnReadingChanged;
         }
 
+        /// <summary>
+        /// Uninstalls the reading handler.
+        /// </summary>
         protected override void UninstallReadingChangedHandler()
         {
             sensor.ReadingChanged -= OnReadingChanged;
@@ -58,6 +70,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the current inclination.
+        /// </summary>
         public Inclination CurrentGradient
         {
             get
