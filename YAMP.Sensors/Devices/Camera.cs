@@ -58,7 +58,7 @@
             }
         }
 
-        public async Task<Value> Video(Double coarsening = 10.0, Boolean fused = false)
+        public async Task<FrameData> Video(Double coarsening = 10.0, Boolean fused = false)
         {
             if (_mediaCapture != null)
             {
@@ -68,19 +68,19 @@
                 }
 
                 var imageProperties = ImageEncodingProperties.CreatePng();
-                var IMRAS = new InMemoryRandomAccessStream();
+                var stream = new InMemoryRandomAccessStream();
 
-                await _mediaCapture.CapturePhotoToStreamAsync(imageProperties, IMRAS);
+                await _mediaCapture.CapturePhotoToStreamAsync(imageProperties, stream);
 
-                var BMPD = await BitmapDecoder.CreateAsync(IMRAS);
-                var PD = await BMPD.GetPixelDataAsync();
-                var rgbValues = PD.DetachPixelData();
-                var width = (Int32)BMPD.PixelWidth;
-                var height = (Int32)BMPD.PixelHeight;
+                var decoder = await BitmapDecoder.CreateAsync(stream);
+                var pixelData = await decoder.GetPixelDataAsync();
+                var rgbValues = pixelData.DetachPixelData();
+                var width = (Int32)decoder.PixelWidth;
+                var height = (Int32)decoder.PixelHeight;
 
-                var cI = 1.0 / coarsening;
-                var finalWidth = (Int32)(width * cI);
-                var finalHeight = (Int32)(height * cI);
+                var inverseCoarsening = 1.0 / coarsening;
+                var finalWidth = (Int32)(width * inverseCoarsening);
+                var finalHeight = (Int32)(height * inverseCoarsening);
 
                 var count = new Byte[finalHeight, finalWidth];
                 var rvalues = new Double[finalHeight, finalWidth];
@@ -89,7 +89,7 @@
 
                 for (var i = 0; i < width; i++)
                 {
-                    var idx = (Int32)(i * cI);
+                    var idx = (Int32)(i * inverseCoarsening);
 
                     if (idx >= finalWidth)
                     {
@@ -98,7 +98,7 @@
 
                     for (int j = 0; j < height; j++)
                     {
-                        var jdx = (Int32)(j * cI);
+                        var jdx = (Int32)(j * inverseCoarsening);
 
                         if (jdx >= finalHeight)
                         {
@@ -141,18 +141,38 @@
                         }
                     }
 
-                    return new MatrixValue(rvalues);
+                    return new FrameData
+                    {
+                        Blue = rvalues,
+                        Green = rvalues,
+                        Red = rvalues,
+                        IsFused = true
+                    };
                 }
 
-                return new ArgumentsValue(new MatrixValue(rvalues), new MatrixValue(gvalues), new MatrixValue(bvalues));
+                return new FrameData
+                {
+                    Blue = bvalues,
+                    Green = gvalues,
+                    Red = rvalues,
+                    IsFused = false
+                };
             }
 
-            return new ArgumentsValue();
+            return new FrameData();
         }
 
         public void Dispose()
         {
             _mediaCapture.Dispose();
+        }
+
+        protected override void InstallReadingChangedHandler()
+        {
+        }
+
+        protected override void UninstallReadingChangedHandler()
+        {
         }
     }
 }

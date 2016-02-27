@@ -2,7 +2,7 @@
 {
     using System;
 
-    abstract class BaseDevice
+    public abstract class BaseDevice
     {
         Int32 _readingChangedHandlers;
 
@@ -12,10 +12,14 @@
             {
                 InstallReadingChangedHandler();
             }
+
+            _readingChangedHandlers++;
         }
 
         protected void UninstallHandler(Object sensor)
         {
+            _readingChangedHandlers--;
+
             if (sensor != null && _readingChangedHandlers == 0)
             {
                 UninstallReadingChangedHandler();

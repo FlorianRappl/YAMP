@@ -99,6 +99,29 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Devices\Accelerometer.cs" />
+    <Compile Include="Devices\AccelerometerEventArgs.cs" />
+    <Compile Include="Devices\AmbientLight.cs" />
+    <Compile Include="Devices\AmbientLightEventArgs.cs" />
+    <Compile Include="Devices\BaseDevice.cs" />
+    <Compile Include="Devices\Compass.cs" />
+    <Compile Include="Devices\CompassEventArgs.cs" />
+    <Compile Include="Devices\Gps.cs" />
+    <Compile Include="Devices\GpsEventArgs.cs" />
+    <Compile Include="Devices\Gyrometer.cs" />
+    <Compile Include="Devices\GyrometerEventArgs.cs" />
+    <Compile Include="FrameData.cs" />
+    <Compile Include="HeadingNorth.cs" />
+    <Compile Include="Inclination.cs" />
+    <Compile Include="Devices\Inclinometer.cs" />
+    <Compile Include="Devices\InclinometerEventArgs.cs" />
+    <Compile Include="Matrix.cs" />
+    <Compile Include="Devices\Microphone.cs" />
+    <Compile Include="Devices\Orientation.cs" />
+    <Compile Include="Devices\Camera.cs" />
+    <Compile Include="Devices\OrientationEventArgs.cs" />
+    <Compile Include="Position.cs" />
+    <Compile Include="Vector.cs" />
     <Compile Include="Functions\AccFunction.cs" />
     <Compile Include="Functions\CompFunction.cs">
       <SubType>Code</SubType>

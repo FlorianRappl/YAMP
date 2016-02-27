@@ -29,7 +29,10 @@
         public ArgumentsValue Function()
         {
             var result = _sensor.Video().Result;
-            return result as ArgumentsValue;
+            var red = new MatrixValue(result.Red);
+            var green  = new MatrixValue(result.Green);
+            var blue = new MatrixValue(result.Blue);
+            return new ArgumentsValue(red, green, blue);
         }
 
         [Description("Retrieves a matrix representing a corarsened version of the image capture of the video input (usually the webcam).")]
@@ -40,15 +43,18 @@
         public ArgumentsValue Function(ScalarValue Coarsening)
         {
             var result = _sensor.Video(Coarsening.Value).Result;
-            return result as ArgumentsValue;
+            var red = new MatrixValue(result.Red);
+            var green = new MatrixValue(result.Green);
+            var blue = new MatrixValue(result.Blue);
+            return new ArgumentsValue(red, green, blue);
         }
 
         [Description("Retrieves a matrix representing a corarsened version of the image capture of the video input (usually the webcam).")]
         [Example("video(4, 1)", "Returns one matrices with the rgb values of the image, averaged in both directions over 4 adjacent pixels. The default value for the coarsening is 10.0. The RGB values are stored in one number as r * 256 * 256 + g * 256 + b.")]
         public MatrixValue Function(ScalarValue Coarsening, ScalarValue Fused)
         {
-            var result = _sensor.Video(Coarsening.Value, Fused.Value != 0.0).Result;
-            return result as MatrixValue;
+            var result = _sensor.Video(Coarsening.Value, true).Result;
+            return new MatrixValue(result.Red);
 		}
 
 		[Description("Gets named properties of the video input. Possible properties are \"brightness\" and \"contrast\".")]
