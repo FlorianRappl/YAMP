@@ -67,11 +67,12 @@
         }
 
         /// <summary>
-        /// Gets the value for the given key.
+        /// Gets or sets the value for the given key.
         /// </summary>
         public Value this[String key]
         {
             get { return _values[key]; }
+            set { _values[key] = value; }
         }
 
         #endregion
