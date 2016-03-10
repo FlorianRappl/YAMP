@@ -1,10 +1,11 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     abstract class RightUnaryOperator : UnaryOperator
     {
-        public RightUnaryOperator(string op, int level) : base(op, level)
+        public RightUnaryOperator(String op, Int32 level) : 
+            base(op, level)
         {
             IsRightToLeft = true;
         }

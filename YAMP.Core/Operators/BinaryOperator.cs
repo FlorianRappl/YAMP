@@ -16,7 +16,8 @@ namespace YAMP
         /// </summary>
         /// <param name="op">The operator string.</param>
         /// <param name="level">The operator level.</param>
-        public BinaryOperator(string op, int level) : base(op, level)
+        public BinaryOperator(String op, Int32 level) : 
+            base(op, level)
 		{
             Expressions = 2;
 		}

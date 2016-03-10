@@ -1,5 +1,6 @@
 namespace YAMP
 {
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -19,7 +20,8 @@ namespace YAMP
         /// Creates a new operator given the string for the operator.
         /// </summary>
         /// <param name="op">The operator string like +.</param>
-		public Operator (string op) : this(op, 0)
+		public Operator (String op) : 
+            this(op, 0)
 		{
 		}
 		
@@ -28,7 +30,7 @@ namespace YAMP
         /// </summary>
         /// <param name="op">The operator string like +.</param>
         /// <param name="level">The operator level like 100.</param>
-		public Operator (string op, int level)
+		public Operator (String op, Int32 level)
 		{
 			_op = op;
 			Level = level;
