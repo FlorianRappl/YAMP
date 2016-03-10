@@ -28,7 +28,7 @@
         #region ctor
 
         public MemberOperator()
-            : base(".", 6)
+            : base(".", 10000)
 		{
 		}
 
