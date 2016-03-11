@@ -86,12 +86,9 @@
         /// <summary>
         /// Gets a value if the interpreter has any content (can do interpretation).
         /// </summary>
-        public bool HasContent
+        public Boolean HasContent
         {
-            get
-            {
-                return _expressions != null && _expressions.Length > 0;
-            }
+            get { return _expressions != null && _expressions.Length > 0; }
         }
 
         /// <summary>
@@ -99,14 +96,8 @@
         /// </summary>
         public Operator Operator
         {
-            get
-            {
-                return _operator;
-            }
-            set
-            {
-                _operator = value;
-            }
+            get { return _operator; }
+            set { _operator = value; }
         }
 
         /// <summary>
@@ -114,31 +105,31 @@
         /// </summary>
         public Expression[] Expressions
         {
-            get
-            {
-                return _expressions;
-            }
-            set
-            {
-                _expressions = value;
-            }
+            get { return _expressions; }
+            set { _expressions = value; }
         }
 
         /// <summary>
         /// Gets a value if the container holds an assignment.
         /// </summary>
-        public bool IsAssignment
+        public Boolean IsAssignment
         {
             get
             {
                 if (_operator != null)
+                {
                     return _operator is AssignmentOperator;
+                }
 
                 if (_expressions == null || Expressions.Length != 1)
+                {
                     return false;
+                }
 
                 if (Expressions[0] is ContainerExpression)
+                {
                     return ((ContainerExpression)Expressions[0]).IsAssignment;
+                }
 
                 return false;
             }
@@ -148,15 +139,19 @@
         /// Gets a value indicating if the parse tree consists only of symbols that 
         /// are seperated by columns (commas).
         /// </summary>
-        public bool IsSymbolList
+        public Boolean IsSymbolList
         {
             get
             {
                 if (Expressions == null)
+                {
                     return false;
+                }
 
                 if (Operator != null && (!(Operator is ColumnOperator) && !(Operator is CommaOperator)))
+                {
                     return false;
+                }
 
                 foreach (var expression in Expressions)
                 {
@@ -166,7 +161,9 @@
                             continue;
                     }
                     else if (expression is SymbolExpression)
+                    {
                         continue;
+                    }
 
                     return false;
                 }
@@ -250,22 +247,28 @@
         /// Transforms the content into a string.
         /// </summary>
         /// <returns>The representative.</returns>
-        public override string ToString()
+        public override String ToString()
         {
             if (_expressions != null)
             {
                 if (_expressions.Length == 1 && _operator == null)
-                    return " [ " + _expressions[0].ToString() + " ] ";
+                {
+                    return String.Format(" [ {0} ] ", _expressions[0]);
+                }
                 else if (_operator != null)
                 {
                     if (_expressions.Length == 1)
-                        return " [ " + _expressions[0].ToString() + " " + _operator.ToString() + " ] ";
+                    {
+                        return String.Format(" [ {0} {1} ] ", _expressions[0], _operator);
+                    }
                     else if (_expressions.Length == 2)
-                        return " [ " + _expressions[0].ToString() + " " + _operator.ToString() + " " + _expressions[1].ToString() + " ] ";
+                    {
+                        return String.Format(" [ {0} {1} {2} ] ", _expressions[0], _operator, _expressions[1]);
+                    }
                 }
             }
 
-            return string.Empty;
+            return String.Empty;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿namespace YAMP
 {
+    using System;
     using System.Collections.Generic;
     using YAMP.Errors;
 
@@ -14,7 +15,7 @@
 		{
 		}
 
-		public BracketExpression(int line, int column, int length, QueryContext query, ContainerExpression child) 
+		public BracketExpression(Int32 line, Int32 column, Int32 length, QueryContext query, ContainerExpression child) 
             : base(child, query, line, column)
 		{
             Length = length;
@@ -24,7 +25,7 @@
 
         #region Methods
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(Dictionary<String, Value> symbols)
         {
             return base.Interpret(symbols) ?? new ArgumentsValue();
         }
@@ -55,7 +56,9 @@
                 var exp = new BracketExpression(line, col, engine.Pointer - start, engine.Query, container ?? new ContainerExpression());
 
                 if (container == null)
+                {
                     engine.AddError(new YAMPBracketEmptyError(line, col), exp);
+                }
 
                 return exp;
             }
@@ -67,9 +70,9 @@
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
-            return "(" + base.ToCode() + ")";
+            return String.Concat("(", base.ToCode(), ")");
         }
 
         #endregion

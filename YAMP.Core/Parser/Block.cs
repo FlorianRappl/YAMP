@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// This is an abstract basic parse block.
     /// </summary>
@@ -12,7 +12,7 @@ namespace YAMP
         /// <summary>
         /// Gets the line where the block starts in the query.
         /// </summary>
-        public int StartLine
+        public Int32 StartLine
         {
             get;
             protected set;
@@ -21,7 +21,7 @@ namespace YAMP
         /// <summary>
         /// Gets the column where the block starts in the query.
         /// </summary>
-        public int StartColumn
+        public Int32 StartColumn
         {
             get;
             protected set;
@@ -30,7 +30,7 @@ namespace YAMP
         /// <summary>
         /// Gets the length in characters of the block.
         /// </summary>
-        public int Length
+        public Int32 Length
         {
             get;
             protected set;
@@ -41,10 +41,7 @@ namespace YAMP
         /// </summary>
         public ParseContext Context
         {
-            get
-            {
-                return Query.Context;
-            }
+            get { return Query.Context; }
         }
 
         /// <summary>
@@ -75,7 +72,7 @@ namespace YAMP
         /// Converts the given block to a valid part of a query.
         /// </summary>
         /// <returns>The string that represents the part of the query.</returns>
-        public abstract string ToCode();
+        public abstract String ToCode();
 
         #endregion
     }

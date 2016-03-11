@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// Contains some extensions used to tackle some conventions used in the code.
     /// </summary>
@@ -12,9 +12,9 @@ namespace YAMP
         /// </summary>
         /// <param name="functionName"></param>
         /// <returns>The string without the word Function.</returns>
-        public static string RemoveFunctionConvention(this string functionName)
+        public static String RemoveFunctionConvention(this String functionName)
         {
-            return functionName.Replace("Function", string.Empty);
+            return functionName.Replace("Function", String.Empty);
         }
 
         /// <summary>
@@ -22,12 +22,14 @@ namespace YAMP
         /// </summary>
         /// <param name="valueName"></param>
         /// <returns>The string without the word Value.</returns>
-        public static string RemoveValueConvention(this string valueName)
+        public static String RemoveValueConvention(this String valueName)
         {
             if (valueName.Equals("Value"))
+            {
                 return valueName;
+            }
 
-            return valueName.Replace("Value", string.Empty);
+            return valueName.Replace("Value", String.Empty);
         }
 
         /// <summary>
@@ -35,7 +37,7 @@ namespace YAMP
         /// </summary>
         /// <param name="functionName">The given function name.</param>
         /// <returns>True if the name is equal to Function, otherwise false.</returns>
-        public static bool IsArgumentFunction(this string functionName)
+        public static Boolean IsArgumentFunction(this String functionName)
         {
             return functionName.Equals("Function");
         }
@@ -45,9 +47,9 @@ namespace YAMP
         /// </summary>
         /// <param name="expressionName"></param>
         /// <returns>The string without the word Expression.</returns>
-        public static string RemoveExpressionConvention(this string expressionName)
+        public static String RemoveExpressionConvention(this String expressionName)
         {
-            return expressionName.Replace("Expression", string.Empty);
+            return expressionName.Replace("Expression", String.Empty);
         }
 
         /// <summary>
@@ -55,9 +57,9 @@ namespace YAMP
         /// </summary>
         /// <param name="operatorName"></param>
         /// <returns>The string without the word Operator.</returns>
-        public static string RemoveOperatorConvention(this string operatorName)
+        public static String RemoveOperatorConvention(this String operatorName)
         {
-            return operatorName.Replace("Operator", string.Empty);
+            return operatorName.Replace("Operator", String.Empty);
         }
     }
 }

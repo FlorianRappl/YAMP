@@ -42,12 +42,12 @@
 
             if (obj == null)
             {
-                throw new YAMPOperationInvalidException(".", left);
+                throw new YAMPOperationInvalidException(Op, left);
             }
 
             if (right == null)
             {
-                throw new YAMPOperationInvalidException(".", right);
+                throw new YAMPOperationInvalidException(Op, right);
             }
 
             return obj.Perform(Context, right);
@@ -74,7 +74,7 @@
 
             if (obj == null || symbol == null)
             {
-                throw new YAMPOperationInvalidException(".");
+                throw new YAMPOperationInvalidException(Op);
             }
 
             var key = new StringValue(symbol.SymbolName);

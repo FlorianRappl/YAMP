@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reflection;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Reflection;
+
     /// <summary>
     /// Container for conserving information about parameters.
     /// </summary>
@@ -81,7 +81,7 @@ namespace YAMP
         /// <summary>
         /// Gets the length of the arguments.
         /// </summary>
-        public int Length 
+        public Int32 Length 
         {
             get;
             private set; 
@@ -90,7 +90,7 @@ namespace YAMP
         /// <summary>
         /// Gets the computed weight of the arguments.
         /// </summary>
-		public int Weight
+		public Int32 Weight
         { 
             get; 
             private set; 
@@ -99,7 +99,7 @@ namespace YAMP
         /// <summary>
         /// Gets the minimum number of arguments for this function call.
         /// </summary>
-		public int MinimumArguments
+		public Int32 MinimumArguments
         {
             get;
             private set; 
@@ -108,7 +108,7 @@ namespace YAMP
         /// <summary>
         /// Gets the maximum number of arguments for this function call.
         /// </summary>
-		public int MaximumArguments
+		public Int32 MaximumArguments
         {
             get;
             private set; 

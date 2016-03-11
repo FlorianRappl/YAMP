@@ -1,7 +1,7 @@
-using System;
-
 namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// This is the factorial operator !.
     /// </summary>
@@ -9,7 +9,8 @@ namespace YAMP
 	{
 		static readonly FactorialFunction fac = new FactorialFunction();
 		
-		public FactorialOperator() : base("!", 1000)
+		public FactorialOperator() : 
+            base("!", 1000)
 		{
 		}
 		

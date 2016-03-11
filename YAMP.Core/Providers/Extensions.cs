@@ -1,37 +1,43 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
     static class TypeExtensions
     {
         public static bool IsCastableTo(this Type from, Type to)
         {
-            if (to.IsAssignableFrom(from))
-                return true;
+            if (!to.IsAssignableFrom(from))
+            {
+                var flags = BindingFlags.Public | BindingFlags.Static;
+                var methods = to.GetMethods(flags).Union(from.GetMethods(flags))
+                    .Where(m => m.ReturnType == to && (m.Name.Equals("op_Implicit") || m.Name.Equals("op_Explicit")) && m.GetParameters()[0].ParameterType == from);
+                return methods.Any();
+            }
 
-            var methods = to.GetMethods(BindingFlags.Public | BindingFlags.Static).Union(from.GetMethods(BindingFlags.Public | BindingFlags.Static))
-                .Where(m => m.ReturnType == to && (m.Name == "op_Implicit" || m.Name == "op_Explicit") && m.GetParameters()[0].ParameterType == from);
-            return methods.Any();
+            return true;
         }
 
-        public static bool SupportsCastFrom(this Type from, object instance)
+        public static Boolean SupportsCastFrom(this Type from, Object instance)
         {
             var to = instance.GetType();
             return IsCastableTo(from, to);
         }
 
-        public static object Cast(this Type to, object instance)
+        public static Object Cast(this Type to, Object instance)
         {
             var from = instance.GetType();
 
-            if (to.IsAssignableFrom(from))
-                return instance;
-
-            var method = to.GetMethods(BindingFlags.Public | BindingFlags.Static).Union(from.GetMethods(BindingFlags.Public | BindingFlags.Static))
-                .Where(m => m.ReturnType == to && (m.Name == "op_Implicit" || m.Name == "op_Explicit") && m.GetParameters()[0].ParameterType == from).First();
-            return method.Invoke(null, new object[] { instance });
+            if (!to.IsAssignableFrom(from))
+            {
+                var flags = BindingFlags.Public | BindingFlags.Static;
+                var method = to.GetMethods(flags).Union(from.GetMethods(flags))
+                    .Where(m => m.ReturnType == to && (m.Name == "op_Implicit" || m.Name == "op_Explicit") && m.GetParameters()[0].ParameterType == from).First();
+                return method.Invoke(null, new[] { instance });
+            }
+                
+            return instance;
         }
     }
 }
