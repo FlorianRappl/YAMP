@@ -948,7 +948,7 @@ namespace YAMP
 				}, pair.Value);
 			}
 
-            return new MatrixValue(nv, _dimY, _dimX);
+            return new MatrixValue(nv, _dimX, _dimY);
 		}
 
         /// <summary>
