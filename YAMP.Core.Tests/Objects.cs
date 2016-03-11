@@ -59,9 +59,15 @@ namespace YAMP.Core.Tests
         }
 
         [Test]
-        public void ObjectOperatorPrecedencePowerArgument()
+        public void ObjectOperatorPrecedenceLeftPowerArgument()
         {
-            Test("a = object(); a.b = 2; 3^a.b", 8.0);
+            Test("a = object(); a.b = 2; a.b^3", 8.0);
+        }
+
+        [Test]
+        public void ObjectOperatorPrecedenceRightPowerArgument()
+        {
+            Test("a = object(); a.b = 2; 3^a.b", 9.0);
         }
 
         [Test]
