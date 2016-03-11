@@ -52,7 +52,7 @@
         /// <summary>
         /// Gets a boolean if the statement was actually muted (terminated with a colon ;).
         /// </summary>
-        public bool IsMuted 
+        public Boolean IsMuted 
         { 
             get; 
             internal set; 
@@ -61,7 +61,7 @@
         /// <summary>
         /// Gets a value indicating if the statement consists of one keyword.
         /// </summary>
-        public bool IsFinished
+        public Boolean IsFinished
         {
             get;
             private set; 
@@ -70,7 +70,7 @@
         /// <summary>
         /// Gets a value indicating if the statement is empty.
         /// </summary>
-        public bool IsEmpty
+        public Boolean IsEmpty
         {
             get { return _expressions.Count == 0 && _operators.Count == 0 && (!_finalized || !_container.HasContent); }
         }
@@ -78,7 +78,7 @@
         /// <summary>
         /// Gets a value marking if its the turn of an operator (or not).
         /// </summary>
-        internal bool IsOperator
+        internal Boolean IsOperator
         {
             get { return _takeOperator; }
         }
@@ -86,7 +86,7 @@
         /// <summary>
         /// Gets a value indicating if the statement will be assigned to a value.
         /// </summary>
-        public bool IsAssignment
+        public Boolean IsAssignment
         {
             get { return _container.IsAssignment; }
         }
@@ -100,7 +100,7 @@
         /// </summary>
         /// <typeparam name="T">The keyword to search for.</typeparam>
         /// <returns>A boolean to indicate the search result.</returns>
-        internal bool IsKeyword<T>() where T : Keyword
+        internal Boolean IsKeyword<T>() where T : Keyword
         {
             if (_container.Expressions != null)
             {
@@ -135,60 +135,74 @@
         /// Pushes an operator to the stack.
         /// </summary>
         /// <param name="engine">The current parse engine.</param>
-        /// <param name="_operator">The operator to add.</param>
+        /// <param name="operator">The operator to add.</param>
         /// <returns>The current instance.</returns>
-        internal Statement Push(ParseEngine engine, Operator _operator)
+        internal Statement Push(ParseEngine engine, Operator @operator)
         {
-            if (_finalized)
-                return this;
-
-            _operator = _operator ?? Operator.Void;
-
-            if (_operator.Expressions == 1 && _operator.IsRightToLeft)
+            if (!_finalized)
             {
-                _expressions.Push(new ContainerExpression(_expressions.Pop(), _operator));
-            }
-            else
-            {
-                if (_operator.Expressions == 2)
+                @operator = @operator ?? Operator.Void;
+
+                if (@operator.Expressions == 1 && @operator.IsRightToLeft)
                 {
-                    if (_operator.Level >= (_operator.IsRightToLeft ? _maxLevel : _maxLevel + 1))
-                        _maxLevel = _operator.Level;
-                    else
+                    if (_maxLevel > @operator.Level)
                     {
-                        while (true)
+                        PopExpressions(@operator);
+                    }
+
+                    _expressions.Push(new ContainerExpression(_expressions.Pop(), @operator));
+                }
+                else
+                {
+                    if (@operator.Expressions == 2)
+                    {
+                        if (@operator.Level >= (@operator.IsRightToLeft ? _maxLevel : _maxLevel + 1))
                         {
-                            var count = _operators.Peek().Expressions;
-
-                            if (count > _expressions.Count)
-                            {
-                                errors.Add(new YAMPExpressionMissingError(_operator.StartLine, _operator.StartColumn));
-                                break;
-                            }
-
-                            var exp = new Expression[count];
-
-                            for (var i = count - 1; i >= 0; i--)
-                                exp[i] = _expressions.Pop();
-
-                            var container = new ContainerExpression(exp, _operators.Pop());
-                            _expressions.Push(container);
-                            ReduceUnary(container);
-
-                            if (_operators.Count > 0 && _operators.Peek().Level >= _operator.Level)
-                                continue;
-
-                            _maxLevel = _operator.Level;
-                            break;
+                            _maxLevel = @operator.Level;
+                        }
+                        else
+                        {
+                            PopExpressions(@operator);
                         }
                     }
-                }
 
-                _operators.Push(_operator);
-                _takeOperator = false;
+                    _operators.Push(@operator);
+                    _takeOperator = false;
+                }
             }
 
             return this;
+        }
+
+        void PopExpressions(Operator @operator)
+        {
+            while (true)
+            {
+                var count = _operators.Peek().Expressions;
+
+                if (count > _expressions.Count)
+                {
+                    errors.Add(new YAMPExpressionMissingError(@operator.StartLine, @operator.StartColumn));
+                    break;
+                }
+
+                var exp = new Expression[count];
+
+                for (var i = count - 1; i >= 0; i--)
+                {
+                    exp[i] = _expressions.Pop();
+                }
+
+                var container = new ContainerExpression(exp, _operators.Pop());
+                _expressions.Push(container);
+                ReduceUnary(container);
+
+                if (_operators.Count <= 0 || _operators.Peek().Level < @operator.Level)
+                {
+                    _maxLevel = @operator.Level;
+                    break;
+                }
+            }
         }
 
         void ReduceUnary(ContainerExpression container)
@@ -209,10 +223,14 @@
         internal Statement Push(ParseEngine engine, Expression _expression)
         {
             if (_finalized)
+            {
                 return this;
+            }
 
             if (_expressions.Count == 0)
+            {
                 IsFinished = _expression == null ? false : _expression.IsSingleStatement;
+            }
 
             _expressions.Push(_expression ?? Expression.Empty);
             _takeOperator = true;
@@ -228,12 +246,16 @@
         internal Statement Finalize(ParseEngine engine)
         {
             if (_finalized)
+            {
                 return this;
+            }
 
             if (errors.Count != 0)
             {
                 foreach (var error in errors)
+                {
                     engine.AddError(error);
+                }
 
                 return this;
             }
@@ -256,7 +278,9 @@
                 }
 
                 for (var i = op.Expressions - 1; i >= 0; i--)
+                {
                     exp[i] = _expressions.Pop();
+                }
 
                 var container = new ContainerExpression(exp, op);
                 _expressions.Push(container);
@@ -264,9 +288,13 @@
             }
 
             if (_expressions.Count == 1)
+            {
                 _container = new ContainerExpression(_expressions.Pop());
+            }
             else
+            {
                 _container = new ContainerExpression();
+            }
 
             _finalized = true;
             return this;
@@ -277,7 +305,7 @@
         /// </summary>
         /// <param name="symbols">Additional symbols to consider.</param>
         /// <returns>The result of the evaluation.</returns>
-        public Value Interpret(Dictionary<string, Value> symbols)
+        public Value Interpret(Dictionary<String, Value> symbols)
         {
             if (_finalized)
             {
