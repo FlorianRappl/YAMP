@@ -305,7 +305,7 @@
         /// </summary>
         /// <param name="symbols">Additional symbols to consider.</param>
         /// <returns>The result of the evaluation.</returns>
-        public Value Interpret(Dictionary<String, Value> symbols)
+        public Value Interpret(IDictionary<String, Value> symbols)
         {
             if (_finalized)
             {

@@ -54,7 +54,7 @@
 
         #region Methods
 
-        public override Value Interpret(Dictionary<String, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             var localSymbols = new Dictionary<String, Value>(symbols);
             Scope.Run(localSymbols);

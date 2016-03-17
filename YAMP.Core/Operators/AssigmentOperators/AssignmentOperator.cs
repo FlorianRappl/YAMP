@@ -31,7 +31,7 @@ namespace YAMP
 			return new AssignmentOperator();
 		}
 
-		public override Value Handle(Expression left, Expression right, Dictionary<String, Value> symbols)
+		public override Value Handle(Expression left, Expression right, IDictionary<String, Value> symbols)
 		{
 			var bottom = right.Interpret(symbols);
 			return Assign(left, bottom, symbols);
@@ -42,7 +42,7 @@ namespace YAMP
 			return right;
 		}
 
-		protected Value Assign(Expression left, Value value, Dictionary<String, Value> symbols)
+		protected Value Assign(Expression left, Value value, IDictionary<String, Value> symbols)
 		{
             if (left is SymbolExpression)
             {
@@ -84,7 +84,7 @@ namespace YAMP
 
         #region Helpers
 
-        Value HandleMultipleOutputs(Value value, SymbolExpression[] vars, Dictionary<String, Value> symbols)
+        Value HandleMultipleOutputs(Value value, SymbolExpression[] vars, IDictionary<String, Value> symbols)
         {
             if (value is ArgumentsValue)
             {
@@ -107,7 +107,7 @@ namespace YAMP
             return value;
         }
 
-        Value Assign(SymbolExpression left, Value value, Dictionary<String, Value> symbols)
+        Value Assign(SymbolExpression left, Value value, IDictionary<String, Value> symbols)
 		{
             if (symbols.ContainsKey(left.SymbolName))
             {

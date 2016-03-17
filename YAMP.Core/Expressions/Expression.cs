@@ -1,5 +1,6 @@
 namespace YAMP
 {
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -21,7 +22,7 @@ namespace YAMP
         /// </summary>
         /// <param name="line">The line of beginning of the expression.</param>
         /// <param name="column">The column in the line of the beginning of the expression.</param>
-        public Expression(int line, int column)
+        public Expression(Int32 line, Int32 column)
         {
             StartLine = line;
             StartColumn = column;
@@ -42,7 +43,8 @@ namespace YAMP
         /// <param name="query">The context of the expression.</param>
         /// <param name="line">The line of beginning of the expression.</param>
         /// <param name="column">The column in the line of the beginning of the expression.</param>
-        public Expression(QueryContext query, int line, int column) : this(line, column)
+        public Expression(QueryContext query, Int32 line, Int32 column) 
+            : this(line, column)
         {
             Query = query;
         }
@@ -71,7 +73,7 @@ namespace YAMP
         /// <summary>
         /// Gets a value indicating if the expression is a whole statement.
         /// </summary>
-        public bool IsSingleStatement
+        public Boolean IsSingleStatement
         {
             get;
             protected set;
@@ -86,7 +88,7 @@ namespace YAMP
         /// </summary>
         /// <param name="symbols">The external symbols to consider.</param>
         /// <returns>The evaluated value.</returns>
-        public abstract Value Interpret(Dictionary<string, Value> symbols);
+        public abstract Value Interpret(IDictionary<String, Value> symbols);
 
         /// <summary>
         /// Scans for an expression given the parse engine.
@@ -111,9 +113,10 @@ namespace YAMP
         /// Returns a string representation of the expression.
         /// </summary>
         /// <returns></returns>
-        public override string ToString ()
+        public override String ToString ()
 		{
-            return string.Format("({0}, {1}) {2}", StartLine, StartColumn, GetType().Name.RemoveExpressionConvention());
+            return String.Format("({0}, {1}) {2}",
+                StartLine, StartColumn, GetType().Name.RemoveExpressionConvention());
 		}
 
 		#endregion

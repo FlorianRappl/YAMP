@@ -23,7 +23,7 @@
         {
         }
 
-        public LetKeyword(int line, int column, QueryContext query)
+        public LetKeyword(Int32 line, Int32 column, QueryContext query)
             : this()
         {
             Query = query;
@@ -38,7 +38,7 @@
         /// <summary>
         /// Gets the name of the created local variable.
         /// </summary>
-        public string Name
+        public String Name
         {
             get { return name.SymbolName; }
         }
@@ -47,7 +47,7 @@
 
         #region Methods
 
-        public override Value Interpret(Dictionary<String, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             if (symbols.ContainsKey(Name))
             {
@@ -82,7 +82,7 @@
 
         #region String Representation
 
-        public override string ToCode()
+        public override String ToCode()
         {
             return "let ";
         }

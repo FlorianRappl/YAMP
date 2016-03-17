@@ -94,7 +94,7 @@ namespace YAMP
         /// <param name="expressions">The expressions to evaluate.</param>
         /// <param name="symbols">External symbols to consider.</param>
         /// <returns>The result of the evaluation.</returns>
-		public abstract Value Evaluate(Expression[] expressions, Dictionary<string, Value> symbols);
+        public abstract Value Evaluate(Expression[] expressions, IDictionary<String, Value> symbols);
 
         /// <summary>
         /// Creates a new instance of the current operator.

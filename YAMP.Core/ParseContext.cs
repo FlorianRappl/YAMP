@@ -76,8 +76,8 @@
             _answer = "$";
             _isReadOnly = true;
             _variables = new ReadOnlyDictionary<String, Value>(shadowVariables);
-            _functions = new Dictionary<String, IFunction>();
-            _constants = new Dictionary<String, IConstants>();
+            _functions = new Dictionary<String, IFunction>(StringComparer.OrdinalIgnoreCase);
+            _constants = new Dictionary<String, IConstants>(StringComparer.OrdinalIgnoreCase);
             _defaultProperties = new Dictionary<String, IDictionary<String, Value>>();
             _parent = null;
             _precision = 6;
@@ -104,8 +104,8 @@
         {
             _isReadOnly = false;
             _variables = new Dictionary<String, Value>();
-            _functions = new Dictionary<String, IFunction>();
-            _constants = new Dictionary<String, IConstants>();
+            _functions = new Dictionary<String, IFunction>(StringComparer.OrdinalIgnoreCase);
+            _constants = new Dictionary<String, IConstants>(StringComparer.OrdinalIgnoreCase);
             _defaultProperties = new Dictionary<String, IDictionary<String, Value>>();
             _parent = parentContext;
             _precision = parentContext.Precision;
@@ -342,8 +342,7 @@
         /// <returns>The current context.</returns>
         public ParseContext AddConstant(String name, IConstants constant)
         {
-            var lname = name.ToLower();
-            _constants[lname] = constant;
+            _constants[name] = constant;
             return this;
         }
 
@@ -359,8 +358,7 @@
         /// <returns>The current context.</returns>
         public ParseContext AddFunction(String name, IFunction func)
         {
-            var lname = name.ToLower();
-            _functions[lname] = func;
+            _functions[name] = func;
             return this;
         }
 
@@ -377,11 +375,9 @@
         /// <returns>The current context.</returns>
         public ParseContext RemoveConstant(String name)
         {
-            var lname = name.ToLower();
-
-            if (_constants.ContainsKey(lname))
+            if (_constants.ContainsKey(name))
             {
-                _constants.Remove(lname);
+                _constants.Remove(name);
             }
 
             return this;
@@ -396,11 +392,9 @@
         /// <returns>The current context.</returns>
         public ParseContext RemoveFunction(String name)
         {
-            var lname = name.ToLower();
-
-            if (_functions.ContainsKey(lname))
+            if (_functions.ContainsKey(name))
             {
-                _functions.Remove(lname);
+                _functions.Remove(name);
             }
 
             return this;
@@ -422,12 +416,10 @@
         /// <returns>The current context.</returns>
         public ParseContext RenameConstant(String oldName, String newName)
         {
-            var lname = oldName.ToLower();
-
-            if (_constants.ContainsKey(lname))
+            if (_constants.ContainsKey(oldName))
             {
-                var buffer = _constants[lname];
-                _constants.Remove(lname);
+                var buffer = _constants[oldName];
+                _constants.Remove(oldName);
                 _constants.Add(newName, buffer);
             }
 
@@ -446,12 +438,10 @@
         /// <returns>The current context.</returns>
         public ParseContext RenameFunction(String oldName, String newName)
         {
-            var lname = oldName.ToLower();
-
-            if (_functions.ContainsKey(lname))
+            if (_functions.ContainsKey(oldName))
             {
-                var buffer = _functions[lname];
-                _functions.Remove(lname);
+                var buffer = _functions[oldName];
+                _functions.Remove(oldName);
                 _functions.Add(newName, buffer);
             }
 
@@ -471,16 +461,34 @@
         /// <returns>The value of the constant.</returns>
         public IConstants FindConstants(String name)
         {
-            var lname = name.ToLower();
-
-            if (_constants.ContainsKey(lname))
+            if (_constants.ContainsKey(name))
             {
-                return _constants[lname];
+                return _constants[name];
             }
 
             if (_parent != null)
             {
                 return _parent.FindConstants(name);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the exact context of the given symbol.
+        /// </summary>
+        /// <param name="name">The name of the symbol.</param>
+        /// <returns>The context or NULL if nothing was found.</returns>
+        public ParseContext GetSymbolContext(String name)
+        {
+            if (_variables.ContainsKey(name) || _constants.ContainsKey(name) || _functions.ContainsKey(name))
+            {
+                return this;
+            }
+
+            if (_parent != null)
+            {
+                return _parent.GetSymbolContext(name);
             }
 
             return null;
@@ -495,11 +503,9 @@
         /// <returns>The instance of the function's class.</returns>
         public IFunction FindFunction(String name)
         {
-            var lname = name.ToLower();
-
-            if (_functions.ContainsKey(lname))
+            if (_functions.ContainsKey(name))
             {
-                return _functions[lname];
+                return _functions[name];
             }
 
             if (_parent != null)

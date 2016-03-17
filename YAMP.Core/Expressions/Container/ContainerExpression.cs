@@ -189,7 +189,7 @@
         /// </summary>
         /// <param name="symbols">External symbols to be used.</param>
         /// <returns>The evaluated value.</returns>
-        public override Value Interpret(Dictionary<String, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             if (_operator != null)
             {

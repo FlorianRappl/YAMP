@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// This is the postfix decrement operator --.
     /// </summary>
@@ -13,7 +13,7 @@ namespace YAMP
         {
         }
 
-        public override Value Handle(Expression expression, Dictionary<string, Value> symbols)
+        public override Value Handle(Expression expression, IDictionary<String, Value> symbols)
         {
             var a = MinusAssignmentOperator.CreateWithContext(Query);
             var origin = expression.Interpret(symbols);

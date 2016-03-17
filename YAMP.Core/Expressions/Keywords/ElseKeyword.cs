@@ -20,7 +20,7 @@
 
         }
 
-        public ElseKeyword(int line, int column, QueryContext query)
+        public ElseKeyword(Int32 line, Int32 column, QueryContext query)
             : this()
 		{
 			Query = query;
@@ -35,7 +35,7 @@
         /// <summary>
         /// Gets a boolean indicating if the body is another if-statement.
         /// </summary>
-        public bool IsElseIf
+        public Boolean IsElseIf
         {
             get { return Body.IsKeyword<IfKeyword>(); }
         }
@@ -88,7 +88,7 @@
             return kw;
         }
 
-        public override Value Interpret(Dictionary<String, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             return null;
         }
@@ -97,7 +97,7 @@
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
             var sb = new StringBuilder();
             sb.AppendLine(Token).Append(Body.ToCode());

@@ -1,5 +1,6 @@
 namespace YAMP
 {
+    using System;
     using System.Collections.Generic;
     using YAMP.Errors;
 
@@ -15,7 +16,7 @@ namespace YAMP
         {
         }
 
-        public AbsExpression(int line, int column, int length, QueryContext query, ContainerExpression child)
+        public AbsExpression(Int32 line, Int32 column, Int32 length, QueryContext query, ContainerExpression child)
             : base(child, query, line, column)
         {
             Length = length;
@@ -25,7 +26,7 @@ namespace YAMP
 
         #region Methods
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             return AbsFunction.Abs(base.Interpret(symbols));
         }
@@ -50,7 +51,7 @@ namespace YAMP
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
             return "|" + base.ToCode() + "|";
         }

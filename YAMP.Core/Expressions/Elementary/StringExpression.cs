@@ -48,7 +48,7 @@ namespace YAMP
 
         #region Methods
 
-		public override Value Interpret(Dictionary<String, Value> symbols)
+		public override Value Interpret(IDictionary<String, Value> symbols)
 		{
             return new StringValue(value);
 		}

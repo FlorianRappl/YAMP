@@ -42,7 +42,7 @@ namespace YAMP
         /// <param name="expression">The expression on the left.</param>
         /// <param name="symbols">The external symbols to consider.</param>
         /// <returns>The result of the operation.</returns>
-		public virtual Value Handle(Expression expression, Dictionary<string, Value> symbols)
+		public virtual Value Handle(Expression expression, IDictionary<String, Value> symbols)
 		{
 			var value = expression.Interpret(symbols);
 			return Perform(value);
@@ -54,7 +54,7 @@ namespace YAMP
         /// <param name="expressions">The array of expressions, unary operators require Length == 1.</param>
         /// <param name="symbols">The external symbols to consider.</param>
         /// <returns>The result of the operation.</returns>
-		public override Value Evaluate(Expression[] expressions, Dictionary<string, Value> symbols)
+		public override Value Evaluate(Expression[] expressions, IDictionary<String, Value> symbols)
 		{
             if (expressions.Length != 1)
                 throw new YAMPArgumentNumberException(Op, expressions.Length, 1);

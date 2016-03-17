@@ -2,6 +2,7 @@ namespace YAMP
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using YAMP.Exceptions;
 
     /// <summary>
@@ -132,6 +133,27 @@ namespace YAMP
         public ParseEngine Parser
         {
             get { return _parser; }
+        }
+
+        /// <summary>
+        /// Gets the used (global) variables.
+        /// </summary>
+        public IEnumerable<VariableInfo> Variables
+        {
+            get 
+            {
+                foreach (var statement in _parser.Statements)
+                {
+                    var symbols = statement.Container.GetSymbols();
+
+                    foreach (var symbol in symbols)
+                    {
+                        var name = symbol.SymbolName;
+                        var context = symbol.Context.GetSymbolContext(name);
+                        yield return new VariableInfo(name, false, context);
+                    }
+                }
+            }
         }
 
 		#endregion

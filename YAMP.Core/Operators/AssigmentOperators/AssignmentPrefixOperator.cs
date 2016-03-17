@@ -11,13 +11,13 @@
     {        
         readonly BinaryOperator _child;
 
-        public AssignmentPrefixOperator(BinaryOperator child) : 
-            base(child.Op)
+        public AssignmentPrefixOperator(BinaryOperator child)
+            : base(child.Op)
         {
             _child = child;
         }
 
-        public override Value Handle(Expression left, Expression right, Dictionary<String, Value> symbols)
+        public override Value Handle(Expression left, Expression right, IDictionary<String, Value> symbols)
         {
             var bottom = _child.Handle(left, right, symbols);
             return Assign(left, bottom, symbols);

@@ -1,5 +1,6 @@
 ﻿namespace YAMP
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
     using YAMP.Errors;
@@ -12,17 +13,18 @@
     {
         #region Fields
 
-        bool __break;
+        Boolean __break;
 
         #endregion
 
         #region ctor
 
-        public WhileKeyword() : base("while")
+        public WhileKeyword()
+            : base("while")
         {
         }
 
-        public WhileKeyword(int line, int column, QueryContext query)
+        public WhileKeyword(Int32 line, Int32 column, QueryContext query)
             : this()
 		{
 			Query = query;
@@ -104,30 +106,29 @@
             __break = true;
         }
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
-            if (IsDoWhile)
-                return null;
-
-            __break = false;
-
-            while (InterpretCondition(symbols))
+            if (!IsDoWhile)
             {
-                Body.Interpret(symbols);
+                __break = false;
 
-                if (__break)
-                    break;
+                while (!__break && InterpretCondition(symbols))
+                {
+                    Body.Interpret(symbols);
+                }
             }
 
             return null;
         }
 
-        public bool InterpretCondition(Dictionary<string, Value> symbols)
+        public Boolean InterpretCondition(IDictionary<String, Value> symbols)
         {
             var condition = Condition.Interpret(symbols);
 
             if (condition != null && condition is ScalarValue)
+            {
                 return ((ScalarValue)condition).IsTrue;
+            }
 
             return false;
         }
@@ -136,7 +137,7 @@
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
             var sb = new StringBuilder();
             sb.Append(Token).Append("(");

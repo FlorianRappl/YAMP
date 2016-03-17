@@ -53,7 +53,7 @@
             return obj.Perform(Context, right);
 		}
 
-        public override Value Handle(Expression left, Expression right, Dictionary<String, Value> symbols)
+        public override Value Handle(Expression left, Expression right, IDictionary<String, Value> symbols)
         {
             var l = left.Interpret(symbols);
             var symbol = right as SymbolExpression;
@@ -67,7 +67,7 @@
             return Perform(l, value);
         }
 
-        public Value Handle(Expression left, Expression right, Value value, Dictionary<String, Value> symbols)
+        public Value Handle(Expression left, Expression right, Value value, IDictionary<String, Value> symbols)
         {
             var obj = left.Interpret(symbols) as ObjectValue;
             var symbol = right as SymbolExpression;

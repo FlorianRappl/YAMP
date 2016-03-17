@@ -71,7 +71,7 @@ namespace YAMP
             return left;
         }
 
-        public override Value Handle(Expression expression, Dictionary<String, Value> symbols)
+        public override Value Handle(Expression expression, IDictionary<String, Value> symbols)
         {
             var args = _content.Interpret(symbols);
             var left = expression.Interpret(symbols);
@@ -89,7 +89,7 @@ namespace YAMP
             throw new YAMPExpressionNoFunctionException();
         }
 
-        public Value Handle(Expression expression, Value value, Dictionary<String, Value> symbols)
+        public Value Handle(Expression expression, Value value, IDictionary<String, Value> symbols)
         {
             var symbolName = String.Empty;
             var isSymbol = expression is SymbolExpression;

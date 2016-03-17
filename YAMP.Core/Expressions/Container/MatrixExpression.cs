@@ -26,7 +26,7 @@
         /// <param name="length">The length of the matrix expression.</param>
         /// <param name="query">The associated query context.</param>
         /// <param name="child">The child containing the column and rows.</param>
-        public MatrixExpression(int line, int column, int length, QueryContext query, ContainerExpression child)
+        public MatrixExpression(Int32 line, Int32 column, Int32 length, QueryContext query, ContainerExpression child)
             : base(child, query, line, column)
 		{
             Length = length;
@@ -41,7 +41,7 @@
         /// </summary>
         /// <param name="symbols">External symbols to load.</param>
         /// <returns>The evaluated matrix value.</returns>
-        public override Value Interpret(Dictionary<String, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             return base.Interpret(symbols) ?? new MatrixValue();
         }
@@ -134,7 +134,7 @@
         /// Transforms the expression into YAMP query code.
         /// </summary>
         /// <returns>The string representation of the part of the query.</returns>
-        public override string ToCode()
+        public override String ToCode()
         {
             return "[" + base.ToCode() + "]";
         }

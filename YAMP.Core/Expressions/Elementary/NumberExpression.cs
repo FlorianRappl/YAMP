@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// This class evaluates and creates number 012345 expressions.
     /// </summary>
@@ -25,7 +25,8 @@ namespace YAMP
             value = content;
         }
 
-		public NumberExpression(ParseEngine engine) : base(engine)
+		public NumberExpression(ParseEngine engine)
+            : base(engine)
 		{
 		}
 
@@ -33,7 +34,7 @@ namespace YAMP
 
         #region Methods
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
 		{
             return value.Clone();
 		}
@@ -128,10 +129,12 @@ namespace YAMP
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
-            if(value.Re != 0.0)
+            if (value.Re != 0.0)
+            {
                 return value.Re.ToString().Replace(',', '.');
+            }
 
             return value.Im.ToString().Replace(',', '.') + "i";
         }
@@ -140,14 +143,14 @@ namespace YAMP
 
         #region Helpers
 
-        static double ToDoubleNumber(char p)
+        static Double ToDoubleNumber(Char p)
         {
-            return (double)p - 48.0;
+            return (Double)p - 48.0;
         }
 
-        static int ToInt32Number(char p)
+        static Int32 ToInt32Number(Char p)
         {
-            return (int)p - 48;
+            return (Int32)p - 48;
         }
 
         #endregion

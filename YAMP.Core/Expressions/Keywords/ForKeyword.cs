@@ -13,7 +13,7 @@
     {
         #region Fields
 
-        bool __break;
+        Boolean __break;
 
         #endregion
 
@@ -24,7 +24,7 @@
         {
         }
 
-		public ForKeyword(int line, int column, QueryContext query)
+		public ForKeyword(Int32 line, Int32 column, QueryContext query)
             : this()
 		{
 			Query = query;
@@ -68,8 +68,7 @@
                 engine.AddError(new YAMPForArgumentsMissing(engine));
                 return kw;
             }
-
-            if (chars[index] == '(')
+            else if (chars[index] == '(')
             {
                 var ln = engine.CurrentLine;
                 var col = engine.CurrentColumn;
@@ -95,7 +94,7 @@
             __break = true;
         }
 
-        public override Value Interpret(Dictionary<String, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             Initialization.Interpret(symbols);
             __break = false;
@@ -115,12 +114,14 @@
             return null;
         }
 
-        public bool InterpretCondition(Dictionary<string, Value> symbols)
+        public Boolean InterpretCondition(IDictionary<String, Value> symbols)
         {
             var condition = Condition.Interpret(symbols);
 
             if (condition != null && condition is ScalarValue)
+            {
                 return ((ScalarValue)condition).IsTrue;
+            }
 
             return false;
         }
@@ -129,7 +130,7 @@
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
             var sb = new StringBuilder();
             sb.Append(Token).Append("(");

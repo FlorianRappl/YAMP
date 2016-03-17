@@ -11,7 +11,7 @@ namespace YAMP
     {
         #region Fields
 
-        string symbolName;
+        readonly String _symbolName;
 
         #endregion
 
@@ -21,15 +21,15 @@ namespace YAMP
 		{
 		}
 
-        public SymbolExpression(string content)
+        public SymbolExpression(String content)
         {
-            symbolName = content;
+            _symbolName = content;
         }
 
-        public SymbolExpression(ParseEngine engine, string name)
+        public SymbolExpression(ParseEngine engine, String name)
             : base(engine)
         {
-            symbolName = name;
+            _symbolName = name;
             Length = name.Length;
 		}
 
@@ -40,52 +40,52 @@ namespace YAMP
         /// <summary>
         /// Gets the name of the found symbol.
         /// </summary>
-        public string SymbolName
+        public String SymbolName
         {
-            get { return symbolName; }
+            get { return _symbolName; }
         }
 
         #endregion
 
         #region Methods
 
-		public override Value Interpret(Dictionary<string, Value> symbols)
+		public override Value Interpret(IDictionary<String, Value> symbols)
 		{
-            if (symbols.ContainsKey(symbolName))
+            if (symbols.ContainsKey(_symbolName))
             {
-                return symbols[symbolName];
+                return symbols[_symbolName];
             }
 
-            var variable = Context.GetVariable(symbolName);
+            var variable = Context.GetVariable(_symbolName);
 
             if (variable != null)
             {
                 return variable;
             }
 
-            var constant = Context.FindConstants(symbolName);
+            var constant = Context.FindConstants(_symbolName);
 
             if (constant != null)
             {
                 return constant.Value;
             }
 
-            var function = Context.FindFunction(symbolName);
+            var function = Context.FindFunction(_symbolName);
 
             if (function == null)
             {
-                function = Query.GetFromBuffer(symbolName);
+                function = Query.GetFromBuffer(_symbolName);
 
                 if (function == null)
                 {
-                    function = Context.LoadFunction(symbolName);
+                    function = Context.LoadFunction(_symbolName);
 
                     if (function == null)
                     {
-                        throw new YAMPSymbolMissingException(symbolName);
+                        throw new YAMPSymbolMissingException(_symbolName);
                     }
 
-                    Query.SetToBuffer(symbolName, function);
+                    Query.SetToBuffer(_symbolName, function);
                     return new FunctionValue(function);
                 }
             }
@@ -133,7 +133,7 @@ namespace YAMP
 
         public override string ToCode()
         {
-            return symbolName;
+            return _symbolName;
         }
 
         #endregion

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
     /// <summary>
     /// The class representing the do keyword for do {...} while(...); loops. Basic syntax:
     /// do STATEMENT while ( CONDITION) ;
@@ -23,7 +23,7 @@ namespace YAMP
         {
         }
 
-        public DoKeyword(int line, int column, QueryContext query)
+        public DoKeyword(Int32 line, Int32 column, QueryContext query)
             : this()
         {
             StartLine = line;
@@ -44,18 +44,15 @@ namespace YAMP
 
         #region Methods
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             __break = false;
 
             do
             {
                 Body.Interpret(symbols);
-
-                if (__break)
-                    break;
             }
-            while (While.InterpretCondition(symbols));
+            while (!__break && While.InterpretCondition(symbols));
 
             return null;
         }
@@ -79,7 +76,7 @@ namespace YAMP
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
             var sb = new StringBuilder();
             sb.AppendLine(Token);

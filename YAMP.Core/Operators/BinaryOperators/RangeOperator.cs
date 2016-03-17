@@ -10,15 +10,15 @@ namespace YAMP
     /// </summary>
 	class RangeOperator : BinaryOperator
 	{
-		const String End = "end";
+		static readonly String End = "end";
 
-		public RangeOperator () :
-            base(":", 3)
+		public RangeOperator()
+            : base(":", 3)
 		{
 			IsRightToLeft = true;
 		}
 		
-		public override Value Perform (Value left, Value right)
+		public override Value Perform(Value left, Value right)
 		{
 			var step = 1.0;
 			var explicitStep = false;
@@ -76,7 +76,7 @@ namespace YAMP
 			return new RangeValue(start, end, step);
 		}
 
-		public override Value Handle(Expression left, Expression right, Dictionary<String, Value> symbols)
+		public override Value Handle(Expression left, Expression right, IDictionary<String, Value> symbols)
 		{
 			var l = left.Interpret(symbols);
 			var r = new StringValue(End) as Value;

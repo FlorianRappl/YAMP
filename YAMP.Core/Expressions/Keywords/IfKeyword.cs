@@ -1,5 +1,6 @@
 ﻿namespace YAMP
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
     using YAMP.Errors;
@@ -12,11 +13,12 @@
     {
         #region ctor
 
-        public IfKeyword() : base("if")
+        public IfKeyword()
+            : base("if")
 		{
 		}
 
-        public IfKeyword(int line, int column, QueryContext query)
+        public IfKeyword(Int32 line, Int32 column, QueryContext query)
             : this()
 		{
 			Query = query;
@@ -78,7 +80,7 @@
             return kw;
         }
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             var condition = Condition.Interpret(symbols);
 
@@ -104,7 +106,7 @@
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
             var sb = new StringBuilder();
             sb.Append(Token).Append("(");

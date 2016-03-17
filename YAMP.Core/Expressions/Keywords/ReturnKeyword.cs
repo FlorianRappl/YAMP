@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Represents the return keyword to cancel the current execution and return
     /// the given expression [if any].
@@ -16,7 +16,7 @@ namespace YAMP
         {
         }
 
-        public ReturnKeyword(int line, int column, QueryContext query)
+        public ReturnKeyword(Int32 line, Int32 column, QueryContext query)
             : this()
         {
             Query = query;
@@ -39,7 +39,7 @@ namespace YAMP
             return kw;
         }
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             StopAllContexts(Query);
             return Body.Interpret(symbols);
@@ -49,7 +49,7 @@ namespace YAMP
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
             return Token + " " + Body.ToCode();
         }
@@ -63,11 +63,15 @@ namespace YAMP
             context.Stop();
             context.CurrentStatement.IsMuted = false;
 
-            if(context.CurrentStatement.IsKeyword<BreakableKeyword>())
+            if (context.CurrentStatement.IsKeyword<BreakableKeyword>())
+            {
                 context.CurrentStatement.GetKeyword<BreakableKeyword>().Break();
+            }
 
             if (context.Parent != null)
+            {
                 StopAllContexts(context.Parent);
+            }
         }
 
         #endregion

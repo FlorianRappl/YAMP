@@ -1,5 +1,6 @@
 ﻿namespace YAMP
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
     using YAMP.Errors;
@@ -24,7 +25,7 @@
         {
         }
 
-        public FunctionKeyword(int line, int column, QueryContext query)
+        public FunctionKeyword(Int32 line, Int32 column, QueryContext query)
             : this()
         {
             Query = query;
@@ -39,7 +40,7 @@
         /// <summary>
         /// Gets the name of the created function.
         /// </summary>
-        public string Name
+        public String Name
         {
             get { return name.SymbolName; }
         }
@@ -47,15 +48,17 @@
         /// <summary>
         /// Gets the name of the arguments of the function.
         /// </summary>
-        public string[] Arguments
+        public String[] Arguments
         {
             get
             {
                 var symbols = arguments.GetSymbols();
-                var args = new string[symbols.Length];
+                var args = new String[symbols.Length];
 
                 for (var i = 0; i != symbols.Length; i++)
+                {
                     args[i] = symbols[i].SymbolName;
+                }
 
                 return args;
             }
@@ -139,7 +142,7 @@
             return kw;
         }
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             var f = new FunctionValue(Name, Arguments, Body.Container);
             Query.Context.AddFunction(Name, f);
@@ -154,7 +157,7 @@
         /// Transforms the created function expression to YAMP code.
         /// </summary>
         /// <returns>The string for creating the expression.</returns>
-        public override string ToCode()
+        public override String ToCode()
         {
             var sb = new StringBuilder();
             sb.Append(Token).Append(" ").Append(Name);

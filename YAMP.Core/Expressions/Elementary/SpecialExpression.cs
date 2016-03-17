@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 namespace YAMP
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// This is the class that represents some special expressions (like :).
     /// </summary>
@@ -10,9 +10,12 @@ namespace YAMP
     {
         #region Fields
 
-        string specialName;
-        Func<Dictionary<string, Value>, Value> specialValue;
-        static readonly Dictionary<string, Func<Dictionary<string, Value>, Value>> specialExpressions;
+        static readonly Dictionary<String, Func<IDictionary<String, Value>, Value>> specialExpressions = new Dictionary<String, Func<IDictionary<String, Value>, Value>>
+        {
+            { ":", symbols => new RangeValue() }
+        };
+        readonly String _specialName;
+        Func<IDictionary<String, Value>, Value> _specialValue;
 
         #endregion
 
@@ -22,25 +25,20 @@ namespace YAMP
 		{
 		}
 
-		public SpecialExpression(ParseEngine engine, string name) : base(engine)
+		public SpecialExpression(ParseEngine engine, String name) 
+            : base(engine)
 		{
-            specialName = name;
+            _specialName = name;
             Length = name.Length;
 		}
-
-        static SpecialExpression()
-        {
-            specialExpressions = new Dictionary<string, Func<Dictionary<string, Value>, Value>>();
-            specialExpressions.Add(":", symbols => new RangeValue());
-        }
 
         #endregion
 
         #region Methods
 
-        public override Value Interpret(Dictionary<string, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
 		{
-            return specialValue(symbols);
+            return _specialValue(symbols);
 		}
 
         public override Expression Scan(ParseEngine engine)
@@ -51,7 +49,7 @@ namespace YAMP
                 {
                     var exp = new SpecialExpression(engine, specialExpression.Key);
                     engine.Advance();
-                    exp.specialValue = specialExpression.Value;
+                    exp._specialValue = specialExpression.Value;
                     return exp;
                 }
             }
@@ -63,27 +61,31 @@ namespace YAMP
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
-            return specialName;
+            return _specialName;
         }
 
         #endregion
 
         #region Helpers
 
-        static bool Compare(char[] characters, int index, string value)
+        static Boolean Compare(Char[] characters, Int32 index, String value)
         {
-            if (characters.Length - index < value.Length)
-                return false;
-
-            for (var i = 0; i < value.Length; i++)
+            if (characters.Length - index >= value.Length)
             {
-                if (value[i] != characters[i + index])
-                    return false;
+                for (var i = 0; i < value.Length; i++)
+                {
+                    if (value[i] != characters[i + index])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         #endregion

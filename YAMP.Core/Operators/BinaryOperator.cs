@@ -41,7 +41,7 @@ namespace YAMP
         /// <param name="right">The expression on the right.</param>
         /// <param name="symbols">The external symbols to consider.</param>
         /// <returns>The result of the operation.</returns>
-		public virtual Value Handle(Expression left, Expression right, Dictionary<String, Value> symbols)
+		public virtual Value Handle(Expression left, Expression right, IDictionary<String, Value> symbols)
 		{
 			var l = left.Interpret(symbols);
 			var r = right.Interpret(symbols);
@@ -80,7 +80,7 @@ namespace YAMP
         /// <param name="expressions">The array of expressions, binary operators require Length == 2.</param>
         /// <param name="symbols">The external symbols to consider.</param>
         /// <returns>The result of the operation.</returns>
-		public override Value Evaluate(Expression[] expressions, Dictionary<String, Value> symbols)
+		public override Value Evaluate(Expression[] expressions, IDictionary<String, Value> symbols)
 		{
             if (expressions.Length != 2)
             {

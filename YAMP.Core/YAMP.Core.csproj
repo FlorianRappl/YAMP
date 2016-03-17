@@ -531,6 +531,7 @@
     <Compile Include="Operators\LogicOperators\NeqOperator.cs" />
     <Compile Include="Operators\LogicOperators\EqOperator.cs" />
     <Compile Include="Operators\LogicOperator.cs" />
+    <Compile Include="VariableInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

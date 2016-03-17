@@ -9,7 +9,8 @@
     /// </summary>
     sealed class VoidOperator : Operator
     {
-        public VoidOperator() : base("")
+        public VoidOperator() 
+            : base("")
         {
         }
 
@@ -18,7 +19,7 @@
             //Nothing to do here.
         }
 
-        public override Value Evaluate(Expression[] expressions, Dictionary<String, Value> symbols)
+        public override Value Evaluate(Expression[] expressions, IDictionary<String, Value> symbols)
         {
             return null;
         }

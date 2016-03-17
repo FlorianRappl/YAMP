@@ -11,7 +11,8 @@
     {
         #region ctor
 
-        public FatArrowOperator() : base("=>", 2)
+        public FatArrowOperator()
+            : base("=>", 2)
         {
         }
 
@@ -24,7 +25,7 @@
             return new FatArrowOperator();
         }
 
-        public override Value Handle(Expression left, Expression right, Dictionary<String, Value> symbols)
+        public override Value Handle(Expression left, Expression right, IDictionary<String, Value> symbols)
         {
             var args = default(String[]);
 

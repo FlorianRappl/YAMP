@@ -17,7 +17,7 @@
         {
         }
 
-        public BreakKeyword(int line, int column, QueryContext query)
+        public BreakKeyword(Int32 line, Int32 column, QueryContext query)
             : this()
         {
             Query = query;
@@ -43,7 +43,7 @@
             return kw;
         }
 
-        public override Value Interpret(Dictionary<String, Value> symbols)
+        public override Value Interpret(IDictionary<String, Value> symbols)
         {
             var ctx = GetBreakableContext(Query);
             ctx.CurrentStatement.GetKeyword<BreakableKeyword>().Break();
@@ -54,7 +54,7 @@
 
         #region String Representations
 
-        public override string ToCode()
+        public override String ToCode()
         {
             return Token;
         }
@@ -63,24 +63,30 @@
 
         #region Helpers
 
-        bool IsBreakable(ParseEngine engine)
+        Boolean IsBreakable(ParseEngine engine)
         {
-            if (engine.HasMarker(Marker.Breakable))
-                return true;
+            if (!engine.HasMarker(Marker.Breakable))
+            {
+                if (engine.Parent != null)
+                {
+                    return IsBreakable(engine.Parent);
+                }
 
-            if (engine.Parent != null)
-                return IsBreakable(engine.Parent);
+                return false;
+            }
 
-            return false;
+            return true;
         }
 
         QueryContext GetBreakableContext(QueryContext context)
         {
-            if (context.CurrentStatement.IsKeyword<BreakableKeyword>())
-                return context;
+            if (!context.CurrentStatement.IsKeyword<BreakableKeyword>())
+            {
+                context.Stop();
+                return GetBreakableContext(context.Parent);
+            }
 
-            context.Stop();
-            return GetBreakableContext(context.Parent);
+            return context;
         }
 
         #endregion
