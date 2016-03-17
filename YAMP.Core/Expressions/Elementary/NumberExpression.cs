@@ -45,7 +45,7 @@ namespace YAMP
             var ch = chars[start];
             var isreal = false;
 
-            if(ParseEngine.IsNumber(ch) || (ch == '.' && start < chars.Length && ParseEngine.IsNumber(chars[start + 1])))
+            if (ParseEngine.IsNumber(ch) || (ch == '.' && start + 1 < chars.Length && ParseEngine.IsNumber(chars[start + 1])))
             {
                 var index = start;
                 var exp = new NumberExpression(engine);
