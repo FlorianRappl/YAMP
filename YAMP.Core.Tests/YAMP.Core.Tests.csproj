@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzer.cs" />
     <Compile Include="Base.cs" />
     <Compile Include="Complex.cs" />
     <Compile Include="Constants.cs" />

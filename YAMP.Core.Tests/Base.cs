@@ -2,6 +2,7 @@
 {
     using NUnit.Framework;
     using System;
+    using System.Linq;
 
     public abstract class Base
     {
@@ -21,6 +22,14 @@
             var context = parser.Parse(query);
             var value = context.Parser.HasErrors;
             Assert.AreEqual(hasErrors, value);
+        }
+
+        protected void Test(String query, String[] unknownVariables)
+        {
+            var parser = new Parser();
+            var context = parser.Parse(query);
+            var variables = context.Variables.Where(m => !m.IsAssigned).Select(m => m.Name).ToList();
+            CollectionAssert.AreEquivalent(unknownVariables, variables);
         }
     }
 }

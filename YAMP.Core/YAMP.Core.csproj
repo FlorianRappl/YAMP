@@ -43,6 +43,7 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ContainerExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\ParserExtensions.cs" />
     <Compile Include="Extensions\QueryContextExtensions.cs" />

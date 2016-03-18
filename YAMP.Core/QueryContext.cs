@@ -142,17 +142,28 @@ namespace YAMP
         {
             get 
             {
+                var variables = new List<VariableInfo>();
+
                 foreach (var statement in _parser.Statements)
                 {
-                    var symbols = statement.Container.GetSymbols();
+                    var container = statement.Container;
+                    var symbols = container.GetSymbols();
 
                     foreach (var symbol in symbols)
                     {
                         var name = symbol.SymbolName;
                         var context = symbol.Context.GetSymbolContext(name);
-                        yield return new VariableInfo(name, false, context);
+
+                        if (!variables.Any(m => m.Context == context && m.Name.Equals(name)))
+                        {
+                            var assigned = statement.IsAssignment && container.IsAssigned(symbol);
+                            var variable = new VariableInfo(name, assigned, context);
+                            variables.Add(variable);
+                        }
                     }
                 }
+
+                return variables;
             }
         }
 
