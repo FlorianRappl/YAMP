@@ -21,16 +21,16 @@ namespace YAMP
 		{
 		}
 
-        public SymbolExpression(String content)
+        public SymbolExpression(String symbolName)
         {
-            _symbolName = content;
+            _symbolName = symbolName;
         }
 
-        public SymbolExpression(ParseEngine engine, String name)
+        public SymbolExpression(ParseEngine engine, String symbolName)
             : base(engine)
         {
-            _symbolName = name;
-            Length = name.Length;
+            _symbolName = symbolName;
+            Length = symbolName.Length;
 		}
 
         #endregion
