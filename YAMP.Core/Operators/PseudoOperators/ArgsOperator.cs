@@ -64,6 +64,15 @@ namespace YAMP
 
         #endregion
 
+        #region Properties
+
+        public Expression Content
+        {
+            get { return _content; }
+        }
+
+        #endregion
+
         #region Methods
 
         public override Value Perform(Value left)
