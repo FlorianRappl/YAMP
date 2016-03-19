@@ -213,32 +213,6 @@
             return null;
         }
 
-        /// <summary>
-        /// Gets all the symbols of the container.
-        /// </summary>
-        /// <returns>An array of symbolic expressions.</returns>
-        internal SymbolExpression[] GetSymbols()
-        {
-            var list = new List<SymbolExpression>();
-
-            if (_expressions != null)
-            {
-                foreach (var expression in _expressions)
-                {
-                    if (expression is ContainerExpression)
-                    {
-                        list.AddRange(((ContainerExpression)expression).GetSymbols());
-                    }
-                    else if (expression is SymbolExpression)
-                    {
-                        list.Add((SymbolExpression)expression);
-                    }
-                }
-            }
-
-            return list.ToArray();
-        }
-
         #endregion
 
         #region String Representations
