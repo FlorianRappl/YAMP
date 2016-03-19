@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using YAMP.Exceptions;
 
     /// <summary>
@@ -31,7 +32,7 @@
 
             if (left is SymbolExpression)
             {
-                args = new string[] { ((SymbolExpression)left).SymbolName };
+                args = new[] { ((SymbolExpression)left).SymbolName };
             }
             else if (left is BracketExpression)
             {
@@ -41,7 +42,7 @@
                 {
                     if (bracket.IsSymbolList)
                     {
-                        var expressions = bracket.GetSymbols();
+                        var expressions = bracket.GetSymbols().ToArray();
                         args = new String[expressions.Length];
 
                         for (var i = 0; i != args.Length; i++)
@@ -50,7 +51,9 @@
                         }
                     }
                     else
+                    {
                         throw new YAMPWrongTypeSuppliedException("a list of symbols");
+                    }
                 }
                 else
                 {

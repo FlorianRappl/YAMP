@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Linq;
     using YAMP.Errors;
 
     /// <summary>
@@ -107,7 +108,7 @@
                 {
                     if (_statements[i] != null && _statements[i].Container != null)
                     {
-                        var listOfSymbols = _statements[i].Container.GetSymbols();
+                        var listOfSymbols = _statements[i].Container.GetSymbols().ToArray();
 
                         for (var j = 0; j < listOfSymbols.Length; j++)
                         {

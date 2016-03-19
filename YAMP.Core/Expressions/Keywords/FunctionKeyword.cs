@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Linq;
     using YAMP.Errors;
 
     /// <summary>
@@ -52,7 +53,7 @@
         {
             get
             {
-                var symbols = arguments.GetSymbols();
+                var symbols = arguments.GetSymbols().ToArray();
                 var args = new String[symbols.Length];
 
                 for (var i = 0; i != symbols.Length; i++)

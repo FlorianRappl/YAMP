@@ -2,6 +2,7 @@ namespace YAMP
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using YAMP.Exceptions;
 
     /// <summary>
@@ -68,7 +69,7 @@ namespace YAMP
                 }
                 else if (tree.IsSymbolList)
                 {
-                    var vars = tree.GetSymbols();
+                    var vars = tree.GetSymbols().ToArray();
                     return HandleMultipleOutputs(value, vars, symbols);
                 }
                 else
