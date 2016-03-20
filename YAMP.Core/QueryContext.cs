@@ -147,7 +147,7 @@ namespace YAMP
                 foreach (var statement in _parser.Statements)
                 {
                     var container = statement.Container;
-                    var symbols = container.GetSymbols();
+                    var symbols = container.GetGlobalSymbols();
 
                     foreach (var symbol in symbols)
                     {

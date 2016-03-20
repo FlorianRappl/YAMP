@@ -35,8 +35,42 @@
 
         public static IEnumerable<SymbolExpression> GetLocalSymbols(this ContainerExpression container)
         {
-            //TODO
-            return Enumerable.Empty<SymbolExpression>();
+            return container.GetLocalSymbols(Enumerable.Empty<String>());
+        }
+
+        public static IEnumerable<SymbolExpression> GetLocalSymbols(this ContainerExpression container, IEnumerable<String> locals)
+        {
+            var list = new List<SymbolExpression>();
+            var expressions = container.Expressions;
+
+            if (expressions != null)
+            {
+                var op = container.Operator as FatArrowOperator;
+
+                if (op != null)
+                {
+                    var left = expressions.FirstOrDefault();
+                    var right = expressions.LastOrDefault();
+
+                    if (left != null)
+                    {
+                        var symbols = new List<SymbolExpression>();
+                        left.CollectSymbols(symbols);
+                        list.AddRange(symbols);
+                        var newLocals = locals.Concat(symbols.Select(m => m.SymbolName));
+                        right.CollectLocalSymbols(list, newLocals);
+                    }
+                }
+                else
+                {
+                    foreach (var expression in expressions)
+                    {
+                        expression.CollectLocalSymbols(list, locals);
+                    }
+                }
+            }
+
+            return list;
         }
 
         public static IEnumerable<SymbolExpression> GetSymbols(this ContainerExpression container)
