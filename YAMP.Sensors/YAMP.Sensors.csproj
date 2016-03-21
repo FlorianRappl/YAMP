@@ -93,9 +93,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Windows" />
-    <Reference Include="YAMP, Version=1.5.2.27330, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="YAMP, Version=1.5.3.15660, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\YAMP.1.5.2.27330\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\YAMP.dll</HintPath>
+      <HintPath>..\packages\YAMP.1.5.3.15660\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\YAMP.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
