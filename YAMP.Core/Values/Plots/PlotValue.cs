@@ -25,7 +25,7 @@
         /// </summary>
 		public PlotValue()
 		{
-            Title = string.Empty;
+            Title = String.Empty;
 		}
 
 		#endregion
@@ -35,13 +35,16 @@
         /// <summary>
         /// Gets the number of series.
         /// </summary>
-        public abstract int Count { get; }
+        public abstract Int32 Count 
+        { 
+            get; 
+        }
 
         /// <summary>
         /// Gets or sets the plot title.
         /// </summary>
         [StringToStringConverter]
-        public string Title
+        public String Title
         {
             get;
             set;
@@ -51,7 +54,10 @@
         /// Gets a list of standardcolors (those are just some suggestions, a lot
         /// more colors are possible).
         /// </summary>
-		public static string[] StandardColors { get { return standardColors; } }
+		public static String[] StandardColors
+        { 
+            get { return standardColors; } 
+        }
 
 		#endregion
 
@@ -70,7 +76,7 @@
         /// Invokes the OnPlotChanged event if it has been set.
         /// </summary>
         /// <param name="property">The property name to take as argument.</param>
-		internal void RaisePlotChanged(string property)
+		internal void RaisePlotChanged(String property)
 		{
 			if (OnPlotChanged != null)
 			{
@@ -108,14 +114,16 @@
         /// </summary>
         /// <param name="values">The current array.</param>
         /// <param name="n">The desired size of the array.</param>
-        protected double[] MakeArrayPeriodic(double[] values, int n)
+        protected Double[] MakeArrayPeriodic(Double[] values, Int32 n)
         {
-            var dest = new double[n];
+            var dest = new Double[n];
 
             if (values.Length > 0)
             {
                 for (var i = 0; i < n; i++)
+                {
                     dest[i] = values[i % values.Length];
+                }
             }
 
             return dest;
@@ -128,10 +136,10 @@
         /// <param name="step">The difference between each element.</param>
         /// <param name="count">The number of elements in the array.</param>
         /// <returns>The double array containing the values.</returns>
-        protected double[] Generate(double minValue, double step, int count)
+        protected Double[] Generate(Double minValue, Double step, Int32 count)
 		{
 			count = Math.Max(count, 0);
-			var values = new double[count];
+			var values = new Double[count];
 
 			if(count > 0)
 			{
@@ -153,12 +161,12 @@
         /// <param name="offset">The offset in the matrix (0 = start with 1st element).</param>
         /// <param name="length">The number of elements to convert.</param>
         /// <returns>The double array with the values.</returns>
-		protected double[] Convert(MatrixValue m, int offset, int length)
+		protected Double[] Convert(MatrixValue m, Int32 offset, Int32 length)
 		{
-			var values = new double[length];
+			var values = new Double[length];
 			var j = offset + 1;
 
-			for (int i = 0; i < length; i++)
+			for (var i = 0; i < length; i++)
 			{
 				values[i] = m[j].Re;
 				j++;
@@ -175,13 +183,13 @@
         /// <param name="length">The number of rows to consider.</param>
         /// <param name="dy">The offset in rows.</param>
         /// <returns>The double array with the values.</returns>
-		protected double[] ConvertX(MatrixValue m, int dx, int length, int dy)
+		protected Double[] ConvertX(MatrixValue m, Int32 dx, Int32 length, Int32 dy)
 		{
-			var values = new double[length];
+			var values = new Double[length];
 			var j = dy + 1;
 			var k = dx + 1;
 
-			for (int i = 0; i < length; i++)
+			for (var i = 0; i < length; i++)
 			{
 				values[i] = m[j, k].Re;
 				k++;
@@ -198,13 +206,13 @@
         /// <param name="length">The number of columns to consider.</param>
         /// <param name="dx">The offset in columns.</param>
         /// <returns>The double array with the values.</returns>
-		protected double[] ConvertY(MatrixValue m, int dy, int length, int dx)
+        protected Double[] ConvertY(MatrixValue m, Int32 dy, Int32 length, Int32 dx)
 		{
-			var values = new double[length];
+			var values = new Double[length];
 			var j = dy + 1;
 			var k = dx + 1;
 
-			for (int i = 0; i < length; i++)
+			for (var i = 0; i < length; i++)
 			{
 				values[i] = m[j, k].Re;
 				j++;
@@ -217,7 +225,7 @@
 
 		#region Statics
 
-		readonly static string[] standardColors = new string[]
+		readonly static String[] standardColors = new[]
 		{
 			"red", 
 			"green",
