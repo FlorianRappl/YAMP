@@ -48,7 +48,7 @@ namespace YAMP
 			return Perform(l, r);
 		}
 
-        internal Value PerformOverFind(Value left, Value right, List<BinaryOperatorMapping> mapping)
+        internal Value PerformOverFind(Value left, Value right, BinaryOperatorMappingList mapping)
         {
             var least = default(Func<Value, Value, Value>);
 

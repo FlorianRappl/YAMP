@@ -194,6 +194,7 @@
     <Compile Include="Providers\EventArgs\PauseEventArgs.cs" />
     <Compile Include="Providers\EventArgs\UserInputEventArgs.cs" />
     <Compile Include="Providers\Extensions.cs" />
+    <Compile Include="Providers\Mapping\BinaryOperatorMappingList.cs" />
     <Compile Include="Providers\Plugin.cs" />
     <Compile Include="Providers\YMath.cs" />
     <Compile Include="Values\Arguments\ObjectValue.cs" />

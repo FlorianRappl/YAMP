@@ -10,12 +10,7 @@ namespace YAMP
     {
         #region Mapping
 
-        static List<BinaryOperatorMapping> mapping = new List<BinaryOperatorMapping>();
-
-        public static List<BinaryOperatorMapping> Mapping
-        {
-            get { return mapping; }
-        }
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
 
         #endregion
 
@@ -23,7 +18,7 @@ namespace YAMP
 
         static public void Register(Type a, Type b, Func<Value, Value, Value> f)
         {
-            mapping.Add(new BinaryOperatorMapping(a, b, f));
+            Mapping.With(new BinaryOperatorMapping(a, b, f));
         }
 
 		public PlusOperator () : 
@@ -37,7 +32,7 @@ namespace YAMP
 		
 		public override Value Perform (Value left, Value right)
         {
-            return PerformOverFind(left, right, mapping);
+            return PerformOverFind(left, right, Mapping);
 		}
 
         public override Operator Create()
