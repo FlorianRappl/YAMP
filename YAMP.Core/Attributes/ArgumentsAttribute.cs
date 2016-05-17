@@ -32,23 +32,23 @@
         /// <summary>
         /// Gets the minimum number of arguments that need to be provided for the specified parameter.
         /// </summary>
-		public int MinimumArguments { get; private set; }
+		public Int32 MinimumArguments { get; private set; }
 
 		/// <summary>
 		/// Gets the maximum number of arguments that can be provided for the specified parameter.
 		/// </summary>
-		public int MaximumArguments { get; private set; }
+		public Int32 MaximumArguments { get; private set; }
 
 		/// <summary>
 		/// Gets the number of arguments that need to be provided starting at MinimumArguments, i.e.
 		/// if delta = 2 and min = 0 then either 0, 2, 4, ... arguments can be specified.
 		/// </summary>
-		public int StepArguments { get; private set; }
+		public Int32 StepArguments { get; private set; }
 
 		/// <summary>
 		/// Gets the index of the parameter that can contain optional arguments.
 		/// </summary>
-		public int Index { get; private set; }
+		public Int32 Index { get; private set; }
 
         #endregion
     }

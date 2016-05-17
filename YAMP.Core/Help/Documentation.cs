@@ -74,12 +74,7 @@
         /// </summary>
 		public IEnumerable<HelpSection> Sections
 		{
-			get
-			{
-				return topics.SelectMany(m => m).Select(
-					m => Get(m.Name)
-				).OrderBy(m => m.Name).AsEnumerable();
-			}
+			get { return topics.SelectMany(m => m).Select(m => Get(m.Name)).OrderBy(m => m.Name).AsEnumerable(); }
 		}
 
         /// <summary>
@@ -87,10 +82,7 @@
         /// </summary>
 		public IEnumerable<HelpTopic> Topics
 		{
-			get
-			{
-				return topics.OrderBy(m => m.Kind).AsEnumerable();
-			}
+			get { return topics.OrderBy(m => m.Kind).AsEnumerable(); }
 		}
 
         /// <summary>
@@ -98,11 +90,15 @@
         /// </summary>
         /// <param name="topic">The topic to look for.</param>
         /// <returns>The result of the search.</returns>
-		public bool ContainsTopic(string topic)
+		public Boolean ContainsTopic(String topic)
 		{
-			foreach (var tp in topics)
-				if (tp.Kind.Equals(topic, StringComparison.CurrentCultureIgnoreCase))
-					return true;
+            foreach (var tp in topics)
+            {
+                if (tp.Kind.Equals(topic, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return true;
+                }
+            }
 
 			return false;
 		}
@@ -112,12 +108,18 @@
         /// </summary>
         /// <param name="entry">The entry's name to look for.</param>
         /// <returns>The result of the search.</returns>
-		public bool ContainsEntry(string entry)
+		public Boolean ContainsEntry(String entry)
 		{
-			foreach (var tp in topics)
-				foreach (var ti in tp)
-					if (ti.Name.Equals(entry, StringComparison.CurrentCultureIgnoreCase))
-						return true;
+            foreach (var tp in topics)
+            {
+                foreach (var ti in tp)
+                {
+                    if (ti.Name.Equals(entry, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
 
 			return false;
 		}
@@ -127,43 +129,47 @@
         /// </summary>
         /// <param name="entry">The (probably) mispelled entry's name.</param>
         /// <returns>The name of a correct entry that seems to be fairly close.</returns>
-		public string ClosestEntry(string entry)
+		public String ClosestEntry(String entry)
 		{
 			var term = entry.ToLower();
-			var list = new List<string>();
+			var list = new List<String>();
 
-			foreach (var tp in topics)
-				foreach (var ti in tp)
-					list.Add(ti.Name);
+            foreach (var tp in topics)
+            {
+                foreach (var ti in tp)
+                {
+                    list.Add(ti.Name);
+                }
+            }
 
-			if (list.Contains(term))
-				return list.FirstOrDefault(t => t.ToLower() == term);
-			else
-			{
-				var min = int.MaxValue;
-				var index = 0;
+            if (!list.Contains(term))
+            {
+                var min = Int32.MaxValue;
+                var index = 0;
 
-				for (int i = 0; i < list.Count; i++)
-				{
-					var sum = Distance(term, list[i], 10);
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var sum = Distance(term, list[i], 10);
 
-					if (sum < min)
-					{
-						min = sum;
-						index = i;
-					}
-				}
+                    if (sum < min)
+                    {
+                        min = sum;
+                        index = i;
+                    }
+                }
 
-				return list[index];
-			}
-		}
+                return list[index];
+            }
+
+            return list.FirstOrDefault(t => t.ToLower() == term);
+        }
 
         /// <summary>
         /// Gets the HelpSection that belongs to the name of the given entry.
         /// </summary>
         /// <param name="entry">The name of the entry to retrieve.</param>
         /// <returns>The HelpSection instance.</returns>
-		public HelpSection Get(string entry)
+		public HelpSection Get(String entry)
 		{
 			var topic = topics.SelectMany(m => m.Where(n => n.Name.Equals(entry, StringComparison.CurrentCultureIgnoreCase)).Select(n => n)).FirstOrDefault();
 			var to = topic.Instance.GetType();
@@ -193,8 +199,10 @@
 							}
 						}
 
-						if (isextern)
-							help.Usages.Add(GetUsage(help.Name, function));
+                        if (isextern)
+                        {
+                            help.Usages.Add(GetUsage(help.Name, function));
+                        }
 					}
 				}
 
@@ -215,43 +223,48 @@
 
 		#region Helpers
 
-		static int Distance(string s1, string s2, int maxOffset)
+		static Int32 Distance(String s1, String s2, Int32 maxOffset)
 		{
-			if (string.IsNullOrEmpty(s1))
-				return string.IsNullOrEmpty(s2) ? 0 : s2.Length;
+            if (String.IsNullOrEmpty(s1))
+            {
+                return String.IsNullOrEmpty(s2) ? 0 : s2.Length;
+            }
+            else if (String.IsNullOrEmpty(s2))
+            {
+                return s1.Length;
+            }
 
-			if (string.IsNullOrEmpty(s2))
-				return s1.Length;
-
-			int c = 0;
-			int offset1 = 0;
-			int offset2 = 0;
-			int lcs = 0;
+			var c = 0;
+			var offset1 = 0;
+			var offset2 = 0;
+			var lcs = 0;
 
 			while ((c + offset1 < s1.Length) && (c + offset2 < s2.Length))
 			{
-				if (s1[c + offset1] == s2[c + offset2])
-					lcs++;
-				else
-				{
-					offset1 = 0;
-					offset2 = 0;
+                if (s1[c + offset1] == s2[c + offset2])
+                {
+                    lcs++;
+                }
+                else
+                {
+                    offset1 = 0;
+                    offset2 = 0;
 
-					for (int i = 0; i < maxOffset; i++)
-					{
-						if ((c + i < s1.Length) && (s1[c + i] == s2[c]))
-						{
-							offset1 = i;
-							break;
-						}
+                    for (int i = 0; i < maxOffset; i++)
+                    {
+                        if ((c + i < s1.Length) && (s1[c + i] == s2[c]))
+                        {
+                            offset1 = i;
+                            break;
+                        }
 
-						if ((c + i < s2.Length) && (s1[c] == s2[c + i]))
-						{
-							offset2 = i;
-							break;
-						}
-					}
-				}
+                        if ((c + i < s2.Length) && (s1[c] == s2[c + i]))
+                        {
+                            offset2 = i;
+                            break;
+                        }
+                    }
+                }
 
 				c++;
 			}
@@ -259,7 +272,7 @@
 			return (s1.Length + s2.Length) / 2 - lcs;
 		}
 
-		static void AddTypeToTopics(string name, string standardKind, object type, List<HelpTopic> topics)
+		static void AddTypeToTopics(String name, String standardKind, Object type, List<HelpTopic> topics)
 		{
 			var entry = new HelpEntry
 			{
@@ -269,8 +282,10 @@
 			var kind = standardKind;
 			var decl = type.GetType().GetCustomAttributes(typeof(KindAttribute), false);
 
-			if (decl.Length > 0)
-				kind = (decl[0] as KindAttribute).Kind;
+            if (decl.Length > 0)
+            {
+                kind = (decl[0] as KindAttribute).Kind;
+            }
 
 			foreach (var topic in topics)
 			{
@@ -292,7 +307,7 @@
 
         #region Get Information
 
-        HelpFunctionUsage GetUsage(string name, MethodInfo function)
+        HelpFunctionUsage GetUsage(String name, MethodInfo function)
 		{
 			var objects = function.GetCustomAttributes(typeof(ExampleAttribute), false);
 			var rets = function.GetCustomAttributes(typeof(ReturnsAttribute), false);
@@ -338,7 +353,7 @@
 			return help;
 		}
 
-		string GetDescription(MemberInfo element)
+		String GetDescription(MemberInfo element)
 		{
 			var objects = element.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
@@ -353,17 +368,19 @@
 			return sb.ToString();
 		}
 
-        string GetLink(MemberInfo element)
+        String GetLink(MemberInfo element)
         {
             var objects = element.GetCustomAttributes(typeof(LinkAttribute), false);
 
             if (objects.Length == 0)
-                return string.Empty;
+            {
+                return String.Empty;
+            }
 
             return ((LinkAttribute)objects[0]).Url;
         }
 
-		string ModifyValueType(Type type)
+		String ModifyValueType(Type type)
 		{
 			return type.Name.RemoveValueConvention();
 		}

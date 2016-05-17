@@ -34,7 +34,7 @@
         /// <summary>
         /// Gets the kind.
         /// </summary>
-        public string Kind { get; private set; }
+        public String Kind { get; private set; }
 
         #endregion
     }

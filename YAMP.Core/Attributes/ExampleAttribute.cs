@@ -49,17 +49,17 @@
         /// <summary>
         /// Gets if the example performs an operation on the file system.
         /// </summary>
-        public bool IsFile { get; private set; }
+        public Boolean IsFile { get; private set; }
 
         /// <summary>
         /// Gets the example.
         /// </summary>
-        public string Example { get; private set; }
+        public String Example { get; private set; }
 
         /// <summary>
         /// Gets the description of the example.
         /// </summary>
-        public string Description { get; private set; }
+        public String Description { get; private set; }
 
         #endregion
     }

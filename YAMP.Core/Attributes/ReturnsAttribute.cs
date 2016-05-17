@@ -31,29 +31,17 @@
         /// <summary>
 		/// Gets the specified explanations for this return type.
 		/// </summary>
-		public string Explanation
-		{
-			get;
-			private set;
-		}
+		public String Explanation { get; private set; }
 
         /// <summary>
         /// Gets the type that will be returned.
         /// </summary>
-        public Type ReturnType 
-        {
-            get; 
-            private set; 
-        }
+        public Type ReturnType { get; private set; }
 
         /// <summary>
         /// Gets the rank of the return attribute.
         /// </summary>
-        public int Order 
-        { 
-            get; 
-            private set;
-        }
+        public Int32 Order { get; private set; }
 
         #endregion
     }

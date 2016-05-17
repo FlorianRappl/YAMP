@@ -14,9 +14,9 @@
 		public HelpFunctionUsage()
 		{
 			Examples = new List<HelpExample>();
-			Arguments = new List<string>();
-            ArgumentNames = new List<string>();
-            Returns = new List<string>();
+			Arguments = new List<String>();
+            ArgumentNames = new List<String>();
+            Returns = new List<String>();
 		}
 
         /// <summary>

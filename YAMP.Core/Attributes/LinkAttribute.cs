@@ -26,7 +26,7 @@
         /// <summary>
         /// Gets the stored URL.
         /// </summary>
-        public string Url { get; private set; }
+        public String Url { get; private set; }
 
         #endregion
     }

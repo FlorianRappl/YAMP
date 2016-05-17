@@ -26,7 +26,7 @@
         /// <summary>
         /// Gets the description.
         /// </summary>
-        public string Description { get; private set; }
+        public String Description { get; private set; }
 
         #endregion
     }
