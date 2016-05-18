@@ -6,7 +6,7 @@
 	[Description("CatalanConstantDescription")]
     [Kind(PopularKinds.Constant)]
     [Link("CatalanConstantLink")]
-	class CatalanConstant : BaseConstant
+	sealed class CatalanConstant : BaseConstant
 	{
         static readonly ScalarValue beta = new ScalarValue(0.915965594177219015054604);
 

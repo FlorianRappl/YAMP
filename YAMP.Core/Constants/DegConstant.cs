@@ -8,7 +8,7 @@
     [Description("DegConstantDescription")]
     [Kind(PopularKinds.Constant)]
     [Link("DegConstantLink")]
-    class DegConstant : BaseConstant
+    sealed class DegConstant : BaseConstant
     {
         static readonly ScalarValue deg = new ScalarValue(Math.PI / 180.0);
 

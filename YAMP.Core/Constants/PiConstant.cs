@@ -8,7 +8,7 @@
 	[Description("PiConstantDescription")]
     [Kind(PopularKinds.Constant)]
     [Link("PiConstantLink")]
-	class PiConstant : BaseConstant
+	sealed class PiConstant : BaseConstant
 	{
         static readonly ScalarValue pi = new ScalarValue(Math.PI);
 

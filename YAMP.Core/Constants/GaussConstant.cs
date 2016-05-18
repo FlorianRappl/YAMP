@@ -5,7 +5,7 @@
     /// </summary>
     [Description("GaussConstantDescription")]
     [Kind(PopularKinds.Constant)]
-    class GaussConstant : BaseConstant
+    sealed class GaussConstant : BaseConstant
     {
         static readonly ScalarValue gauss = new ScalarValue(0.8346268416740731862814297);
 

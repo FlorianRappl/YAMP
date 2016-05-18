@@ -6,7 +6,7 @@
     [Description("AlphaConstantDescription")]
 	[Kind(PopularKinds.Constant)]
     [Link("AlphaConstantLink")]
-	class AlphaConstant : BaseConstant
+	sealed class AlphaConstant : BaseConstant
 	{
         static readonly ScalarValue alpha = new ScalarValue(2.50290787509589282228390287321821578);
 

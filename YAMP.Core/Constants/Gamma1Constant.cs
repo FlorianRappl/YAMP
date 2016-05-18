@@ -6,7 +6,7 @@
 	[Description("Gamma1ConstantDescription")]
     [Kind(PopularKinds.Constant)]
     [Link("Gamma1ConstantLink")]
-	class Gamma1Constant : BaseConstant
+	sealed class Gamma1Constant : BaseConstant
 	{
         static readonly ScalarValue gamma = new ScalarValue(0.57721566490153286060651209008240243);
 

@@ -6,7 +6,7 @@
 	[Description("IConstantDescription")]
     [Kind(PopularKinds.Constant)]
     [Link("IConstantLink")]
-	class IConstant : BaseConstant
+	sealed class IConstant : BaseConstant
 	{
 		static readonly ScalarValue i = ScalarValue.I;
 

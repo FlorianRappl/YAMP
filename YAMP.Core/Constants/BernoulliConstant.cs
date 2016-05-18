@@ -8,7 +8,7 @@
 	[Description("BernoulliConstantDescription")]
     [Kind(PopularKinds.Constant)]
     [Link("BernoulliConstantLink")]
-	class BernoulliConstant : BaseConstant
+	sealed class BernoulliConstant : BaseConstant
 	{
 		public override Value Value
 		{
