@@ -3,12 +3,12 @@
     using YAMP.Exceptions;
 
 	[Kind(PopularKinds.Function)]
-	[Description("Creates a diagonal matrix that has the given numeric values on the diagonal.")]
+	[Description("DiagFunctionDescription")]
     sealed class DiagFunction : ArgumentFunction
     {
-        [Description("Creates a diagonal matrix with the values from the given matrix.")]
-        [Example("diag(rand(5))", "Creates a matrix with dimension 25 x 25, containing random values on the diagonal.")]
-        [Example("diag(rand(5,1))", "Creates a matrix with dimension 5 x 5, containing random values on the diagonal.")]
+        [Description("DiagFunctionDescriptionForMatrix")]
+        [Example("diag(rand(5))", "DiagFunctionExampleForMatrix1")]
+        [Example("diag(rand(5,1))", "DiagFunctionExampleForMatrix2")]
         public MatrixValue Function(MatrixValue M)
         {
             var m = new MatrixValue(M.Length, M.Length);
@@ -21,16 +21,16 @@
             return m;
         }
 
-        [Description("Creates a diagonal matrix with the given value, i.e. just returns the value (1 x 1 diagonal matrix = scalar).")]
-        [Example("diag(3)", "Returns the given value, which is 3.")]
+        [Description("DiagFunctionDescriptionForScalar")]
+        [Example("diag(3)", "DiagFunctionExampleForScalar1")]
         public ScalarValue Function(ScalarValue x)
         {
             return x;
         }
 
-		[Description("Tries to create a diagonal matrix with the given arguments, which must be of numeric nature, i.e. scalars or matrices.")]
-		[Example("diag(1,1,1,1)", "Creates the unit matrix with dimension 4.")]
-		[Example("diag(1, 1, [0, 1;1, 0], 1, 1)", "Creates a matrix that is close to the unit matrix, except that one block has been rotated in the middle.")]
+		[Description("DiagFunctionDescriptionForArguments")]
+		[Example("diag(1,1,1,1)", "DiagFunctionExampleForArguments1")]
+		[Example("diag(1, 1, [0, 1;1, 0], 1, 1)", "DiagFunctionExampleForArguments2")]
 		[Arguments(0, 2)]
 		public MatrixValue Function(ArgumentsValue values)
 		{

@@ -3,9 +3,9 @@
     /// <summary>
     /// Gets the omega constant.
     /// </summary>
-    [Description("The omega constant is the value of W(1) where W is Lambert's W function. The name is derived from the alternate name for Lambert's W function, the omega function.")]
+    [Description("OmegaConstantDescription")]
     [Kind(PopularKinds.Constant)]
-    [Link("http://en.wikipedia.org/wiki/Omega_constant")]
+    [Link("OmegaConstantLink")]
     class OmegaConstant : BaseConstant
     {
         static readonly ScalarValue omega = new ScalarValue(0.5671432904097838729999686622);

@@ -3,7 +3,7 @@
     /// <summary>
     /// Gets the value of gauss's constant.
     /// </summary>
-    [Description("In mathematics, Gauss's constant, denoted by G, is defined as the reciprocal of the arithmetic-geometric mean of 1 and the square root of 2.")]
+    [Description("GaussConstantDescription")]
     [Kind(PopularKinds.Constant)]
     class GaussConstant : BaseConstant
     {

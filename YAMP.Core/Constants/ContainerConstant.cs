@@ -1,30 +1,32 @@
 ﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// A container constant is a wrapper for custom constants
     /// that are added to the engine just by a double with a name.
     /// </summary>
-	[Description("A custom constant defined by you.")]
+	[Description("ContainerConstantDescription")]
 	[Kind(PopularKinds.Constant)]
 	class ContainerConstant : IConstants
 	{
-		string name;
-		Value value;
+		readonly String _name;
+		readonly Value _value;
 
-		public ContainerConstant(string name, Value value)
+		public ContainerConstant(String name, Value value)
 		{
-			this.name = name;
-			this.value = value;
+			_name = name;
+			_value = value;
 		}
 
-		public string Name
+		public String Name
 		{
-			get { return name; }
+			get { return _name; }
 		}
 
 		public Value Value
 		{
-			get { return value; }
+			get { return _value; }
 		}
 	}
 }

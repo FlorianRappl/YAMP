@@ -3,7 +3,7 @@
     /// <summary>
     /// Gets the value for true.
     /// </summary>
-    [Description("True can be used in all logical expressions or for calculations. True is numerically represented by 1, however, that does not necessarily mean that everything else is false.")]
+    [Description("TrueConstantDescription")]
     [Kind(PopularKinds.Constant)]
     class TrueConstant : BaseConstant
     {

@@ -5,9 +5,9 @@
 	/// <summary>
 	/// Gets the value of Pi.
 	/// </summary>
-	[Description("The mathematical constant Pi is the ratio of a circle's circumference to its diameter.")]
+	[Description("PiConstantDescription")]
     [Kind(PopularKinds.Constant)]
-    [Link("http://en.wikipedia.org/wiki/Pi")]
+    [Link("PiConstantLink")]
 	class PiConstant : BaseConstant
 	{
         static readonly ScalarValue pi = new ScalarValue(Math.PI);
