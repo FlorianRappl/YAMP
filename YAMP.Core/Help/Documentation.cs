@@ -323,15 +323,21 @@
 			var help = new HelpFunctionUsage();
 			var args = function.GetParameters();
 
-			if (rets.Length == 0)
-				help.Returns.Add(ModifyValueType(function.ReturnType));
-			else
-			{
-				rets = rets.OrderBy(m => ((ReturnsAttribute)m).Order).ToArray();
+            if (rets.Length == 0)
+            {
+                help.Returns.Add(ModifyValueType(function.ReturnType));
+            }
+            else
+            {
+                rets = rets.OrderBy(m => ((ReturnsAttribute)m).Order).ToArray();
 
-				foreach (ReturnsAttribute attribute in rets)
-					help.Returns.Add(ModifyValueType(attribute.ReturnType) + " : " + attribute.Explanation);
-			}
+                foreach (ReturnsAttribute attribute in rets)
+                {
+                    var expl = GetLocalized(attribute.ExplanationKey);
+                    var content = String.Concat(ModifyValueType(attribute.ReturnType), " : ", expl);
+                    help.Returns.Add(content);
+                }
+            }
 
             help.Description = GetDescription(function);
             var sb = new StringBuilder();
@@ -343,12 +349,14 @@
             }
 
             sb.Append(name).Append("(");
-            sb.Append(string.Join(",", help.ArgumentNames.ToArray()));
+            sb.Append(String.Join(",", help.ArgumentNames.ToArray()));
             sb.AppendLine(")");
             help.Usage = sb.ToString();
 
-			foreach (ExampleAttribute attribute in objects)
-				help.Examples.Add(GetExample(attribute));
+            foreach (ExampleAttribute attribute in objects)
+            {
+                help.Examples.Add(GetExample(attribute));
+            }
 
 			return help;
 		}
