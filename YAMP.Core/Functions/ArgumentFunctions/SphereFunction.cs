@@ -3,19 +3,19 @@
     using System;
     using YAMP.Exceptions;
 
-    [Description("The sphere function generates the x-, y-, and z-coordinates of a unit sphere for use with surf and mesh.")]
+    [Description("SphereFunctionDescription")]
     [Kind(PopularKinds.Function)]
     sealed class SphereFunction : ArgumentFunction
     {
-        [Description("Draws a surf plot of an 20-by-20 sphere in the current figure.")]
-        [Example("[X, Y, Z] = sphere()", "Returns the three matrices with x-, y-, and Z coordinates for a unit sphere. The matrices are saved in the variables X, Y, Z.")]
+        [Description("SphereFunctionDescriptionForVoid")]
+        [Example("[X, Y, Z] = sphere()", "SphereFunctionExampleForVoid1")]
         public ArgumentsValue Function()
         {
             return Function(new ScalarValue(20));
         }
 
-        [Description("Draws a surf plot of an n-by-n sphere in the current figure.")]
-        [Example("[X, Y, Z] = sphere(30)", "Returns the three matrices with x-, y-, and Z coordinates for a unit sphere with n = 30. The 31x31 matrices are saved in the variables X, Y, Z.")]
+        [Description("SphereFunctionDescriptionForScalar")]
+        [Example("[X, Y, Z] = sphere(30)", "SphereFunctionExampleForScalar1")]
         public ArgumentsValue Function(ScalarValue n)
         {
             var nn = n.GetIntegerOrThrowException("n", Name);
@@ -50,9 +50,9 @@
             return new ArgumentsValue(X, Y, Z);
         }
 
-        double[] Table(double s, double e, int n, Func<double, double> f)
+        static Double[] Table(Double s, Double e, Int32 n, Func<Double, Double> f)
         {
-            var a = new double[n];
+            var a = new Double[n];
             var c = s;
             var d = (e - s) / (n - 1);
 

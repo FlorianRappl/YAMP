@@ -1,31 +1,31 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Generates a matrix with only zeros.")]
+    using System;
+
+    [Description("ZerosFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class ZerosFunction : ArgumentFunction
     {
-        [Description("Generates a 1x1 matrix.")]
+        [Description("ZerosFunctionDescriptionForVoid")]
         public MatrixValue Function()
         {
             return new MatrixValue(1,1);
         }
 
-        [Description("Generates an n-dimensional matrix with only zeros.")]
-        [Example("zeros(5)", "Returns a 5x5 matrix with 0 in each cell.")]
+        [Description("ZerosFunctionDescriptionForScalar")]
+        [Example("zeros(5)", "ZerosFunctionExampleForScalar1")]
         public MatrixValue Function(ScalarValue dim)
         {
-            var k = (int)dim.Re;
+            var k = (Int32)dim.Re;
             return new MatrixValue(k, k);
         }
 
-        [Description("Generates a n-by-m matrix with only zeros.")]
-        [Example("zeros(5,2)", "Returns a 5x2 matrix with 0 in each cell.")]
+        [Description("ZerosFunctionDescriptionForScalarScalar")]
+        [Example("zeros(5,2)", "ZerosFunctionExampleForScalarScalar1")]
         public MatrixValue Function(ScalarValue rows, ScalarValue cols)
         {
-            var k = (int)rows.Re;
-            var l = (int)cols.Re;
+            var k = (Int32)rows.Re;
+            var l = (Int32)cols.Re;
             return new MatrixValue(k, l);
         }
     }

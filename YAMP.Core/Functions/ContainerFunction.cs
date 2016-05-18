@@ -1,48 +1,48 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// This class is used as a wrapper for functions just defined by passing
     /// a delegate.
     /// </summary>
-    [Description("A custom function defined by you.")]
+    [Description("ContainerFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     class ContainerFunction : IFunction
     {
         #region Fields
 
-        string name;
-        FunctionDelegate execution;
+        readonly String _name;
+        readonly FunctionDelegate _execution;
 
         #endregion
 
         #region ctor
 
-        public ContainerFunction(string name, FunctionDelegate execution)
+        public ContainerFunction(String name, FunctionDelegate execution)
         {
-            this.name = name;
-            this.execution = execution;
+            _name = name;
+            _execution = execution;
         }
 
         #endregion
 
         #region Properties
 
-        public string Name
+        public String Name
         {
-            get { return name; }
+            get { return _name; }
         }
 
         #endregion
 
         #region Methods
 
-        [Description("Executes the custom function with your code.")]
-        [Example("-", "No help available.")]
+        [Description("ContainerFunctionDescriptionForContextValue")]
+        [Example("-", "NoHelp")]
         public Value Perform(ParseContext context, Value argument)
         {
-            return execution(argument);
+            return _execution(argument);
         }
 
         #endregion

@@ -4,12 +4,12 @@
     using System.Collections.Generic;
     using YAMP.Exceptions;
 
-    [Description("Converts a octal number to a decimal number.")]
+    [Description("Oct2DecFunctionDescription")]
     [Kind(PopularKinds.Conversion)]
     sealed class Oct2DecFunction : ArgumentFunction
     {
-        [Description("The function ignores white spaces and converts the given octal input to the equivalent decimal number.")]
-        [Example("oct2dec(\"1627\")", "Octal 1627 converts to decimal 919.")]
+        [Description("Oct2DecFunctionDescriptionForString")]
+        [Example("oct2dec(\"1627\")", "Oct2DecFunctionExampleForString1")]
         public ScalarValue Function(StringValue octstr)
         {
             var sum = 0;
@@ -23,9 +23,13 @@
                 if (!ParseEngine.IsWhiteSpace(chr) && !ParseEngine.IsNewLine(chr))
                 {
                     if (chr >= '0' && chr <= '7')
+                    {
                         hex.Push((Int32)(chr - '0'));
+                    }
                     else
+                    {
                         throw new YAMPRuntimeException("oct2dec can only interpret octal strings.");
+                    }
                 }
             }
 

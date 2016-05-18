@@ -4,12 +4,12 @@
     using System.Collections.Generic;
     using YAMP.Exceptions;
 
-    [Description("Converts a binary number to a decimal number.")]
+    [Description("Bin2DecFunctionDescription")]
     [Kind(PopularKinds.Conversion)]
     sealed class Bin2DecFunction : ArgumentFunction
     {
-        [Description("The function ignores white spaces and converts the given binary input to the equivalent decimal number.")]
-        [Example("bin2dec(\"010111\")", "Binary 010111 converts to decimal 23.")]
+        [Description("Bin2DecFunctionDescriptionForString")]
+        [Example("bin2dec(\"010111\")", "Bin2DecFunctionExampleForString1")]
         public ScalarValue Function(StringValue binarystr)
         {
             var sum = 0;
@@ -23,11 +23,17 @@
                 if (!ParseEngine.IsWhiteSpace(chr) && !ParseEngine.IsNewLine(chr))
                 {
                     if (chr == '0')
+                    {
                         binary.Push(false);
+                    }
                     else if (chr == '1')
+                    {
                         binary.Push(true);
+                    }
                     else
+                    {
                         throw new YAMPRuntimeException("bin2dec can only interpret binary strings.");
+                    }
                 }
             }
 
