@@ -1,7 +1,6 @@
 ﻿namespace YAMP
 {
     using System;
-    using System.ComponentModel;
 
     /// <summary>
     /// Class to enter examples for usage with help.
@@ -14,31 +13,32 @@
         /// <summary>
         /// Creates a new example attribute with the specified example string.
         /// </summary>
-        /// <param name="example">The example to store.</param>
-        /// <param name="description">The description to store.</param>
+        /// <param name="exampleCode">The example to store.</param>
+        /// <param name="descriptionKey">The description to store.</param>
         /// <param name="file">The status if the file system is manipulated.</param>
-        public ExampleAttribute(string example, string description, bool file)
+        public ExampleAttribute(String exampleCode, String descriptionKey, Boolean file)
         {
-            Example = example;
-            Description = description;
+            ExampleCode = exampleCode;
+            DescriptionKey = descriptionKey;
             IsFile = file;
         }
 
         /// <summary>
         /// Creates a new example attribute with the specified example string.
         /// </summary>
-        /// <param name="example">The example to store.</param>
-        /// <param name="description">The description to store.</param>
-        public ExampleAttribute(string example, string description)
-            : this(example, description, false)
+        /// <param name="exampleCode">The example to store.</param>
+        /// <param name="descriptionKey">The description to store.</param>
+        public ExampleAttribute(String exampleCode, String descriptionKey)
+            : this(exampleCode, descriptionKey, false)
         {
         }
 
         /// <summary>
         /// Creates a new example attribute with the specified example string.
         /// </summary>
-        /// <param name="example">The example to store.</param>
-        public ExampleAttribute(string example) : this(example, string.Empty, false)
+        /// <param name="exampleCode">The example to store.</param>
+        public ExampleAttribute(String exampleCode) 
+            : this(exampleCode, String.Empty, false)
         {
         }
 
@@ -54,12 +54,12 @@
         /// <summary>
         /// Gets the example.
         /// </summary>
-        public String Example { get; private set; }
+        public String ExampleCode { get; private set; }
 
         /// <summary>
         /// Gets the description of the example.
         /// </summary>
-        public String Description { get; private set; }
+        public String DescriptionKey { get; private set; }
 
         #endregion
     }

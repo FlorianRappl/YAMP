@@ -12,8 +12,8 @@
     /// </summary>
 	public class Documentation
 	{
-		#region Fields
-
+        #region Fields
+        
 		readonly List<HelpTopic> topics;
 		readonly ParseContext context;
 
@@ -35,6 +35,7 @@
         /// Creates a new documention instance from the given context.
         /// </summary>
         /// <param name="context">The context to use.</param>
+        /// <param name="dictionary">The help translations.</param>
         /// <returns>The documention.</returns>
 		public static Documentation Create(ParseContext context)
 		{
@@ -303,6 +304,14 @@
 			topics.Add(ht);
 		}
 
+        static String GetLocalized(String key)
+        {
+            var value = default(String);
+            var dictionary = Localization.Current ?? Localization.Default;
+            dictionary.TryGetValue(key, out value);
+            return value;
+        }
+
         #endregion
 
         #region Get Information
@@ -347,8 +356,8 @@
 		HelpExample GetExample(ExampleAttribute attribute)
 		{
 			var help = new HelpExample();
-			help.Example = attribute.Example;
-			help.Description = attribute.Description;
+			help.Example = attribute.ExampleCode;
+			help.Description = GetLocalized(attribute.DescriptionKey);
             help.IsFile = attribute.IsFile;
 			return help;
 		}
@@ -357,13 +366,17 @@
 		{
 			var objects = element.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-			if (objects.Length == 0)
-				return "No description available.";
+            if (objects.Length == 0)
+            {
+                return GetLocalized("NoDescription");
+            }
 
 			var sb = new StringBuilder();
 
-			foreach (DescriptionAttribute attribute in objects)
-				sb.AppendLine(attribute.Description);
+            foreach (DescriptionAttribute attribute in objects)
+            {
+                sb.AppendLine(GetLocalized(attribute.DescriptionKey));
+            }
 
 			return sb.ToString();
 		}
@@ -377,7 +390,7 @@
                 return String.Empty;
             }
 
-            return ((LinkAttribute)objects[0]).Url;
+            return GetLocalized(((LinkAttribute)objects[0]).UrlKey);
         }
 
 		String ModifyValueType(Type type)

@@ -13,10 +13,10 @@
         /// <summary>
         /// Creates a new attribute for storing descriptions.
         /// </summary>
-        /// <param name="description">The description to store.</param>
-        public DescriptionAttribute(string description)
+        /// <param name="descriptionKey">The description to store.</param>
+        public DescriptionAttribute(String descriptionKey)
         {
-            Description = description;
+            DescriptionKey = descriptionKey;
         }
 
         #endregion
@@ -26,7 +26,7 @@
         /// <summary>
         /// Gets the description.
         /// </summary>
-        public String Description { get; private set; }
+        public String DescriptionKey { get; private set; }
 
         #endregion
     }

@@ -13,10 +13,10 @@
         /// <summary>
         /// Creates a new attribute for storing more information about a function.
         /// </summary>
-        /// <param name="url">The url to store.</param>
-        public LinkAttribute(string url)
+        /// <param name="urlKey">The url to store.</param>
+        public LinkAttribute(String urlKey)
         {
-            Url = url;
+            UrlKey = urlKey;
         }
 
         #endregion
@@ -26,7 +26,7 @@
         /// <summary>
         /// Gets the stored URL.
         /// </summary>
-        public String Url { get; private set; }
+        public String UrlKey { get; private set; }
 
         #endregion
     }

@@ -4,7 +4,7 @@
     using System.Text;
     using YAMP.Help;
 
-	[Description("Shows detailled help for various topics.")]
+    [Description("Shows detailled help for various topics.")]
 	[Kind(PopularKinds.System)]
     sealed class HelpFunction : SystemFunction
     {
