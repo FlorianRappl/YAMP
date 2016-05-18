@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Returns a boolean matrix to state if the given values are real.")]
+	[Description("IsRealFunctionDescription")]
 	[Kind(PopularKinds.Logic)]
-    [Link("http://en.wikipedia.org/wiki/Real_number")]
+    [Link("IsRealFunctionLink")]
     sealed class IsRealFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

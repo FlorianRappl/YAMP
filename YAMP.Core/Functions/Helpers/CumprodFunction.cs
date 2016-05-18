@@ -1,31 +1,35 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("Computes the cumulative product of the given arguments.")]
+    [Description("CumprodFunctionDescription")]
     [Kind(PopularKinds.Function)]
     sealed class CumprodFunction : ArgumentFunction
     {
-        [Description("Just returns the given scalar, since the cumulative product of one scalar is the scalar itself.")]
+        [Description("CumprodFunctionDescriptionForScalar")]
         public ScalarValue Function(ScalarValue x)
         {
             return x;
         }
 
-        [Description("Computes the cumulative product of a vector or a list of vectors, i.e. a matrix.")]
-        [Example("cumprod([1, 2, 3, 0, 3, 2])", "Returns the vector [1, 2, 6, 0, 0, 0], which is the cumulative product of the given vector.")]
+        [Description("CumprodFunctionDescriptionForMatrix")]
+        [Example("cumprod([1, 2, 3, 0, 3, 2])", "CumprodFunctionExampleForMatrix1")]
         public MatrixValue Function(MatrixValue m)
         {
             if (m.DimensionX == 1)
+            {
                 return GetVectorProd(m.GetColumnVector(1));
+            }
             else if (m.DimensionY == 1)
+            {
                 return GetVectorProd(m.GetRowVector(1));
+            }
             else
             {
                 var M = new MatrixValue(m.DimensionY, m.DimensionX);
 
                 for (var i = 1; i <= m.DimensionX; i++)
+                {
                     M.SetColumnVector(i, GetVectorProd(m.GetColumnVector(i)));
+                }
 
                 return M;
             }

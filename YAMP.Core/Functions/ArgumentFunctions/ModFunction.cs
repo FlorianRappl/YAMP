@@ -2,7 +2,7 @@
 {
 	[Description("ModFunctionDescription")]
 	[Kind(PopularKinds.Function)]
-    [Link("http://en.wikipedia.org/wiki/Modular_arithmetic")]
+    [Link("ModFunctionLink")]
     sealed class ModFunction : ArgumentFunction
 	{
 		[Description("ModFunctionDescriptionForMatrixScalar")]

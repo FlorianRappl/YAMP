@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Returns a boolean matrix to state if the given values are integers.")]
+	[Description("IsIntFunctionDescription")]
 	[Kind(PopularKinds.Logic)]
-    [Link("http://en.wikipedia.org/wiki/Integer")]
+    [Link("IsIntFunctionLink")]
     sealed class IsIntFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

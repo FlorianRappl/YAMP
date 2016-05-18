@@ -1,9 +1,8 @@
-﻿using System;
-using YAMP.Numerics;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Uses the conjugate gradient algorithm to solve a linear system of equations.")]
+    using YAMP.Numerics;
+
+    [Description("Uses the conjugate gradient algorithm to solve a linear system of equations.")]
 	[Kind(PopularKinds.Function)]
     [Link("http://en.wikipedia.org/wiki/Conjugate_gradient_method")]
     sealed class CGFunction : ArgumentFunction

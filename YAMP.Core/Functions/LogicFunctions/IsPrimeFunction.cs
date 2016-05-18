@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Returns a boolean matrix to state if the given numbers are prime integers.")]
+	[Description("IsPrimeFunctionDescription")]
 	[Kind(PopularKinds.Logic)]
-    [Link("http://en.wikipedia.org/wiki/Prime_number")]
+    [Link("IsPrimeFunctionLink")]
     sealed class IsPrimeFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

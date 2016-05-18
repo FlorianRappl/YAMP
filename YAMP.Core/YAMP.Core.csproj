@@ -119,7 +119,6 @@
     <Compile Include="Functions\Trigonometric\SecFunction.cs" />
     <Compile Include="Functions\Trigonometric\CschFunction.cs" />
     <Compile Include="Functions\Trigonometric\SechFunction.cs" />
-    <Compile Include="Functions\Visualization\AnnotationFunction.cs" />
     <Compile Include="Functions\Visualization\MeshFunction.cs" />
     <Compile Include="Functions\Visualization\SetDefFunction.cs" />
     <Compile Include="Functions\Visualization\SurfFunction.cs" />

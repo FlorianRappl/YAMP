@@ -1,34 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("Find indices and values of nonzero elements.")]
+    using System;
+    using System.Collections.Generic;
+
+    [Description("FindFunctionDescription")]
     [Kind(PopularKinds.Function)]
     sealed class FindFunction : ArgumentFunction
     {
-        [Description("Locates all nonzero elements of the matrix M, and returns the linear indices of those elements in a column vector. If M contains no nonzero elements, then an empty matrix will be returned.")]
-        [Example("find(isprime(1:1000))", "Returns all indices of the matrix which are related to non-zero entries.")]
+        [Description("FindFunctionDescriptionForMatrix")]
+        [Example("find(isprime(1:1000))", "FindFunctionExampleForMatrix1")]
         public MatrixValue Function(MatrixValue M)
         {
             return GetIndices(M, M.Length, 0);
         }
 
-        [Description("Returns at most the first n indices corresponding to the nonzero entries of M, where n must be a positive integer.")]
-        [Example("find(isprime(1:1000), 10)", "Returns the first 10 indices which are non-zero.")]
+        [Description("FindFunctionDescriptionForMatrixScalar")]
+        [Example("find(isprime(1:1000), 10)", "FindFunctionExampleForMatrixScalar1")]
         public MatrixValue Function(MatrixValue M, ScalarValue n)
         {
             return GetIndices(M, n.GetIntegerOrThrowException("n", Name), 0);
         }
 
-        [Description("Returns at n indices with offset sigma corresponding to the nonzero entries of M, where n must be a positive integer. If sigma is negative, then it will start from the end of the list.")]
-        [Example("find(isprime(1:1000), 10, -10)", "Returns the last 10 indices which are non-zero.")]
+        [Description("FindFunctionDescriptionForMatrixScalarScalar")]
+        [Example("find(isprime(1:1000), 10, -10)", "FindFunctionExampleForMatrixScalarScalar1")]
         public MatrixValue Function(MatrixValue M, ScalarValue n, ScalarValue sigma)
         {
             return GetIndices(M, n.GetIntegerOrThrowException("n", Name), sigma.GetIntegerOrThrowException("sigma", Name));
         }
 
-        static MatrixValue GetIndices(MatrixValue x, int n, int offset)
+        static MatrixValue GetIndices(MatrixValue x, Int32 n, Int32 offset)
         {
             var m = x.Length;
             var ind = new List<ScalarValue>();
@@ -41,9 +41,13 @@ namespace YAMP
                     if (x[i] != ScalarValue.Zero)
                     {
                         if (toskip == 0)
+                        {
                             ind.Add(new ScalarValue(i));
+                        }
                         else
+                        {
                             toskip--;
+                        }
                     }
                 }
             }
@@ -54,15 +58,21 @@ namespace YAMP
                     if (x[i] != ScalarValue.Zero)
                     {
                         if (toskip == 0)
+                        {
                             ind.Add(new ScalarValue(i));
+                        }
                         else
+                        {
                             toskip--;
+                        }
                     }
                 }
             }
 
             if (offset < 0)
+            {
                 ind.Reverse();
+            }
 
             return new MatrixValue(ind.ToArray(), ind.Count, 1);
         }

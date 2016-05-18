@@ -1,15 +1,15 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("Returns a boolean matrix to state if the given numbers are proper numbers.")]
+    using System;
+
+    [Description("IsNaNFunctionDescription")]
     [Kind(PopularKinds.Logic)]
-    [Link("http://en.wikipedia.org/wiki/NaN")]
+    [Link("IsNaNFunctionLink")]
     sealed class IsNaNFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)
         {
-            return new ScalarValue(double.IsNaN(value.Re) || double.IsNaN(value.Im));
+            return new ScalarValue(Double.IsNaN(value.Re) || Double.IsNaN(value.Im));
         }
     }
 }

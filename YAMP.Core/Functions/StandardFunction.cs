@@ -16,11 +16,11 @@ namespace YAMP
         {
             if (argument is ScalarValue)
             {
-                return GetValue(argument as ScalarValue);
+                return GetValue((ScalarValue)argument);
             }
             else if (argument is MatrixValue)
             {
-                var A = argument as MatrixValue;
+                var A = (MatrixValue)argument;
                 var M = new MatrixValue(A.DimensionY, A.DimensionX);
 
                 for (var j = 1; j <= A.DimensionY; j++)
@@ -35,7 +35,7 @@ namespace YAMP
             }
             else if (argument is ArgumentsValue)
             {
-                throw new YAMPArgumentNumberException(Name, (argument as ArgumentsValue).Length, 1);
+                throw new YAMPArgumentNumberException(Name, ((ArgumentsValue)argument).Length, 1);
             }
 
             throw new YAMPOperationInvalidException(Name, argument);
@@ -58,7 +58,7 @@ namespace YAMP
         /// </summary>
         /// <param name="x">Scalar</param>
         /// <returns>Scalar</returns>
-		[Description("Computes the value and returns the result.")]
+		[Description("StandardFunctionDescriptionForScalar")]
 		public virtual ScalarValue Function(ScalarValue x)
 		{
 			return x;
@@ -69,7 +69,7 @@ namespace YAMP
         /// </summary>
         /// <param name="x">Matrix</param>
         /// <returns>Matrix</returns>
-		[Description("Computes the value of each entry of the given matrix and returns a matrix with the same dimension.")]
+		[Description("StandardFunctionDescriptionForMatrix")]
 		public virtual MatrixValue Function(MatrixValue x)
 		{
 			return x;

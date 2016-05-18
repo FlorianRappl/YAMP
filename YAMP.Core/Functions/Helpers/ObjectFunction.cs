@@ -1,11 +1,11 @@
 ﻿namespace YAMP.Functions.Helpers
 {
-    [Description("Creates an empty object.")]
+    [Description("ObjectFunctionDescription")]
     [Kind(PopularKinds.Function)]
     sealed class ObjectFunction : ArgumentFunction
     {
-        [Description("Creates an empty object without any keys.")]
-        [Example("object()", "Returns an empty object that can represents a key-value store.")]
+        [Description("ObjectFunctionDescriptionForVoid")]
+        [Example("object()", "ObjectFunctionExampleForVoid1")]
         public ObjectValue Function()
         {
             return new ObjectValue();

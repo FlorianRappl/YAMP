@@ -38,12 +38,9 @@ namespace YAMP
         /// <summary>
         /// Gets the number of given arguments.
         /// </summary>
-		public int Length
+		public Int32 Length
 		{
-			get
-			{
-				return _arguments.Length;
-			}
+			get { return _arguments.Length; }
 		}
 
 		#endregion
@@ -66,16 +63,16 @@ namespace YAMP
         /// </summary>
         /// <param name="args">The number of parameters independent of the specific types.</param>
         /// <returns>A boolean indicating the status.</returns>
-		public bool CanExecute(int args)
+		public Boolean CanExecute(Int32 args)
 		{
 			foreach (var kv in _functions)
 			{
 				var key = kv.Key;
 
-				if (args < key.MinimumArguments || args > key.MaximumArguments)
-					continue;
-
-				return true;
+                if (args >= key.MinimumArguments && args <= key.MaximumArguments)
+                {
+                    return true;
+                }
 			}
 
 			return false;
@@ -88,10 +85,14 @@ namespace YAMP
         /// <returns>The evaluated value.</returns>
 		public override Value Perform (Value argument)
 		{
-			if(argument is ArgumentsValue)
-				_arguments = (argument as ArgumentsValue).Values;
-			else
-				_arguments = new Value[] { argument };
+            if (argument is ArgumentsValue)
+            {
+                _arguments = ((ArgumentsValue)argument).Values;
+            }
+            else
+            {
+                _arguments = new Value[] { argument };
+            }
 			
 			return Execute();
 		}
