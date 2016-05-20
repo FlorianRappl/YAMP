@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("The inverse of the sech(x) function.")]
+    [Description("ArsechFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Inverse_hyperbolic_function")]
+    [Link("ArsechFunctionLink")]
     sealed class ArsechFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue z)

@@ -3,8 +3,14 @@
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Provides localized and default versions of the help texts.
+    /// </summary>
     public static class Localization
     {
+        /// <summary>
+        /// Gets the default help texts to use.
+        /// </summary>
         public static readonly IDictionary<String, String> Default = new Dictionary<String, String>
         {
             { "NoDescription", "No description available." },
@@ -718,9 +724,60 @@
             { "CastFunctionExampleForString1", "Casts a string 5 to a number 5." },
             { "CastFunctionExampleForString2", "Casts a string 0.1 to a number 0.1." },
             { "CastFunctionExampleForString3", "Casts a string 3e-5 to a number 0.00003." },
-            { "CastFunctionExampleForString4", "Casts the input of a user to a number." }
+            { "CastFunctionExampleForString4", "Casts the input of a user to a number." },
+            { "TanhFunctionDescription", "The standard tanh(x) function, which is sinh(x) / cosh(x). This is the hyperbolic tangent." },
+            { "TanhFunctionLink", "http://en.wikipedia.org/wiki/Hyperbolic_function" },
+            { "TanFunctionDescription", "The standard tan(x) function, which is sin(x) / cos(x). This is the opposite over the adjacent side." },
+            { "TanFunctionLink", "http://en.wikipedia.org/wiki/Trigonometric_functions" },
+            { "SinhFunctionDescription", "The standard sinh(x) function. This is the hyperbolic sine." },
+            { "SinhFunctionLink", "http://en.wikipedia.org/wiki/Hyperbolic_function" },
+            { "SinFunctionDescription", "The standard sin(x) function. This is the opposite over the hypotenuse side." },
+            { "SinFunctionLink", "http://en.wikipedia.org/wiki/Sine" },
+            { "SechFunctionDescription", "The standard sech(x) function. This is the hyperbolic secant." },
+            { "SechFunctionLink", "http://en.wikipedia.org/wiki/Hyperbolic_function" },
+            { "SecFunctionDescription", "The standard sec(x) function. This is one over the cosine or the hypotenuse over the adjacent side." },
+            { "SecFunctionLink", "http://en.wikipedia.org/wiki/Trigonometric_functions" },
+            { "CschFunctionDescription", "The standard csch(x) function. This is the hyperbolic cosecant." },
+            { "CschFunctionLink", "http://en.wikipedia.org/wiki/Hyperbolic_function" },
+            { "CscFunctionDescription", "The standard csc(x) function. This is 1.0 over the sine or the hypotenuse over the opposite side." },
+            { "CscFunctionLink", "http://en.wikipedia.org/wiki/Trigonometric_functions" },
+            { "CothFunctionDescription", "The standard coth(x) function, which is cosh(x) / sinh(x). This is the hyperbolic cotangent." },
+            { "CothFunctionLink", "http://en.wikipedia.org/wiki/Hyperbolic_function" },
+            { "CotFunctionDescription", "The standard cot(x) function, which is cos(x) / sin(x). This is the adjacent over the opposite side." },
+            { "CotFunctionLink", "http://en.wikipedia.org/wiki/Trigonometric_functions" },
+            { "CoshFunctionDescription", "The standard cosh(x) function. This is the hyperbolic cosine." },
+            { "CoshFunctionLink", "http://en.wikipedia.org/wiki/Hyperbolic_function" },
+            { "CosFunctionDescription", "The standard cos(x) function. This is the adjacent over the hypotenuse side." },
+            { "CosFunctionLink", "http://en.wikipedia.org/wiki/Trigonometric_functions" },
+            { "ArtanhFunctionDescription", "The inverse of the tanh(x) function, which is sinh(x) / cosh(x)." },
+            { "ArtanhFunctionLink", "http://en.wikipedia.org/wiki/Inverse_hyperbolic_function" },
+            { "ArsinhFunctionDescription", "The inverse of the sinh(x) function." },
+            { "ArsinhFunctionLink", "http://en.wikipedia.org/wiki/Inverse_hyperbolic_function" },
+            { "ArsechFunctionDescription", "The inverse of the sech(x) function." },
+            { "ArsechFunctionLink", "http://en.wikipedia.org/wiki/Inverse_hyperbolic_function" },
+            { "ArctanFunctionDescription", "The inverse of the tan(x) function, which is sin(x) / cos(x)." },
+            { "ArctanFunctionLink", "http://en.wikipedia.org/wiki/Inverse_trigonometric_function" },
+            { "ArcsinFunctionDescription", "The inverse of the sin(x) function." },
+            { "ArcsinFunctionLink", "http://en.wikipedia.org/wiki/Inverse_trigonometric_function" },
+            { "ArcsecFunctionDescription", "The inverse of the sec(x) function." },
+            { "ArcsecFunctionLink", "http://en.wikipedia.org/wiki/Inverse_trigonometric_function" },
+            { "ArcschFunctionDescription", "The inverse of the csch(x) function." },
+            { "ArcschFunctionLink", "http://en.wikipedia.org/wiki/Inverse_hyperbolic_function" },
+            { "ArcothFunctionDescription", "The inverse of the coth(x) function, which is cosh(x) / sinh(x)." },
+            { "ArcothFunctionLink", "http://en.wikipedia.org/wiki/Inverse_hyperbolic_function" },
+            { "ArcoshFunctionDescription", "The inverse of the cosh(x) function." },
+            { "ArcoshFunctionLink", "http://en.wikipedia.org/wiki/Inverse_hyperbolic_function" },
+            { "ArccscFunctionDescription", "The inverse of the csc(x) function." },
+            { "ArccscFunctionLink", "http://en.wikipedia.org/wiki/Inverse_trigonometric_function" },
+            { "ArccotFunctionDescription", "The inverse of the cot(x) function, which is cos(x) / sin(x)." },
+            { "ArccotFunctionLink", "http://en.wikipedia.org/wiki/Inverse_trigonometric_function" },
+            { "ArccosFunctionDescription", "The inverse of the cos(x) function." },
+            { "ArccosFunctionLink", "http://en.wikipedia.org/wiki/Inverse_trigonometric_function" }
         };
 
+        /// <summary>
+        /// Gets or sets the current help texts to use.
+        /// </summary>
         public static IDictionary<String, String> Current = Default;
     }
 }

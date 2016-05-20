@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("The inverse of the sinh(x) function.")]
+    [Description("ArsinhFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Inverse_hyperbolic_function")]
+    [Link("ArsinhFunctionLink")]
     sealed class ArsinhFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

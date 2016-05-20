@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("The inverse of the tanh(x) function, which is sinh(x) / cosh(x).")]
+    [Description("ArtanhFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Inverse_hyperbolic_function")]
+    [Link("ArtanhFunctionLink")]
     sealed class ArtanhFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

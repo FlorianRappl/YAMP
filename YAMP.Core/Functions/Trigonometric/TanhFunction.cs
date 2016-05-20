@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("The standard tanh(x) function, which is sinh(x) / cosh(x). This is the hyperbolic tangent.")]
+    [Description("TanhFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Hyperbolic_function")]
+    [Link("TanhFunctionLink")]
     sealed class TanhFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

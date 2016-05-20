@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("The standard sech(x) function. This is the hyperbolic secant.")]
+    [Description("SechFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Hyperbolic_function")]
+    [Link("SechFunctionLink")]
     sealed class SechFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

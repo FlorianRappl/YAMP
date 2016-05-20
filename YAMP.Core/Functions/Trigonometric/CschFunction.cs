@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("The standard csch(x) function. This is the hyperbolic cosecant.")]
+    [Description("CschFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Hyperbolic_function")]
+    [Link("CschFunctionLink")]
     sealed class CschFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

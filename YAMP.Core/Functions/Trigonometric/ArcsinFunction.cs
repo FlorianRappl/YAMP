@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("The inverse of the sin(x) function.")]
+    [Description("ArcsinFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Inverse_trigonometric_function")]
+    [Link("ArcsinFunctionLink")]
     sealed class ArcsinFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue z)

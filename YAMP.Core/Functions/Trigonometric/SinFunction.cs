@@ -1,10 +1,8 @@
-using System;
-
 namespace YAMP
 {
-	[Description("The standard sin(x) function. This is the opposite over the hypotenuse side.")]
+    [Description("SinFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Sine")]
+    [Link("SinFunctionLink")]
 	sealed class SinFunction : StandardFunction
 	{
         protected override ScalarValue GetValue(ScalarValue value)

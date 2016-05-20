@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("The standard cosh(x) function. This is the hyperbolic cosine.")]
+    [Description("CoshFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Hyperbolic_function")]
+    [Link("CoshFunctionLink")]
     sealed class CoshFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

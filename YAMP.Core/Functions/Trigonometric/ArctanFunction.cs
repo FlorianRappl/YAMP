@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("The inverse of the tan(x) function, which is sin(x) / cos(x).")]
+    [Description("ArctanFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Inverse_trigonometric_function")]
+    [Link("ArctanFunctionLink")]
     sealed class ArctanFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue z)

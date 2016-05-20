@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("The standard sinh(x) function. This is the hyperbolic sine.")]
+    [Description("SinhFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Hyperbolic_function")]
+    [Link("SinhFunctionLink")]
     sealed class SinhFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)

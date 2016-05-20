@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("The inverse of the cot(x) function, which is cos(x) / sin(x).")]
+    [Description("ArccotFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Inverse_trigonometric_function")]
+    [Link("ArccotFunctionLink")]
     sealed class ArccotFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue z)

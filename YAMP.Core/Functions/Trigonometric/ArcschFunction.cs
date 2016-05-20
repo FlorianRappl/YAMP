@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("The inverse of the csch(x) function.")]
+    [Description("ArcschFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Inverse_hyperbolic_function")]
+    [Link("ArcschFunctionLink")]
     sealed class ArcschFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue z)

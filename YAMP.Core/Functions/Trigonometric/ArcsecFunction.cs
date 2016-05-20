@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("The inverse of the sec(x) function.")]
+    [Description("ArcsecFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Inverse_trigonometric_function")]
+    [Link("ArcsecFunctionLink")]
     sealed class ArcsecFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue z)

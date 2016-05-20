@@ -1,10 +1,8 @@
-using System;
-
 namespace YAMP
 {
-	[Description("The standard sec(x) function. This is one over the cosine or the hypotenuse over the adjacent side.")]
+    [Description("SecFunctionDescription")]
     [Kind(PopularKinds.Trigonometric)]
-    [Link("http://en.wikipedia.org/wiki/Trigonometric_functions")]
+    [Link("SecFunctionLink")]
 	sealed class SecFunction : StandardFunction
 	{
         protected override ScalarValue GetValue(ScalarValue value)
