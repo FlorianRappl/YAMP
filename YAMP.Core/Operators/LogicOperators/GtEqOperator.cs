@@ -1,13 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// The basic greater equals operator.
     /// </summary>
     class GtEqOperator : LogicOperator
     {
-		public GtEqOperator () : base(">=")
+		public GtEqOperator ()
+            : base(">=")
 		{
 		}
 

@@ -1,13 +1,14 @@
-using System;
-
 namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// This is the lighter than operator.
     /// </summary>
 	class LtOperator : LogicOperator
 	{
-		public LtOperator () : base("<")
+		public LtOperator ()
+            : base("<")
 		{
 		}
 

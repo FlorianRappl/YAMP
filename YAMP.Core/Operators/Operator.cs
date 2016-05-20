@@ -10,7 +10,7 @@ namespace YAMP
 	{
 		#region Fields
 
-		string _op;
+		String _op;
 
 		#endregion
 
@@ -52,7 +52,7 @@ namespace YAMP
         /// <summary>
         /// Gets how many expressions are eaten by thix operator (1 = unary, 2 = binary, ...).
         /// </summary>
-        public int Expressions
+        public Int32 Expressions
         {
             get;
             protected set;
@@ -61,7 +61,7 @@ namespace YAMP
 		/// <summary>
 		/// Gets the operator's string.
 		/// </summary>
-		public string Op
+		public String Op
 		{
 			get { return _op; }
 		}
@@ -69,7 +69,7 @@ namespace YAMP
 		/// <summary>
 		/// Gets the level of the operator.
 		/// </summary>
-		public int Level
+        public Int32 Level
 		{
 			get;
 			private set;
@@ -78,7 +78,7 @@ namespace YAMP
 		/// <summary>
 		/// Gets if the operator has to be executed from right to left for chained scenarios.
 		/// </summary>
-		public bool IsRightToLeft
+		public Boolean IsRightToLeft
 		{
 			get;
 			protected set;
@@ -133,16 +133,16 @@ namespace YAMP
         /// Returns the string representation of the operator.
         /// </summary>
         /// <returns>A string.</returns>
-        public override string ToString()
+        public override String ToString()
         {
-            return string.Format("({0}, {1}) {2}", StartLine, StartColumn, GetType().Name.RemoveOperatorConvention());
+            return String.Format("({0}, {1}) {2}", StartLine, StartColumn, GetType().Name.RemoveOperatorConvention());
 		}
 
         /// <summary>
         /// The code representation of the operator, which is usually just the operator itself.
         /// </summary>
         /// <returns>A valid part of a YAMP query.</returns>
-        public override string ToCode()
+        public override String ToCode()
         {
             return _op;
         }

@@ -1,13 +1,14 @@
-using System;
-
 namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// The basic equals == operator.
     /// </summary>
 	class EqOperator : LogicOperator
 	{
-		public EqOperator () : base("==")
+		public EqOperator ()
+            : base("==")
 		{
 		}
 

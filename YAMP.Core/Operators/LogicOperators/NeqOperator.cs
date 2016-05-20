@@ -1,13 +1,14 @@
-using System;
-
 namespace YAMP
 {
+    using System;
+
     /// <summary>
-    /// This is the not equal to operator ~= (attention: it is NOT !=).
+    /// This is the not equal to operator.
     /// </summary>
-	class NeqOperator : LogicOperator
+	abstract class NeqOperator : LogicOperator
 	{
-		public NeqOperator () : base("~=")
+		public NeqOperator(String op)
+            : base(op)
 		{
 		}
 
@@ -26,9 +27,30 @@ namespace YAMP
             return base.Perform(left, right);
         }
 
-        public override Operator Create()
+        public class StandardNeqOperator : NeqOperator
         {
-            return new NeqOperator();
+            public StandardNeqOperator()
+                : base("~=")
+            {
+            }
+
+            public override Operator Create()
+            {
+                return new StandardNeqOperator();
+            }
+        }
+
+        public class AliasNeqOperator : NeqOperator
+        {
+            public AliasNeqOperator()
+                : base("!=")
+            {
+            }
+
+            public override Operator Create()
+            {
+                return new AliasNeqOperator();
+            }
         }
 	}
 }

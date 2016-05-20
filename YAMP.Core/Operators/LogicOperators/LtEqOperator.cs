@@ -1,13 +1,14 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// This is the representation of a lighter or equal to operator.
     /// </summary>
     class LtEqOperator : LogicOperator
     {
-		public LtEqOperator () : base("<=")
+		public LtEqOperator ()
+            : base("<=")
 		{
 		}
 

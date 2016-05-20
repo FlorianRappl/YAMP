@@ -1,13 +1,14 @@
-using System;
-
 namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// The construction scheme for a greater than operator.
     /// </summary>
 	class GtOperator : LogicOperator
 	{
-		public GtOperator () : base(">")
+		public GtOperator ()
+            : base(">")
 		{
 		}
 

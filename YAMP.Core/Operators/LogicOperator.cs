@@ -1,5 +1,6 @@
 namespace YAMP
 {
+    using System;
     using YAMP.Exceptions;
 
     /// <summary>
@@ -14,7 +15,8 @@ namespace YAMP
         /// Creates a new logic operator (like ==, ~=, ...).
         /// </summary>
         /// <param name="op">The operator string.</param>
-        public LogicOperator (string op) : base(op, 4)
+        public LogicOperator (String op) 
+            : base(op, 4)
 		{
 		}
 
@@ -23,7 +25,7 @@ namespace YAMP
         /// </summary>
         /// <param name="op">The operator string.</param>
         /// <param name="level">The operator level.</param>
-        public LogicOperator(string op, int level)
+        public LogicOperator(String op, Int32 level)
             : base(op, level)
         {
         }
