@@ -2,9 +2,9 @@
 {
     using YAMP.Exceptions;
 
-    [Description("In statistics the Jackknife is a method to estimate the statistical error of observables measured on a set of data.")]
+    [Description("JackknifeFunctionDescription")]
     [Kind(PopularKinds.Statistic)]
-    [Link("http://en.wikipedia.org/wiki/Resampling_(statistics)")]
+    [Link("JackknifeFunctionLink")]
     sealed class JackknifeFunction : SystemFunction
     {
         public JackknifeFunction(ParseContext context)
@@ -12,14 +12,14 @@
         {
         }
 
-        [Description("This function implements the blocked Jackknife for functions of a set of vector data saved as the rows of a matrix. The function has to take a matrix of data as the first argument and has to return either a scalar or a matrix.")]
-        [Example("Jackknife([3 + randn(100, 1), 10 + 2 * randn(100, 1)], 20, avg)", "Gives the statistical Jackknife estimate for the mean and the error on the mean of a dataset with 100 measurements, mean [3, 10], and gaussian noise of width [1, 4] for a blocksize of 20.")]
+        [Description("JackknifeFunctionDescriptionForMatrixScalarFunction")]
+        [Example("Jackknife([3 + randn(100, 1), 10 + 2 * randn(100, 1)], 20, avg)", "JackknifeFunctionExampleForMatrixScalarFunction1")]
         public MatrixValue Function(MatrixValue cfgs, ScalarValue n, FunctionValue f)
         {
             return Function(cfgs, n, f, new ArgumentsValue());
         }
 
-        [Description("This function implements the blocked Jackknife for functions of a set of vector data saved as the rows of a matrix. The function has to take a matrix of data as the first argument, can take constant other optional arguments, and has to return either a scalar or a matrix.")]
+        [Description("JackknifeFunctionDescriptionForMatrixScalarFunctionArguments")]
         [Arguments(3, 1)]
         public MatrixValue Function(MatrixValue cfgs, ScalarValue n, FunctionValue f, ArgumentsValue P)
         {

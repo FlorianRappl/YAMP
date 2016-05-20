@@ -3,7 +3,7 @@
     using System;
     using YAMP.Exceptions;
 
-    [Description("Computes an approximation of the distribution of data values.")]
+    [Description("DistFunctionDescription")]
     [Kind(PopularKinds.Statistic)]
     sealed class DistFunction : SystemFunction
     {
@@ -12,8 +12,8 @@
         {
         }
 
-        [Description("Returns a function which approximates the distribution of the data values in Y. For that Y is binned into nbins equally spaced containers. The approximation uses nParameters parameters to describe the data.")]
-        [Example("dist([randn(500, 1); randn(1000, 1) + 5], 40, 10)", "Returns an approximate of the distribution of the data (two gaussians centered at 0 and 5 and relative height 1:2) binned in 40 bins and with 10 parameters.")]
+        [Description("DistFunctionDescriptionForMatrixScalarScalar")]
+        [Example("dist([randn(500, 1); randn(1000, 1) + 5], 40, 10)", "DistFunctionExampleForMatrixScalarScalar1")]
         public FunctionValue Function(MatrixValue Y, ScalarValue nbins, ScalarValue nParameters)
         {
             var nn = nbins.GetIntegerOrThrowException("nbins", Name);
@@ -69,11 +69,11 @@
 
                 if (temp is ScalarValue)
                 {
-                    return (temp as ScalarValue) / norm;
+                    return ((ScalarValue)temp) / norm;
                 }
                 else if (temp is MatrixValue)
                 {
-                    return (temp as MatrixValue) / norm;
+                    return ((MatrixValue)temp) / norm;
                 }
                 
                 throw new YAMPOperationInvalidException();
@@ -82,12 +82,12 @@
             return normed_dist;
         }
 
-        [Description("Returns a function which approximates the distribution of the data values in Y. For that Y is binned into nbins equally spaced containers. The approximation uses nParameters parameters to describe the data.")]
-        [Example("dist([randn(500, 1); randn(1000, 1) + 5])", "Returns an approximate of the distribution of the data (two gaussians centered at 0 and 5 and relative height 1:2) binned in about sqrt(1500) bins and about log(1500) parameters.")]
+        [Description("DistFunctionDescriptionForMatrix")]
+        [Example("dist([randn(500, 1); randn(1000, 1) + 5])", "DistFunctionExampleForMatrix1")]
         public FunctionValue Function(MatrixValue Y)
         {
-            ScalarValue nbins = new ScalarValue(Math.Round(Math.Sqrt(Y.Length)));
-            ScalarValue nParameters = new ScalarValue(Math.Round(Math.Log(Y.Length)));
+            var nbins = new ScalarValue(Math.Round(Math.Sqrt(Y.Length)));
+            var nParameters = new ScalarValue(Math.Round(Math.Log(Y.Length)));
             return Function(Y, nbins, nParameters);
         }
     }
