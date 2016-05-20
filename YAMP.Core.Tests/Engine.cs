@@ -74,13 +74,13 @@
         [Test]
         public void ParseForStatementCommasShouldFail()
         {
-            Test("for(k=0, k != 2, k++) { }", true);
+            Test("for(k=0, k ~= 2, k++) { }", true);
         }
 
         [Test]
         public void ParseForStatement()
         {
-            Test("for(k = 0; k != 2; k++) { }", false);
+            Test("for(k = 0; k ~= 2; k++) { }", false);
         }
 
         [Test]
