@@ -1,14 +1,13 @@
-﻿using System;
-using YAMP.Numerics;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Solves a system of linear equations by picking the best algorithm.")]
+    using YAMP.Numerics;
+
+    [Description("SolveFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class SolveFunction : ArgumentFunction
 	{
-		[Description("Searches a solution vector x for the matrix M and the source vector phi.")]
-		[Example("solve(rand(3), rand(3,1))", "Solves the equation M * x = b for a random 3x3 matrix M and a random vector phi.")]
+		[Description("SolveFunctionDescriptionForMatrixMatrix")]
+		[Example("solve(rand(3), rand(3,1))", "SolveFunctionExampleForMatrixMatrix1")]
 		public MatrixValue Function(MatrixValue M, MatrixValue phi)
 		{
 			if (M.IsSymmetric)
@@ -26,8 +25,8 @@ namespace YAMP
 			return M.Inverse() * phi;
 		}
 
-		[Description("Searches a solution vector x for the scalar a and the source b.")]
-		[Example("solve(7, 2)", "Solves the equation a * x = b for a scalar a = 7 and a source b = 2.")]
+		[Description("SolveFunctionDescriptionForScalarScalar")]
+		[Example("solve(7, 2)", "SolveFunctionExampleForScalarScalar1")]
 		public ScalarValue Function(ScalarValue a, ScalarValue b)
 		{
 			return a / b;

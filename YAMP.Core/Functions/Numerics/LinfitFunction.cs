@@ -3,9 +3,9 @@
     using YAMP.Exceptions;
     using YAMP.Numerics;
 
-    [Description("Linear fitting by finding coefficients for a linear combination of functions. Curve fitting is the process of constructing a curve, or mathematical function, that has the best fit to a series of data points, possibly subject to constraints. Curve fitting can involve either interpolation, where an exact fit to the data is required, or smoothing, in which a smooth function is constructed that approximately fits the data.")]
+    [Description("LinfitFunctionDescription")]
     [Kind(PopularKinds.Function)]
-    [Link("http://en.wikipedia.org/wiki/Curve_fitting")]
+    [Link("LinfitFunctionLink")]
     sealed class LinfitFunction : SystemFunction
     {
         public LinfitFunction(ParseContext context)
@@ -13,8 +13,8 @@
         {
         }
 
-        [Description("Linfit finds the coefficients of a linear combination of n functions, f_j(x(i)) to y(i), in a least squares sense. The result p is a row vector of length n containing the coefficients, i.e. p(1) * f_1 + p(2) * f_2 + p(3) * f_3 ... + p(n) * f_n.")]
-        [Example("x=(-2.5:0.1:2.5); linfit(x, erf(x), [x, x.^3, tanh(x)])", "fits the error function with the function p(1) * x + p(2) * x.^3 + p(3) * tan(x). The result is p = [-0.149151; 0.006249; 1.291217]")]
+        [Description("LinfitFunctionDescriptionForMatrixMatrixMatrix")]
+        [Example("x=(-2.5:0.1:2.5); linfit(x, erf(x), [x, x.^3, tanh(x)])", "LinfitFunctionExampleForMatrixMatrixMatrix1")]
         public MatrixValue Function(MatrixValue x, MatrixValue y, MatrixValue f)
         {
             if (x.Length != y.Length)
@@ -40,8 +40,8 @@
             return qr.Solve(b);
         }
 
-        [Description("Linfit finds the coefficients of a linear combination of n functions, f_j(x(i)) to y(i), in a least squares sense. The result is the fit function p(1) * f_1 + p(2) * f_2 + p(3) * f_3 ... + p(n) * f_n.")]
-        [Example("x=(-2.5:0.1:2.5); linfit(x, erf(x), x => [x, x.^3, tanh(x)])", "fits the error function with the function p(1) * x + p(2) * x.^3 + p(3) * tan(x). The result is a function evaluating -0.149151 * x + 0.006249 * x.^3 + 1.291217 * tanh(x)]")]
+        [Description("LinfitFunctionDescriptionForMatrixMatrixFunction")]
+        [Example("x=(-2.5:0.1:2.5); linfit(x, erf(x), x => [x, x.^3, tanh(x)])", "LinfitFunctionExampleForMatrixMatrixFunction1")]
         public FunctionValue Function(MatrixValue x, MatrixValue y, FunctionValue f)
         {
             var context = Context;

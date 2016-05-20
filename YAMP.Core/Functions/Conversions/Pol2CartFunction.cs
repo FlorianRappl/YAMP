@@ -3,12 +3,12 @@
     using System;
     using YAMP.Exceptions;
 
-    [Description("Converts a vector given in polar coordinates to a cartesian coordinates.")]
+    [Description("Pol2CartFunctionDescription")]
     [Kind(PopularKinds.Conversion)]
     sealed class Pol2CartFunction : ArgumentFunction
     {
-        [Description("Converts a set of values (r, phi) to a column vector with 2 rows (x, y).")]
-        [Example("pol2cart(4, pi/2)", "Computes the cartesian coordinates of the given polar coordinates r = 4, phi = pi / 2.")]
+        [Description("Pol2CartFunctionDescriptionForScalarScalar")]
+        [Example("pol2cart(4, pi/2)", "Pol2CartFunctionExampleForScalarScalar1")]
         public MatrixValue Function(ScalarValue r, ScalarValue phi)
         {
             var x = new ScalarValue(r.Re * Math.Cos(phi.Re));
@@ -16,8 +16,8 @@
             return new MatrixValue(new[] { x, y }, 2, 1);
         }
 
-        [Description("Converts a matrix of values (r, phi, in the rows or columns) to a matrix of converted values.")]
-        [Example("pol2cart([1, pi/2; 1, pi/3; 1, pi/4; 1, pi/5])", "Evaluates the 4x2 matrix, using the columns as vectors (a set of row vectors to be converted).")]
+        [Description("Pol2CartFunctionDescriptionForMatrix")]
+        [Example("pol2cart([1, pi/2; 1, pi/3; 1, pi/4; 1, pi/5])", "Pol2CartFunctionExampleForMatrix1")]
         public MatrixValue Function(MatrixValue M)
         {
             if (M.DimensionX != 2 && M.DimensionY != 2)

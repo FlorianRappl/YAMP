@@ -1,16 +1,15 @@
 ﻿namespace YAMP
 {
-    using System;
     using YAMP.Exceptions;
     using YAMP.Numerics;
 
-    [Description("Polynomial curve fitting by finding coefficients for constructing a polynom with degree n. Curve fitting is the process of constructing a curve, or mathematical function, that has the best fit to a series of data points, possibly subject to constraints. Curve fitting can involve either interpolation, where an exact fit to the data is required, or smoothing, in which a smooth function is constructed that approximately fits the data.")]
+    [Description("PolyfitFunctionDescription")]
     [Kind(PopularKinds.Function)]
-    [Link("http://en.wikipedia.org/wiki/Curve_fitting")]
+    [Link("PolyfitFunctionLink")]
     sealed class PolyfitFunction : ArgumentFunction
     {
-        [Description("Polyfit finds the coefficients of a polynomial p(x) of degree n that fits the data, p(x(i)) to y(i), in a least squares sense. The result p is a row vector of length n + 1 containing the polynomial coefficients in ascending powers, i.e. p(1) + p(2) * x + p(3) * x^2 ... + p(n + 1) * x^n.")]
-        [Example("polyfit(0:0.1:2.5, erf(0:0.1:2.5), 6)", "Evaluates the polynom of degree 6 of the error function between 0 and 2.5. The result is are coefficients for a polynom like p(x) = 0.0084 * x^6 - 0.0983 * x^5 + 0.4217 * x^4 - 0.7435 * x^3 + 0.1471 * x^2 + 1.1064 * x + 0.0004.")]
+        [Description("PolyfitFunctionDescriptionForMatrixMatrixScalar")]
+        [Example("polyfit(0:0.1:2.5, erf(0:0.1:2.5), 6)", "PolyfitFunctionExampleForMatrixMatrixScalar1")]
         public MatrixValue Function(MatrixValue x, MatrixValue y, ScalarValue n)
         {
             if (x.Length != y.Length)

@@ -2,21 +2,21 @@
 {
     using YAMP.Numerics;
 
-    [Description("Uses the conjugate gradient algorithm to solve a linear system of equations.")]
+    [Description("CGFunctionDescription")]
 	[Kind(PopularKinds.Function)]
-    [Link("http://en.wikipedia.org/wiki/Conjugate_gradient_method")]
+    [Link("CGFunctionLink")]
     sealed class CGFunction : ArgumentFunction
     {
-        [Description("Computes the solution vector x for a given matrix A and a source vector b.")]
-        [Example("cg([1,2,1;2,3,4;1,4,2], rand(3,1))", "Here A is an arbitrary symmetric positive definite matrix and b is a random source vector.")]
+        [Description("CGFunctionDescriptionForMatrixMatrix")]
+        [Example("cg([1,2,1;2,3,4;1,4,2], rand(3,1))", "CGFunctionExampleForMatrixMatrix1")]
         public MatrixValue Function(MatrixValue A, MatrixValue b)
         {
             var cg = new CGSolver(A);
             return cg.Solve(b);
         }
 
-        [Description("Computes the solution vector x for a given matrix A, a specified starting solution x0 (guess) and a source vector b.")]
-        [Example("cg([1,2,1;2,3,4;1,4,2], [1;0;0], rand(3,1))", "Here A is an arbitrary symmetric positive definite matrix, x0 is a start vector (1;0;0) and b is a random source vector.")]
+        [Description("CGFunctionDescriptionForMatrixMatrixMatrix")]
+        [Example("cg([1,2,1;2,3,4;1,4,2], [1;0;0], rand(3,1))", "CGFunctionExampleForMatrixMatrixMatrix1")]
         public MatrixValue Function(MatrixValue A, MatrixValue x, MatrixValue b)
         {
             var cg = new CGSolver(A);
