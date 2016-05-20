@@ -6,7 +6,7 @@
     using YAMP.Exceptions;
 
 	[Kind(PopularKinds.Plot)]
-	[Description("Sets properties of a plot.")]
+    [Description("SetFunctionDescription")]
 	sealed class SetFunction : SystemFunction
     {
         public SetFunction(ParseContext context)
@@ -16,8 +16,8 @@
 
         #region Functions
 
-        [Description("Sets the specified (as string) field's value to a new value.")]
-		[Example("set(\"title\", \"My plot...\")", "Sets the title of the last plot to My Plot....")]
+        [Description("SetFunctionDescriptionForStringValue")]
+        [Example("set(\"title\", \"My plot...\")", "SetFunctionExampleForStringValue1")]
 		public void Function(StringValue property, Value newValue)
 		{
             if (Context.LastPlot == null)
@@ -30,8 +30,8 @@
             }
 		}
 
-		[Description("Sets the specified (as string) field's value to a new value.")]
-		[Example("set(myplot, \"title\", \"My plot Title\")", "Sets the title of the plot in the variable myplot to My Plot Title.")]
+        [Description("SetFunctionDescriptionForPlotStringValue")]
+        [Example("set(myplot, \"title\", \"My plot Title\")", "SetFunctionExampleForPlotStringValue1")]
 		public void Function(PlotValue plot, StringValue property, Value newValue)
 		{
 			var propertyName = property.Value;
@@ -40,10 +40,10 @@
             Context.RaiseNotification(new NotificationEventArgs(NotificationType.Success, "Property changed"));
 		}
 
-		[Description("Sets the specified (as string) field's value of the given series to a new value.")]
-		[Example("set(1, \"color\", \"#FF0000\")", "Sets the color of series #1 of the last plot to red (hex-color).")]
-		[Example("set(1, \"color\", \"rgb(255, 0, 0)\")", "Sets the color of series #1 of the last plot to red (rgb-color).")]
-		[Example("set(1, \"color\", \"red\")", "Sets the color of series #1 of the last plot to red.")]
+        [Description("SetFunctionDescriptionForScalarStringValue")]
+        [Example("set(1, \"color\", \"#FF0000\")", "SetFunctionExampleForScalarStringValue1")]
+        [Example("set(1, \"color\", \"rgb(255, 0, 0)\")", "SetFunctionExampleForScalarStringValue2")]
+        [Example("set(1, \"color\", \"red\")", "SetFunctionExampleForScalarStringValue3")]
 		public void Function(ScalarValue series, StringValue property, Value newValue)
 		{
             if (Context.LastPlot == null)
@@ -56,10 +56,10 @@
             }
 		}
 
-		[Description("Sets the specified (as string) field's values of the specified series to a new value.")]
-		[Example("set(myplot, 1, \"color\", \"#FF0000\")", "Sets the color of series #1 of the plot in the variable myplot to red (hex-color).")]
-		[Example("set(myplot, 1, \"color\", \"rgb(255, 0, 0)\")", "Sets the color of series #1 of the plot in the variable myplot to red (rgb-color).")]
-		[Example("set(myplot, 1, \"color\", \"red\")", "Sets the color of series #1 of the plot in the variable myplot to red.")]
+        [Description("SetFunctionDescriptionForPlotScalarStringValue")]
+        [Example("set(myplot, 1, \"color\", \"#FF0000\")", "SetFunctionExampleForPlotScalarStringValue1")]
+        [Example("set(myplot, 1, \"color\", \"rgb(255, 0, 0)\")", "SetFunctionExampleForPlotScalarStringValue2")]
+        [Example("set(myplot, 1, \"color\", \"red\")", "SetFunctionExampleForPlotScalarStringValue3")]
 		public void Function(PlotValue plot, ScalarValue series, StringValue property, Value newValue)
 		{
 			if (plot.Count == 0)
@@ -75,10 +75,10 @@
             Context.RaiseNotification(new NotificationEventArgs(NotificationType.Success, "Series " + n + " changed."));
 		}
 
-		[Description("Sets the specified (as string) field's value of the given series to a new value.")]
-		[Example("set(1:3, \"color\", \"#FF0000\")", "Sets the color of series #1 to #3 of the last plot to red (hex-color).")]
-		[Example("set(1:2:5, \"color\", \"rgb(255, 0, 0)\")", "Sets the color of series #1, #3, #5 of the last plot to red (rgb-color).")]
-		[Example("set([1,3,7], \"color\", \"red\")", "Sets the color of series #1, #3, #7 of the last plot to red.")]
+        [Description("SetFunctionDescriptionForMatrixStringValue")]
+        [Example("set(1:3, \"color\", \"#FF0000\")", "SetFunctionExampleForMatrixStringValue1")]
+        [Example("set(1:2:5, \"color\", \"rgb(255, 0, 0)\")", "SetFunctionExampleForMatrixStringValue2")]
+        [Example("set([1,3,7], \"color\", \"red\")", "SetFunctionExampleForMatrixStringValue3")]
 		public void Function(MatrixValue series, StringValue property, Value newValue)
 		{
             if (Context.LastPlot == null)
@@ -91,10 +91,10 @@
             }
 		}
 
-		[Description("Sets the specified (as string) field's value to of the given series to a new value.")]
-		[Example("set(myplot, 1:3, \"color\", \"#FF0000\")", "Sets the color of series #1 to #3 of the plot in the variable myplot to red (hex-color).")]
-		[Example("set(myplot, 1:2:5, \"color\", \"rgb(255, 0, 0)\")", "Sets the color of series #1, #3, #5 of the plot in the variable myplot to red (rgb-color).")]
-		[Example("set(myplot, [1,3,7], \"color\", \"red\")", "Sets the color of series #1, #3, #7 of the plot in the variable myplot to red.")]
+        [Description("SetFunctionDescriptionForPlotMatrixStringValue")]
+        [Example("set(myplot, 1:3, \"color\", \"#FF0000\")", "SetFunctionExampleForPlotMatrixStringValue1")]
+        [Example("set(myplot, 1:2:5, \"color\", \"rgb(255, 0, 0)\")", "SetFunctionExampleForPlotMatrixStringValue2")]
+        [Example("set(myplot, [1,3,7], \"color\", \"red\")", "SetFunctionExampleForPlotMatrixStringValue3")]
 		public void Function(PlotValue plot, MatrixValue series, StringValue property, Value newValue)
 		{
 			var s = new List<String>();
@@ -102,10 +102,10 @@
 			if (series is RangeValue)
 			{
 				var r = series as RangeValue;
-				var step = (int)r.Step;
-				var end = r.All ? plot.Count : (int)r.End;
+				var step = (Int32)r.Step;
+                var end = r.All ? plot.Count : (Int32)r.End;
 
-				for (var j = (int)r.Start; j <= end; j += step)
+                for (var j = (Int32)r.Start; j <= end; j += step)
 				{
 					s.Add(j.ToString());
                     AlterSeriesProperty(plot, j - 1, property.Value, newValue);
