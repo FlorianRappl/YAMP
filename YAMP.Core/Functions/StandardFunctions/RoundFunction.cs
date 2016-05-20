@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Represents the round function to round up or down to the nearest integer.")]
+    using System;
+
+    [Description("RoundFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class RoundFunction : StandardFunction
     {

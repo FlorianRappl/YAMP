@@ -1,14 +1,14 @@
-﻿using System;
-using System.Linq;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Splits a string into tokens using a list of separators.")]
+    using System;
+    using System.Linq;
+
+    [Description("SplitFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class SplitFunction : ArgumentFunction
 	{
-        [Description("Splits a string into tokens using a list of separators.")]
-		[Example("tokens = split(\"hello world!\", \"o\", \"e\")", "Returns a list of all tokens.")]
+        [Description("SplitFunctionDescriptionForStringArguments")]
+		[Example("tokens = split(\"hello world!\", \"o\", \"e\")", "SplitFunctionExampleForStringArguments1")]
 		[Arguments(1, 0)]
         public ArgumentsValue Function(StringValue text, ArgumentsValue args)
 		{

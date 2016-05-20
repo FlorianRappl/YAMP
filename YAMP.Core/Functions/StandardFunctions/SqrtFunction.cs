@@ -1,8 +1,6 @@
-using System;
-
 namespace YAMP
 {
-	[Description("The square root function raises the element to the power 1/2.")]
+	[Description("SqrtFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class SqrtFunction : StandardFunction
 	{

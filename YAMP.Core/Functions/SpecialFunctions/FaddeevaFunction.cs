@@ -2,13 +2,13 @@
 {
     using YAMP.Numerics;
 
-    [Description("DigammaFunctionDescription")]
+    [Description("FaddeevaFunctionDescription")]
     [Kind(PopularKinds.Function)]
-    sealed class DigammaFunction : StandardFunction
+    sealed class FaddeevaFunction : StandardFunction
     {
         protected override ScalarValue GetValue(ScalarValue value)
         {
-            return new ScalarValue(Gamma.Psi(value.Re));
+            return ErrorFunction.Faddeeva(value);
         }
     }
 }

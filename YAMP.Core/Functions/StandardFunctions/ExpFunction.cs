@@ -1,8 +1,6 @@
-using System;
-
 namespace YAMP
 {
-	[Description("This is the exponential function, i.e. sum of n = 0 to infinity of x^n / n!.")]
+	[Description("ExpFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class ExpFunction : StandardFunction
 	{

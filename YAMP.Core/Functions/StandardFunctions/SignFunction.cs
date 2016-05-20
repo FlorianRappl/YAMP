@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Represents the sign function.")]
+	[Description("SignFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class SignFunction : StandardFunction
     {
@@ -11,9 +9,9 @@ namespace YAMP
             return base.Perform(argument);
         }
 
-        [Description("Returns -1 for values smaller than 0, +1 for values greater than zero, else 0.")]
-        [Example("sign(3-4)", "Results in -1.")]
-        [Example("sign(3-2)", "Results in +1.")]
+        [Description("SignFunctionDescriptionForScalar")]
+        [Example("sign(3-4)", "SignFunctionExampleForScalar1")]
+        [Example("sign(3-2)", "SignFunctionExampleForScalar2")]
         public override ScalarValue Function(ScalarValue x)
         {
             return base.Function(x);

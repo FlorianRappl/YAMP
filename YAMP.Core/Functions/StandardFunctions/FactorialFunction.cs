@@ -1,8 +1,6 @@
-using System;
-
 namespace YAMP
 {
-	[Description("Represents the factorial function, which is used for the ! operator and integer expressions.")]
+	[Description("FactorialFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class FactorialFunction : StandardFunction
 	{

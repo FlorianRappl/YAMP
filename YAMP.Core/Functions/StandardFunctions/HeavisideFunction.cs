@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Represents the heaviside step function.")]
+	[Description("HeavisideFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class HeavisideFunction : StandardFunction
     {
@@ -16,9 +14,9 @@ namespace YAMP
             return new ScalarValue(value.Re > 0 ? 1.0 : 0.0);
         }
 
-        [Description("Returns 0 for values smaller or equal to 0, else 1.")]
-        [Example("heaviside(3-4)", "Results in 0.")]
-        [Example("heaviside(3-2)", "Results in 1.")]
+        [Description("HeavisideFunctionDescriptionForScalar")]
+        [Example("heaviside(3-4)", "HeavisideFunctionExampleForScalar1")]
+        [Example("heaviside(3-2)", "HeavisideFunctionExampleForScalar2")]
         public override ScalarValue Function(ScalarValue x)
         {
             return base.Function(x);

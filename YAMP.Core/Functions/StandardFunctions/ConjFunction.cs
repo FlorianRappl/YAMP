@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("Conjugates the given complex number to transform it from x + iy to x - iy.")]
+    [Description("ConjFunctionDescription")]
     [Kind(PopularKinds.Function)]
     sealed class ConjFunction : StandardFunction
     {

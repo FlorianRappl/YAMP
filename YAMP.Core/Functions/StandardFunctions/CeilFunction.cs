@@ -1,8 +1,8 @@
-using System;
-
 namespace YAMP
 {
-	[Description("Represents the ceil function to round up.")]
+    using System;
+
+    [Description("CeilFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class CeilFunction : StandardFunction
 	{

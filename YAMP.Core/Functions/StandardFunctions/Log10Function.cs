@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("This is decimal logarithm, i.e. the logarithm with base 10.")]
+    [Description("Log10FunctionDescription")]
     [Kind(PopularKinds.Function)]
     sealed class Log10Function : StandardFunction
     {

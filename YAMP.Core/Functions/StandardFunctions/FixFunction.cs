@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Represents the round function to round towards zero.")]
+    using System;
+
+    [Description("FixFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class FixFunction : StandardFunction
 	{

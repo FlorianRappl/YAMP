@@ -3,7 +3,7 @@
     using System;
     using YAMP.Exceptions;
 
-	[Description("Computes the minimum value of a given vector or minimum value of each column vector of a matrix.")]
+	[Description("MinFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class MinFunction : StandardFunction
 	{
@@ -42,15 +42,15 @@
 			throw new YAMPOperationInvalidException("min", argument);
 		}
 
-        [Description("Evaluates the vector(s) and outputs the minimum scalar(s) in the vector(s).")]
-        [Example("min([1,2,3,4,5,6,7,-1])", "Finds the minimum in the vector, which is -1 in this case.")]
-        [Example("min([1,2;3,4;5,6;7,-1])", "Finds the minimums of the vectors (of the matrix), which are 1 and -1 in this case.")]
+        [Description("MinFunctionDescriptionForMatrix")]
+        [Example("min([1,2,3,4,5,6,7,-1])", "MinFunctionExampleForMatrix1")]
+        [Example("min([1,2;3,4;5,6;7,-1])", "MinFunctionExampleForMatrix2")]
         public override MatrixValue Function(MatrixValue x)
         {
             return base.Function(x);
         }
 		
-		ScalarValue GetVectorMin(MatrixValue vec)
+		static ScalarValue GetVectorMin(MatrixValue vec)
 		{
 			var buf = ScalarValue.Zero;
 			var min = Double.MaxValue;

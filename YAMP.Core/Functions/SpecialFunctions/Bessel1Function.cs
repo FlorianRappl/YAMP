@@ -1,9 +1,8 @@
-﻿using System;
-using YAMP.Numerics;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("In mathematics, Bessel functions, first defined by the mathematician Daniel Bernoulli and generalized by Friedrich Bessel, are canonical solutions y(x) of Bessel's differential equation. This function represents Bessel functions of the first kind with order 1.")]
+    using YAMP.Numerics;
+
+    [Description("Bessel1FunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class Bessel1Function : StandardFunction
 	{

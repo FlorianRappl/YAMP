@@ -1,8 +1,8 @@
-using System;
-
 namespace YAMP
 {
-	[Description("Represents the floor function to round down.")]
+    using System;
+
+    [Description("FloorFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class FloorFunction : StandardFunction
 	{

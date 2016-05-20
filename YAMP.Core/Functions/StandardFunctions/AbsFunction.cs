@@ -2,7 +2,7 @@ namespace YAMP
 {
     using YAMP.Exceptions;
 
-	[Description("Represents the abs function.")]
+	[Description("AbsFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class AbsFunction : StandardFunction
 	{		
@@ -32,18 +32,18 @@ namespace YAMP
             throw new YAMPOperationInvalidException("abs", argument);
         }
 
-        [Description("Gives the absolute value of the provided scalar.")]
-        [Example("abs(3-4)", "Results in 1.")]
-        [Example("abs(3+4i)", "Results in 5.")]
-        [Example("abs(7i)", "Results in 7.")]
+        [Description("AbsFunctionDescriptionForScalar")]
+        [Example("abs(3-4)", "AbsFunctionExampleForScalar1")]
+        [Example("abs(3+4i)", "AbsFunctionExampleForScalar2")]
+        [Example("abs(7i)", "AbsFunctionExampleForScalar3")]
         public override ScalarValue Function(ScalarValue x)
         {
             return base.Function(x);
         }
 
-        [Description("Gives the absolute value of the provided vector, or the determinant of the given matrix.")]
-        [Example("abs([1,2;0,4])", "Results in 4.")]
-        [Example("abs([1,2,3])", "Results in the square root of 14.")]
+        [Description("AbsFunctionDescriptionForMatrix")]
+        [Example("abs([1,2;0,4])", "AbsFunctionExampleForMatrix1")]
+        [Example("abs([1,2,3])", "AbsFunctionExampleForMatrix2")]
         public override MatrixValue Function(MatrixValue x)
         {
             return base.Function(x);

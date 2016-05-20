@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-    [Description("This is binary logarithm, i.e. the logarithm with base 2.")]
+    [Description("Log2FunctionDescription")]
     [Kind(PopularKinds.Function)]
     sealed class Log2Function : StandardFunction
     {

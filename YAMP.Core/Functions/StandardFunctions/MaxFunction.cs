@@ -3,7 +3,7 @@
     using System;
     using YAMP.Exceptions;
 
-	[Description("Computes the maximum value of a given vector or maximum value of each column vector of a matrix.")]
+	[Description("MaxFunctionDescription")]
 	[Kind(PopularKinds.Function)]
     sealed class MaxFunction : StandardFunction
 	{
@@ -32,9 +32,9 @@
 			throw new YAMPOperationInvalidException("max", argument);
 		}
 
-		[Description("Evaluates the vector(s) and outputs the maximum scalar(s) in the vector(s).")]
-		[Example("max([1,2,3,4,5,6,7,-1])", "Finds the maximum in the vector, which is 7 in this case.")]
-		[Example("max([1,2;3,4;5,6;7,-1])", "Finds the maximums of the vectors (of the matrix), which are 7 and 6 in this case.")]
+		[Description("MaxFunctionDescriptionForMatrix")]
+		[Example("max([1,2,3,4,5,6,7,-1])", "MaxFunctionExampleForMatrix1")]
+		[Example("max([1,2;3,4;5,6;7,-1])", "MaxFunctionExampleForMatrix2")]
 		public override MatrixValue Function(MatrixValue m)
 		{
 			var M = new MatrixValue(1, m.DimensionX);
@@ -47,13 +47,13 @@
 			return M;
 		}
 		
-		ScalarValue GetVectorMax(MatrixValue vec)
+		static ScalarValue GetVectorMax(MatrixValue vec)
 		{
 			var buf = ScalarValue.Zero;
 			var max = Double.MinValue;
 			var temp = 0.0;
 
-			for(var i = 1; i <= vec.Length; i++)
+			for (var i = 1; i <= vec.Length; i++)
 			{
 				temp = vec.IsComplex ? vec[i].Abs() : vec[i].Re;
 
