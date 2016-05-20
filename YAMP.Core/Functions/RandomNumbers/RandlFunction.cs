@@ -25,7 +25,7 @@
         }
 
         [Description("RandlFunctionDescriptionForScalarScalar")]
-        [Example("randl(3, 1)", "RandlFunctionExampleForScalarScalarScalar1")]
+        [Example("randl(3, 1)", "RandlFunctionExampleForScalarScalar1")]
         public MatrixValue Function(ScalarValue rows, ScalarValue cols)
         {
             return Function(rows, cols, new ScalarValue(), new ScalarValue(1.0));

@@ -38,7 +38,7 @@
         /// </summary>
         /// <param name="exampleCode">The example to store.</param>
         public ExampleAttribute(String exampleCode) 
-            : this(exampleCode, String.Empty, false)
+            : this(exampleCode, "NoDescription", false)
         {
         }
 

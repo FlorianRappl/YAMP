@@ -270,7 +270,7 @@
             { "GMRESFunctionDescriptionForMatrixMatrix", "Computes the solution vector x for a given matrix A and a source vector b." },
             { "GMRESFunctionExampleForMatrixMatrix1", "Here A is a random 3x3 matrix and b is a random source vector with 3 rows." },
             { "GMRESFunctionDescriptionForMatrixMatrixMatrix", "Computes the solution vector x for a given matrix A, a specified starting solution x0 (guess) and a source vector b." },
-            { "GMRESFunctionExampleForMatrixMatrixMatrixMatrix1", "Here A is a random 3x3 matrix, x0 is a start vector with 3 rows (1,0,0) and b is a random source vector with 3 rows." },
+            { "GMRESFunctionExampleForMatrixMatrixMatrix1", "Here A is a random 3x3 matrix, x0 is a start vector with 3 rows (1,0,0) and b is a random source vector with 3 rows." },
             { "InvFunctionDescription", "Inverts the given matrix." },
             { "InvFunctionDescriptionForScalar", "Finds the inverse of a given number." },
             { "InvFunctionExampleForScalar1", "Inverts the number 5, resulting in 0.2." },

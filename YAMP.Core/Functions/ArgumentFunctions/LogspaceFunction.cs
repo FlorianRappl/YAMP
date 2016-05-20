@@ -7,7 +7,7 @@ namespace YAMP
     sealed class LogspaceFunction : ArgumentFunction
 	{
 		[Description("LogspaceFunctionDescriptionForScalarScalarScalar")]
-		[Example("logspace(2, 3, 5)", "")]
+		[Example("logspace(2, 3, 5)")]
 		public MatrixValue Function(ScalarValue start, ScalarValue end, ScalarValue count)
 		{
             return Function(start, end, count, new ScalarValue(10));
