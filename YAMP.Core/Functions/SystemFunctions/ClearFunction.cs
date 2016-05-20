@@ -1,6 +1,8 @@
 ﻿namespace YAMP
 {
-	[Description("Deletes variables from memory.")]
+    using System;
+
+    [Description("ClearFunctionDescription")]
 	[Kind(PopularKinds.System)]
     sealed class ClearFunction : SystemFunction
     {
@@ -9,7 +11,7 @@
         {
         }
 
-        [Description("Clears all variables.")]
+        [Description("ClearFunctionDescriptionForVoid")]
         [ExampleAttribute("clear()")]
         public void Function()
         {
@@ -24,9 +26,9 @@
             Notify(count);
         }
 
-        [Description("Clears the specified variables given with their names as strings.")]
-        [ExampleAttribute("clear(\"x\")", "Deletes the variable x.")]
-        [ExampleAttribute("clear(\"x\", \"y\", \"z\")", "Deletes the variables x, y and z.")]
+        [Description("ClearFunctionDescriptionForArguments")]
+        [ExampleAttribute("clear(\"x\")", "ClearFunctionExampleForArguments1")]
+        [ExampleAttribute("clear(\"x\", \"y\", \"z\")", "ClearFunctionExampleForArguments2")]
 		[Arguments(0, 1)]
         public void Function(ArgumentsValue args)
         {
@@ -50,7 +52,7 @@
             Notify(count);
         }
 
-        void Notify(int count)
+        void Notify(Int32 count)
         {
             Context.RaiseNotification(new NotificationEventArgs(NotificationType.Information, count + " objects cleared."));
         }

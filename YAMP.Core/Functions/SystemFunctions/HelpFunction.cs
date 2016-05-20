@@ -4,7 +4,7 @@
     using System.Text;
     using YAMP.Help;
 
-    [Description("Shows detailled help for various topics.")]
+    [Description("HelpFunctionDescription")]
 	[Kind(PopularKinds.System)]
     sealed class HelpFunction : SystemFunction
     {
@@ -15,8 +15,8 @@
         {
         }
 
-        [Description("Shows a list of all out-of-the-box provided help topics.")]
-        [Example("help()", "Lists all available help topics.")]
+        [Description("HelpFunctionDescriptionForVoid")]
+        [Example("help()", "HelpFunctionExampleForVoid1")]
         public StringValue Function()
         {
             var sb = new StringBuilder();
@@ -37,9 +37,9 @@
             return new StringValue(sb.ToString());
         }
 
-        [Description("Shows detailled help for a specific topic.")]
-        [Example("help(\"help\")", "You already typed that in!")]
-        [Example("help(\"sin\")", "Shows the detailled help for the sinus function.")]
+        [Description("HelpFunctionDescriptionForString")]
+        [Example("help(\"help\")", "HelpFunctionExampleForString1")]
+        [Example("help(\"sin\")", "HelpFunctionExampleForString2")]
         public StringValue Function(StringValue topic)
         {
 			var docu = Documentation.Create(Context);

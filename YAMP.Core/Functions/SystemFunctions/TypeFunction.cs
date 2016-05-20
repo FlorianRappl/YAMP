@@ -1,13 +1,11 @@
-﻿using System;
-
-namespace YAMP
+﻿namespace YAMP
 {
-	[Description("Gets information about the type of variables.")]
+	[Description("TypeFunctionDescription")]
 	[Kind(PopularKinds.System)]
     sealed class TypeFunction : StandardFunction
     {
-        [Description("Requests information about the type for the specified variable.")]
-        [Example("type(x)", "Gets the type information of the variable x.")]
+        [Description("TypeFunctionDescriptionForValue")]
+        [Example("type(x)", "TypeFunctionExampleForValue1")]
         public override Value Perform(Value argument)
         {
             return new StringValue(argument.Header);

@@ -2,7 +2,7 @@
 {
     using System.Threading;
 
-    [Description("Waits for the user to press some key.")]
+    [Description("PauseFunctionDescription")]
     [Kind(PopularKinds.System)]
     sealed class PauseFunction : SystemFunction
     {
@@ -11,8 +11,8 @@
         {
         }
 
-        [Description("Waits until the user presses some key.")]
-        [Example("pause()", "Shows the user a prompt with a default message.")]
+        [Description("PauseFunctionDescriptionForVoid")]
+        [Example("pause()", "PauseFunctionExampleForVoid1")]
         public void Function()
         {
             var handle = new ManualResetEvent(false);

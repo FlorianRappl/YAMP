@@ -165,7 +165,7 @@
     <Compile Include="Exceptions\YAMPWrongTypeSuppliedException.cs" />
     <Compile Include="Expressions\Keywords\BodyKeyword.cs" />
     <Compile Include="Expressions\Keywords\ReturnKeyword.cs" />
-    <Compile Include="Functions\SpecialFunctions\Faddeeva.cs" />
+    <Compile Include="Functions\SpecialFunctions\FaddeevaFunction.cs" />
     <Compile Include="Functions\SpecialFunctions\ZetaFunction.cs" />
     <Compile Include="Functions\SystemFunctions\CastFunction.cs" />
     <Compile Include="Functions\ArgumentFunctions\ImgToRGBFunction.cs" />

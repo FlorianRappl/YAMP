@@ -1,6 +1,6 @@
 ﻿namespace YAMP
 {
-	[Description("Gets or sets the precision set for display purposes.")]
+	[Description("PrecisionFunctionDescription")]
 	[Kind(PopularKinds.System)]
     sealed class PrecisionFunction : SystemFunction
     {
@@ -9,15 +9,15 @@
         {
         }
 
-        [Description("Gets the currently set precision in digits.")]
+        [Description("PrecisionFunctionDescriptionForVoid")]
         [Example("precision()")]
         public ScalarValue Function()
         {
             return new ScalarValue(Context.Precision);
         }
 
-        [Description("Sets the output precision to x digits.")]
-        [Example("precision(5)", "Sets the precision to 5 digits.")]
+        [Description("PrecisionFunctionDescriptionForScalar")]
+        [Example("precision(5)", "PrecisionFunctionExampleForScalar1")]
         public void Function(ScalarValue digits)
         {
             var n = digits.GetIntegerOrThrowException("digits", Name);

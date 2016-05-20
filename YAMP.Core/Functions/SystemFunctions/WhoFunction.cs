@@ -5,7 +5,7 @@
     using System.Text.RegularExpressions;
     using YAMP.Exceptions;
 
-	[Description("Lists the available variables.")]
+	[Description("WhoFunctionDescription")]
 	[Kind(PopularKinds.System)]
     sealed class WhoFunction : SystemFunction
     {
@@ -14,7 +14,7 @@
         {
         }
 
-        [Description("Lists all variables from the current workspace.")]
+        [Description("WhoFunctionDescriptionForVoid")]
         [Example("who()")]
         public StringValue Function()
         {
@@ -29,9 +29,9 @@
             return new StringValue(sb.ToString());
         }
 
-        [Description("Lists variables from the current workspace using a filter.")]
-        [Example("who(\"a*\")", "Lists all variables, which start with a small 'a'.")]
-        [Example("who(\"x?b\")", "Lists all variables, which contain 3 letters, starting with a small x, ending with a small b and any letter in between.")]
+        [Description("WhoFunctionDescriptionForString")]
+        [Example("who(\"a*\")", "WhoFunctionExampleForString1")]
+        [Example("who(\"x?b\")", "WhoFunctionExampleForString2")]
         public StringValue Function(StringValue filter)
         {
             var regex = new Regex("^" + Regex.Escape(filter.Value).Replace("\\*", ".*").Replace("\\?", ".{1}") + "$");
@@ -46,9 +46,9 @@
             return new StringValue(sb.ToString());
         }
 
-		[Description("Lists variables from the current workspace using a filter.")]
-		[Example("who(\"a*\", \"x\")", "Lists all variables, which start with a small 'a' and the variable x.")]
-		[Example("who(\"x?b\", \"a\", \"b\")", "Lists the variables a and b, as well as all variables, which contain 3 letters, starting with a small x, ending with a small b and any letter in between.")]
+		[Description("WhoFunctionDescriptionForArguments")]
+		[Example("who(\"a*\", \"x\")", "WhoFunctionExampleForArguments1")]
+		[Example("who(\"x?b\", \"a\", \"b\")", "WhoFunctionExampleForArguments2")]
 		[Arguments(0, 2)]
 		public StringValue Function(ArgumentsValue filter)
 		{
@@ -56,9 +56,9 @@
 			var index = 0;
 			var sb = new StringBuilder();
 
-			foreach(var value in values)
-			{
-				index++;
+            foreach (var value in values)
+            {
+                index++;
 
                 if (value is StringValue)
                 {
@@ -69,7 +69,7 @@
                 {
                     throw new YAMPArgumentWrongTypeException(value.Header, "String", Name);
                 }
-			}
+            }
 
 			return new StringValue(sb.ToString());
 		}

@@ -3,7 +3,7 @@
     using System;
     using System.Threading;
 
-	[Description("Enables the possibility to make a short break - computationally. Sets the computation thread on idle for a number of ms.")]
+	[Description("SleepFunctionDescription")]
 	[Kind(PopularKinds.System)]
     sealed class SleepFunction : SystemFunction
 	{
@@ -12,8 +12,8 @@
         {
         }
 
-		[Description("Sets the computation thread on idle for the proposed time in milliseconds (ms).")]
-		[Example("sleep(150)", "Sleeps for 150ms and outputs the real waiting time in ms.")]
+		[Description("SleepFunctionDescriptionForScalar")]
+		[Example("sleep(150)", "SleepFunctionExampleForScalar1")]
 		public void Function(ScalarValue timeout)
         {
             var n = timeout.GetIntegerOrThrowException("timeout", Name);

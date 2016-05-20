@@ -2,7 +2,7 @@
 {
     using System;
 
-	[Description("The date() function allows you to get dates with or without offset.")]
+	[Description("DateFunctionDescription")]
 	[Kind(PopularKinds.System)]
 	sealed class DateFunction : SystemFunction
 	{
@@ -12,16 +12,16 @@
         }
 
 
-		[Description("Gets the current date, taken at the moment of the query request.")]
-		[Example("date()", "Prints the current date.")]
+		[Description("DateFunctionDescriptionForVoid")]
+		[Example("date()", "DateFunctionExampleForVoid1")]
 		public StringValue Function()
 		{
 			var dt = DateTime.Today;
 			return new StringValue(dt.ToString("d"));
 		}
 
-		[Description("Gets the current date with the specified offset in days.")]
-		[Example("date(100)", "Prints the date in 100 days.")]
+		[Description("DateFunctionDescriptionForScalar")]
+		[Example("date(100)", "DateFunctionExampleForScalar1")]
 		public StringValue Function(ScalarValue offset)
 		{
 			var dt = DateTime.Today.AddDays(offset.Re);

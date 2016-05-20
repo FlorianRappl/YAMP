@@ -1,6 +1,6 @@
 ﻿namespace YAMP
 {
-    [Description("Returns the version of the YAMP parser engine.")]
+    [Description("VerFunctionDescription")]
     [Kind(PopularKinds.System)]
     sealed class VerFunction : SystemFunction
     {
@@ -9,8 +9,8 @@
         {
         }
 
-        [Description("Gets a string containing the current version of the running YAMP engine.")]
-        [Example("ver()", "Gets a string containing the version of YAMP.")]
+        [Description("VerFunctionDescriptionForVoid")]
+        [Example("ver()", "VerFunctionExampleForVoid1")]
         public StringValue Function()
         {
             return new StringValue(Parser.Version);

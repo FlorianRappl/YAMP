@@ -2,7 +2,7 @@
 {
     using System;
 
-	[Description("Formats some text using placeholders like {0} etc. and returns the formatted string.")]
+	[Description("PrintfFunctionDescription")]
 	[Kind(PopularKinds.System)]
     sealed class PrintfFunction : SystemFunction
 	{
@@ -11,8 +11,8 @@
         {
         }
 
-		[Description("Formats some text using placeholders like {0} etc. and returns the resulting string.")]
-		[Example("s = printf(\"{2} The result of {0} + {1} is {3}\", 2.0, 7i, \"Hi!\", 2.0 + 7i)", "Evaluates the arguments and includes them in the string given by the first argument.")]
+		[Description("PrintfFunctionDescriptionForStringArguments")]
+		[Example("s = printf(\"{2} The result of {0} + {1} is {3}\", 2.0, 7i, \"Hi!\", 2.0 + 7i)", "PrintfFunctionExampleForStringArguments1")]
 		[Arguments(1, 0)]
 		public StringValue Function(StringValue text, ArgumentsValue args)
 		{

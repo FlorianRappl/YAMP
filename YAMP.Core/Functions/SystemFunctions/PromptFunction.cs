@@ -2,7 +2,7 @@
 {
     using System.Threading;
 
-    [Description("Prompts the user to input something.")]
+    [Description("PromptFunctionDescription")]
     [Kind(PopularKinds.System)]
     sealed class PromptFunction : SystemFunction
     {
@@ -11,8 +11,8 @@
         {
         }
 
-        [Description("Waits until the user made some input with a default message.")]
-        [Example("prompt()", "Shows the user a prompt with a default message. Returns the user input as String.")]
+        [Description("PromptFunctionDescriptionForVoid")]
+        [Example("prompt()", "PromptFunctionExampleForVoid1")]
         public StringValue Function()
         {
             var handle = new ManualResetEvent(false);
@@ -22,8 +22,8 @@
             return new StringValue(e.Input);
         }
 
-        [Description("Waits until the user made some input.")]
-        [Example("prompt(\"Please enter something\")", "Shows the user a prompt with the message to Please enter something. Returns the user input as String.")]
+        [Description("PromptFunctionDescriptionForString")]
+        [Example("prompt(\"Please enter something\")", "PromptFunctionExampleForString1")]
         public StringValue Function(StringValue message)
         {
             var handle = new ManualResetEvent(false);

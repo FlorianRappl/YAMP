@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    [Description("Evaluates some user input by executing the given code.")]
+    [Description("EvalFunctionDescription")]
     [Kind(PopularKinds.System)]
     sealed class EvalFunction : SystemFunction
     {
@@ -12,10 +12,10 @@
         {
         }
 
-        [Description("Evaluates the given string as code and returns the value.")]
-        [Example("eval(\"2+3\")", "Evaluates the input and returns the value 5.")]
-        [Example("eval(\"17*5\")", "Evaluates the query and returns the result of 17 * 5 = 85.")]
-        [Example("eval(\"[1 2 3]\")", "Creates a new vector with the entries 1, 2 and 3.")]
+        [Description("EvalFunctionDescriptionForString")]
+        [Example("eval(\"2+3\")", "EvalFunctionExampleForString1")]
+        [Example("eval(\"17*5\")", "EvalFunctionExampleForString2")]
+        [Example("eval(\"[1 2 3]\")", "EvalFunctionExampleForString3")]
         public Value Function(StringValue code)
         {
             var c = new ParseContext(Context);
