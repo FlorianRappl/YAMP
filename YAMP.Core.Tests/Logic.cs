@@ -10,81 +10,109 @@
         {
             Test("1 == 1", 1.0);
         }
+
         [Test]
         public void EqualsFail()
         {
             Test("1 == 0", 0.0);
         }
+
         [Test]
-        public void NotEqualsFits()
+        public void StandardNotEqualsFits()
         {
             Test("1 ~= 0", 1.0);
         }
+
         [Test]
-        public void NotEqualsFail()
+        public void AliasNotEqualsFits()
+        {
+            Test("1 != 0", 1.0);
+        }
+
+        [Test]
+        public void StandardNotEqualsFail()
         {
             Test("1 ~= 1", 0.0);
         }
+
+        [Test]
+        public void AliasNotEqualsFail()
+        {
+            Test("1 != 1", 0.0);
+        }
+
         [Test]
         public void AndFitsOne()
         {
             Test("1 && 1", 1.0);
         }
+
         [Test]
         public void AndFailLeft()
         {
             Test("1 && 0", 0.0);
         }
+
         [Test]
         public void AndFailRight()
         {
             Test("0 && 1", 0.0);
         }
+
         [Test]
         public void AndFailsZero()
         {
             Test("0 && 0", 0.0);
         }
+
         [Test]
         public void OrFitsOne()
         {
             Test("1 || 1", 1.0);
         }
+
         [Test]
         public void OrFitsRight()
         {
             Test("0 || 1", 1.0);
         }
+
         [Test]
         public void OrFailsZero()
         {
             Test("0 || 0", 0.0);
         }
+
         [Test]
         public void OrFitsLeft()
         {
             Test("1 || 0", 1.0);
         }
+
         [Test]
         public void AbsoluteOfMatrixSmaller()
         {
             Test("|[1,2,3,4,5,6,7] < 5|", 2.0);
         }
+
         [Test]
         public void Greater()
         {
             Test("17>12", 1.0);
         }
+
         [Test]
         public void Smaller()
         {
             Test("7<-1.5", 0.0);
         }
+
         [Test]
         public void NegativeNumberEquals()
         {
             Test("2+i==2-i", 0.0);
         }
+
         [Test]
         public void NegativeNumberEqualsNot()
         {
