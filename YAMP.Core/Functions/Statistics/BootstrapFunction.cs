@@ -1,5 +1,6 @@
 ﻿namespace YAMP
 {
+    using Numerics;
     using YAMP.Exceptions;
 
     [Description("In statistics the Bootstrap is a method to estimate the statistical error of observables measured on a set of data.")]
@@ -7,6 +8,8 @@
     [Link("http://en.wikipedia.org/wiki/Bootstrapping")]
     sealed class BootstrapFunction : SystemFunction
     {
+        readonly DiscreteUniformDistribution Distribution = new DiscreteUniformDistribution();
+
         public BootstrapFunction(ParseContext context)
             : base(context)
         {
@@ -55,17 +58,16 @@
             }
 
             var BootstrapObservable = new MatrixValue(numberOfBootstrapSamples, nResult);
-            var rand = RandiFunction.Generator;
+            Distribution.Beta = nConfigs;
+            Distribution.Alpha = 1;
 
             for (var i = 1; i <= numberOfBootstrapSamples; i++)
             {
                 var BootstrapConfigs = new MatrixValue(nConfigs, nData);
-                rand.Beta = nConfigs;
-                rand.Alpha = 1;
 
                 for (var j = 1; j <= nConfigs; j++)
                 {
-                    var idx = rand.Next();
+                    var idx = Distribution.Next();
 
                     for (var k = 1; k <= nData; k++)
                     {
