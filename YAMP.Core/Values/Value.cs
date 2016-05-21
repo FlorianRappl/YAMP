@@ -463,6 +463,17 @@
             Register.BinaryOperator(ModuloOperator.Symbol, left, right, mod);
         }
 
+        /// <summary>
+        /// Helper for registering a member operator.
+        /// </summary>
+        /// <param name="left">The type on the left side.</param>
+        /// <param name="right">The type on the right side.</param>
+        /// <param name="member">The function to execute.</param>
+        protected static void RegisterMember(Type left, Type right, Func<Value, Value, Value> member)
+        {
+            Register.BinaryOperator(MemberOperator.Symbol, left, right, member);
+        }
+
         #endregion
     }
 }

@@ -138,6 +138,14 @@
         #region Methods
 
         /// <summary>
+        /// Registers the member operator.
+        /// </summary>
+        protected override void RegisterOperators()
+        {
+            RegisterMember(typeof(ObjectValue), typeof(StringValue), (left, right) => ((ObjectValue)left).GetValue((StringValue)right));
+        }
+
+        /// <summary>
         /// The method used by YAMP to get a value from an object.
         /// </summary>
         /// <param name="context">The context where this is happening.</param>
@@ -152,15 +160,7 @@
                 throw new YAMPArgumentWrongTypeException(argument.Header, "String", String.Empty);
             }
 
-            var name = key.Value;
-            var value = default(Value);
-
-            if (_values.TryGetValue(name, out value))
-            {
-                return value;
-            }
-
-            return new ObjectValue();
+            return GetValue(key);
         }
 
         /// <summary>
@@ -179,9 +179,7 @@
                 throw new YAMPArgumentWrongTypeException(argument.Header, "String", String.Empty);
             }
 
-            var name = key.Value;
-            _values[name] = value;
-            return value;
+            return SetValue(key, value);
         }
 
         /// <summary>
@@ -215,6 +213,26 @@
         {
             var lines = value.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             return String.Join(Environment.NewLine + Intendation, lines);
+        }
+
+        Value GetValue(StringValue key)
+        {
+            var name = key.Value;
+            var value = default(Value);
+
+            if (_values.TryGetValue(name, out value))
+            {
+                return value;
+            }
+
+            return new ObjectValue();
+        }
+
+        Value SetValue(StringValue key, Value value)
+        {
+            var name = key.Value;
+            _values[name] = value;
+            return value;
         }
 
         #endregion

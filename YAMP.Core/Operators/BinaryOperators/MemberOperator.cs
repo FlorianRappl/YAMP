@@ -27,21 +27,9 @@
 
         #region Methods
 
-        public override Value Perform (Value left, Value right)
+        public override Value Perform(Value left, Value right)
         {
-            var obj = left as ObjectValue;
-
-            if (obj == null)
-            {
-                throw new YAMPOperationInvalidException(Op, left);
-            }
-
-            if (right == null)
-            {
-                throw new YAMPOperationInvalidException(Op, right);
-            }
-
-            return obj.Perform(Context, right);
+            return PerformOverFind(left, right, Mapping);
 		}
 
         public override Value Handle(Expression left, Expression right, IDictionary<String, Value> symbols)
