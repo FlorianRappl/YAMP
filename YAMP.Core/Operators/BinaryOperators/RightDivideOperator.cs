@@ -1,7 +1,6 @@
 namespace YAMP
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// The standard right divide / operator.
@@ -11,18 +10,14 @@ namespace YAMP
         #region Mapping
 
         public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
-
-        public static void Register(Type a, Type b, Func<Value, Value, Value> f)
-        {
-            Mapping.With(new BinaryOperatorMapping(a, b, f));
-        }
+        public static readonly String Symbol = "/";
 
         #endregion
 
         #region ctor
 
         public RightDivideOperator () : 
-            base("/", 20)
+            base(Symbol, 20)
 		{
 		}
 

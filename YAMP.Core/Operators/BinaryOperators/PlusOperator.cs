@@ -1,7 +1,6 @@
 namespace YAMP
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// The class for the standard + operator.
@@ -11,18 +10,14 @@ namespace YAMP
         #region Mapping
 
         public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
+        public static readonly String Symbol = "+";
 
         #endregion
 
         #region ctor
 
-        static public void Register(Type a, Type b, Func<Value, Value, Value> f)
-        {
-            Mapping.With(new BinaryOperatorMapping(a, b, f));
-        }
-
 		public PlusOperator () : 
-            base("+", 5)
+            base(Symbol, 5)
 		{
         }
 

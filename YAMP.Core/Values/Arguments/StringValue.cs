@@ -79,8 +79,8 @@ namespace YAMP
         /// </summary>
         protected override void RegisterOperators()
         {
-            PlusOperator.Register(typeof(StringValue), typeof(Value), Add);
-            PlusOperator.Register(typeof(Value), typeof(StringValue), Add);
+            RegisterPlus(typeof(StringValue), typeof(Value), Add);
+            RegisterPlus(typeof(Value), typeof(StringValue), Add);
         }
 
         /// <summary>

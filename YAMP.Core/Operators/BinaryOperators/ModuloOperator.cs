@@ -1,7 +1,6 @@
 ﻿namespace YAMP
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// The class for the standard modulo operator.
@@ -11,18 +10,14 @@
         #region Mapping
 
         public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
-
-        public static void Register(Type a, Type b, Func<Value, Value, Value> f)
-        {
-            Mapping.With(new BinaryOperatorMapping(a, b, f));
-        }
+        public static readonly String Symbol = "%";
 
         #endregion
 
         #region ctor
 
         public ModuloOperator() : 
-            base("%", 30)
+            base(Symbol, 30)
 		{
 		}
 

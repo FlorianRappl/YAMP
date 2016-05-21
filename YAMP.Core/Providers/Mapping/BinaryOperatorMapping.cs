@@ -7,9 +7,9 @@
     /// </summary>
     sealed class BinaryOperatorMapping : OperatorMapping, IEquatable<BinaryOperatorMapping>
     {
-        Func<Value, Value, Value> _f;
-        Type _arg1;
-        Type _arg2;
+        readonly Func<Value, Value, Value> _f;
+        readonly Type _arg1;
+        readonly Type _arg2;
 
         public BinaryOperatorMapping(Type arg1, Type arg2, Func<Value, Value, Value> f)
         {
@@ -23,7 +23,7 @@
             get { return _f; }
         }
 
-        public MapHit IsMapping(object a, object b)
+        public MapHit IsMapping(Object a, Object b)
         {
             var dist1 = TypeDistance(_arg1, a);
             var dist2 = TypeDistance(_arg2, b);
@@ -55,12 +55,5 @@
         {
             return base.GetHashCode();
         }
-    }
-
-    enum MapHit
-    {
-        Miss,
-        Direct,
-        Indirect
     }
 }

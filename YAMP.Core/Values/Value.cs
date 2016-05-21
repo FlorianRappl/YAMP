@@ -405,7 +405,7 @@
         /// <param name="add">The function to execute.</param>
         protected static void RegisterPlus(Type left, Type right, Func<Value, Value, Value> add)
         {
-            PlusOperator.Register(left, right, add);
+            Register.BinaryOperator(PlusOperator.Symbol, left, right, add);
         }
 
         /// <summary>
@@ -416,7 +416,7 @@
         /// <param name="multiply">The function to execute.</param>
         protected static void RegisterMultiply(Type left, Type right, Func<Value, Value, Value> multiply)
         {
-            MultiplyOperator.Register(left, right, multiply);
+            Register.BinaryOperator(MultiplyOperator.Symbol, left, right, multiply);
         }
 
         /// <summary>
@@ -427,7 +427,7 @@
         /// <param name="divide">The function to execute.</param>
         protected static void RegisterDivide(Type left, Type right, Func<Value, Value, Value> divide)
         {
-            RightDivideOperator.Register(left, right, divide);
+            Register.BinaryOperator(RightDivideOperator.Symbol, left, right, divide);
         }
 
         /// <summary>
@@ -438,7 +438,7 @@
         /// <param name="sub">The function to execute.</param>
         protected static void RegisterMinus(Type left, Type right, Func<Value, Value, Value> sub)
         {
-            MinusOperator.Register(left, right, sub);
+            Register.BinaryOperator(MinusOperator.Symbol, left, right, sub);
         }
 
         /// <summary>
@@ -449,7 +449,7 @@
         /// <param name="power">The function to execute.</param>
         protected static void RegisterPower(Type left, Type right, Func<Value, Value, Value> power)
         {
-            PowerOperator.Register(left, right, power);
+            Register.BinaryOperator(PowerOperator.Symbol, left, right, power);
         }
 
         /// <summary>
@@ -460,7 +460,7 @@
         /// <param name="mod">The function to execute.</param>
         protected static void RegisterModulo(Type left, Type right, Func<Value, Value, Value> mod)
         {
-            ModuloOperator.Register(left, right, mod);
+            Register.BinaryOperator(ModuloOperator.Symbol, left, right, mod);
         }
 
         #endregion

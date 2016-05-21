@@ -35,7 +35,6 @@
         /// Creates a new documention instance from the given context.
         /// </summary>
         /// <param name="context">The context to use.</param>
-        /// <param name="dictionary">The help translations.</param>
         /// <returns>The documention.</returns>
 		public static Documentation Create(ParseContext context)
 		{

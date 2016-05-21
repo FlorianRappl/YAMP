@@ -11,24 +11,15 @@
     {
         #region Mapping
 
-        static readonly List<BinaryOperatorMapping> mapping = new List<BinaryOperatorMapping>();
-
-        public static List<BinaryOperatorMapping> Mapping
-        {
-            get { return mapping; }
-        }
-
-        public static void Register(Type a, Type b, Func<Value, Value, Value> f)
-        {
-            mapping.Add(new BinaryOperatorMapping(a, b, f));
-        }
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
+        public static readonly String Symbol = ".";
 
         #endregion
 
         #region ctor
 
         public MemberOperator()
-            : base(".", 10000)
+            : base(Symbol, 10000)
 		{
 		}
 

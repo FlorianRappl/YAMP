@@ -195,8 +195,10 @@
     <Compile Include="Providers\EventArgs\UserInputEventArgs.cs" />
     <Compile Include="Providers\Extensions.cs" />
     <Compile Include="Providers\Mapping\BinaryOperatorMappingList.cs" />
+    <Compile Include="Providers\Mapping\MapHit.cs" />
     <Compile Include="Providers\Plugin.cs" />
     <Compile Include="Providers\YMath.cs" />
+    <Compile Include="Register.cs" />
     <Compile Include="Values\Arguments\ObjectValue.cs" />
     <Compile Include="Values\Plots\HeatmapPlotValue.cs" />
     <Compile Include="Values\Plots\SurfacePlotValue.cs" />

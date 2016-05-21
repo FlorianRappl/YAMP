@@ -5,7 +5,7 @@
 
     sealed class BinaryOperatorMappingList
     {
-        private readonly List<BinaryOperatorMapping> _mapping;
+        readonly List<BinaryOperatorMapping> _mapping;
 
         public BinaryOperatorMappingList()
         {

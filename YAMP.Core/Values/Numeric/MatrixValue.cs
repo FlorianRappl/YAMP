@@ -1730,27 +1730,27 @@ namespace YAMP
         /// </summary>
         protected override void RegisterOperators()
         {
-            PlusOperator.Register(typeof(MatrixValue), typeof(MatrixValue), AddMM);
-            PlusOperator.Register(typeof(MatrixValue), typeof(ScalarValue), AddMS);
-            PlusOperator.Register(typeof(ScalarValue), typeof(MatrixValue), AddSM);
+            RegisterPlus(typeof(MatrixValue), typeof(MatrixValue), AddMM);
+            RegisterPlus(typeof(MatrixValue), typeof(ScalarValue), AddMS);
+            RegisterPlus(typeof(ScalarValue), typeof(MatrixValue), AddSM);
 
-            MinusOperator.Register(typeof(MatrixValue), typeof(MatrixValue), SubtractMM);
-            MinusOperator.Register(typeof(MatrixValue), typeof(ScalarValue), SubtractMS);
-            MinusOperator.Register(typeof(ScalarValue), typeof(MatrixValue), SubtractSM);
+            RegisterMinus(typeof(MatrixValue), typeof(MatrixValue), SubtractMM);
+            RegisterMinus(typeof(MatrixValue), typeof(ScalarValue), SubtractMS);
+            RegisterMinus(typeof(ScalarValue), typeof(MatrixValue), SubtractSM);
 
-            MultiplyOperator.Register(typeof(MatrixValue), typeof(MatrixValue), MultiplyMM);
-            MultiplyOperator.Register(typeof(ScalarValue), typeof(MatrixValue), MultiplySM);
-            MultiplyOperator.Register(typeof(MatrixValue), typeof(ScalarValue), MultiplyMS);
+            RegisterMultiply(typeof(MatrixValue), typeof(MatrixValue), MultiplyMM);
+            RegisterMultiply(typeof(ScalarValue), typeof(MatrixValue), MultiplySM);
+            RegisterMultiply(typeof(MatrixValue), typeof(ScalarValue), MultiplyMS);
 
-            RightDivideOperator.Register(typeof(MatrixValue), typeof(MatrixValue), DivideMM);
-            RightDivideOperator.Register(typeof(ScalarValue), typeof(MatrixValue), DivideSM);
-            RightDivideOperator.Register(typeof(MatrixValue), typeof(ScalarValue), DivideMS);
+            RegisterDivide(typeof(MatrixValue), typeof(MatrixValue), DivideMM);
+            RegisterDivide(typeof(ScalarValue), typeof(MatrixValue), DivideSM);
+            RegisterDivide(typeof(MatrixValue), typeof(ScalarValue), DivideMS);
 
-            PowerOperator.Register(typeof(MatrixValue), typeof(ScalarValue), PowMS);
-            PowerOperator.Register(typeof(ScalarValue), typeof(MatrixValue), PowSM);
+            RegisterPower(typeof(MatrixValue), typeof(ScalarValue), PowMS);
+            RegisterPower(typeof(ScalarValue), typeof(MatrixValue), PowSM);
 
-            ModuloOperator.Register(typeof(ScalarValue), typeof(MatrixValue), ModuloSM);
-            ModuloOperator.Register(typeof(MatrixValue), typeof(ScalarValue), ModuloMS);
+            RegisterModulo(typeof(ScalarValue), typeof(MatrixValue), ModuloSM);
+            RegisterModulo(typeof(MatrixValue), typeof(ScalarValue), ModuloMS);
         }
 
         /// <summary>
