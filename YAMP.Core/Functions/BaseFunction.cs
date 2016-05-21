@@ -1,6 +1,7 @@
 ﻿namespace YAMP
 {
     using System;
+    using YAMP.Numerics;
 
 	/// <summary>
 	/// The abstract base class for StandardFunctions and ArgumentFunctions
@@ -9,6 +10,7 @@
     {
         #region Fields
 
+        internal static readonly Generator Rng = new MT19937Generator();
         readonly String _name;
 
         #endregion

@@ -8,7 +8,7 @@
     [Link("RandlFunctionLink")]
     sealed class RandlFunction : ArgumentFunction
     {
-        readonly LaplaceDistribution Distribution = new LaplaceDistribution();
+        readonly LaplaceDistribution Distribution = new LaplaceDistribution(Rng);
 
         [Description("RandlFunctionDescriptionForVoid")]
         [Example("randl()", "RandlFunctionExampleForVoid1")]

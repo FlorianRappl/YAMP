@@ -8,8 +8,6 @@
     [Link("BootstrapFunctionLink")]
     sealed class BootstrapFunction : SystemFunction
     {
-        readonly DiscreteUniformDistribution Distribution = new DiscreteUniformDistribution();
-
         public BootstrapFunction(ParseContext context)
             : base(context)
         {
@@ -30,6 +28,11 @@
             var numberOfBootstrapSamples = n.GetIntegerOrThrowException("n", Name);
             var nConfigs = cfgs.DimensionY;
             var nData = cfgs.DimensionX;
+            var distribution = new DiscreteUniformDistribution(Rng)
+            {
+                Beta = nConfigs,
+                Alpha = 1
+            };
 
             if (numberOfBootstrapSamples <= 1)
                 throw new YAMPException("Bootstrap: The number of bootstrap samples n is smaller or equal to 1!");
@@ -58,8 +61,6 @@
             }
 
             var BootstrapObservable = new MatrixValue(numberOfBootstrapSamples, nResult);
-            Distribution.Beta = nConfigs;
-            Distribution.Alpha = 1;
 
             for (var i = 1; i <= numberOfBootstrapSamples; i++)
             {
@@ -67,7 +68,7 @@
 
                 for (var j = 1; j <= nConfigs; j++)
                 {
-                    var idx = Distribution.Next();
+                    var idx = distribution.Next();
 
                     for (var k = 1; k <= nData; k++)
                     {

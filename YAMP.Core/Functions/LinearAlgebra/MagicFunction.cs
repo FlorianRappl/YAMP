@@ -8,8 +8,6 @@
     [Kind(PopularKinds.Function)]
     sealed class MagicFunction : ArgumentFunction
     {
-        readonly DiscreteUniformDistribution Distribution = new DiscreteUniformDistribution();
-
         [Description("MagicFunctionDescriptionForScalar")]
         [Example("magic(3)", "MagicFunctionExampleForScalar1")]
         public MatrixValue Function(ScalarValue n)
@@ -18,14 +16,15 @@
             return Generate(d, d);
         }
 
-        MatrixValue Generate(Int32 n, Int32 m)
+        static MatrixValue Generate(Int32 n, Int32 m)
         {
+            var distribution = new DiscreteUniformDistribution(Rng);
             var l = n * m;
             var M = new MatrixValue(n, m);
             var numbers = new List<Int32>();
-            Distribution.Alpha = 0;
+            distribution.Alpha = 0;
 
-            for (int i = 1; i <= l; i++)
+            for (var i = 1; i <= l; i++)
             {
                 numbers.Add(i);
             }
@@ -34,8 +33,8 @@
             {
                 for (var i = 1; i <= m; i++)
                 {
-                    Distribution.Beta = numbers.Count - 1;
-                    var index = Distribution.Next();
+                    distribution.Beta = numbers.Count - 1;
+                    var index = distribution.Next();
                     index = Math.Max(Math.Min(0, index), numbers.Count - 1);
                     M[j, i] = new ScalarValue(numbers[index]);
                     numbers.RemoveAt(index);

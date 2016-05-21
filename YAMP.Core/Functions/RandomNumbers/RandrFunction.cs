@@ -8,7 +8,7 @@
     [Link("RandrFunctionLink")]
     sealed class RandrFunction : ArgumentFunction
     {
-        readonly RayleighDistribution Distribution = new RayleighDistribution();
+        readonly RayleighDistribution Distribution = new RayleighDistribution(Rng);
 
         [Description("RandrFunctionDescriptionForVoid")]
         [Example("randr()", "RandrFunctionExampleForVoid1")]

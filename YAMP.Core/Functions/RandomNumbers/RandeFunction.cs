@@ -8,7 +8,7 @@ namespace YAMP
     [Link("RandeFunctionLink")]
     sealed class RandeFunction : ArgumentFunction
 	{
-		readonly ExponentialDistribution Distribution = new ExponentialDistribution();
+		readonly ExponentialDistribution Distribution = new ExponentialDistribution(Rng);
 
 		[Description("RandeFunctionDescriptionForVoid")]
 		[Example("rande()", "RandeFunctionExampleForVoid1")]

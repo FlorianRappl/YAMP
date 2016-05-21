@@ -7,7 +7,7 @@ namespace YAMP
     [Link("RandFunctionLink")]
     sealed class RandFunction : ArgumentFunction
 	{
-		readonly ContinuousUniformDistribution Distribution = new ContinuousUniformDistribution();
+		readonly ContinuousUniformDistribution Distribution = new ContinuousUniformDistribution(Rng);
 
 		[Description("RandFunctionDescriptionForVoid")]
 		public ScalarValue Function()

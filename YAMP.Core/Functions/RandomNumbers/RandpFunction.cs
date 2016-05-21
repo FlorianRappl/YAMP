@@ -8,7 +8,7 @@
     [Link("RandpFunctionLink")]
     sealed class RandpFunction : ArgumentFunction
     {
-        readonly PoissonDistribution Distribution = new PoissonDistribution();
+        readonly PoissonDistribution Distribution = new PoissonDistribution(Rng);
 
         [Description("RandpFunctionDescriptionForVoid")]
         [Example("randp()", "RandpFunctionExampleForVoid1")]

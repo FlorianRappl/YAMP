@@ -8,7 +8,7 @@
     [Link("RandwFunctionLink")]
     sealed class RandwFunction : ArgumentFunction
     {
-        readonly WeibullDistribution Distribution = new WeibullDistribution();
+        readonly WeibullDistribution Distribution = new WeibullDistribution(Rng);
 
         [Description("RandwFunctionDescriptionForVoid")]
         [Example("randw()", "RandwFunctionExampleForVoid1")]

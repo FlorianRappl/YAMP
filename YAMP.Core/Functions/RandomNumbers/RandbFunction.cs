@@ -8,7 +8,7 @@
     [Link("RandbFunctionLink")]
     sealed class RandbFunction : ArgumentFunction
     {
-        readonly BinomialDistribution Distribution = new BinomialDistribution();
+        readonly BinomialDistribution Distribution = new BinomialDistribution(Rng);
 
         [Description("RandbFunctionDescriptionForVoid")]
         [Example("randw()", "RandbFunctionExampleForVoid1")]

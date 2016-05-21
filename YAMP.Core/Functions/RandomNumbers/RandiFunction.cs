@@ -7,7 +7,7 @@ namespace YAMP
     [Link("RandiFunctionLink")]
     sealed class RandiFunction : ArgumentFunction
 	{
-		readonly DiscreteUniformDistribution Distribution = new DiscreteUniformDistribution();
+		readonly DiscreteUniformDistribution Distribution = new DiscreteUniformDistribution(Rng);
 
 		[Description("RandiFunctionDescriptionForVoid")]
 		[Example("randi(0, 10)", "RandiFunctionExampleForVoid1")]

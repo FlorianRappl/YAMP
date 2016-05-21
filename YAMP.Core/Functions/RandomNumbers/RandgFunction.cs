@@ -8,7 +8,7 @@
     [Link("RandgFunctionLink")]
     sealed class RandgFunction : ArgumentFunction
     {
-        readonly GammaDistribution Distribution = new GammaDistribution();
+        readonly GammaDistribution Distribution = new GammaDistribution(Rng);
 
         [Description("RandgFunctionDescriptionForVoid")]
         [Example("randg()", "RandgFunctionExampleForVoid1")]

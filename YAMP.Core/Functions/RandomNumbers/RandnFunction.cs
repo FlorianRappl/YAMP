@@ -8,7 +8,7 @@ namespace YAMP
     [Link("RandnFunctionLink")]
     sealed class RandnFunction : ArgumentFunction
 	{	
-		readonly NormalDistribution Distribution = new NormalDistribution();
+		readonly NormalDistribution Distribution = new NormalDistribution(Rng);
 
 		[Description("RandnFunctionDescriptionForVoid")]
 		public ScalarValue Function()
