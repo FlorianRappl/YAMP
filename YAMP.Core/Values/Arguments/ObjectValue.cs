@@ -14,7 +14,7 @@
 
         static readonly String Intendation = "  ";
 
-        readonly Dictionary<String, Value> _values;
+        readonly IDictionary<String, Value> _values;
 
         #endregion
 
@@ -41,7 +41,7 @@
         /// Creates a new instance and sets the values.
         /// </summary>
         /// <param name="values">The initial values to use.</param>
-        public ObjectValue(Dictionary<String, Value> values)
+        public ObjectValue(IDictionary<String, Value> values)
         {
             _values = values;
         }
