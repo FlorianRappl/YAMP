@@ -2,11 +2,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+//@2016/05/25, https://github.com/dotnet/corefx/blob/master/src/System.Collections/src/System/Collections/Generic/BitHelper.cs
+
+//NH:Tweaked
+// NHTK0: Replaced "namespace System.Collections.Generic" with "namespace YAMPSystem.Collections.Generic"
+// NHTK1: remove the *unsafe* requisite
+
 using System;
 using System.Collections;
 using System.Text;
 
-namespace System.Collections.Generic
+//NHTK0:
+namespace YAMPSystem.Collections.Generic
 {
     /// <summary>
     /// ABOUT:
@@ -45,7 +52,9 @@ namespace System.Collections.Generic
     /// on a bit array and then need to loop over it. In particular, if it avoided visiting 
     /// every bit, it would allow good perf improvements when the bit array is sparse.
     /// </summary>
-    unsafe internal sealed class BitHelper
+    //NHTK1:
+    //unsafe internal sealed class BitHelper
+    internal sealed class BitHelper
     {   // should not be serialized
         private const byte MarkedBitFlag = 1;
         private const byte IntSize = 32;
@@ -53,26 +62,28 @@ namespace System.Collections.Generic
         // m_length of underlying int array (not logical bit array)
         private readonly int _length;
 
+        //NHTK1:
         // ptr to stack alloc'd array of ints
-        private readonly int* _arrayPtr;
+        //private readonly int* _arrayPtr;
 
         // array of ints
         private readonly int[] _array;
 
         // whether to operate on stack alloc'd or heap alloc'd array 
-        private readonly bool _useStackAlloc;
+        private readonly bool _useStackAlloc = false;
 
         /// <summary>
         /// Instantiates a BitHelper with a heap alloc'd array of ints
         /// </summary>
         /// <param name="bitArray">int array to hold bits</param>
         /// <param name="length">length of int array</param>
-        internal BitHelper(int* bitArrayPtr, int length)
-        {
-            _arrayPtr = bitArrayPtr;
-            _length = length;
-            _useStackAlloc = true;
-        }
+        //NHTK1:
+        //internal BitHelper(int* bitArrayPtr, int length)
+        //{
+        //    _arrayPtr = bitArrayPtr;
+        //    _length = length;
+        //    _useStackAlloc = true;
+        //}
 
         /// <summary>
         /// Instantiates a BitHelper with a heap alloc'd array of ints
@@ -97,7 +108,9 @@ namespace System.Collections.Generic
                 int flag = (MarkedBitFlag << (bitPosition % IntSize));
                 if (_useStackAlloc)
                 {
-                    _arrayPtr[bitArrayIndex] |= flag;
+                    //NHTK1:
+                    //_arrayPtr[bitArrayIndex] |= flag;
+                    _array[bitArrayIndex] |= flag;
                 }
                 else
                 {
@@ -119,7 +132,9 @@ namespace System.Collections.Generic
                 int flag = (MarkedBitFlag << (bitPosition % IntSize));
                 if (_useStackAlloc)
                 {
-                    return ((_arrayPtr[bitArrayIndex] & flag) != 0);
+                    //NHTK1:
+                    //return ((_arrayPtr[bitArrayIndex] & flag) != 0);
+                    return ((_array[bitArrayIndex] & flag) != 0);
                 }
                 else
                 {

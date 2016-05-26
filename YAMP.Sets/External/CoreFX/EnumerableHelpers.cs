@@ -2,7 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace System.Collections.Generic
+//@2016/05/25, https://github.com/dotnet/corefx/blob/master/src/Common/src/System/Collections/Generic/EnumerableHelpers.cs
+
+//NH:Tweaked
+// NHTK0: Replaced "namespace System.Collections.Generic" with "namespace YAMPSystem.Collections.Generic"
+// NHTK1: replace "Array.Empty<T>()" with "default(T[])"
+
+using System;
+using System.Collections.Generic;
+
+//NHTK0:
+namespace YAMPSystem.Collections.Generic
 {
     /// <summary>Internal helper functions for working with enumerables.</summary>
     internal static class EnumerableHelpers
@@ -96,7 +106,10 @@ namespace System.Collections.Generic
             }
 
             length = 0;
-            return Array.Empty<T>();
+
+            //NHTK1:
+            //return Array.Empty<T>();
+            return default(T[]);
         }
     }
 }

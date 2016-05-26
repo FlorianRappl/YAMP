@@ -2,6 +2,19 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+//@2016/05/25, https://github.com/dotnet/corefx/blob/master/src/System.Collections/src/System/Collections/Generic/SortedSet.cs
+
+//NH:Tweaked
+// NHTK0: Replaced "namespace System.Collections.Generic" with "namespace YAMPSystem.Collections.Generic"
+// NHTK1: Replaced SR.(...) with "SR_(...) error messages (const string). Copied texts from corefx\src\System.Collections\src\Resources\Strings.resx
+// NHTK2: Removed IReadOnlyCollection<T> inherited interface
+// NHTK3: Replaced nameof(expression) with "expression". nameof() only supported in VS2015
+// NHTK4: Removed *unsafe* need by using only safe BitHelper constructor
+// NHTK5: Replaced ArgumentOutOfRangeException(name, index, msg) with ArgumentOutOfRangeException(name, msg). This constructor doesn't exist in previous .Net implementations
+
+
+
+
 /*============================================================
 **
 **
@@ -10,10 +23,13 @@
 ** 
 ===========================================================*/
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace System.Collections.Generic
+//NHTK0:
+namespace YAMPSystem.Collections.Generic
 {
     //
     // A binary search tree is a red-black tree if it satisfies the following red-black properties:
@@ -42,11 +58,24 @@ namespace System.Collections.Generic
         LeftRightRotation = 4,
     }
 
+    //NHTK2:
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Justification = "by design name choice")]
-    [DebuggerTypeProxy(typeof(ICollectionDebugView<>))]
+    //[DebuggerTypeProxy(typeof(ICollectionDebugView<>))]
     [DebuggerDisplay("Count = {Count}")]
-    public class SortedSet<T> : ISet<T>, ICollection<T>, ICollection, IReadOnlyCollection<T>
+    //public class SortedSet<T> : ISet<T>, ICollection<T>, ICollection, IReadOnlyCollection<T>
+    public class SortedSet<T> : ISet<T>, ICollection<T>, ICollection
     {
+        //NHTK1:
+        const string SR_Arg_RankMultiDimNotSupported = "Only single dimensional arrays are supported for the requested action.";
+        const string SR_ArgumentOutOfRange_NeedNonNegNum = "Non-negative number required.";
+        const string SR_Arg_ArrayPlusOffTooSmall = "Destination array is not long enough to copy all the items in the collection.Check array index and length.";
+        const string SR_Arg_NonZeroLowerBound = "The lower bound of target array must be zero.";
+        const string SR_Argument_InvalidArrayType = "Target array type is not compatible with the type of items in the collection.";
+        const string SR_SortedSet_LowerValueGreaterThanUpperValue = "Must be less than or equal to upperValue.";
+        const string SR_InvalidOperation_EnumFailedVersion = "Collection was modified; enumeration operation may not execute.";
+        const string SR_InvalidOperation_EnumOpCantHappen = "Enumeration has either not started or has already finished.";
+  
+
         #region local variables/constants
         private Node _root;
         private IComparer<T> _comparer;
@@ -84,7 +113,8 @@ namespace System.Collections.Generic
         {
             if (collection == null)
             {
-                throw new ArgumentNullException(nameof(collection));
+                //NHTK3:
+                throw new ArgumentNullException("collection");
             }
 
             // these are explicit type checks in the mould of HashSet. It would have worked better
@@ -630,17 +660,20 @@ namespace System.Collections.Generic
         {
             if (array == null)
             {
-                throw new ArgumentNullException(nameof(array));
+                //NHTK3:
+                throw new ArgumentNullException("array");
             }
 
             if (index < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), index, SR.ArgumentOutOfRange_NeedNonNegNum);
+                //NHTK1:,NHTK3:,NHTK5:
+                throw new ArgumentOutOfRangeException("index", /*index,*/ SR_ArgumentOutOfRange_NeedNonNegNum);
             }
 
             if (count < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_NeedNonNegNum);
+                //NHTK1:,NHTK3:
+                throw new ArgumentOutOfRangeException("count", SR_ArgumentOutOfRange_NeedNonNegNum);
             }
 
             // will array, starting at arrayIndex, be able to hold elements? Note: not
@@ -648,7 +681,8 @@ namespace System.Collections.Generic
             // count of 0; subsequent check takes care of the rest)
             if (index > array.Length || count > array.Length - index)
             {
-                throw new ArgumentException(SR.Arg_ArrayPlusOffTooSmall);
+                //NHTK1:
+                throw new ArgumentException(SR_Arg_ArrayPlusOffTooSmall);
             }
             //upper bound
             count += index;
@@ -671,27 +705,32 @@ namespace System.Collections.Generic
         {
             if (array == null)
             {
-                throw new ArgumentNullException(nameof(array));
+                //NHTK3:
+                throw new ArgumentNullException("array");
             }
 
             if (array.Rank != 1)
             {
-                throw new ArgumentException(SR.Arg_RankMultiDimNotSupported, nameof(array));
+                //NHTK1:,NHTK3:
+                throw new ArgumentException(SR_Arg_RankMultiDimNotSupported, "array");
             }
 
             if (array.GetLowerBound(0) != 0)
             {
-                throw new ArgumentException(SR.Arg_NonZeroLowerBound, nameof(array));
+                //NHTK1:,NHTK3:
+                throw new ArgumentException(SR_Arg_NonZeroLowerBound, "array");
             }
 
             if (index < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), index, SR.ArgumentOutOfRange_NeedNonNegNum);
+                //NHTK1:,NHTK3:,NHTK5:
+                throw new ArgumentOutOfRangeException("index", /*index,*/ SR_ArgumentOutOfRange_NeedNonNegNum);
             }
 
             if (array.Length - index < Count)
             {
-                throw new ArgumentException(SR.Arg_ArrayPlusOffTooSmall);
+                //NHTK1:
+                throw new ArgumentException(SR_Arg_ArrayPlusOffTooSmall);
             }
 
             T[] tarray = array as T[];
@@ -704,7 +743,8 @@ namespace System.Collections.Generic
                 object[] objects = array as object[];
                 if (objects == null)
                 {
-                    throw new ArgumentException(SR.Argument_InvalidArrayType, nameof(array));
+                    //NHTK1:,NHTK3:
+                    throw new ArgumentException(SR_Argument_InvalidArrayType, "array");
                 }
 
                 try
@@ -713,7 +753,8 @@ namespace System.Collections.Generic
                 }
                 catch (ArrayTypeMismatchException)
                 {
-                    throw new ArgumentException(SR.Argument_InvalidArrayType, nameof(array));
+                    //NHTK1:,NHTK3:
+                    throw new ArgumentException(SR_Argument_InvalidArrayType, "array");
                 }
             }
         }
@@ -1045,7 +1086,8 @@ namespace System.Collections.Generic
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                //NHTK3:
+                throw new ArgumentNullException("other");
             }
 
             SortedSet<T> s = other as SortedSet<T>;
@@ -1205,7 +1247,8 @@ namespace System.Collections.Generic
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                //NHTK3:
+                throw new ArgumentNullException("other");
             }
 
             if (Count == 0)
@@ -1293,7 +1336,8 @@ namespace System.Collections.Generic
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                //NHTK3:
+                throw new ArgumentNullException("other");
             }
 
             if (_count == 0)
@@ -1341,7 +1385,8 @@ namespace System.Collections.Generic
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                //NHTK3:
+                throw new ArgumentNullException("other");
             }
 
             if (this.Count == 0)
@@ -1432,7 +1477,8 @@ namespace System.Collections.Generic
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                //NHTK3:
+                throw new ArgumentNullException("other");
             }
 
             if (Count == 0)
@@ -1477,7 +1523,8 @@ namespace System.Collections.Generic
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                //NHTK3:
+                throw new ArgumentNullException("other");
             }
 
             if ((other as ICollection) != null)
@@ -1513,7 +1560,8 @@ namespace System.Collections.Generic
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                //NHTK3:
+                throw new ArgumentNullException("other");
             }
 
             if ((other as ICollection) != null && (other as ICollection).Count == 0)
@@ -1547,7 +1595,8 @@ namespace System.Collections.Generic
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                //NHTK3:
+                throw new ArgumentNullException("other");
             }
 
             if (Count == 0)
@@ -1591,7 +1640,8 @@ namespace System.Collections.Generic
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                //NHTK3:
+                throw new ArgumentNullException("other");
             }
 
             SortedSet<T> asSorted = other as SortedSet<T>;
@@ -1630,7 +1680,8 @@ namespace System.Collections.Generic
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                //NHTK3:
+                throw new ArgumentNullException("other");
             }
 
             if (this.Count == 0)
@@ -1687,7 +1738,8 @@ namespace System.Collections.Generic
         // <ReferencesCritical Name="Method: BitHelper.IsMarked(System.Int32):System.Boolean" Ring="1" />
         // <ReferencesCritical Name="Method: BitHelper.MarkBit(System.Int32):System.Void" Ring="1" />
         // </SecurityKernel>
-        private unsafe ElementCount CheckUniqueAndUnfoundElements(IEnumerable<T> other, bool returnIfUnfound)
+        //NHTK4:
+        private /*unsafe*/ ElementCount CheckUniqueAndUnfoundElements(IEnumerable<T> other, bool returnIfUnfound)
         {
             ElementCount result;
 
@@ -1713,8 +1765,11 @@ namespace System.Collections.Generic
             BitHelper bitHelper;
             if (intArrayLength <= StackAllocThreshold)
             {
-                int* bitArrayPtr = stackalloc int[intArrayLength];
-                bitHelper = new BitHelper(bitArrayPtr, intArrayLength);
+                //NHTK4
+                //int* bitArrayPtr = stackalloc int[intArrayLength];
+                //bitHelper = new BitHelper(bitArrayPtr, intArrayLength);
+                int[] bitArray = new int[intArrayLength];
+                bitHelper = new BitHelper(bitArray, intArrayLength);
             }
             else
             {
@@ -1757,7 +1812,8 @@ namespace System.Collections.Generic
         {
             if (match == null)
             {
-                throw new ArgumentNullException(nameof(match));
+                //NHTK3:
+                throw new ArgumentNullException("match");
             }
             List<T> matches = new List<T>(this.Count);
 
@@ -1828,7 +1884,8 @@ namespace System.Collections.Generic
         {
             if (Comparer.Compare(lowerValue, upperValue) > 0)
             {
-                throw new ArgumentException(SR.SortedSet_LowerValueGreaterThanUpperValue, nameof(lowerValue));
+                //NHTK1:,NHTK3:
+                throw new ArgumentException(SR_SortedSet_LowerValueGreaterThanUpperValue, "lowerValue");
             }
             return new TreeSubSet(this, lowerValue, upperValue, true, true);
         }
@@ -1892,7 +1949,8 @@ namespace System.Collections.Generic
             {
                 if (!IsWithinRange(item))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(item));
+                    //NHTK3:
+                    throw new ArgumentOutOfRangeException("item");
                 }
 
                 bool ret = _underlying.AddIfNotPresent(item);
@@ -2114,12 +2172,16 @@ namespace System.Collections.Generic
                 if (_lBoundActive && Comparer.Compare(_min, lowerValue) > 0)
                 {
                     //lBound = min;
-                    throw new ArgumentOutOfRangeException(nameof(lowerValue));
+
+                    //NHTK3:
+                    throw new ArgumentOutOfRangeException("lowerValue");
                 }
                 if (_uBoundActive && Comparer.Compare(_max, upperValue) < 0)
                 {
                     //uBound = max;
-                    throw new ArgumentOutOfRangeException(nameof(upperValue));
+
+                    //NHTK3:
+                    throw new ArgumentOutOfRangeException("upperValue");
                 }
                 TreeSubSet ret = (TreeSubSet)_underlying.GetViewBetween(lowerValue, upperValue);
                 return ret;
@@ -2245,7 +2307,8 @@ namespace System.Collections.Generic
 
                 if (_version != _tree._version)
                 {
-                    throw new InvalidOperationException(SR.InvalidOperation_EnumFailedVersion);
+                    //NHTK1:
+                    throw new InvalidOperationException(SR_InvalidOperation_EnumFailedVersion);
                 }
 
                 if (_stack.Count == 0)
@@ -2300,7 +2363,8 @@ namespace System.Collections.Generic
                 {
                     if (_current == null)
                     {
-                        throw new InvalidOperationException(SR.InvalidOperation_EnumOpCantHappen);
+                        //NHTK1:
+                        throw new InvalidOperationException(SR_InvalidOperation_EnumOpCantHappen);
                     }
 
                     return _current.Item;
@@ -2319,7 +2383,8 @@ namespace System.Collections.Generic
             {
                 if (_version != _tree._version)
                 {
-                    throw new InvalidOperationException(SR.InvalidOperation_EnumFailedVersion);
+                    //NHTK1:
+                    throw new InvalidOperationException(SR_InvalidOperation_EnumFailedVersion);
                 }
 
                 _stack.Clear();
