@@ -144,6 +144,35 @@
             }
         }
 
+        internal static string FunctionName(Type type, out bool isNested)
+        {
+            //original... (no nested classes, and no namespaces)
+            //var simplename = type.Name.RemoveFunctionConvention().ToLower();
+            //return simplename;
+
+            //normal      : YAMP.Sets.UnionFunction => union
+            //nested      : YAMP.Sets.SetValue+UnionFunction => setunion
+            //supernested : YAMP.Sets.SetValue+UnionFunction+SuperNestedUnionFunction => setsupernestedunion
+
+            string[] nestedparts = type.FullName.Split('+');
+            string[] classparts = nestedparts[0].Split('.');
+
+            string name;
+            isNested = nestedparts.Length > 1;
+            if (isNested)
+            {
+                name = classparts[classparts.Length - 1].RemoveValueConvention().ToLowerInvariant();
+                name += nestedparts[nestedparts.Length - 1].RemoveFunctionConvention().ToLowerInvariant();
+            }
+            else
+            {
+                name = classparts[classparts.Length - 1].RemoveFunctionConvention().ToLowerInvariant();
+            }
+
+            return name;
+        }
+
+
         /// <summary>
         /// Installs the plugin.
         /// </summary>
@@ -176,7 +205,8 @@
 
                         if (function != null)
                         {
-                            var name = type.Name.RemoveFunctionConvention().ToLower();
+                            bool isNested;
+                            var name = FunctionName(type, out isNested);
                             _functions.Add(name);
                             _context.AddFunction(name, function);
                         }
