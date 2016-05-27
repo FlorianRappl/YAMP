@@ -157,14 +157,15 @@ Still missing
 - set.AsSort() / set.AsUnsort() - Returns a copied Sorted/Unsorted set.
 (...)
 
-Operators implementation (check if possible with this operators / create new ones)
-+ (union)
-- (except)
-& (intersect)
-^ (XExcept)
-== (SetEquals)
-~= (~SetEquals)
-[] (Element)
+### Operators implementation (check if possible with this operators / create new ones)
+
+	+ (union)
+    - (except)
+    & (intersect)
+    ^ (XExcept)
+    == (SetEquals)
+    ~= (~SetEquals)
+    [] (Element)
 
 Problems/Known Issues (to be solved!)
 -------------------------------------
