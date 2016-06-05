@@ -29,11 +29,30 @@ namespace YAMP
         /// </summary>
         public Value @this
         {
-            set { _this = value; }
+            private set { }
             get { return _this; }
         }
 
-		#endregion
-	}
+        /// <summary>
+        /// Performs the function execution.
+        /// </summary>
+        /// <param name="argument">The argument(s) (if presented in an "ArgumentValue").</param>
+        /// <returns>The evaluated value.</returns>
+        public override Value Perform(Value argument)
+        {
+            return base.Perform(argument);
+        }
+
+        public MemberFunction CreateMemberFunctionInstance(Value state)
+        {
+            var clone = this.MemberwiseClone() as MemberFunction;
+            clone._this = state;
+
+            return clone;
+        }
+
+
+        #endregion
+    }
 }
 

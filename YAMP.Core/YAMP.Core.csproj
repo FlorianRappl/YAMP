@@ -43,6 +43,7 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\YAMPMemberFunctionMissingException.cs" />
     <Compile Include="Extensions\ContainerExtensions.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />

@@ -9,6 +9,13 @@ namespace YAMP
     /// </summary>
     class ArgsOperator : RightUnaryOperator
     {
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.ArgsOperator;
+        public static readonly int OpLevel = OpDefinitions.ArgsOperatorLevel;
+
+        #endregion
+
         #region Fields
 
         readonly Expression _content;
@@ -23,7 +30,7 @@ namespace YAMP
         }
 
         public ArgsOperator(Expression content) :
-            base("(", 1000)
+            base(Symbol, OpLevel)
         {
             _content = content;
         }
@@ -88,6 +95,38 @@ namespace YAMP
             if (left is IFunction)
             {
                 return ((IFunction)left).Perform(Context, args);
+            }
+
+            if (expression is SymbolExpression)
+            {
+                throw new YAMPFunctionMissingException(((SymbolExpression)expression).SymbolName);
+            }
+
+            throw new YAMPExpressionNoFunctionException();
+        }
+
+        public Value Handle(Expression expression, IDictionary<String, Value> symbols, Value state)
+        {
+            var args = _content.Interpret(symbols);
+            var left = expression.Interpret(symbols);
+
+            if (left is FunctionValue)
+            {
+                var fnMember = ((FunctionValue)left).AsMemberFunction();
+                if (fnMember != null)
+                {
+                    //The function is Global/Singleton. Must create a copy to set the @this state in order to evaluate correctly
+                    var fnCopy = fnMember.CreateMemberFunctionInstance(state);
+
+                    return ((IFunction)fnCopy).Perform(Context, args);
+                }
+                else
+                {
+                    if (expression is SymbolExpression)
+                    {
+                        throw new YAMPMemberFunctionMissingException(((SymbolExpression)expression).SymbolName, state.Header);
+                    }
+                }
             }
 
             if (expression is SymbolExpression)
@@ -169,6 +208,7 @@ namespace YAMP
                 "{3}" + Environment.NewLine +
                 "{0}{1}>", pad, tab, baseDebug, _content.ToDebug(padLeft + 3 * tabsize, tabsize));
         }
+
 
         #endregion
     }
