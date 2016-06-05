@@ -117,8 +117,17 @@ namespace YAMP
 		{
             return String.Format("({0}, {1}) {2}",
                 StartLine, StartColumn, GetType().Name.RemoveExpressionConvention());
-		}
+        }
 
-		#endregion
-	}
+        /// <summary>
+        /// Returns a string to allow visualization of a Expression tree
+        /// </summary>
+        /// <returns>The string that represents the part of the expression tree element.</returns>
+        public override String ToDebug(int padLeft, int tabsize)
+        {
+            return String.Format("({0}, {1}) {2}", StartLine, StartColumn, GetType().Name);
+        }
+
+        #endregion
+    }
 }

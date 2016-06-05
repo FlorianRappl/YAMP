@@ -139,6 +139,20 @@ namespace YAMP
             return value.Im.ToString().Replace(',', '.') + "i";
         }
 
+        /// <summary>
+        /// Returns a string to allow visualization of a Expression tree
+        /// </summary>
+        /// <returns>The string that represents the part of the expression tree element.</returns>
+        public override String ToDebug(int padLeft, int tabsize)
+        {
+            string baseDebug = base.ToDebug(padLeft, tabsize);
+
+            string pad = new string(' ', padLeft);
+
+            return string.Format("{0}[{1} <{2}>]", pad, baseDebug, ToCode());
+        }
+
+
         #endregion
 
         #region Helpers

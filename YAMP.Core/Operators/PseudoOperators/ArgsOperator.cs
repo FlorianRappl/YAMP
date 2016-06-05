@@ -152,6 +152,24 @@ namespace YAMP
             return "(" + _content.ToCode() + ")";
         }
 
-		#endregion
+        /// <summary>
+        /// Returns a string to allow visualization of a Expression tree
+        /// </summary>
+        /// <returns>The string that represents the part of the expression tree element.</returns>
+        public override String ToDebug(int padLeft, int tabsize)
+        {
+            string baseDebug = base.ToDebug(padLeft, tabsize);
+
+            string pad = new string(' ', padLeft);
+            string tab = new string(' ', tabsize);
+
+            return string.Format(
+                "{2}" + Environment.NewLine +
+                "{0}{1}<" + Environment.NewLine +
+                "{3}" + Environment.NewLine +
+                "{0}{1}>", pad, tab, baseDebug, _content.ToDebug(padLeft + 3 * tabsize, tabsize));
+        }
+
+        #endregion
     }
 }

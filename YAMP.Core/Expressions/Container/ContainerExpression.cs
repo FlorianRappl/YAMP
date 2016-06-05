@@ -268,6 +268,61 @@
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Returns a string to allow visualization of a Expression tree
+        /// </summary>
+        /// <returns>The string that represents the part of the expression tree element.</returns>
+        public override String ToDebug(int padLeft, int tabsize)
+        {
+            string pad = new string(' ', padLeft);
+
+            //string containerType = GetType().Name.RemoveExpressionConvention();
+            string containerType = GetType().Name;
+
+            if (_expressions != null)
+            {
+                if (_expressions.Length == 1 && _operator == null)
+                {
+                    return String.Format(
+                        "{0}[{1}(exp)" + Environment.NewLine +
+                        "{2}" + Environment.NewLine +
+                        "{0}]",
+                        pad, containerType,
+                        _expressions[0].ToDebug(padLeft + tabsize, tabsize));
+                }
+                else if (_operator != null)
+                {
+                    if (_expressions.Length == 1)
+                    {
+                        return String.Format(
+                            "{0}[{1}(exp,op)" + Environment.NewLine +
+                            "{2}" + Environment.NewLine +
+                            "{3}" + Environment.NewLine +
+                            "{0}]",
+                            pad, containerType,
+                            _expressions[0].ToDebug(padLeft + tabsize, tabsize),
+                            _operator.ToDebug(padLeft + tabsize, tabsize));
+                    }
+                    else if (_expressions.Length == 2)
+                    {
+                        return String.Format(
+                            "{0}[{1}(exp1,op,exp2)" + Environment.NewLine +
+                            "{2}" + Environment.NewLine +
+                            "{3}" + Environment.NewLine +
+                            "{4}" + Environment.NewLine +
+                            "{0}]",
+                            pad, containerType,
+                            _expressions[0].ToDebug(padLeft + tabsize, tabsize),
+                            _operator.ToDebug(padLeft + tabsize, tabsize),
+                            _expressions[1].ToDebug(padLeft + tabsize, tabsize));
+                    }
+                }
+            }
+
+            return String.Empty;
+        }
+
+
         #endregion
     }
 }
