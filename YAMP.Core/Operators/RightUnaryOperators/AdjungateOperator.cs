@@ -1,5 +1,6 @@
 namespace YAMP
 {
+    using System;
     using YAMP.Exceptions;
 
     /// <summary>
@@ -7,7 +8,11 @@ namespace YAMP
     /// </summary>
 	class AdjungateOperator : RightUnaryOperator
 	{
-		public AdjungateOperator () : base("'", 100)
+        public static readonly String Symbol = OpDefinitions.AdjungateOperator;
+        public static readonly int OpLevel = OpDefinitions.AdjungateOperatorLevel;
+
+        public AdjungateOperator ()
+            : base(Symbol, OpLevel)
 		{
 		}
 		

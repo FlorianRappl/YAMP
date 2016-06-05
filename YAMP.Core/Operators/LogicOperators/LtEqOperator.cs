@@ -7,8 +7,16 @@
     /// </summary>
     class LtEqOperator : LogicOperator
     {
-		public LtEqOperator ()
-            : base("<=")
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.LtEqOperator;
+        public static readonly int OpLevel = OpDefinitions.LtEqOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+        #endregion
+
+        public LtEqOperator ()
+            : base(Symbol, OpLevel)
 		{
 		}
 

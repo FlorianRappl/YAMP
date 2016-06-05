@@ -98,13 +98,33 @@ namespace YAMP
         /// <param name="op">The instance of the operator.</param>
         public void AddOperator(String pattern, Operator op)
         {
+            //Operators implemented in Plugins will "repeat" if the Plugin is loaded a second time in the same ApplicationDomain,
+            // since operators are added to ParseContext.Root (static variable), and never removed.
+            //Check if it's the same implementation and only throw if not.
+
             if (!op.IsRightToLeft && op.Expressions == 1)
             {
-                _unaryOperators.Add(pattern, op);
+                if (!_unaryOperators.ContainsKey(pattern))
+                {
+                    _unaryOperators.Add(pattern, op);
+                }
+                else
+                {
+                    if (op.GetType() != _unaryOperators[pattern].GetType())
+                        throw new ArgumentException(string.Format("Unary Operator {0} is repeated.", pattern));
+                }
             }
             else
             {
-                _binaryOperators.Add(pattern, op);
+                if (!_binaryOperators.ContainsKey(pattern))
+                {
+                    _binaryOperators.Add(pattern, op);
+                }
+                else
+                {
+                    if (op.GetType() != _binaryOperators[pattern].GetType())
+                        throw new ArgumentException(string.Format("Binary Operator {0} is repeated.", pattern));
+                }
             }
         }
 
@@ -127,9 +147,9 @@ namespace YAMP
             _keywords.Add(pattern, keyword);
         }
 
-        #endregion
+#endregion
 
-        #region Find elements
+#region Find elements
 
         /// <summary>
         /// Searches for the given keyword in the list of available keywords. Creates a class if the keyword is found.
@@ -295,6 +315,6 @@ namespace YAMP
             return null;
         }
 
-        #endregion
+#endregion
     }
 }

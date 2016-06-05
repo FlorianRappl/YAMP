@@ -9,15 +9,16 @@ namespace YAMP
     {
         #region Mapping
 
-        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
-        public static readonly String Symbol = "+";
+        public static readonly String Symbol = OpDefinitions.PlusOperator;
+        public static readonly int OpLevel = OpDefinitions.PlusOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
 
         #endregion
 
         #region ctor
 
-		public PlusOperator () : 
-            base(Symbol, 5)
+        public PlusOperator () : 
+            base(Symbol, OpLevel)
 		{
         }
 

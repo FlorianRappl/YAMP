@@ -1,5 +1,6 @@
 namespace YAMP
 {
+    using System;
     using YAMP.Exceptions;
 
     /// <summary>
@@ -7,7 +8,11 @@ namespace YAMP
     /// </summary>
 	class TransposeOperator : RightUnaryOperator
 	{
-		public TransposeOperator () : base(".'", 100)
+        public static readonly String Symbol = OpDefinitions.TransposeOperator;
+        public static readonly int OpLevel = OpDefinitions.TransposeOperatorLevel;
+
+        public TransposeOperator () :
+            base(Symbol, OpLevel)
 		{
 		}
 		

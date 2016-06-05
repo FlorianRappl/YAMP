@@ -1,5 +1,6 @@
 ﻿namespace YAMP
 {
+    using System;
     using YAMP.Exceptions;
 
     /// <summary>
@@ -7,9 +8,17 @@
     /// </summary>
 	class RowOperator : BinaryOperator
     {
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.RowOperator;
+        public static readonly int OpLevel = OpDefinitions.RowOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+        #endregion
+
         #region ctor
 
-        public RowOperator() : base(";", 0)
+        public RowOperator() : base(Symbol, OpLevel)
 		{
 		}
 

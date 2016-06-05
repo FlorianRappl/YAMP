@@ -52,6 +52,7 @@
     <Compile Include="Functions\MemberFunction.cs" />
     <Compile Include="Help\Localization.cs" />
     <Compile Include="Operators\BinaryOperators\MemberOperator.cs" />
+    <Compile Include="Operators\OpDefinitions.cs" />
     <Compile Include="Providers\Interfaces\IElementMapping.cs" />
     <Compile Include="Providers\Interfaces\IFunctionLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

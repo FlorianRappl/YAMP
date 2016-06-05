@@ -8,8 +8,11 @@ namespace YAMP
     /// </summary>
     class InvOperator : LeftUnaryOperator
     {
+        public static readonly String Symbol = OpDefinitions.InvOperator;
+        public static readonly int OpLevel = OpDefinitions.InvOperatorLevel;
+
         public InvOperator()
-            : base("~", 995)
+            : base(Symbol, OpLevel)
 		{
 		}
 

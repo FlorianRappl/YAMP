@@ -9,17 +9,18 @@ namespace YAMP
     {
         #region Mapping
 
-        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
-        public static readonly String Symbol = "-";
+        public static readonly String Symbol = OpDefinitions.MinusOperator;
+        public static readonly int OpLevel = OpDefinitions.MinusOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
 
         #endregion
 
         #region ctor
 
-        public MinusOperator () : 
-            base(Symbol, 6)
-		{
-		}
+        public MinusOperator () :
+            base(Symbol, OpLevel)
+        {
+        }
 
         #endregion
 

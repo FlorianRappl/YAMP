@@ -8,8 +8,11 @@
     /// </summary>
     class PostDecOperator : RightUnaryOperator
     {
+        public static readonly String Symbol = OpDefinitions.PostDecOperator;
+        public static readonly int OpLevel = OpDefinitions.PostDecOperatorLevel;
+
         public PostDecOperator()
-            : base("--", 999)
+            : base(Symbol, OpLevel)
         {
         }
 

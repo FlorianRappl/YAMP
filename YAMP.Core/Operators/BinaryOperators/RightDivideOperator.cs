@@ -9,15 +9,16 @@ namespace YAMP
     {
         #region Mapping
 
-        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
-        public static readonly String Symbol = "/";
+        public static readonly String Symbol = OpDefinitions.RightDivideOperator;
+        public static readonly int OpLevel = OpDefinitions.RightDivideOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
 
         #endregion
 
         #region ctor
 
         public RightDivideOperator () : 
-            base(Symbol, 20)
+            base(Symbol, OpLevel)
 		{
 		}
 

@@ -11,19 +11,21 @@
     {
         #region Mapping
 
-        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
-        public static readonly String Symbol = ".";
+        public static readonly String Symbol = OpDefinitions.MemberOperator;
+        public static readonly int OpLevel = OpDefinitions.MemberOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
 
         #endregion
 
         #region ctor
 
         public MemberOperator()
-            : base(Symbol, 10000)
-		{
+            : base(Symbol, OpLevel)
+        {
 		}
 
         #endregion
+
 
         #region Methods
 
