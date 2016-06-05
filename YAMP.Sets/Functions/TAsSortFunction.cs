@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace YAMP.Sets
 {
-    [Description("The UnsortSet function.")]
+    [Description("The TAsSort function.")]
     [Kind(PopularKinds.Function)]
-    sealed class UnsortSetFunction : ArgumentFunction
+    sealed class TAsSortFunction : ArgumentFunction
 	{
-        [Description("Creates a copied unsorted Set")]
+        [Description("Creates a copied sorted Set")]
         public SetValue Function(SetValue set)
         {
-            var newSet = new SetValue(set.Name, set.Set, false);
+            var newSet = new SetValue(set.Name, set.Set, true);
 
             return newSet;
         }
