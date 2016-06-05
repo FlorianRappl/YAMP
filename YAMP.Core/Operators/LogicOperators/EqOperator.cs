@@ -7,8 +7,16 @@ namespace YAMP
     /// </summary>
 	class EqOperator : LogicOperator
 	{
-		public EqOperator ()
-            : base("==")
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.EqOperator;
+        public static readonly int OpLevel = OpDefinitions.EqOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+        #endregion
+
+        public EqOperator ()
+            : base(Symbol, OpLevel)
 		{
 		}
 
@@ -19,12 +27,18 @@ namespace YAMP
 
         public override Value Perform(Value left, Value right)
         {
-            if (left is StringValue || right is StringValue)
+            Boolean found;
+            Value ret = TryPerformOverFind(left, right, Mapping, out found);
+            if (!found)
             {
-                return new ScalarValue(left.ToString(Context) == right.ToString(Context));
+                if (left is StringValue || right is StringValue)
+                {
+                    return new ScalarValue(left.ToString(Context) == right.ToString(Context));
+                }
+
+                return base.Perform(left, right);
             }
-            
-            return base.Perform(left, right);
+            return ret;
         }
 
         public override Operator Create()

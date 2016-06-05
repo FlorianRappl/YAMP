@@ -7,8 +7,10 @@ namespace YAMP
     /// </summary>
 	abstract class NeqOperator : LogicOperator
 	{
-		public NeqOperator(String op)
-            : base(op)
+        public static readonly int OpLevel = OpDefinitions.NeqOperatorLevel;
+
+        public NeqOperator(String op)
+            : base(op, OpLevel)
 		{
 		}
 
@@ -29,9 +31,32 @@ namespace YAMP
 
         public class StandardNeqOperator : NeqOperator
         {
+            #region Mapping
+
+            public static readonly String Symbol = OpDefinitions.StandardNeqOperator;
+            public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+            #endregion
+
             public StandardNeqOperator()
-                : base("~=")
+                : base(Symbol)
             {
+            }
+
+            public override Value Perform(Value left, Value right)
+            {
+                Boolean found;
+                Value ret = TryPerformOverFind(left, right, Mapping, out found);
+                if (!found)
+                {
+                    if (left is StringValue || right is StringValue)
+                    {
+                        return new ScalarValue(left.ToString(Context) != right.ToString(Context));
+                    }
+
+                    return base.Perform(left, right);
+                }
+                return ret;
             }
 
             public override Operator Create()
@@ -42,9 +67,32 @@ namespace YAMP
 
         public class AliasNeqOperator : NeqOperator
         {
+            #region Mapping
+
+            public static readonly String Symbol = OpDefinitions.AliasNeqOperator;
+            public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+            #endregion
+
             public AliasNeqOperator()
-                : base("!=")
+                : base(Symbol)
             {
+            }
+
+            public override Value Perform(Value left, Value right)
+            {
+                Boolean found;
+                Value ret = TryPerformOverFind(left, right, Mapping, out found);
+                if (!found)
+                {
+                    if (left is StringValue || right is StringValue)
+                    {
+                        return new ScalarValue(left.ToString(Context) != right.ToString(Context));
+                    }
+
+                    return base.Perform(left, right);
+                }
+                return ret;
             }
 
             public override Operator Create()
