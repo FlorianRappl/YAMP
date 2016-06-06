@@ -27,9 +27,8 @@ namespace YAMP
 
         public override Value Perform(Value left, Value right)
         {
-            Boolean found;
-            Value ret = TryPerformOverFind(left, right, Mapping, out found);
-            if (!found)
+            Value ret;
+            if (!TryPerformOverFind(left, right, Mapping, out ret))
             {
                 if (left is StringValue || right is StringValue)
                 {

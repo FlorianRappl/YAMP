@@ -50,18 +50,15 @@ namespace YAMP
 
         public Value PerformOverFind(Value left, Value right, BinaryOperatorMappingList mapping)
         {
-            Boolean found;
-            var ret = TryPerformOverFind(left, right, mapping, out found);
-            if (!found)
+            Value ret;
+            if (!TryPerformOverFind(left, right, mapping, out ret))
                 throw new YAMPOperationInvalidException(Op, left, right);
 
             return ret;
         }
 
-        public static Value TryPerformOverFind(Value left, Value right, BinaryOperatorMappingList mapping, out Boolean found)
+        public static Boolean TryPerformOverFind(Value left, Value right, BinaryOperatorMappingList mapping, out Value value)
         {
-            found = true;
-
             var least = default(Func<Value, Value, Value>);
 
             for (var i = 0; i != mapping.Count; i++)
@@ -70,7 +67,8 @@ namespace YAMP
 
                 if (hit == MapHit.Direct)
                 {
-                    return mapping[i].Map(left, right);
+                    value = mapping[i].Map(left, right);
+                    return true;
                 }
                 else if (hit == MapHit.Indirect)
                 {
@@ -80,11 +78,12 @@ namespace YAMP
 
             if (least != null)
             {
-                return least(left, right);
+                value = least(left, right);
+                return true;
             }
 
-            found = false;
-            return null;
+            value = null;
+            return false;
         }
 
         /// <summary>
