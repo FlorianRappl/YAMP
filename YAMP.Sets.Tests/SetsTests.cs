@@ -404,5 +404,33 @@ namespace YAMP.Sets.Tests
             TestValue(F("a=newSortedSet({0})", sSetA), set);
         }
 
+
+        [Test]
+        public void SET_StringEqualityAsKeys()
+        {
+            //https://github.com/FlorianRappl/YAMP/issues/22
+            //String keys "Equality" on Sets must be assured so they don't repeat...
+            //In CSharp, they would be (at least if they are constant) but in YAMP, Strings are wrapped in StringValue, so the "equality" must be explicit.
+            string sSetA1 = "'A1', 'A', 'A'".Replace('\'', '\"');
+            string sSetA2 = "'A2', 'A'".Replace('\'', '\"');
+
+            /*
+            newset("A1", "A", "A") == newset("A2", "A")
+            a1=newset("A1", "A", "A");a2=newset("A2", "A");a1==a2
+            a1.SetEquals(a2)
+            a2.SetEquals(a1)
+            TEquals(a1, a2)
+            TEquals(a2, a1)
+            */
+
+            TestValue(F("newSet({0}) == newSet({1})", sSetA1, sSetA2), 1);
+            TestValue(F("a1=newSet({0}); a2=newSet({1});a1==a2", sSetA1, sSetA2), 1);
+            TestValue(F("a1=newSet({0}); a2=newSet({1});a1.SetEquals(a2)", sSetA1, sSetA2), 1);
+            TestValue(F("a1=newSet({0}); a2=newSet({1});a2.SetEquals(a1)", sSetA1, sSetA2), 1);
+            TestValue(F("a1=newSet({0}); a2=newSet({1});TEquals(a1, a2)", sSetA1, sSetA2), 1);
+            TestValue(F("a1=newSet({0}); a2=newSet({1});TEquals(a2, a1)", sSetA1, sSetA2), 1);
+        }
+
+
     }
 }
