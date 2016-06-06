@@ -307,7 +307,9 @@
         {
             var value = default(String);
             var dictionary = Localization.Current ?? Localization.Default;
-            dictionary.TryGetValue(key, out value);
+            //Fallback to show something while key/descriptions are being replaced
+            if (!dictionary.TryGetValue(key, out value))
+                value = key;
             return value;
         }
 

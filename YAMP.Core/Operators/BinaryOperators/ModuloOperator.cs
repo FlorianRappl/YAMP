@@ -9,15 +9,16 @@
     {
         #region Mapping
 
-        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
-        public static readonly String Symbol = "%";
+        public static readonly String Symbol = OpDefinitions.ModuloOperator;
+        public static readonly int OpLevel = OpDefinitions.ModuloOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
 
         #endregion
 
         #region ctor
 
         public ModuloOperator() : 
-            base(Symbol, 30)
+            base(Symbol, OpLevel)
 		{
 		}
 

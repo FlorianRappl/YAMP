@@ -8,6 +8,7 @@
     using YAMP.Io;
     using YAMP.Physics;
     using YAMP.Sensors;
+    using YAMP.Sets;
 
     static class Repl
     {
@@ -19,6 +20,7 @@
             parser.LoadPlugin(typeof(PhysicsPlugin).Assembly);
             parser.LoadPlugin(typeof(SensorsPlugin).Assembly);
             parser.LoadPlugin(typeof(IoPlugin).Assembly);
+            parser.LoadPlugin(typeof(SetsPlugin).Assembly);
             var exit = false;
 
             parser.InteractiveMode = true;

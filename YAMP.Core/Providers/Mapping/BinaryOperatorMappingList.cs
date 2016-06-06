@@ -3,13 +3,16 @@
     using System;
     using System.Collections.Generic;
 
-    sealed class BinaryOperatorMappingList
+    sealed public class BinaryOperatorMappingList
     {
         readonly List<BinaryOperatorMapping> _mapping;
 
-        public BinaryOperatorMappingList()
+        public BinaryOperatorMappingList(String symbol)
         {
             _mapping = new List<BinaryOperatorMapping>();
+
+            //Registers itself
+            Register.BinaryOperator(symbol, this);
         }
 
         public BinaryOperatorMapping this[Int32 index]

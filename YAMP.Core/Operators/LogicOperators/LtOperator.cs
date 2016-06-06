@@ -7,8 +7,16 @@ namespace YAMP
     /// </summary>
 	class LtOperator : LogicOperator
 	{
-		public LtOperator ()
-            : base("<")
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.LtOperator;
+        public static readonly int OpLevel = OpDefinitions.LtOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+        #endregion
+
+        public LtOperator ()
+            : base(Symbol, OpLevel)
 		{
 		}
 

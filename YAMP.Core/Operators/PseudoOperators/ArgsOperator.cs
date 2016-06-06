@@ -9,6 +9,13 @@ namespace YAMP
     /// </summary>
     class ArgsOperator : RightUnaryOperator
     {
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.ArgsOperator;
+        public static readonly int OpLevel = OpDefinitions.ArgsOperatorLevel;
+
+        #endregion
+
         #region Fields
 
         readonly Expression _content;
@@ -23,7 +30,7 @@ namespace YAMP
         }
 
         public ArgsOperator(Expression content) :
-            base("(", 1000)
+            base(Symbol, OpLevel)
         {
             _content = content;
         }
@@ -98,6 +105,38 @@ namespace YAMP
             throw new YAMPExpressionNoFunctionException();
         }
 
+        public Value Handle(Expression expression, IDictionary<String, Value> symbols, Value state)
+        {
+            var args = _content.Interpret(symbols);
+            var left = expression.Interpret(symbols);
+
+            if (left is FunctionValue)
+            {
+                var fnMember = ((FunctionValue)left).AsMemberFunction();
+                if (fnMember != null)
+                {
+                    //The function is Global/Singleton. Must create a copy to set the @this state in order to evaluate correctly
+                    var fnCopy = fnMember.CreateMemberFunctionInstance(state);
+
+                    return ((IFunction)fnCopy).Perform(Context, args);
+                }
+                else
+                {
+                    if (expression is SymbolExpression)
+                    {
+                        throw new YAMPMemberFunctionMissingException(((SymbolExpression)expression).SymbolName, state.Header);
+                    }
+                }
+            }
+
+            if (expression is SymbolExpression)
+            {
+                throw new YAMPFunctionMissingException(((SymbolExpression)expression).SymbolName);
+            }
+
+            throw new YAMPExpressionNoFunctionException();
+        }
+
         public Value Handle(Expression expression, Value value, IDictionary<String, Value> symbols)
         {
             var symbolName = String.Empty;
@@ -152,6 +191,25 @@ namespace YAMP
             return "(" + _content.ToCode() + ")";
         }
 
-		#endregion
+        /// <summary>
+        /// Returns a string to allow visualization of a Expression tree
+        /// </summary>
+        /// <returns>The string that represents the part of the expression tree element.</returns>
+        public override String ToDebug(int padLeft, int tabsize)
+        {
+            string baseDebug = base.ToDebug(padLeft, tabsize);
+
+            string pad = new string(' ', padLeft);
+            string tab = new string(' ', tabsize);
+
+            return string.Format(
+                "{2}" + Environment.NewLine +
+                "{0}{1}<" + Environment.NewLine +
+                "{3}" + Environment.NewLine +
+                "{0}{1}>", pad, tab, baseDebug, _content.ToDebug(padLeft + 3 * tabsize, tabsize));
+        }
+
+
+        #endregion
     }
 }

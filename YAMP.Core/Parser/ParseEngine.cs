@@ -330,6 +330,24 @@
         /// <returns>The current parse engine.</returns>
         public ParseEngine Parse()
         {
+            bool generateTree = false;
+            //Put a breakpoint here, and change to true, to generate the Tree text
+
+            string expressionDebug;
+            return Parse(generateTree, out expressionDebug);
+        }
+
+        /// <summary>
+        /// Runs the parser over the inserted query.
+        /// </summary>
+        /// <param name="generateExpressionDebug">Generate a string representation of the Expression tree to help debugging</param>
+        /// <returns>The current parse engine.</returns>
+        public ParseEngine Parse(bool generateExpressionDebug, out string expressionDebug)
+        {
+            expressionDebug = string.Empty;
+            int leftPad = 3;
+            int tabSize = 4;
+
             if (_parsed)
             {
                 Reset();
@@ -345,11 +363,22 @@
                 if (!statement.IsEmpty)
                 {
                     _statements.Add(statement);
+
+                    if (generateExpressionDebug && statement.Container != null)
+                    {
+                        expressionDebug += statement.Container.ToDebug(leftPad, tabSize) + Environment.NewLine;
+                    }
                 }
             }
 
             _parsing = false;
             _parsed = true;
+
+            if (generateExpressionDebug)
+            {
+                expressionDebug = string.Format("{0}{1}", Query.ToString(), expressionDebug);
+            }
+
             return this;
         }
 

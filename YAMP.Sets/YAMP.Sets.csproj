@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{25707C47-A626-4AD8-9290-AB07E30C1222}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>YAMP.Sets</RootNamespace>
+    <AssemblyName>YAMP.Sets</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile328</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\YAMP.Sets.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="External\CoreFXoriginal\BitHelper.cs" />
+    <None Include="External\CoreFXoriginal\EnumerableHelpers.cs" />
+    <None Include="External\CoreFXoriginal\SortedSet.cs" />
+    <Compile Include="Exceptions\YAMPSetsFunctionNotMemberException.cs" />
+    <Compile Include="External\CoreFX\BitHelper.cs" />
+    <Compile Include="External\CoreFX\EnumerableHelpers.cs" />
+    <Compile Include="External\CoreFX\SortedSet.cs" />
+    <Compile Include="Functions\Creators\NewSetFunction.cs" />
+    <Compile Include="Functions\Creators\NewRandomSetFunction.cs" />
+    <Compile Include="Functions\Creators\NewSortedSetFunction.cs" />
+    <Compile Include="Functions\TAddFunction.cs" />
+    <Compile Include="Functions\TAsSortFunction.cs" />
+    <Compile Include="Functions\TContainsFunction.cs" />
+    <Compile Include="Functions\TCount.cs" />
+    <Compile Include="Functions\TEqualsFunction.cs" />
+    <Compile Include="Functions\TExceptFunction.cs" />
+    <Compile Include="Functions\TIntersectFunction.cs" />
+    <Compile Include="Functions\TIsProperSubsetOfFunction.cs" />
+    <Compile Include="Functions\TIsProperSupersetOfFunction.cs" />
+    <Compile Include="Functions\TIsSortedFunction.cs" />
+    <Compile Include="Functions\TIsSubsetOfFunction.cs" />
+    <Compile Include="Functions\TIsSupersetOfFunction.cs" />
+    <Compile Include="Functions\TOverlapsFunction.cs" />
+    <Compile Include="Functions\TRemoveFunction.cs" />
+    <Compile Include="Functions\TToMatrixFunction.cs" />
+    <Compile Include="Functions\TUnionFunction.cs" />
+    <Compile Include="Functions\TAsUnsortFunction.cs" />
+    <Compile Include="Functions\TExceptXorFunction.cs" />
+    <Compile Include="Operators\IntersectOperator.cs" />
+    <Compile Include="Operators\OpSymbolsSet.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetsPlugin.cs" />
+    <Compile Include="Values\SetValue.cs" />
+    <None Include="readme.markdown" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="External\CoreFXoriginal\LICENSE" />
+    <None Include="External\CoreFX\LICENSE" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YAMP.Core\YAMP.Core.csproj">
+      <Project>{0f183b45-e213-4db0-9734-3ce7e26eb318}</Project>
+      <Name>YAMP.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+</Project>

@@ -5,7 +5,7 @@
     /// <summary>
     /// Abstract base class for any operator mapping (e.g. binary).
     /// </summary>
-    abstract class OperatorMapping
+    abstract public class OperatorMapping
     {
         protected static MapHit TypeDistance(Type basis, Object instance)
         {

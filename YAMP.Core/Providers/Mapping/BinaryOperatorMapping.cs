@@ -5,7 +5,7 @@
     /// <summary>
     /// Represents the elementary object for binary operator mappings.
     /// </summary>
-    sealed class BinaryOperatorMapping : OperatorMapping, IEquatable<BinaryOperatorMapping>
+    sealed public class BinaryOperatorMapping : OperatorMapping, IEquatable<BinaryOperatorMapping>
     {
         readonly Func<Value, Value, Value> _f;
         readonly Type _arg1;

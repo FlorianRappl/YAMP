@@ -7,8 +7,16 @@
     /// </summary>
     class OrOperator : LogicOperator
     {
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.OrOperator;
+        public static readonly int OpLevel = OpDefinitions.OrOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+        #endregion
+
         public OrOperator()
-            : base("||", 3)
+            : base(Symbol, OpLevel)
 		{
 		}
 

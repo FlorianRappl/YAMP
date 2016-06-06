@@ -74,6 +74,12 @@
         /// <returns>The string that represents the part of the query.</returns>
         public abstract String ToCode();
 
+        /// <summary>
+        /// Returns a string to allow visualization of a Expression tree
+        /// </summary>
+        /// <returns>The string that represents the part of the expression tree element.</returns>
+        public abstract String ToDebug(int padLeft, int tabsize);
+
         #endregion
     }
 }

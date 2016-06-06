@@ -10,10 +10,18 @@ namespace YAMP
     /// </summary>
 	class RangeOperator : BinaryOperator
 	{
-		static readonly String End = "end";
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.RangeOperator;
+        public static readonly int OpLevel = OpDefinitions.RangeOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+        #endregion
+
+        static readonly String End = "end";
 
 		public RangeOperator()
-            : base(":", 3)
+            : base(Symbol, OpLevel)
 		{
 			IsRightToLeft = true;
 		}

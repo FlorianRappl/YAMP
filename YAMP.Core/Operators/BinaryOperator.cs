@@ -20,7 +20,7 @@ namespace YAMP
             : base(op, level)
 		{
             Expressions = 2;
-		}
+        }
 
         #endregion
 
@@ -48,7 +48,16 @@ namespace YAMP
 			return Perform(l, r);
 		}
 
-        internal Value PerformOverFind(Value left, Value right, BinaryOperatorMappingList mapping)
+        public Value PerformOverFind(Value left, Value right, BinaryOperatorMappingList mapping)
+        {
+            Value ret;
+            if (!TryPerformOverFind(left, right, mapping, out ret))
+                throw new YAMPOperationInvalidException(Op, left, right);
+
+            return ret;
+        }
+
+        public static Boolean TryPerformOverFind(Value left, Value right, BinaryOperatorMappingList mapping, out Value value)
         {
             var least = default(Func<Value, Value, Value>);
 
@@ -58,7 +67,8 @@ namespace YAMP
 
                 if (hit == MapHit.Direct)
                 {
-                    return mapping[i].Map(left, right);
+                    value = mapping[i].Map(left, right);
+                    return true;
                 }
                 else if (hit == MapHit.Indirect)
                 {
@@ -68,10 +78,12 @@ namespace YAMP
 
             if (least != null)
             {
-                return least(left, right);
+                value = least(left, right);
+                return true;
             }
 
-            throw new YAMPOperationInvalidException(Op, left, right);
+            value = null;
+            return false;
         }
 
         /// <summary>

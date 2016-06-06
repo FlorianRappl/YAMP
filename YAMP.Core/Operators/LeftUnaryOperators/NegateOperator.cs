@@ -1,5 +1,6 @@
 ﻿namespace YAMP
 {
+    using System;
     using YAMP.Exceptions;
 
     /// <summary>
@@ -8,8 +9,11 @@
     /// </summary>
     class NegateOperator : LeftUnaryOperator
     {
+        public static readonly String Symbol = OpDefinitions.NegateOperator;
+        public static readonly int OpLevel = OpDefinitions.NegateOperatorLevel;
+
         public NegateOperator()
-            : base("-", 7)
+            : base(Symbol, OpLevel)
         {
         }
 

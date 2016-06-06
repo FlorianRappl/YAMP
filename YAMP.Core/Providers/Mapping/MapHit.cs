@@ -1,6 +1,6 @@
 ﻿namespace YAMP
 {
-    enum MapHit
+    public enum MapHit
     {
         Miss,
         Direct,

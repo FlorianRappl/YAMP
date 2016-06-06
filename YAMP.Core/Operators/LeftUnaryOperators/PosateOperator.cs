@@ -7,8 +7,11 @@ namespace YAMP
     /// </summary>
     class PosateOperator : LeftUnaryOperator
     {
+        public static readonly String Symbol = OpDefinitions.PosateOperator;
+        public static readonly int OpLevel = OpDefinitions.PosateOperatorLevel;
+
         public PosateOperator()
-            : base("+", 7)
+            : base(Symbol, OpLevel)
         {
         }
 

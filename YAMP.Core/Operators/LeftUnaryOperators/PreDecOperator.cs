@@ -8,8 +8,11 @@
     /// </summary>
     class PreDecOperator : LeftUnaryOperator
     {
+        public static readonly String Symbol = OpDefinitions.PreDecOperator;
+        public static readonly int OpLevel = OpDefinitions.PreDecOperatorLevel;
+
         public PreDecOperator()
-            : base("--", 999)
+            : base(Symbol, OpLevel)
         {
         }
 

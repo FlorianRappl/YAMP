@@ -10,10 +10,13 @@
     /// </summary>
     class FatArrowOperator : BinaryOperator
     {
+        public static readonly String Symbol = OpDefinitions.FatArrowOperator;
+        public static readonly int OpLevel = OpDefinitions.FatArrowOperatorLevel;
+
         #region ctor
 
         public FatArrowOperator()
-            : base("=>", 2)
+            : base(Symbol, OpLevel)
         {
         }
 

@@ -7,8 +7,16 @@
     /// </summary>
     class GtEqOperator : LogicOperator
     {
-		public GtEqOperator ()
-            : base(">=")
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.GtEqOperator;
+        public static readonly int OpLevel = OpDefinitions.GtEqOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+        #endregion
+
+        public GtEqOperator ()
+            : base(Symbol, OpLevel)
 		{
 		}
 

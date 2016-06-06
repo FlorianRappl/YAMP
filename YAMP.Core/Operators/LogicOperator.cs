@@ -9,6 +9,13 @@ namespace YAMP
     /// </summary>
     public abstract class LogicOperator : BinaryOperator
     {
+        #region Mapping
+
+        public static readonly int DefOpLevel = OpDefinitions.DefLogicOperatorLevel;
+
+        #endregion
+
+
         #region ctor
 
         /// <summary>
@@ -16,7 +23,7 @@ namespace YAMP
         /// </summary>
         /// <param name="op">The operator string.</param>
         public LogicOperator (String op) 
-            : base(op, 4)
+            : base(op, DefOpLevel)
 		{
 		}
 

@@ -7,8 +7,16 @@
     /// </summary>
     class AndOperator : LogicOperator
     {
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.AndOperator;
+        public static readonly int OpLevel = OpDefinitions.AndOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+        #endregion
+
         public AndOperator()
-            : base("&&", 3)
+            : base(Symbol, OpLevel)
 		{
 		}
 

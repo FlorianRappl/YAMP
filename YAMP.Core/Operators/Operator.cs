@@ -147,6 +147,20 @@ namespace YAMP
             return _op;
         }
 
-		#endregion
-	}
+        /// <summary>
+        /// Returns a string to allow visualization of a Expression tree
+        /// </summary>
+        /// <returns>The string that represents the part of the expression tree element.</returns>
+        public override String ToDebug(int padLeft, int tabsize)
+        {
+            string symboltext = _op;
+
+            string pad = new string(' ', padLeft);
+
+            return string.Format("{0}[{1} <{2}>]", pad, GetType().Name, symboltext);
+        }
+
+
+        #endregion
+    }
 }

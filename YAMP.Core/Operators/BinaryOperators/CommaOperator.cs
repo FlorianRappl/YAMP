@@ -1,15 +1,25 @@
 ﻿namespace YAMP
 {
+    using System;
+
     /// <summary>
     /// This is the class used for the operator that seperated various arguments
     /// in round brackets.
     /// </summary>
 	class CommaOperator : BinaryOperator
     {
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.CommaOperator;
+        public static readonly int OpLevel = OpDefinitions.CommaOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+        #endregion
+
         #region ctor
 
         public CommaOperator() : 
-            base(",", 1)
+            base(Symbol, OpLevel)
 		{
 		}
 

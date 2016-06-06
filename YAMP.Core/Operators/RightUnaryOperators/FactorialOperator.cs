@@ -7,10 +7,17 @@ namespace YAMP
     /// </summary>
 	class FactorialOperator : RightUnaryOperator
 	{
-		static readonly FactorialFunction fac = new FactorialFunction();
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.FactorialOperator;
+        public static readonly int OpLevel = OpDefinitions.FactorialOperatorLevel;
+
+        #endregion
+
+        static readonly FactorialFunction fac = new FactorialFunction();
 		
 		public FactorialOperator() : 
-            base("!", 1000)
+            base(Symbol, OpLevel)
 		{
 		}
 		

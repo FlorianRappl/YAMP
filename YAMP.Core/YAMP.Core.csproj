@@ -43,14 +43,17 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\YAMPMemberFunctionMissingException.cs" />
     <Compile Include="Extensions\ContainerExtensions.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\ParserExtensions.cs" />
     <Compile Include="Extensions\QueryContextExtensions.cs" />
     <Compile Include="Functions\Helpers\ObjectFunction.cs" />
+    <Compile Include="Functions\MemberFunction.cs" />
     <Compile Include="Help\Localization.cs" />
     <Compile Include="Operators\BinaryOperators\MemberOperator.cs" />
+    <Compile Include="Operators\OpDefinitions.cs" />
     <Compile Include="Providers\Interfaces\IElementMapping.cs" />
     <Compile Include="Providers\Interfaces\IFunctionLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

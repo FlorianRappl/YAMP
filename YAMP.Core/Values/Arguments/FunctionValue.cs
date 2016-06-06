@@ -148,6 +148,14 @@
             return this;
         }
 
+        public MemberFunction AsMemberFunction()
+        {
+            if (_perform != null && _perform.Target is MemberFunction)
+                return _perform.Target as MemberFunction;
+
+            return null;
+        }
+
         void SetPerform(String[] arguments, Expression body)
         {
             _perform = (context, argument) =>

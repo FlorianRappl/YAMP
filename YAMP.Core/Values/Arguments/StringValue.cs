@@ -137,12 +137,12 @@ namespace YAMP
 			return new StringValue(value);
 		}
 
-		#endregion
+        #endregion
 
-        #region Conversations
+        #region Conversions
 
         /// <summary>
-        /// Explicit conversation from a string to a scalar.
+        /// Explicit conversion from a string to a scalar.
         /// </summary>
         /// <param name="value">The stringvalue that will be casted.</param>
         /// <returns>The scalar with Re = sum over all characters and Im = length of the string.</returns>
@@ -158,6 +158,36 @@ namespace YAMP
             return new ScalarValue(sum, value.Length);
         }
 
+        #endregion
+
+        #region Comparison
+        /// <summary>
+        /// Is the given object equal to this.
+        /// </summary>
+        /// <param name="obj">The compare object.</param>
+        /// <returns>A boolean.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is StringValue)
+            {
+                var sv = obj as StringValue;
+                return sv._value == _value;
+            }
+
+            if (obj is string || obj == null)
+                return (string)obj == _value;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Computes the hashcode of the value inside.
+        /// </summary>
+        /// <returns>The hash code.</returns>
+        public override int GetHashCode()
+        {
+            return _value == null ? 0 : _value.GetHashCode();
+        }
         #endregion
 
         #region Index

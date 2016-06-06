@@ -7,8 +7,16 @@ namespace YAMP
     /// </summary>
 	class GtOperator : LogicOperator
 	{
-		public GtOperator ()
-            : base(">")
+        #region Mapping
+
+        public static readonly String Symbol = OpDefinitions.GtOperator;
+        public static readonly int OpLevel = OpDefinitions.GtOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
+
+        #endregion
+
+        public GtOperator ()
+            : base(Symbol, OpLevel)
 		{
 		}
 

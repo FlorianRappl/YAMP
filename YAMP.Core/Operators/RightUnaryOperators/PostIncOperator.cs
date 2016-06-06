@@ -8,8 +8,11 @@
     /// </summary>
     class PostIncOperator : RightUnaryOperator
     {
+        public static readonly String Symbol = OpDefinitions.PostIncOperator;
+        public static readonly int OpLevel = OpDefinitions.PostIncOperatorLevel;
+
         public PostIncOperator()
-            : base("++", 999)
+            : base(Symbol, OpLevel)
         {
         }
 

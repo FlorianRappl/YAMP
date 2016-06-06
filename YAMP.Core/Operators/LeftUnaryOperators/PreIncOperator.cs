@@ -8,9 +8,12 @@
     /// </summary>
     class PreIncOperator : LeftUnaryOperator
     {
+        public static readonly String Symbol = OpDefinitions.PreIncOperator;
+        public static readonly int OpLevel = OpDefinitions.PreIncOperatorLevel;
+
         static readonly PlusAssignmentOperator assignment = new PlusAssignmentOperator();
 
-        public PreIncOperator() : base("++", 999)
+        public PreIncOperator() : base(Symbol, OpLevel)
         {
         }
 

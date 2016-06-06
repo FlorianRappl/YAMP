@@ -11,16 +11,17 @@
     {
         #region Mapping
 
-        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList();
-        public static readonly String Symbol = ".";
+        public static readonly String Symbol = OpDefinitions.MemberOperator;
+        public static readonly int OpLevel = OpDefinitions.MemberOperatorLevel;
+        public static readonly BinaryOperatorMappingList Mapping = new BinaryOperatorMappingList(Symbol);
 
         #endregion
 
         #region ctor
 
         public MemberOperator()
-            : base(Symbol, 10000)
-		{
+            : base(Symbol, OpLevel)
+        {
 		}
 
         #endregion
@@ -37,11 +38,33 @@
             var l = left.Interpret(symbols);
             var symbol = right as SymbolExpression;
             var value = default(StringValue);
+
+            //Is it a Method Call?
+            if (symbol == null)
+            {
+                var contExp = right as ContainerExpression;
+                if (contExp != null)
+                {
+                    if (contExp.Expressions != null && contExp.Expressions.Length == 1 && contExp.Expressions[0] is SymbolExpression)
+                    {
+                        symbol = contExp.Expressions[0] as SymbolExpression;
+                        var op = contExp.Operator as ArgsOperator;
+                        if (op != null)
+                        {
+                            return op.Handle(symbol, symbols, l);
+                        }
+                        //YAMPMemberFunctionMissingException
+                    }
+                }
+            }
             
             if (symbol != null)
             {
                 value = new StringValue(symbol.SymbolName);
             }
+
+            if (value == null)
+                throw new YAMPFunctionMissingException("()");
             
             return Perform(l, value);
         }

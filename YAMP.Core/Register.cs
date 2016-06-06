@@ -8,16 +8,21 @@
     /// </summary>
     public static class Register
     {
-        static readonly Dictionary<String, BinaryOperatorMappingList> BinaryMappings = new Dictionary<String, BinaryOperatorMappingList>()
+        static readonly Dictionary<String, BinaryOperatorMappingList> BinaryMappings = new Dictionary<String, BinaryOperatorMappingList>();
+
+        /// <summary>
+        /// Provides registration of operator's Mappings list
+        /// </summary>
+        /// <param name="symbol">The symbol of the operator, e.g., +.</param>
+        /// <param name="list">The BinaryMapping list of the operator</param>
+        public static void BinaryOperator(String symbol, BinaryOperatorMappingList list)
         {
-            { PlusOperator.Symbol, PlusOperator.Mapping },
-            { MinusOperator.Symbol, MinusOperator.Mapping },
-            { MultiplyOperator.Symbol, MultiplyOperator.Mapping },
-            { RightDivideOperator.Symbol, RightDivideOperator.Mapping },
-            { ModuloOperator.Symbol, ModuloOperator.Mapping },
-            { PowerOperator.Symbol, PowerOperator.Mapping },
-            { MemberOperator.Symbol, MemberOperator.Mapping },
-        };
+            var mapping = default(BinaryOperatorMappingList);
+            if (!BinaryMappings.TryGetValue(symbol, out mapping))
+            {
+                BinaryMappings.Add(symbol, list);
+            }
+        }
 
         /// <summary>
         /// Registers a global binary operator.
