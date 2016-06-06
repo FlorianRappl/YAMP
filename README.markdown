@@ -10,12 +10,19 @@ Features of YAMP is (complex) (matrix) numerics (scalars, vectors, matrices) wit
 Current status
 --------------
 
-The current version number is **1.5.0**. A NuGet package (current version 1.5.0) is available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code - since the package aims to be cross platform (created with Mono), the NUnit unit testing framework has been chosen.
+The current version number is **1.6.0**. A NuGet package (current version 1.6.0) is available [here](http://nuget.org/packages/YAMP). There are a lot of tests in the code - since the package aims to be cross platform (created with Mono), the NUnit unit testing framework has been chosen.
 
 The console project (provided in the solution) gives you instant access to benchmarks and provides you with a small REPL. Parse equations as you want to. In the current release exceptions from the parser are caught in the console application.
 
 Change log
 ----------
+
+**1.6.0:**
+- Possibility to use localization for the help (#19)
+- Alias for the not equal operator `!=` (#20)
+- Support for member functions @nhenriques (#21)
+- Improved operator mapping @nhenriques (#18)
+- Implemented extended equality check @nhenriques (#22)
 
 **1.5.0:**
 - Changed static `Parser` to instance model
