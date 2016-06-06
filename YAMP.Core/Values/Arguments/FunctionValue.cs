@@ -148,10 +148,16 @@
             return this;
         }
 
+        /// <summary>
+        /// Tries to cast the function to a member function.
+        /// </summary>
+        /// <returns>The member function or null.</returns>
         public MemberFunction AsMemberFunction()
         {
             if (_perform != null && _perform.Target is MemberFunction)
+            {
                 return _perform.Target as MemberFunction;
+            }
 
             return null;
         }

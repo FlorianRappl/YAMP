@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
     using System.Linq;
+    using System.Text;
     using YAMP.Errors;
 
     /// <summary>
@@ -327,26 +327,25 @@
         /// <summary>
         /// Runs the parser over the inserted query.
         /// </summary>
-        /// <returns>The current parse engine.</returns>
         public ParseEngine Parse()
         {
-            bool generateTree = false;
-            //Put a breakpoint here, and change to true, to generate the Tree text
-
-            string expressionDebug;
-            return Parse(generateTree, out expressionDebug);
+            var generateTree = false;
+            var debug = Parse(generateTree);
+            return this;
         }
 
         /// <summary>
         /// Runs the parser over the inserted query.
         /// </summary>
-        /// <param name="generateExpressionDebug">Generate a string representation of the Expression tree to help debugging</param>
+        /// <param name="generateExpressionDebug">
+        /// Generate a string representation of the Expression tree to help debugging.
+        /// </param>
         /// <returns>The current parse engine.</returns>
-        public ParseEngine Parse(bool generateExpressionDebug, out string expressionDebug)
+        public String Parse(Boolean generateExpressionDebug)
         {
-            expressionDebug = string.Empty;
-            int leftPad = 3;
-            int tabSize = 4;
+            var sb = new StringBuilder();
+            var leftPad = 3;
+            var tabSize = 4;
 
             if (_parsed)
             {
@@ -366,7 +365,7 @@
 
                     if (generateExpressionDebug && statement.Container != null)
                     {
-                        expressionDebug += statement.Container.ToDebug(leftPad, tabSize) + Environment.NewLine;
+                        sb.AppendLine(statement.Container.ToDebug(leftPad, tabSize));
                     }
                 }
             }
@@ -376,10 +375,10 @@
 
             if (generateExpressionDebug)
             {
-                expressionDebug = string.Format("{0}{1}", Query.ToString(), expressionDebug);
+                sb.Insert(0, Query.ToString());
             }
 
-            return this;
+            return sb.ToString();
         }
 
         /// <summary>

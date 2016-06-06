@@ -13,3 +13,4 @@ Publish-Library Core
 Publish-Plugin Physics
 Publish-Plugin Sensors
 Publish-Plugin Io
+Publish-Plugin Sets

@@ -1,7 +1,5 @@
 namespace YAMP
 {
-    using System;
-
     /// <summary>
     /// The abstract base class used for all MemberFunction functions (with @this).
     /// </summary>
@@ -20,6 +18,7 @@ namespace YAMP
         #endregion
 
         #region Properties
+
         //The state must be independent on any MemberFunction instances, in case there are multiple (same) functions on the same scope being evaluated...
         //So, the runtime must create a unique instance when needed. Don't just use the reference-copy from the RootContext/Function's dictionary.
         //To be safe, don't even set any object, if the function won't be called on the scope of an object. (like a "static" function).
@@ -33,6 +32,10 @@ namespace YAMP
             get { return _this; }
         }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Performs the function execution.
         /// </summary>
@@ -43,14 +46,15 @@ namespace YAMP
             return base.Perform(argument);
         }
 
+        /// <summary>
+        /// Creates a new member function instance from the given context.
+        /// </summary>
         public MemberFunction CreateMemberFunctionInstance(Value state)
         {
             var clone = this.MemberwiseClone() as MemberFunction;
             clone._this = state;
-
             return clone;
         }
-
 
         #endregion
     }

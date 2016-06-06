@@ -48,15 +48,22 @@ namespace YAMP
 			return Perform(l, r);
 		}
 
+        /// <summary>
+        /// Performs the operation from finding the operator in the mapping.
+        /// </summary>
         public Value PerformOverFind(Value left, Value right, BinaryOperatorMappingList mapping)
         {
-            Value ret;
+            var ret = default(Value);
+
             if (!TryPerformOverFind(left, right, mapping, out ret))
                 throw new YAMPOperationInvalidException(Op, left, right);
 
             return ret;
         }
 
+        /// <summary>
+        /// Tries to perform the operation from finding the operator in the mapping.
+        /// </summary>
         public static Boolean TryPerformOverFind(Value left, Value right, BinaryOperatorMappingList mapping, out Value value)
         {
             var least = default(Func<Value, Value, Value>);

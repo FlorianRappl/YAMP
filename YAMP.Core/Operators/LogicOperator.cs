@@ -11,10 +11,12 @@ namespace YAMP
     {
         #region Mapping
 
-        public static readonly int DefOpLevel = OpDefinitions.DefLogicOperatorLevel;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public static readonly Int32 DefOpLevel = OpDefinitions.DefLogicOperatorLevel;
 
         #endregion
-
 
         #region ctor
 

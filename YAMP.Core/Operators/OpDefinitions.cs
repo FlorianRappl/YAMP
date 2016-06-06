@@ -7,106 +7,334 @@
     /// </summary>
     public static class OpDefinitions
     {
-        public const int ArgsOperatorLevel = 1000;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 ArgsOperatorLevel = 1000;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String ArgsOperator = "(";
 
-        public const int MemberOperatorLevel = 990; //Moved from 10000 to 990 to be under ArgsOperatorLevel
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 MemberOperatorLevel = 990;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String MemberOperator = ".";
 
-        public const int FactorialOperatorLevel = 980; //Moved from 1000 to 980 to be under ArgsOperatorLevel (and allow space for MemberOperatorLevel)
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 FactorialOperatorLevel = 980;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String FactorialOperator = "!";
 
-        public const int PreIncOperatorLevel = 950; //Moved from 999 to 950 to give space below FactorialOperatorLevel and ArgsOperatorLevel
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 PreIncOperatorLevel = 950;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String PreIncOperator = "++";
 
-        public const int PostIncOperatorLevel = 950; //Moved from 999 to 950 to give space below FactorialOperatorLevel and ArgsOperatorLevel
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 PostIncOperatorLevel = 950;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String PostIncOperator = "++";
 
-        public const int PreDecOperatorLevel = 950; //Moved from 999 to 950 to give space below FactorialOperatorLevel and ArgsOperatorLevel
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 PreDecOperatorLevel = 950;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String PreDecOperator = "--";
 
-        public const int PostDecOperatorLevel = 950; //Moved from 999 to 950 to give space below FactorialOperatorLevel and ArgsOperatorLevel
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 PostDecOperatorLevel = 950;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String PostDecOperator = "--";
 
-        public const int InvOperatorLevel = 900; //Moved from 995 to 900 to give some space.
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 InvOperatorLevel = 900;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String InvOperator = "~";
 
-        public const int PowerOperatorLevel = 100;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 PowerOperatorLevel = 100;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String PowerOperator = "^";
 
-        public const int AdjungateOperatorLevel = 100;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 AdjungateOperatorLevel = 100;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String AdjungateOperator = "'";
 
-        public const int TransposeOperatorLevel = 100;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 TransposeOperatorLevel = 100;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String TransposeOperator = ".'";
 
-        public const int ModuloOperatorLevel = 30;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 ModuloOperatorLevel = 30;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String ModuloOperator = "%";
 
-        public const int LeftDivideOperatorLevel = 20;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 LeftDivideOperatorLevel = 20;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String LeftDivideOperator = @"\";
 
-        public const int RightDivideOperatorLevel = 20;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 RightDivideOperatorLevel = 20;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String RightDivideOperator = "/";
 
-        public const int MultiplyOperatorLevel = 10;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 MultiplyOperatorLevel = 10;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String MultiplyOperator = "*";
 
-        public const int NegateOperatorLevel = 7;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 NegateOperatorLevel = 7;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String NegateOperator = "-";
 
-        public const int PosateOperatorLevel = 7;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 PosateOperatorLevel = 7;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String PosateOperator = "+";
 
-        public const int MinusOperatorLevel = 6; //Shouldn't be the same as PlusOperatorLevel ?
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 MinusOperatorLevel = 6;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String MinusOperator = "-";
 
-        public const int PlusOperatorLevel = 5;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 PlusOperatorLevel = 5;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String PlusOperator = "+";
 
-        
-        public const int DefLogicOperatorLevel = 4; //Default level for Logical Operators
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 DefLogicOperatorLevel = 4;
 
-        public const int EqOperatorLevel = DefLogicOperatorLevel;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 EqOperatorLevel = DefLogicOperatorLevel;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String EqOperator = "==";
 
-        public const int GtEqOperatorLevel = DefLogicOperatorLevel;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 GtEqOperatorLevel = DefLogicOperatorLevel;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String GtEqOperator = ">=";
 
-        public const int GtOperatorLevel = DefLogicOperatorLevel;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 GtOperatorLevel = DefLogicOperatorLevel;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String GtOperator = ">";
 
-        public const int LtEqOperatorLevel = DefLogicOperatorLevel;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 LtEqOperatorLevel = DefLogicOperatorLevel;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String LtEqOperator = "<=";
 
-        public const int LtOperatorLevel = DefLogicOperatorLevel;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 LtOperatorLevel = DefLogicOperatorLevel;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String LtOperator = "<";
 
-        public const int NeqOperatorLevel = DefLogicOperatorLevel;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 NeqOperatorLevel = DefLogicOperatorLevel;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String StandardNeqOperator = "~=";
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String AliasNeqOperator = "!=";
 
-        public const int AndOperatorLevel = 3; //Shouldn't AndOperatorLevel be higher than OrOperatorLevel ?
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 AndOperatorLevel = 3;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String AndOperator = "&&";
 
-        public const int OrOperatorLevel = 3;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 OrOperatorLevel = 3;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String OrOperator = "||";
 
-        public const int RangeOperatorLevel = 3;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 RangeOperatorLevel = 3;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String RangeOperator = ":";
 
-        public const int FatArrowOperatorLevel = 2;
-        public const String FatArrowOperator = "=>";
-       
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 FatArrowOperatorLevel = 2;
 
-        public const int ColumnOperatorLevel = 1;
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
+        public const String FatArrowOperator = "=>";
+
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 ColumnOperatorLevel = 1;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String ColumnOperator = ",";
 
-        public const int CommaOperatorLevel = 1;
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 CommaOperatorLevel = 1;
+
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
         public const String CommaOperator = ",";
 
-        public const int RowOperatorLevel = 0;
-        public const String RowOperator = ";";
+        /// <summary>
+        /// The assigned operator level.
+        /// </summary>
+        public const Int32 RowOperatorLevel = 0;
 
+        /// <summary>
+        /// The operator symbol.
+        /// </summary>
+        public const String RowOperator = ";";
     }
 }
