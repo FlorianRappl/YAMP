@@ -70,6 +70,10 @@
       <Project>{764a5fe6-5866-4855-ac96-d380b9e88306}</Project>
       <Name>YAMP.Sensors</Name>
     </ProjectReference>
+    <ProjectReference Include="..\YAMP.Sets\YAMP.Sets.csproj">
+      <Project>{25707c47-a626-4ad8-9290-ab07e30c1222}</Project>
+      <Name>YAMP.Sets</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
