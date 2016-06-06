@@ -40,6 +40,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="YAMP, Version=1.6.0.40202, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YAMP.1.6.0.40202\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\YAMP.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\CoreFXoriginal\BitHelper.cs" />
@@ -75,6 +79,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetsPlugin.cs" />
     <Compile Include="Values\SetValue.cs" />
+    <None Include="packages.config" />
     <None Include="readme.markdown" />
   </ItemGroup>
   <ItemGroup>
@@ -83,12 +88,6 @@
   <ItemGroup>
     <None Include="External\CoreFXoriginal\LICENSE" />
     <None Include="External\CoreFX\LICENSE" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\YAMP.Core\YAMP.Core.csproj">
-      <Project>{0f183b45-e213-4db0-9734-3ce7e26eb318}</Project>
-      <Name>YAMP.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

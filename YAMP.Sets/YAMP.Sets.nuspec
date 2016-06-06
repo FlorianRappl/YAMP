@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>YAMP.Sets</id>
+    <version>$version$</version>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/FlorianRappl/YAMP/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/FlorianRappl/YAMP</projectUrl>
+    <iconUrl>https://raw.github.com/FlorianRappl/YAMP/master/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>For all changes see: https://github.com/FlorianRappl/YAMP.</releaseNotes>
+    <copyright>Copyright 2012 - 2016, Nuno Henriques.</copyright>
+    <tags>YAMP Math Parser Matlab Matrix Complex Numerics Physics Mathematics Sumerics Sets</tags>
+  </metadata>
+</package>
